@@ -57,6 +57,22 @@
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
 
+//SDK zum laufen bringen:
+
+// 0. file so anpassen wie hier: node_modules/pbkdf2/lib/default-encoding.js
+
+// 1. nächster error, stichwort bei google: "aws-sdk requires global to exist"
+(window as any).global = window;
+
+// 2. Uncaught ReferenceError: process is not defined at Object../node_modules/pbkdf2/lib/default-encoding.js (default-encoding.js:3)
+(window as any).process = {
+    env: { DEBUG: undefined },
+  };
+  
+// 3. Uncaught ReferenceError: Buffer is not defined
+//    at Module../node_modules/@aeternity/aepp-sdk/es/utils/hd-wallet.js
+
+ global.Buffer = global.Buffer || require('buffer').Buffer;
 
 /***************************************************************************************************
  * APPLICATION IMPORTS

@@ -1,0 +1,24 @@
+<div class=""
+>
+    <h2 class ="ui header">Demo Form: Sku</h2>
+    <form [formGroup]="myForm"
+        (ngSubmit)="onSubmit(myForm.value)"
+        class="ui form">
+        
+        <div class="field"
+            [class.error]="!sku.valid && sku.touched"
+            >
+            <label for="skuInput">SKU</label>
+            <input type="text"
+                   id="skuInput"
+                   placeholder="SKU"
+                   [formControl]="myForm.controls['sku']">
+                   
+            <div *ngIf="myForm.controls['sku'].hasError('required') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU is invalid</div>
+            <div *ngIf="!myForm.controls['sku'].hasError('required') && myForm.controls['sku'].hasError('invalidSku') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU needs to start with 123</div>
+
+        </div>      
+
+        <button type="submit" class="ui button">Submit</button>
+    </form>
+</div>
