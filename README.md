@@ -4,7 +4,10 @@ This is an effort trying to get thre JS SDK to work in angular.
 
 Check `src/app/compiler.service.ts` for the problematic code.
 
-
+0. install angular `npm install -g @angular/cli`
+1. `npm install`
+2. In project folder, `ng serve`
+3. open browser at localhost:4200 and see console
 
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.6.
