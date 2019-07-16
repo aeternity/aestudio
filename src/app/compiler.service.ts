@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 //import { Crypto } from '@aeternity/aepp-sdk/es'
 import { Contract } from './contracts/hamster';
@@ -12,7 +13,7 @@ export class CompilerService {
   code: Contract<string> = new Contract();
   
 
-  constructor() {
+  constructor(private http: HttpClient) {
     console.log("Compilerservice initialized!");  
 
     // Use Flavor   
@@ -38,4 +39,19 @@ export class CompilerService {
     }).catch(e => { console.log("Shit, it didn't work:", e)})
 
    }
+
+   fromCodeToACI(code) {
+    //let compilerUrl = "http://localhost:3080/aci";
+    let compilerUrl = "https://compiler.aepps.com/aci";
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post<EncodedACI>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
+   }
+}
+
+export class EncodedACI {
+  encoded_aci: any;
 }
