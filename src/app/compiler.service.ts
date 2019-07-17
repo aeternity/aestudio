@@ -41,8 +41,8 @@ export class CompilerService {
    }
 
    fromCodeToACI(code) {
-    //let compilerUrl = "http://localhost:3080/aci";
-    let compilerUrl = "https://compiler.aepps.com/aci";
+    let compilerUrl = "http://localhost:3080/aci";
+    //let compilerUrl = "https://compiler.aepps.com/aci";
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'

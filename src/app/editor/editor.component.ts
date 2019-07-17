@@ -29,7 +29,6 @@ export class EditorComponent implements OnInit {
     this.contract.code = this.contract.code.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
-    console.log(this.contract.code.substring(0, 10))
     this.compiler.fromCodeToACI(this.contract.code)
     .subscribe(
       (data: EncodedACI) => {
@@ -37,6 +36,6 @@ export class EditorComponent implements OnInit {
       this.controlService.takeACI(data.encoded_aci);
       this.controlService.parseACI();
     },
-    error => console.log(error));
+    error => console.log(error.error));
   }
 }
