@@ -15,7 +15,7 @@ contract CryptoHamster =
 
     stateful entrypoint init() = 
         { index = 1,
-        map_hamsters = {}}
+            map_hamsters = {}}
 
     stateful entrypoint create_hamster(hamster_name: string) =
         require(!name_exists(hamster_name), \"Name is already taken\")
@@ -25,7 +25,7 @@ contract CryptoHamster =
     entrypoint name_exists(name: string) : bool =
         Map.member(name, state.map_hamsters)
 
-    entrypoint get_hamster_dna(name: string) : int =
+    entrypoint get_hamster_dna(name: string, test: option(int)) : int =
         require(name_exists(name), \"There is no hamster with that name!\")
 
         let needed_hamster : hamster = state.map_hamsters[name]

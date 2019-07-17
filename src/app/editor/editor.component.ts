@@ -1,4 +1,4 @@
-import { Component, OnInit, Compiler } from '@angular/core';
+import { Component, OnInit, Compiler, HostBinding } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { ContractControlService } from '../contract-control.service';
@@ -12,6 +12,10 @@ import { ContractBase } from '../question/contract-base';
 })
 export class EditorComponent implements OnInit {
 
+  // set the editor's style:
+  //@HostBinding('attr.class') css = 'ui segment container';
+
+  // import default contract, after that set this with editor's content
   contract: Contract<string> = new Contract();
   constructor(private compiler: CompilerService, private controlService: ContractControlService) { }
 
@@ -29,12 +33,12 @@ export class EditorComponent implements OnInit {
     this.contract.code = this.contract.code.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
+    console.log("Hier kommt der code: ", this.contract.code);
     this.compiler.fromCodeToACI(this.contract.code)
     .subscribe(
       (data: EncodedACI) => {
-      console.log(data)
+      // pass the ACI to the contract-control service to generate a contract instance for the editor
       this.controlService.takeACI(data.encoded_aci);
-      this.controlService.parseACI();
     },
     error => console.log(error.error));
   }

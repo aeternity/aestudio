@@ -11,7 +11,7 @@ contract CryptoHamster =
 
     stateful entrypoint init() = 
         { index = 1,
-          map_hamsters = {}}
+        map_hamsters = {}}
 
     stateful entrypoint create_hamster(hamster_name: option(string)) =
         true

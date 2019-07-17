@@ -114,36 +114,15 @@ export class ContractControlService {
         }
     }
     constructor() {
-
-        //this.contract= this.parseACI();
-        this.parseACI();
-        //console.log("Name: ", this.contract.name);
-        //console.log("Functions: ", this.contract.functions);
+        
     }
 
     parseACI() { // flatten the damn ACI
 
-        // 1. put the raw ACI here
-
-
-        // 1.5 sort init function to ACI functions' index 0
-
-        // 1.6 pop the init func from functions array
-        console.log(this.rawACI)
-        // NO, try with sort !!
+        // 1. just to make sure the init func is on top, sort functions.
         this.rawACI.contract.functions.sort(
             (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
         )
-
-        /* var shifted: boolean = false;
-        rawACI.contract.functions.forEach((one,i) => { 
-            if (!shifted) {
-                one.name == 'init' ? rawACI.contract.functions.unshift(one) : true;
-                shifted = true;
-            }
-        }) */
-
-        // 1.7 add the init func to array later
 
         // 2. enumerate functions explicitly with index
         this.rawACI.contract.functions.forEach((one, i) => {
@@ -155,7 +134,6 @@ export class ContractControlService {
 
 
         // 3. generate contract from formatted aci
-
         this.contract = this.toContract(this.rawACI);
         console.log(this.contract);
 
@@ -169,27 +147,42 @@ export class ContractControlService {
 
         // 2. ... for every function of the contract....
         functions.forEach(fun => {
+            console.log("Taking care of ", fun.name);
 
             // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
             fun.arguments.forEach((arg, i, allArgs) => {
-                let controlls: any = {};
-                controlls[i] = 'option' in arg ? new FormControl(arg.name || '')
+                let controlls: any = [];
+                
+                /* // temp testing: 
+                arg.type.option != null ? console.log("OPTION FOUND! ",arg) : true;
+ */
+                
+                controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
                     : new FormControl(arg.name || '', Validators.required);
-                // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
+
+                console.log(`For ${arg.name} adding ${controlls.length} controlls`)
+                    // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
                 fun.formGroup = new FormGroup(controlls)
 
             })
-
-            /*  oneGroup[fun.IDEindex] = question.required ? new FormControl(question.value || '', Validators.required)
-                                                     : new FormControl(question.value || '' );
-             formGroups.push(new FormGroup(oneGroup)); */
         });
 
         return new ContractBase(aci);
     }
 
-
+    // recieve generated ACI from compiler service
     takeACI(aci) {
         this.rawACI = aci;
+        this.parseACI();
     }
 }
+
+
+/* Use this later for checking if somewhere in the args a type is set to "optional:"
+
+if( JSON.stringify(object_name).indexOf("key_name") > -1 ) {
+    console.log("Key Found");
+}
+else{
+    console.log("Key not Found");
+} */
