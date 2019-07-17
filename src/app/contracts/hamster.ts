@@ -6,8 +6,7 @@ export class Contract<T> {
 contract CryptoHamster =
 
     record state = {
-        index : int,
-        map_hamsters : map(string, hamster)}
+        index : int, map_hamsters : map(string, hamster)}
 
     record hamster = {
         id : int,
