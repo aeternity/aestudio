@@ -9,7 +9,7 @@ import { TextboxQuestion } from "src/app/question/question-textbox";
 })
 export class ContractControlService {
 
-    contract: ContractBase<any>;
+    contractForm: ContractBase<any>;
 
     rawACI: any = {
         "contract": {
@@ -117,7 +117,7 @@ export class ContractControlService {
         
     }
 
-    parseACI() { // flatten the damn ACI
+    parseACItoForm() { // flatten the damn ACI
 
         // 1. just to make sure the init func is on top, sort functions.
         this.rawACI.contract.functions.sort(
@@ -132,10 +132,9 @@ export class ContractControlService {
             console.log(i);
         })
 
-
         // 3. generate contract from formatted aci
-        this.contract = this.toContract(this.rawACI);
-        console.log(this.contract);
+        this.contractForm = this.toContract(this.rawACI);
+        console.log(this.contractForm);
 
     }
 
@@ -147,7 +146,7 @@ export class ContractControlService {
 
         // 2. ... for every function of the contract....
         functions.forEach(fun => {
-            console.log("Taking care of ", fun.name);
+            //onsole.log("Taking care of ", fun.name);
 
             // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
             fun.arguments.forEach((arg, i, allArgs) => {
@@ -160,7 +159,7 @@ export class ContractControlService {
                 controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
                     : new FormControl(arg.name || '', Validators.required);
 
-                console.log(`For ${arg.name} adding ${controlls.length} controlls`)
+                //console.log(`For ${arg.name} adding ${controlls.length} controlls`)
                     // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
                 fun.formGroup = new FormGroup(controlls)
 
@@ -171,9 +170,11 @@ export class ContractControlService {
     }
 
     // recieve generated ACI from compiler service
+
+    // Todo: also have contract code passed here, for the SDK and everything
     takeACI(aci) {
         this.rawACI = aci;
-        this.parseACI();
+        this.parseACItoForm();
     }
 }
 

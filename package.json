@@ -23,6 +23,7 @@
     "buffer": "^5.2.1",
     "cipher-base": "^1.0.4",
     "crypto-browserify": "^3.12.0",
+    "ng2-semantic-ui": "^0.9.7",
     "ngx-monaco-editor": "^7.0.0",
     "rxjs": "~6.4.0",
     "stream": "0.0.2",

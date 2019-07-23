@@ -9,13 +9,15 @@ import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { DynamicFormComponent }         from './dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
 import { EditorComponent } from './editor/editor.component';
+import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
+import {SuiModule} from 'ng2-semantic-ui';
 
 @NgModule({
   declarations: [
     AppComponent,
     DemoFormSkuComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent
+    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent
   ],
   imports: [
     BrowserModule,
@@ -23,7 +25,8 @@ import { EditorComponent } from './editor/editor.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    MonacoEditorModule.forRoot()
+    MonacoEditorModule.forRoot(),
+    SuiModule    
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,3 +1,2 @@
-<ngx-monaco-editor class="editor" [options]="editorOptions" [(ngModel)]="contract.code"></ngx-monaco-editor>
+<ngx-monaco-editor (ngModelChange)="change()" class="editor" [options]="editorOptions" [(ngModel)]="contract.code"></ngx-monaco-editor>
 <button (click)="compile()">Compile</button>
-<p>Module with compiler service loaded!</p>
