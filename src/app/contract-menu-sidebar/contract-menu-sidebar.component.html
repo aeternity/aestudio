@@ -1,2 +1,50 @@
 <p>contract-menu-sidebar works!</p>
-<button (click)="compile()">Compile</button>
+<button (click)="buildAContract()">Compile</button>
+
+<!-- TODO : Put Function.ParamName as id for fields here instead -->
+<!-- TODO: Add formcontrol -->
+<div *ngIf="aci">
+    <div class="ui segment container" *ngFor="let oneFunction of aci.functions">
+        <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
+
+        <!-- TODO: Add form control -->
+        <form class="ui form">
+            <div class="field" *ngFor="let arg of oneFunction.arguments">
+                
+                <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
+                <input type="text"
+                        class="arg-field"
+                        id="{{oneFunction.name + '-' + arg.name}}"   
+                        placeholder="{{arg.name}}"
+                >
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- <div [formGroup] = "form">
+    <div class="ui segment container">
+
+    <h3 class ="ui header">Demo Form: Sku</h3>
+    <form [formGroup]="myForm"
+        (ngSubmit)="onSubmit(myForm.value)"
+        class="ui form">
+        
+        <div class="field"
+            [class.error]="!sku.valid && sku.touched"
+            >
+            <label for="skuInput">SKU</label>
+            <input type="text"
+                   id="skuInput"
+                   placeholder="SKU"
+                   [formControl]="myForm.controls['sku']">
+                   
+            <div *ngIf="myForm.controls['sku'].hasError('required') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU is invalid</div>
+            <div *ngIf="!myForm.controls['sku'].hasError('required') && myForm.controls['sku'].hasError('invalidSku') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU needs to start with 123</div>
+
+        </div>      
+
+        <button type="submit" class="ui button">Submit</button>
+    </form>
+</div>
+</div> -->

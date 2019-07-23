@@ -1,0 +1,8 @@
+.arg-field{
+    transition: all 2.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.arg-field:hover{
+    border: 1px solid rgba(18, 127, 235, 0.15) !important;
+    background:rgb(187, 221, 255)
+}

@@ -21,3 +21,8 @@
     margin-right: 0px !important;
     padding-right: 0px !important;
 }
+
+/* scheiß monaco editor container height */
+.editor-container{
+    height: 100% !important
+}

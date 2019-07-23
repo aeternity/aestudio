@@ -11,13 +11,14 @@ import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-fo
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
+import { ReplacePipe } from './helpers/replace-pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     DemoFormSkuComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent
+    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe
   ],
   imports: [
     BrowserModule,

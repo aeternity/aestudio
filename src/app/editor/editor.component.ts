@@ -18,6 +18,8 @@ export class EditorComponent implements OnInit {
   // set the editor's style:
   //@HostBinding('attr.class') css = 'ui segment container';
 
+  @HostBinding('style.border') value = 'red';
+
   // listen to compiler events asking to send code
   subscription: Subscription;
 
@@ -37,7 +39,7 @@ export class EditorComponent implements OnInit {
   }
 
   change(){
-    console.log("Shit done changed!");
+    //console.log("Shit done changed!");
   }
 
   // for now, just set the ACI

@@ -5,6 +5,8 @@ import { BehaviorSubject } from 'rxjs';
 //import { Crypto } from '@aeternity/aepp-sdk/es'
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+
 
 var Ae = Universal;
 
@@ -16,6 +18,7 @@ export class CompilerService {
   code: string = new Contract().code;
   aci: ContractBase<any>;
   
+  rawACI: any;
  
 
    // Part 1/3 for asking currently open editor for its code
@@ -94,13 +97,68 @@ export class CompilerService {
     .subscribe(
       (data: EncodedACI) => {
       // save ACI to generate a contract instance for the editor
-      this.aci = data.encoded_aci
+      this.rawACI = data.encoded_aci
+        
+        // now add an index to each function and sort them, just to be sure
+        // 1. just to make sure the init func is on top, sort functions.
+        
+        this.rawACI.contract.functions.sort(
+          (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
+      )
+
+      // 2. enumerate functions explicitly with index
+      this.rawACI.contract.functions.forEach((one, i) => {
+
+          this.rawACI.contract.functions[i].IDEindex = i;
+          //console.log(one);
+          //console.log(i);
+      })
+
+      // 3.  now that we have it, generate the formgroups for the function args
+      this.aci = this.addFormGroupsForFunctions(this.rawACI);
+      
+      console.log("Hier final contract object:", this.aci)
       console.log(this.aci);
     },
     error => console.log(error.error));
     return true;
   }
+
+
+ // generates a typescript-safe contract instance with a FormGroup in functions array
+ addFormGroupsForFunctions(aci: any): ContractBase<any> {
+
+  // 1. create several formgroups: one FG for each fun, return final contract
+  console.log("ACI hier:", aci);
+  let functions = aci.contract.functions;
+
+  // 2. ... for every function of the contract....
+  functions.forEach(fun => {
+      //onsole.log("Taking care of ", fun.name);
+
+      // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
+      fun.arguments.forEach((arg, i, allArgs) => {
+          let controlls: any = [];
+          
+          /* // temp testing: 
+          arg.type.option != null ? console.log("OPTION FOUND! ",arg) : true;
+*/
+          
+          controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
+              : new FormControl(arg.name || '', Validators.required);
+
+          //console.log(`For ${arg.name} adding ${controlls.length} controlls`)
+              // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
+          fun.formGroup = new FormGroup(controlls)
+
+      })
+  });
+
+  return new ContractBase(aci);
 }
+
+}
+
 
 export class EncodedACI {
   encoded_aci: any;
