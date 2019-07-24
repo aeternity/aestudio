@@ -7,7 +7,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "postinstall": "node patch.js"
   },
   "private": true,
   "dependencies": {
@@ -21,12 +22,9 @@
     "@angular/platform-browser-dynamic": "~8.1.1",
     "@angular/router": "~8.1.1",
     "buffer": "^5.2.1",
-    "cipher-base": "^1.0.4",
-    "crypto-browserify": "^3.12.0",
     "ng2-semantic-ui": "^0.9.7",
     "ngx-monaco-editor": "^7.0.0",
     "rxjs": "~6.4.0",
-    "stream": "0.0.2",
     "tslib": "^1.9.0",
     "zone.js": "~0.9.1"
   },
