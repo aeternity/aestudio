@@ -59,23 +59,32 @@ export class CompilerService {
       nativeMode: true,
       keypair: { 
         secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', 
-        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' },
-      networkId: 'ae_devnet' // or any other networkId your client should connect to
+        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' }
+        //,
+      //networkId: 'ae_devnet' // or any other networkId your client should connect to
     }).catch(e => { console.log("Shit, it didn't work:", e)})
 
     // todo: wrap in try catch
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
 
-    this.deployActiveContract();
+    console.log(this.code);
+
+    this.compileAndDeploy(this.code);
   }
 
   async deployActiveContract(){
     // create a contract instance
-    var myContract = await this.Chain.getContractInstance(this.code);
+    //var myContract = await this.Chain.getContractInstance(this.code);
     
-    await myContract.methods.init()
-    console.log(myContract);
+   /*  try {
+      await myContract.deploy([])
+    } catch(e){
+      console.log("Something went wrong, investigating tx!");
+      e.verifyTx();
+    } */
+
+    //console.log(myContract);
 
   }
 
@@ -100,7 +109,7 @@ export class CompilerService {
   } */
 
   // currently just converts code to ACI
-  compile(sourceCode: any) : any {
+  async compileAndDeploy(sourceCode: any) : Promise<any> {
     // replace " => \"
     sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
 
@@ -109,8 +118,19 @@ export class CompilerService {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
-    //console.log("Hier kommt der code: ", sourceCode);
+    console.log("Hier kommt der code: ", sourceCode);
     
+    // create a contract instance
+    var myContract = await this.Chain.getContractInstance(this.code);
+    
+    // Deploy the contract
+    try {
+      await myContract.deploy([])
+    } catch(e){
+      console.log("Something went wrong, investigating tx!");
+      e.verifyTx();
+    }
+
     this.fromCodeToACI(sourceCode)
     .subscribe(
       (data: EncodedACI) => {

@@ -33,9 +33,14 @@ export class EditorComponent implements OnInit {
   editorOptions = {theme: 'vs-dark', language: 'sophia'};
 
   ngOnInit() {
+    // If the compiler asks for code, give it to him and deploy the contract
     this.subscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
-    return this.compile();}); 
+    
+    // Beim start schon copilen oder nicht ?
+    //  return this.compile();
+  
+  }); 
   }
 
   change(){
@@ -43,9 +48,9 @@ export class EditorComponent implements OnInit {
   }
 
   // for now, just set the ACI
-  compile() : void {
+  compile() : Promise<any> {
     //console.log("compile gerunnt");
-    return this.compiler.compile(this.contract.code);
+    return this.compiler.compileAndDeploy(this.contract.code);
   }
 
   ngOnDestroy() {

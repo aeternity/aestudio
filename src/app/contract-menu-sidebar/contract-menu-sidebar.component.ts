@@ -38,12 +38,21 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.compiler.makeCompilerAskForCode(1);
 
     // take the ACI/ContractBase the compiler stores
-    this.aci = this.compiler.aci;
-    console.log(this.aci);
+
+    DAS HIER ACYNC MACHEN !
+    
+    setTimeout(() => {
+      console.log("Hier kommts:");
+      this.aci = this.compiler.aci;
+      console.log(this.aci);
+    }, 10000);
+    
+    
   } 
 
   ngOnInit() {
+    
      this.subscription = this.compiler._fetchActiveCode
-       .subscribe(item => console.log("Event in sidebar angekommen")); 
+       .subscribe(item => console.log("Event in sidebar angekommen"));
   }
 }
