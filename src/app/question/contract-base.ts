@@ -5,6 +5,7 @@ export class ContractBase<T> {
     functions: any;
     state: {};
     type_defs: string[];
+    address: string;
 
     constructor(aci: {
         contract: {
@@ -25,6 +26,10 @@ export class ContractBase<T> {
         },
 
     }) {
+
+    function setAddress(_address: string) {
+        this.address = _address;
+    }
         
     this.name = aci.contract.name;
     this.functions = aci.contract.functions || '';

@@ -6,7 +6,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 
 var Ae = Universal;
 
@@ -15,10 +15,20 @@ var Ae = Universal;
 })
 export class CompilerService {
 
+  // setting default code, later pulled from editor
   code: string = new Contract().code;
+
+  // the code from the currently active compiler window
   aci: ContractBase<any>;
-  
+
+  // same as ACI, but contains address of deployed contract
+  activeContracts: ContractBase<any>[];
+
+  // only ACI, from the code of the currently opened tab
   rawACI: any;
+
+  // the SDK initialization
+  Chain: any;
  
 
    // Part 1/3 for asking currently open editor for its code
@@ -34,10 +44,14 @@ export class CompilerService {
   }
 
   constructor(private http: HttpClient) {
+    this.setupClient();
     console.log("Compilerservice initialized!");  
+   }
+
+  async setupClient(){
 
     // Use Flavor   
-    var Chain = Ae({
+    this.Chain = await Ae({
       url: 'https://sdk-testnet.aepps.com',
       //internalUrl: 'http://localhost:3001/internal/',
       //compilerUrl: 'http://localhost:3080',
@@ -47,19 +61,23 @@ export class CompilerService {
         secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', 
         publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' },
       networkId: 'ae_devnet' // or any other networkId your client should connect to
-    }).then(ae => {
-      // Interacting with the blockchain client
-      // getting the latest block height
-      ae.height().then(height => {
-        // logs current height
-        console.log('Current Block Height:', height)
-      }).catch(e => {
-        // logs error
-        console.log(e)
-      })
     }).catch(e => { console.log("Shit, it didn't work:", e)})
 
-   }
+    // todo: wrap in try catch
+    let height = await this.Chain.height();
+    console.log('Current Block Height: ', height)
+
+    this.deployActiveContract();
+  }
+
+  async deployActiveContract(){
+    // create a contract instance
+    var myContract = await this.Chain.getContractInstance(this.code);
+    
+    await myContract.methods.init()
+    console.log(myContract);
+
+  }
 
 
    fromCodeToACI(code) {
