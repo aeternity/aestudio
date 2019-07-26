@@ -36,7 +36,7 @@ export class EditorComponent implements OnInit {
     // If the compiler asks for code, give it to him and deploy the contract
     this.subscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
-    
+      this.compiler.generateACIonly(this.contract.code);
     // Beim start schon copilen oder nicht ?
     //  return this.compile();
   
@@ -45,13 +45,18 @@ export class EditorComponent implements OnInit {
 
   change(){
     //console.log("Shit done changed!");
+    // put the active code into compiler
+    this.compiler.makeCompilerAskForCode(0);
+console.log("code ist gerade: ",this.contract.code);
+    // generate some ACI just to display init() function for deployment
+    this.compiler.generateACIonly(this.contract.code);
   }
 
-  // for now, just set the ACI
+  /* // for now, just set the ACI
   compile() : Promise<any> {
     //console.log("compile gerunnt");
     return this.compiler.compileAndDeploy(this.contract.code);
-  }
+  } */
 
   ngOnDestroy() {
     // prevent memory leak when component is destroyed

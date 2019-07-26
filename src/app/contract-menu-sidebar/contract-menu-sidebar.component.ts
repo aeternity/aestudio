@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import { Subscription } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
@@ -26,10 +26,12 @@ export class ReplacePipe implements PipeTransform {
 })
 export class ContractMenuSidebarComponent implements OnInit {
 
-  subscription: Subscription;
+  //subscription: Subscription;
+  rawACIsubscription: Subscription;
   aci: ContractBase<any>;
+  initACI: ContractBase<any>;
 
-  constructor(private compiler: CompilerService) { }
+  constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef) { }
  
   buildAContract() {
     // make compiler emit event
@@ -37,22 +39,37 @@ export class ContractMenuSidebarComponent implements OnInit {
     // @parm: Maybe use param for editor identification later
     this.compiler.makeCompilerAskForCode(1);
 
-    // take the ACI/ContractBase the compiler stores
+  } 
 
-    DAS HIER ACYNC MACHEN !
+  deployContract() {
+    // make compiler emit event
+
+    // @parm: Maybe use param for editor identification later
+    //this.compiler.makeCompilerAskForCode(1);
+
+    // take the ACI/ContractBase the compiler stores
+    this.compiler.compileAndDeploy();
     
     setTimeout(() => {
       console.log("Hier kommts:");
       this.aci = this.compiler.aci;
       console.log(this.aci);
     }, 10000);
-    
+     
     
   } 
 
   ngOnInit() {
+      this.buildAContract();
     
-     this.subscription = this.compiler._fetchActiveCode
+    /*  this.subscription = this.compiler._fetchActiveCode
        .subscribe(item => console.log("Event in sidebar angekommen"));
+ */
+       this.rawACIsubscription = this.compiler._notifyCompiledAndACI
+       .subscribe(item => {console.log("Neue ACI für init ist da !")
+       this.initACI = this.compiler.initACI;
+       console.log("Hier kommt init aci:", this.initACI);
+       this.changeDetectorRef.detectChanges()
+      });
   }
 }

@@ -21,7 +21,10 @@ export class CompilerService {
   // the code from the currently active compiler window
   aci: ContractBase<any>;
 
-  // same as ACI, but contains address of deployed contract
+  // aci only for the init function
+  initACI: ContractBase<any>;
+
+  // not used yet, just for tabs later: same as ACI, but contains address of deployed contract
   activeContracts: ContractBase<any>[];
 
   // only ACI, from the code of the currently opened tab
@@ -31,9 +34,21 @@ export class CompilerService {
   Chain: any;
  
 
+/* listeners start */
+
    // Part 1/3 for asking currently open editor for its code
   public _fetchActiveCode = new BehaviorSubject<number>(0);
   oneEvent = this._fetchActiveCode.asObservable();
+
+  // "new ACI available to generate GUI for contract deployment / init() function "
+  public _notifyCompiledAndACI = new BehaviorSubject<number>(0);
+  newRawACI = this._notifyCompiledAndACI.asObservable();
+
+  // a new contract was deployed!
+  public _notifyDeployedContract = new BehaviorSubject<number>(0);
+  newContract = this._notifyDeployedContract.asObservable();
+
+ /* listeners end */
 
   
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
@@ -68,9 +83,9 @@ export class CompilerService {
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
 
-    console.log(this.code);
+    //console.log(this.code);
 
-    this.compileAndDeploy(this.code);
+    //this.compileAndDeploy(this.code);
   }
 
   async deployActiveContract(){
@@ -101,15 +116,11 @@ export class CompilerService {
    }
 
 
-  // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
-  /* askEditorsForCode(){
-    console.log("Im compiler kam an.");
-    //this.fetchActiveCode.emit();
-    this._fetchActiveCode.emit();
-  } */
-
-  // currently just converts code to ACI
-  async compileAndDeploy(sourceCode: any) : Promise<any> {
+  // converts code to ACI and deploys.
+  async compileAndDeploy() : Promise<any> {
+    console.log("deploying...");
+    
+    let sourceCode = this.code
     // replace " => \"
     sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
 
@@ -159,6 +170,56 @@ export class CompilerService {
       console.log(this.aci);
     },
     error => console.log(error.error));
+    return true;
+  }
+
+  async generateACIonly(sourceCode: any) : Promise<any> {
+    // replace " => \"
+    sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
+
+    // remove comments
+    sourceCode = sourceCode.replace(new RegExp('\\/\\/.*', 'g'), '');
+    sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
+
+    // code to aci
+    //console.log("Hier kommt der code: ", sourceCode);
+    
+    // this source code will be used when user clicks deployContract()
+    this.code = sourceCode;
+
+    this.fromCodeToACI(sourceCode)
+    .subscribe(
+      (data: EncodedACI) => {
+      // save ACI to generate a contract instance for the editor
+      this.rawACI = data.encoded_aci
+        
+        // now add an index to each function and sort them, just to be sure
+        // 1. just to make sure the init func is on top, sort functions.
+        
+        this.rawACI.contract.functions.sort(
+          (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
+      )
+
+      // 2. enumerate functions explicitly with index
+      this.rawACI.contract.functions.forEach((one, i) => {
+
+          this.rawACI.contract.functions[i].IDEindex = i;
+          //console.log(one);
+          //console.log(i);
+      })
+
+      // 3.  now that we have it, generate the formgroups for the function args
+      this.initACI = this.addFormGroupsForFunctions(this.rawACI);
+      
+      console.log("Hier init ACI object:", this.aci)
+      
+      this._notifyCompiledAndACI.next(0);
+    },
+    error => console.log(error.error));
+    this.initACI = {} as ContractBase<any>;
+
+    // tell sidebar et al. that there is no valid contract there right now
+    this._notifyCompiledAndACI.next(0);
     return true;
   }
 

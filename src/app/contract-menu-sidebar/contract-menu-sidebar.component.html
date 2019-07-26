@@ -1,8 +1,27 @@
 <p>contract-menu-sidebar works!</p>
-<button (click)="buildAContract()">Compile</button>
+<button (click)="deployContract()">Deploy</button>
 
 <!-- TODO : Put Function.ParamName as id for fields here instead -->
 <!-- TODO: Add formcontrol -->
+
+<div *ngIf="initACI.name">
+        <div class="ui segment container">
+            <h4>{{this.initACI.name}}</h4>
+    <!-- 
+            <form class="ui form">
+                <div class="field" *ngFor="let arg of oneFunction.arguments">
+                    
+                    <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
+                    <input type="text"
+                            class="arg-field"
+                            id="{{oneFunction.name + '-' + arg.name}}"   
+                            placeholder="{{arg.name}}"
+                    >
+                </div>
+            </form> -->
+        </div>
+    </div>
+
 <div *ngIf="aci">
     <div class="ui segment container" *ngFor="let oneFunction of aci.functions">
         <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
