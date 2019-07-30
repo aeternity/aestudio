@@ -93,12 +93,31 @@ export class ContractMenuSidebarComponent implements OnInit {
 
           // test calling a value lol:
           //console.log("Active contracts: ", this.compiler.activeContracts);
-          let callresult = await this.compiler.activeContracts[0].methods.read_test_value();
-          console.log("UUUuuund call value ist: ", callresult.decodedResult); 
+          //let callresult = await this.compiler.activeContracts[0].methods.read_test_value();
+          //console.log("UUUuuund call value ist: ", callresult.decodedResult); 
         })
   }
 
-/* 
-callFunction(theFunction: any){}
- */
+ 
+async callFunction(_theFunction: string, _theFunctionIndex: number){
+
+  // fetch all entered params
+  var params: any[] = [];
+
+
+// TODO: Apply parameters
+
+  console.log("Called function: ", _theFunction);
+  //console.log(this.compiler.activeContracts[0].methods[_theFunction]);
+  let callresult = await this.compiler.activeContracts[0].methods[_theFunction]();
+
+  console.log("Hier kommt callresult: ", callresult.decodedResult);
+
+  // set decoded result
+  this.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
+  this.changeDetectorRef.detectChanges()
+
+  console.log("Das wurde geschrieben: ", this.aci.functions[_theFunctionIndex].lastReturnData)
+}
+
 }

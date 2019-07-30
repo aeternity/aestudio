@@ -27,17 +27,20 @@
                 <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
                     
                     <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
-                    <input 
+                    <input [(ngModel)]="this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
                             name="{{oneFunction.name + '-' + arg.name}}"
                             type="text"
                             class="arg-field"
                             id="{{oneFunction.name + '-' + arg.name}}"   
                             placeholder="{{arg.type}}"
                     >
+                   
                 </div>
             </form>
-            <button (click)="callFunction()" [disabled]="">Call Function</button>
+            <button (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Function</button>
+            <h4>Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
         </div>
+        
     </ng-container>
 </div>
 

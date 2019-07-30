@@ -11,15 +11,19 @@ export class ContractBase<T> {
         contract: {
             name: string;
             functions: {
-                arguments: any[];
+                arguments: [{
+                    name: string,
+                    type: any,
+                    currentInput: any,
+                    IDEindex: number;
+                }];
                 name: string;
                 returns: any;
                 stateful: boolean;
                 payable?: boolean;
+                lastReturnData?: any;
                 IDEindex: number; // custom shit for generating the angular formControls, added by the contract-control service
                 formGroup: FormGroup;
-                currentInputData: any[];
-                currentReturnData?: any;
             }[];
             state: {
                 record: any[];
@@ -32,6 +36,8 @@ export class ContractBase<T> {
     function setAddress(_address: string) {
         this.address = _address;
     }
+
+    
         
     this.name = aci.contract.name;
     this.functions = aci.contract.functions || '';

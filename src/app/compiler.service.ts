@@ -225,14 +225,17 @@ export class CompilerService {
   functions.forEach(fun => {
       //onsole.log("Taking care of ", fun.name);
 
+      // add field to later store latest return data
+      fun.lastReturnData = '';
+
       // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
       fun.arguments.forEach((arg, i, allArgs) => {
           let controlls: any = [];
           
-          /* // temp testing: 
-          arg.type.option != null ? console.log("OPTION FOUND! ",arg) : true;
-*/
-          
+          // add field to sotre current input value
+          arg.currentInput = '';
+          arg.IDEindex = i;
+
           controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
               : new FormControl(arg.name || '', Validators.required);
 
