@@ -18,6 +18,8 @@ export class ContractBase<T> {
                 payable?: boolean;
                 IDEindex: number; // custom shit for generating the angular formControls, added by the contract-control service
                 formGroup: FormGroup;
+                currentInputData: any[];
+                currentReturnData?: any;
             }[];
             state: {
                 record: any[];

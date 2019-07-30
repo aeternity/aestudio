@@ -25,7 +25,7 @@ export class CompilerService {
   initACI: ContractBase<any>;
 
   // not used yet, just for tabs later: same as ACI, but contains address of deployed contract
-  activeContracts: ContractBase<any>[];
+  public activeContracts: any[] = [];
 
   // only ACI, from the code of the currently opened tab
   rawACI: any;
@@ -88,22 +88,6 @@ export class CompilerService {
     //this.compileAndDeploy(this.code);
   }
 
-  async deployActiveContract(){
-    // create a contract instance
-    //var myContract = await this.Chain.getContractInstance(this.code);
-    
-   /*  try {
-      await myContract.deploy([])
-    } catch(e){
-      console.log("Something went wrong, investigating tx!");
-      e.verifyTx();
-    } */
-
-    //console.log(myContract);
-
-  }
-
-
    fromCodeToACI(code) {
     //let compilerUrl = "http://localhost:3080";
     let compilerUrl = "https://compiler.aepps.com/aci";
@@ -119,7 +103,7 @@ export class CompilerService {
   // converts code to ACI and deploys.
   async compileAndDeploy() : Promise<any> {
     console.log("deploying...");
-    
+
     let sourceCode = this.code
     // replace " => \"
     sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
@@ -129,7 +113,7 @@ export class CompilerService {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
-    console.log("Hier kommt der code: ", sourceCode);
+    //console.log("Hier kommt der code: ", sourceCode);
     
     // create a contract instance
     var myContract = await this.Chain.getContractInstance(this.code);
@@ -141,6 +125,11 @@ export class CompilerService {
       console.log("Something went wrong, investigating tx!");
       e.verifyTx();
     }
+
+    console.log("My contract: ", myContract);
+
+    //TODO: Make multi-contract supportive here 1
+    this.activeContracts[0] = myContract;
 
     this.fromCodeToACI(sourceCode)
     .subscribe(
@@ -168,6 +157,7 @@ export class CompilerService {
       
       console.log("Hier final contract object:", this.aci)
       console.log(this.aci);
+      this._notifyDeployedContract.next(0);
     },
     error => console.log(error.error));
     return true;

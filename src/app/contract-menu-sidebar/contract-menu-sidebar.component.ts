@@ -24,12 +24,25 @@ export class ReplacePipe implements PipeTransform {
   styleUrls: ['./contract-menu-sidebar.component.css']/* ,
   providers: [ CompilerService ] */
 })
+
+
 export class ContractMenuSidebarComponent implements OnInit {
 
-  //subscription: Subscription;
+  //Fires when a raw ACI is available (for gnerating init()'s interface
   rawACIsubscription: Subscription;
+
+  // when a contract is deployed: 
+  contractDeploymentSubscription: Subscription;
+
   aci: ContractBase<any>;
   initACI: ContractBase<any>;
+
+  // mess around:
+  temp: any;
+
+  logTemp(input: any){
+    console.log(input);
+  }
 
   constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef) { }
  
@@ -50,11 +63,11 @@ export class ContractMenuSidebarComponent implements OnInit {
     // take the ACI/ContractBase the compiler stores
     this.compiler.compileAndDeploy();
     
-    setTimeout(() => {
+/*     setTimeout(() => {
       console.log("Hier kommts:");
       this.aci = this.compiler.aci;
       console.log(this.aci);
-    }, 10000);
+    }, 10000); */
      
     
   } 
@@ -66,10 +79,26 @@ export class ContractMenuSidebarComponent implements OnInit {
        .subscribe(item => console.log("Event in sidebar angekommen"));
  */
        this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-       .subscribe(item => {console.log("Neue ACI für init ist da !")
-       this.initACI = this.compiler.initACI;
-       console.log("Hier kommt init aci:", this.initACI);
-       this.changeDetectorRef.detectChanges()
+          .subscribe(item => {console.log("Neue ACI für init ist da !")
+            this.initACI = this.compiler.initACI;
+            console.log("Hier kommt init aci:", this.initACI);
+            this.changeDetectorRef.detectChanges()
       });
+
+      this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
+        .subscribe( async item => {
+          // generate the interface for the contract
+          this.aci = this.compiler.aci;
+          this.changeDetectorRef.detectChanges()
+
+          // test calling a value lol:
+          //console.log("Active contracts: ", this.compiler.activeContracts);
+          let callresult = await this.compiler.activeContracts[0].methods.read_test_value();
+          console.log("UUUuuund call value ist: ", callresult.decodedResult); 
+        })
   }
+
+/* 
+callFunction(theFunction: any){}
+ */
 }

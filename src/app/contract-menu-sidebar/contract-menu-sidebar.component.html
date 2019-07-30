@@ -1,12 +1,7 @@
-<p>contract-menu-sidebar works!</p>
-<button (click)="deployContract()">Deploy</button>
-
-<!-- TODO : Put Function.ParamName as id for fields here instead -->
-<!-- TODO: Add formcontrol -->
-
 <div *ngIf="initACI.name">
         <div class="ui segment container">
             <h4>{{this.initACI.name}}</h4>
+            <button class="ui black button" (click)="deployContract()">Deploy</button>
     <!-- 
             <form class="ui form">
                 <div class="field" *ngFor="let arg of oneFunction.arguments">
@@ -23,22 +18,27 @@
     </div>
 
 <div *ngIf="aci">
-    <div class="ui segment container" *ngFor="let oneFunction of aci.functions">
-        <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
+    <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
+        <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
+            <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
 
-        <!-- TODO: Add form control -->
-        <form class="ui form">
-            <div class="field" *ngFor="let arg of oneFunction.arguments">
-                
-                <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
-                <input type="text"
-                        class="arg-field"
-                        id="{{oneFunction.name + '-' + arg.name}}"   
-                        placeholder="{{arg.name}}"
-                >
-            </div>
-        </form>
-    </div>
+            <!-- TODO: Add form control -->
+            <form class="ui form">
+                <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
+                    
+                    <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
+                    <input 
+                            name="{{oneFunction.name + '-' + arg.name}}"
+                            type="text"
+                            class="arg-field"
+                            id="{{oneFunction.name + '-' + arg.name}}"   
+                            placeholder="{{arg.type}}"
+                    >
+                </div>
+            </form>
+            <button (click)="callFunction()" [disabled]="">Call Function</button>
+        </div>
+    </ng-container>
 </div>
 
 <!-- <div [formGroup] = "form">

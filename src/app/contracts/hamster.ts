@@ -6,7 +6,9 @@ export class Contract<T> {
 contract CryptoHamster =
 
     record state = {
-        index : int, map_hamsters : map(string, hamster)}
+        index : int, 
+        map_hamsters : map(string, hamster), 
+        testvalue: int}
 
     record hamster = {
         id : int,
@@ -15,8 +17,12 @@ contract CryptoHamster =
 
     stateful entrypoint init() = 
         { index = 1,
-            map_hamsters = {}}
-
+            map_hamsters = {},
+            testvalue = 42}
+    
+    public entrypoint read_test_value() : int =
+        state.testvalue
+    
     stateful entrypoint create_hamster(hamster_name: string) =
         require(!name_exists(hamster_name), \"Name is already taken\")
         let dna : int = generate_random_dna(hamster_name)

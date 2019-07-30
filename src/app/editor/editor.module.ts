@@ -2,11 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { EditorComponent } from './editor.component';
+//import { EditorComponent } from './editor.component';
 
 @NgModule({
   declarations: [
-    EditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -14,6 +13,7 @@ import { EditorComponent } from './editor.component';
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [EditorComponent]
+  bootstrap: []
+  //if something is not working, try uncommenting this: bootstrap: [EditorComponent]
 })
 export class EditorModule { }
