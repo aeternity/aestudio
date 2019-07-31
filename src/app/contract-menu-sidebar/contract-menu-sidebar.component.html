@@ -1,4 +1,6 @@
+
 <div *ngIf="initACI.name">
+        <h4>Compiled Contract:</h4>
         <div class="ui segment container">
             <h4>{{this.initACI.name}}</h4>
             <button class="ui black button" (click)="deployContract()">Deploy</button>
@@ -14,9 +16,10 @@
                     >
                 </div>
             </form> -->
+        <app-loader *ngIf="this.deploymentLoading == true" ></app-loader>
         </div>
     </div>
-
+    <div class="ui section divider"></div>
 <div *ngIf="aci">
     <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
         <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
@@ -37,11 +40,19 @@
                    
                 </div>
             </form>
-            <button (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Function</button>
-            <h4>Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
+            <br>
+            <app-loader *ngIf="this.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
+
+            <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Send Transaction</button>
+            <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Locally</button>
+            <h4 *ngIf="this.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
         </div>
         
     </ng-container>
+</div>
+
+<div class="ui segment container">
+    <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
 </div>
 
 <!-- <div [formGroup] = "form">

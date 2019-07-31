@@ -22,6 +22,16 @@ contract CryptoHamster =
     
     public entrypoint read_test_value() : int =
         state.testvalue
+
+    public stateful entrypoint add_test_value(one: int, two: int) : int =
+        put(state{testvalue = one + two})
+        one + two
+    
+    public entrypoint locally_add_two(one: int, two: int) : int =
+        one + two
+    
+    public stateful entrypoint statefully_add_two(one: int, two: int) =
+        put(state{testvalue = one + two})
     
     stateful entrypoint create_hamster(hamster_name: string) =
         require(!name_exists(hamster_name), \"Name is already taken\")

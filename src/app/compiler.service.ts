@@ -228,6 +228,8 @@ export class CompilerService {
       // add field to later store latest return data
       fun.lastReturnData = '';
 
+      // add field to later store loading state (e.g. transaction being mined or waiting for local call..)
+      fun.loading = false
       // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
       fun.arguments.forEach((arg, i, allArgs) => {
           let controlls: any = [];

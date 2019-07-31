@@ -31,6 +31,9 @@ export class ContractMenuSidebarComponent implements OnInit {
   //Fires when a raw ACI is available (for gnerating init()'s interface
   rawACIsubscription: Subscription;
 
+  //display loading icon when deploying contract
+  deploymentLoading: boolean = false;
+
   // when a contract is deployed: 
   contractDeploymentSubscription: Subscription;
 
@@ -55,11 +58,11 @@ export class ContractMenuSidebarComponent implements OnInit {
   } 
 
   deployContract() {
+
+    // display loading
+    this.deploymentLoading = true;
+
     // make compiler emit event
-
-    // @parm: Maybe use param for editor identification later
-    //this.compiler.makeCompilerAskForCode(1);
-
     // take the ACI/ContractBase the compiler stores
     this.compiler.compileAndDeploy();
     
@@ -78,6 +81,8 @@ export class ContractMenuSidebarComponent implements OnInit {
     /*  this.subscription = this.compiler._fetchActiveCode
        .subscribe(item => console.log("Event in sidebar angekommen"));
  */
+
+      // fires when new contract got compiled
        this.rawACIsubscription = this.compiler._notifyCompiledAndACI
           .subscribe(item => {console.log("Neue ACI für init ist da !")
             this.initACI = this.compiler.initACI;
@@ -85,9 +90,11 @@ export class ContractMenuSidebarComponent implements OnInit {
             this.changeDetectorRef.detectChanges()
       });
 
+      // fires when new contract got deployed
       this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
         .subscribe( async item => {
           // generate the interface for the contract
+          this.deploymentLoading = false;
           this.aci = this.compiler.aci;
           this.changeDetectorRef.detectChanges()
 
@@ -101,23 +108,36 @@ export class ContractMenuSidebarComponent implements OnInit {
  
 async callFunction(_theFunction: string, _theFunctionIndex: number){
 
+  // activate loader
+  this.aci.functions[_theFunctionIndex].loading = true
+  //this.changeDetectorRef.detectChanges()
+  console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
   // fetch all entered params
   var params: any[] = [];
 
+  this.aci.functions[_theFunctionIndex].arguments.forEach(oneArg => {
+    console.log("Ein arg: ", oneArg.currentInputData)
+    params.push(oneArg.currentInputData)
+  });
 
-// TODO: Apply parameters
 
+  // "Apply" parameters and call function
   console.log("Called function: ", _theFunction);
-  //console.log(this.compiler.activeContracts[0].methods[_theFunction]);
-  let callresult = await this.compiler.activeContracts[0].methods[_theFunction]();
 
+  let callresult = await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);
+  console.log("Das call object: ", callresult);
   console.log("Hier kommt callresult: ", callresult.decodedResult);
+
+  //deactivate loader
+  this.aci.functions[_theFunctionIndex].loading = false
+  //this.changeDetectorRef.detectChanges()
 
   // set decoded result
   this.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
   this.changeDetectorRef.detectChanges()
-
-  console.log("Das wurde geschrieben: ", this.aci.functions[_theFunctionIndex].lastReturnData)
+  console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
+  console.log("Das wurde als callresult geschrieben: ", this.aci.functions[_theFunctionIndex].lastReturnData)
+   
 }
 
 }

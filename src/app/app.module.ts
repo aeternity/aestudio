@@ -12,13 +12,16 @@ import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
 import { ReplacePipe } from './helpers/replace-pipe';
+import { LoaderComponent } from './loader/loader.component';
+import { InlineSVGModule } from 'ng-inline-svg';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     DemoFormSkuComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe
+    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -27,7 +30,8 @@ import { ReplacePipe } from './helpers/replace-pipe';
     ReactiveFormsModule,
     HttpClientModule,
     MonacoEditorModule.forRoot(),
-    SuiModule    
+    SuiModule,
+    InlineSVGModule.forRoot()    
   ],
   providers: [],
   bootstrap: [AppComponent]
