@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DemoFormSkuComponent } from './demo-form-sku.component';
+import { FireEditorComponent } from './fire-editor.component';
 
-describe('DemoFormSkuComponent', () => {
-  let component: DemoFormSkuComponent;
-  let fixture: ComponentFixture<DemoFormSkuComponent>;
+describe('FireEditorComponent', () => {
+  let component: FireEditorComponent;
+  let fixture: ComponentFixture<FireEditorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DemoFormSkuComponent ]
+      declarations: [ FireEditorComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DemoFormSkuComponent);
+    fixture = TestBed.createComponent(FireEditorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

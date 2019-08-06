@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DemoFormSkuComponent } from './demo-form-sku/demo-form-sku.component';
+import { FireEditorComponent } from './fire-editor/fire-editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { DynamicFormComponent }         from './dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
@@ -19,7 +19,7 @@ import { InlineSVGModule } from 'ng-inline-svg';
 @NgModule({
   declarations: [
     AppComponent,
-    DemoFormSkuComponent, 
+    FireEditorComponent, 
     DynamicFormComponent, 
     DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent
   ],

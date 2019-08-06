@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "demo-form-sku": {
+    "fire-editor": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/demo-form-sku",
+            "outputPath": "dist/fire-editor",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -59,18 +59,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "demo-form-sku:build"
+            "browserTarget": "fire-editor:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "demo-form-sku:build:production"
+              "browserTarget": "fire-editor:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "demo-form-sku:build"
+            "browserTarget": "fire-editor:build"
           }
         },
         "test": {
@@ -107,15 +107,15 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "demo-form-sku:serve"
+            "devServerTarget": "fire-editor:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "demo-form-sku:serve:production"
+              "devServerTarget": "fire-editor:serve:production"
             }
           }
         }
       }
     }},
-  "defaultProject": "demo-form-sku"
+  "defaultProject": "fire-editor"
 }
