@@ -6,3 +6,16 @@
     border: 1px solid rgba(18, 127, 235, 0.15) !important;
     background:rgb(187, 221, 255)
 }
+
+
+.address-item{
+    padding-right: 5em; 
+}
+
+#options-balancelabel,  #options-dropdownbutton {
+    min-width: fit-content;
+}
+
+#options-accountlabel {
+    width: -webkit-fill-available;
+}

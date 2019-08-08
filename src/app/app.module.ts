@@ -11,9 +11,12 @@ import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-fo
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
+//import { SuiSelectModule } from 'ng2-semantic-ui';
+
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
+import { SuiSelectModule } from 'ng2-semantic-ui';
 
 
 @NgModule({

@@ -7,6 +7,8 @@ import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
+import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
+//import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
 var Ae = Universal;
 
@@ -31,8 +33,11 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  Chain: any;
+  public Chain: any;
  
+  public getAvailableAccounts = () => {
+    return this.Chain.addresses();
+  }
 
 /* listeners start */
 
@@ -47,6 +52,10 @@ export class CompilerService {
   // a new contract was deployed!
   public _notifyDeployedContract = new BehaviorSubject<number>(0);
   newContract = this._notifyDeployedContract.asObservable();
+  
+  // a (new) account was found!
+  public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
+  newAccounts = this._notifyCurrentSDKsettings.asObservable();
 
  /* listeners end */
 
@@ -54,13 +63,13 @@ export class CompilerService {
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
  // ask the components to send code
   public makeCompilerAskForCode(number){
-    console.log("im compiler angekommen");
+    //console.log("im compiler angekommen");
     this._fetchActiveCode.next(number);
   }
 
   constructor(private http: HttpClient) {
     this.setupClient();
-    console.log("Compilerservice initialized!");  
+    //console.log("Compilerservice initialized!");  
    }
 
   async setupClient(){
@@ -74,7 +83,12 @@ export class CompilerService {
       nativeMode: true,
       keypair: { 
         secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', 
-        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' }
+        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' },
+      accounts: [
+          MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } }),
+        // acc2
+        ] 
+
         //,
       //networkId: 'ae_devnet' // or any other networkId your client should connect to
     }).catch(e => { console.log("Shit, it didn't work:", e)})
@@ -83,8 +97,11 @@ export class CompilerService {
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
 
-    //console.log(this.code);
+    // notify sidebar about new SDK settings
+    this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
+    console.log("Das SDK: ", this.Chain);
 
+  
     //this.compileAndDeploy(this.code);
   }
 
@@ -97,6 +114,14 @@ export class CompilerService {
       })
     };
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
+   }
+
+  async  getCurrentSDKsettings() : Promise<any> {
+      return {
+        address: await this.Chain.address(),
+        addresses: this.Chain.addresses()
+
+      }
    }
 
 
@@ -124,11 +149,13 @@ export class CompilerService {
     } catch(e){
       console.log("Something went wrong, investigating tx!");
       e.verifyTx();
-    }
+        }
 
     console.log("My contract: ", myContract);
+    console.log("My account: ", this.Chain.addresses());
+    console.log("Das ganze SDK: ", this.Chain);
 
-    //TODO: Make multi-contract supportive here 1
+    //TODO: Make multi-contract supportive here !
     this.activeContracts[0] = myContract;
 
     this.fromCodeToACI(sourceCode)
@@ -201,9 +228,10 @@ export class CompilerService {
       // 3.  now that we have it, generate the formgroups for the function args
       this.initACI = this.addFormGroupsForFunctions(this.rawACI);
       
-      console.log("Hier init ACI object:", this.aci)
+      //console.log("Hier init ACI object:", this.aci)
       
       this._notifyCompiledAndACI.next(0);
+      //this._notifyCurrentSDKsettings.next(0);
     },
     error => console.log(error.error));
     this.initACI = {} as ContractBase<any>;
@@ -218,7 +246,7 @@ export class CompilerService {
  addFormGroupsForFunctions(aci: any): ContractBase<any> {
 
   // 1. create several formgroups: one FG for each fun, return final contract
-  console.log("ACI hier:", aci);
+  //console.log("ACI hier:", aci);
   let functions = aci.contract.functions;
 
   // 2. ... for every function of the contract....

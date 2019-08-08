@@ -7,14 +7,17 @@ import { Subscription } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
 import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
-import { SidebarDirection } from 'ng2-semantic-ui';
-import {ReplacePipe} from './contract-menu-sidebar.component'
+import { ReplacePipe } from './contract-menu-sidebar.component'
+import { SuiModule } from 'ng2-semantic-ui';
+import { SuiSelectModule } from 'ng2-semantic-ui';
+
+//import { SuiDropdownModule } from 'ng2-semantic-ui';
 
 @NgModule({
   declarations: [ReplacePipe
   ],
   imports: [
-    BrowserModule,
+    BrowserModule, SuiModule, SuiSelectModule
   ],
   providers: [],
   bootstrap: []

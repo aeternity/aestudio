@@ -1,9 +1,21 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import { Subscription } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
 import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
+import { SuiModule } from 'ng2-semantic-ui';
+//mport { SuiMultiSelect } from 'ng2-semantic-ui/dist';
+import { SuiMultiSelect } from 'ng2-semantic-ui/dist';
+
+import { HttpClient } from '@angular/common/http';
+
+//import 'rxjs/add/operator/map';
+
+
+import { delay, share } from 'rxjs/operators';
+//import 'rxjs/add/operator/toPromise';
+
 
 @Pipe({name: 'replace'})
 export class ReplacePipe implements PipeTransform {
@@ -28,14 +40,53 @@ export class ReplacePipe implements PipeTransform {
 
 export class ContractMenuSidebarComponent implements OnInit {
 
+  // dropdown start
+
+@ViewChild('gitLibSelector', {static: true})
+gitLibSelector: SuiMultiSelect<any, any>;
+
+  options: any = [{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "dfdf", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "dff", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "sd2345", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "2345465", full_name: "patmanpp/gdfdg"},]
+
+  libsLookUp = async (query: string, initial: number) =>  {
+    return this.options
+  }
+
+  lib_formatter(option: any, query?: string): string {
+     //console.log(option);
+    return option.name;
+  }
+
+  log_option(name: string){
+    console.log(name);
+
+  }
+
+  exportchange(event: any) {
+    console.log(event);
+  }
+// dropdown end
+
+  //Fires when new SDK settings are available(Accounts, )
+  sdkSettingsSubscription: Subscription;
+
   //Fires when a raw ACI is available (for gnerating init()'s interface
   rawACIsubscription: Subscription;
 
-  //display loading icon when deploying contract
+  // fires when a contract is deployed: 
+  contractDeploymentSubscription: Subscription;
+
+  //displays loading icon when deploying contract
   deploymentLoading: boolean = false;
 
-  // when a contract is deployed: 
-  contractDeploymentSubscription: Subscription;
+// TODO: wrap in class for automatic type checking bullshit
+  /*the current SDK settings. Currently supported: 
+    .address - public address of the current active account in SDK instance
+    .addresses[] - public addresses of all currently added accounts in instance
+    .balances[address -> balance] - (provided by this component) map of balances of all AE accounts currently added to SDK
+
+  
+*/
+  currentSDKsettings: any = {address: '', addresses: [], balances: [2]} 
 
   aci: ContractBase<any>;
   initACI: ContractBase<any>;
@@ -58,6 +109,8 @@ export class ContractMenuSidebarComponent implements OnInit {
   } 
 
   deployContract() {
+
+    console.log("Testing: ", this.compiler.Chain.addresses());
 
     // display loading
     this.deploymentLoading = true;
@@ -82,21 +135,55 @@ export class ContractMenuSidebarComponent implements OnInit {
        .subscribe(item => console.log("Event in sidebar angekommen"));
  */
 
+      /* //fetch available account(s) from compiler service
+      this.availableAccounts = this.compiler.Chain.addresses();
+      console.log("Could fetch addresses: ", this.availableAccounts);
+ */
+
+      // fires when SDK/chain settings are changed
+
+
+      // fires when new accounts are available
+      this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
+          .subscribe(async settings => {console.log("Hier sind die settings: ", settings)
+          // wait for promise to resolve
+          await settings;
+
+          this.currentSDKsettings = settings.__zone_symbol__value;
+          //console.log("gingen die settings durch? ", this.currentSDKsettings); 
+
+          //  append SDKsettings object with properties that the compiler does not provide
+          this.currentSDKsettings.balances = [];
+          
+          //  Get balances of all available addresses
+          await this.getAllBalances();
+
+          console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
+
+        });
+
       // fires when new contract got compiled
        this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-          .subscribe(item => {console.log("Neue ACI für init ist da !")
+          .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
             this.initACI = this.compiler.initACI;
-            console.log("Hier kommt init aci:", this.initACI);
+            //console.log("Hier kommt init aci:", this.initACI);
             this.changeDetectorRef.detectChanges()
       });
 
       // fires when new contract got deployed
       this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
         .subscribe( async item => {
+
           // generate the interface for the contract
           this.deploymentLoading = false;
           this.aci = this.compiler.aci;
           this.changeDetectorRef.detectChanges()
+
+        /*   console.log("Hier sind die accounts: ")
+          this.availableAccounts = this.compiler.Chain.addresses();
+          console.log("Das sind die available accounts: ", this.availableAccounts);
+          this.changeDetectorRef.detectChanges()
+ */
 
           // test calling a value lol:
           //console.log("Active contracts: ", this.compiler.activeContracts);
@@ -140,4 +227,31 @@ async callFunction(_theFunction: string, _theFunctionIndex: number){
    
 }
 
+async changeActiveAccount(newAccount: any) {
+  console.log("So wird der neue account gesetzt: ", newAccount);
+  
+}
+
+// get all balances from all addresses currently added to SDK
+async getAllBalances(){
+  //console.log("verfügbare addresses: ", this.currentSDKsettings.addresses)
+  this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
+    this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress);
+  })
+}
+
+// get balance of only one address
+// TODO: option parameter einbauen, Format ist 
+// async ƒ balance(address, { height, hash, format = false } = {})
+async getOneBalance(_address: string, _height?: number, _format?: boolean, _hash?: any, ){
+  
+  // if only the address is defined, don't call with options.
+  if (!_height && !_format && !_hash ) {
+    var balance = await this.compiler.Chain.balance(_address);
+  } else {
+    // TODO: Implement calling with options here
+  }
+  
+  return balance;
+  }
 }

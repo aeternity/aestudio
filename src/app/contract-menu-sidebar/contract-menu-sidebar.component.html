@@ -1,3 +1,85 @@
+<div id="theSettings" class="ui orange segment">
+    <!-- <p>Single Select (with <code>selection</code> class applied)</p>
+        <sui-select
+            class="selection"
+            (selectedOptionsChange)="exportchange($event)"
+            [optionsLookup]="libsLookUp"
+            [optionFormatter]="lib_formatter"
+            labelField="name"
+            valueField="id"
+            [isSearchable]="true"
+            #gitLibSelector
+            >
+                <sui-select-option *ngFor="let o of gitLibSelector.filteredOptions" (click) = "log_option(o.name)" [value]="o"> </sui-select-option>
+
+</sui-select> -->
+
+<!-- Accountauswahl -->
+    <div class="fluid ui labeled button" tabindex="0">
+        <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
+            <div class="text">Account:</div>
+            <i class="dropdown icon"></i>
+            <div class="menu" suiDropdownMenu>
+                
+                    <div *ngFor="let address of currentSDKsettings.addresses" class="item">
+                        <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                        <p class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                    </div>
+
+                <div class="item">
+                    <span class="description">ctrl + o</span>
+                    Open...
+                </div>
+                <div class="item">
+                    <span class="description">ctrl + s</span>
+                    Save as...
+                </div>
+                <div class="item">
+                    <span class="description">ctrl + r</span>
+                    Rename
+                </div>
+                <div class="item">Make a copy</div>
+                <div class="item">
+                    <i class="folder icon"></i>
+                    Move to folder
+                </div>
+                <div class="item">
+                    <i class="trash icon"></i>
+                    Move to trash
+                </div>
+                <div class="divider"></div>
+                <div class="item">Download As...</div>
+                <div class="item">
+                        <i class="file icon"></i>
+                        New</div>
+                <div class="item" suiDropdown>
+                    <i class="folder open icon"></i>
+                    <i class="dropdown icon"></i>
+                    Add...
+                    <div class="menu" suiDropdownMenu>
+                        <div class="item">Google Docs</div>
+                        <div class="item">Google Drive</div>
+                        <div class="item">Dropbox</div>
+                        <div class="item">Another Service...</div>
+                    </div>
+                </div>
+                <div class="item">E-mail Collaborators</div>
+            </div>
+        </div>
+
+        <a id="options-accountlabel" class=" ui basic label">
+           {{(currentSDKsettings.address | slice:0:30)+'..'}}
+        </a> <a id="options-balancelabel" class=" ui basic label">
+                {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
+        </a> 
+    </div>
+
+</div>
+<div class="ui section divider"></div>
+
+
+
+<!-- compiled contract  -->
 <div *ngIf="initACI.name">
         <h4>Compiled Contract:</h4>
         <div class="ui segment container">
@@ -16,9 +98,13 @@
                 </div>
             </form> -->
         <app-loader *ngIf="this.deploymentLoading == true" ></app-loader>
-        </div>
     </div>
     <div class="ui section divider"></div>
+</div>
+    
+
+
+<!-- Deployed contract  -->
 <div *ngIf="aci">
     <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
         <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
