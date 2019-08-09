@@ -152,11 +152,15 @@ gitLibSelector: SuiMultiSelect<any, any>;
           this.currentSDKsettings = settings.__zone_symbol__value;
           //console.log("gingen die settings durch? ", this.currentSDKsettings); 
 
+          // the following ternary operators here are to silence errors that come from angular firing events 
+          // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
+          // is even instantiated. stupid crazy racing conditions of angular or whatever.
+
           //  append SDKsettings object with properties that the compiler does not provide
-          this.currentSDKsettings.balances = [];
+          this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
           
           //  Get balances of all available addresses
-          await this.getAllBalances();
+          this.currentSDKsettings != undefined ? await this.getAllBalances() : true
 
           console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
 
@@ -178,17 +182,6 @@ gitLibSelector: SuiMultiSelect<any, any>;
           this.deploymentLoading = false;
           this.aci = this.compiler.aci;
           this.changeDetectorRef.detectChanges()
-
-        /*   console.log("Hier sind die accounts: ")
-          this.availableAccounts = this.compiler.Chain.addresses();
-          console.log("Das sind die available accounts: ", this.availableAccounts);
-          this.changeDetectorRef.detectChanges()
- */
-
-          // test calling a value lol:
-          //console.log("Active contracts: ", this.compiler.activeContracts);
-          //let callresult = await this.compiler.activeContracts[0].methods.read_test_value();
-          //console.log("UUUuuund call value ist: ", callresult.decodedResult); 
         })
   }
 
@@ -232,6 +225,23 @@ async changeActiveAccount(newAccount: any) {
   
 }
 
+async changeSDKsetting(setting: string, params: any){
+
+  switch (setting) {
+    case "selectAccount":
+      this.compiler.Chain.selectAccount(params);
+      console.log("Attempted to change selectAccount: ", setting, params)
+      break;
+
+    default:
+      console.log("Attempted to change a setting that no switch case matched for: ", setting, params)
+      break;
+  }
+
+  this.getSDKsettings();
+  //await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);
+}
+
 // get all balances from all addresses currently added to SDK
 async getAllBalances(){
   //console.log("verfügbare addresses: ", this.currentSDKsettings.addresses)
@@ -254,4 +264,8 @@ async getOneBalance(_address: string, _height?: number, _format?: boolean, _hash
   
   return balance;
   }
+
+  getSDKsettings = () => { this.compiler.sendSDKsettings()}
+
 }
+

@@ -2,7 +2,9 @@ import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject } from 'rxjs';
+
 //import { Crypto } from '@aeternity/aepp-sdk/es'
+
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -38,6 +40,8 @@ export class CompilerService {
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
   }
+
+  public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
 /* listeners start */
 
@@ -81,17 +85,14 @@ export class CompilerService {
       //compilerUrl: 'http://localhost:3080',
       compilerUrl: 'https://compiler.aepps.com',
       nativeMode: true,
-      keypair: { 
-        secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', 
-        publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' },
       accounts: [
           MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } }),
-        // acc2
+          MemoryAccount({ keypair: { secretKey: '7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d', publicKey: 'ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk' } }),
+          MemoryAccount({ keypair: { secretKey: '7fa7934d142c8c1c944e1585ec700f671cbc71fb035dc9e54ee4fb880edfe8d974f58feba752ae0426ecbee3a31414d8e6b3335d64ec416f3e574e106c7e5412', publicKey: 'ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP' } }),
         ] 
-
-        //,
       //networkId: 'ae_devnet' // or any other networkId your client should connect to
     }).catch(e => { console.log("Shit, it didn't work:", e)})
+
 
     // todo: wrap in try catch
     let height = await this.Chain.height();
