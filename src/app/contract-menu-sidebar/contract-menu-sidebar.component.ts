@@ -1,4 +1,5 @@
-import { Component, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
+
+import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import { Subscription } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
@@ -86,7 +87,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
 
   
 */
-  currentSDKsettings: any = {address: '', addresses: [], balances: [2]} 
+  currentSDKsettings: any = {address: '', addresses: [], balances: [2], getNodeInfo: {url: ''}} 
 
   aci: ContractBase<any>;
   initACI: ContractBase<any>;
@@ -129,61 +130,63 @@ gitLibSelector: SuiMultiSelect<any, any>;
   } 
 
   ngOnInit() {
-      this.buildAContract();
-    
-    /*  this.subscription = this.compiler._fetchActiveCode
-       .subscribe(item => console.log("Event in sidebar angekommen"));
- */
+    this.buildAContract();
+  
+  /*  this.subscription = this.compiler._fetchActiveCode
+     .subscribe(item => console.log("Event in sidebar angekommen"));
+*/
 
-      /* //fetch available account(s) from compiler service
-      this.availableAccounts = this.compiler.Chain.addresses();
-      console.log("Could fetch addresses: ", this.availableAccounts);
- */
+    /* //fetch available account(s) from compiler service
+    this.availableAccounts = this.compiler.Chain.addresses();
+    console.log("Could fetch addresses: ", this.availableAccounts);
+*/
 
-      // fires when SDK/chain settings are changed
+    // fires when SDK/chain settings are changed
 
 
-      // fires when new accounts are available
-      this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
-          .subscribe(async settings => {console.log("Hier sind die settings: ", settings)
-          // wait for promise to resolve
-          await settings;
+    // fires when new accounts are available
+    this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
+        .subscribe(async settings => {
+        // wait for promise to resolve
+        await settings;
 
-          this.currentSDKsettings = settings.__zone_symbol__value;
-          //console.log("gingen die settings durch? ", this.currentSDKsettings); 
+        this.currentSDKsettings = settings.__zone_symbol__value;
+        //console.log("gingen die settings durch? ", this.currentSDKsettings); 
 
-          // the following ternary operators here are to silence errors that come from angular firing events 
-          // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
-          // is even instantiated. stupid crazy racing conditions of angular or whatever.
+        // the following ternary operators here are to silence errors that come from angular firing events 
+        // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
+        // is even instantiated. stupid crazy racing conditions of angular or whatever.
 
-          //  append SDKsettings object with properties that the compiler does not provide
-          this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
-          
-          //  Get balances of all available addresses
-          this.currentSDKsettings != undefined ? await this.getAllBalances() : true
+        //  append SDKsettings object with properties that the compiler does not provide
+        this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
+        
+        //  Get balances of all available addresses
+        this.currentSDKsettings != undefined ? await this.getAllBalances() : true
 
-          console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
+        console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
 
-        });
-
-      // fires when new contract got compiled
-       this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-          .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
-            this.initACI = this.compiler.initACI;
-            //console.log("Hier kommt init aci:", this.initACI);
-            this.changeDetectorRef.detectChanges()
       });
 
-      // fires when new contract got deployed
-      this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
-        .subscribe( async item => {
-
-          // generate the interface for the contract
-          this.deploymentLoading = false;
-          this.aci = this.compiler.aci;
+    // fires when new contract got compiled
+     this.rawACIsubscription = this.compiler._notifyCompiledAndACI
+        .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
+          this.initACI = this.compiler.initACI;
+          console.log("Hier kommt init aci:", this.initACI);
           this.changeDetectorRef.detectChanges()
-        })
-  }
+    });
+
+    // fires when new contract got deployed
+    this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
+      .subscribe( async item => {
+
+        // generate the interface for the contract
+        this.deploymentLoading = false;
+        this.aci = this.compiler.aci;
+        this.changeDetectorRef.detectChanges()
+      })
+}
+
+//desparate workaround for issue: contract to deploy is not being rendered since adding node choosing interface
 
  
 async callFunction(_theFunction: string, _theFunctionIndex: number){

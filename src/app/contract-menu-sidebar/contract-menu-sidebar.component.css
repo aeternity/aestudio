@@ -12,8 +12,16 @@
     padding-right: 5em; 
 }
 
-#options-balancelabel,  #options-dropdownbutton {
+/* #options-balancelabel,  #options-dropdownbutton {
     min-width: fit-content;
+} */
+
+ #options-dropdownbutton {
+    min-width: 25%
+}
+
+#options-balancelabel{
+    min-width: 18%
 }
 
 #options-accountlabel {

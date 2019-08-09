@@ -1,9 +1,10 @@
+
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject } from 'rxjs';
 
-//import { Crypto } from '@aeternity/aepp-sdk/es'
+//import { Crypto } from '@aeternity/aepp-sdk/es/';
 
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
@@ -43,25 +44,7 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
-/* listeners start */
 
-   // Part 1/3 for asking currently open editor for its code
-  public _fetchActiveCode = new BehaviorSubject<number>(0);
-  oneEvent = this._fetchActiveCode.asObservable();
-
-  // "new ACI available to generate GUI for contract deployment / init() function "
-  public _notifyCompiledAndACI = new BehaviorSubject<number>(0);
-  newRawACI = this._notifyCompiledAndACI.asObservable();
-
-  // a new contract was deployed!
-  public _notifyDeployedContract = new BehaviorSubject<number>(0);
-  newContract = this._notifyDeployedContract.asObservable();
-  
-  // a (new) account was found!
-  public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
-  newAccounts = this._notifyCurrentSDKsettings.asObservable();
-
- /* listeners end */
 
   
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
@@ -117,12 +100,19 @@ export class CompilerService {
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
    }
 
-  async  getCurrentSDKsettings() : Promise<any> {
-      return {
-        address: await this.Chain.address(),
-        addresses: this.Chain.addresses()
-
-      }
+  // emits an event passing data from all SDK functions that take 0 parameters,
+  // a.k.a. it reads all data from the SDK
+  async  getCurrentSDKsettings() : Promise<any> {   
+    if (this.Chain != undefined) {
+    var returnObject = {};
+ 
+    // execute all functions by their name, which have 0 params
+    for(var key in this.Chain) {
+      if(this.Chain[key].length == 0) 
+      returnObject[key] = await this.Chain[key]()  } 
+    }
+  
+      return returnObject;
    }
 
 
@@ -279,6 +269,26 @@ export class CompilerService {
 
   return new ContractBase(aci);
 }
+
+/* listeners start */
+
+   // Part 1/3 for asking currently open editor for its code
+   public _fetchActiveCode = new BehaviorSubject<number>(0);
+   oneEvent = this._fetchActiveCode.asObservable();
+ 
+   // "new ACI available to generate GUI for contract deployment / init() function "
+   public _notifyCompiledAndACI = new BehaviorSubject<number>(0);
+   newRawACI = this._notifyCompiledAndACI.asObservable();
+ 
+   // a new contract was deployed!
+   public _notifyDeployedContract = new BehaviorSubject<number>(0);
+   newContract = this._notifyDeployedContract.asObservable();
+   
+   // a (new) account was found!
+   public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
+   newAccounts = this._notifyCurrentSDKsettings.asObservable();
+ 
+  /* listeners end */
 
 }
 
