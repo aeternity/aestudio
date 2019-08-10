@@ -30,7 +30,7 @@ export class EditorComponent implements OnInit {
   contract: Contract<string> = new Contract();
   constructor(private compiler: CompilerService, private controlService: ContractControlService) { }
 
-  editorOptions = {theme: 'vs-dark', language: 'sophia'};
+  editorOptions = {theme: 'vs-dark', language: 'aes'};
 
   ngOnInit() {
     // If the compiler asks for code, give it to him and deploy the contract
