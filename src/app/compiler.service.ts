@@ -117,7 +117,7 @@ export class CompilerService {
 
 
   // converts code to ACI and deploys.
-  async compileAndDeploy() : Promise<any> {
+  async compileAndDeploy(_deploymentParams: any[]) : Promise<any> {
     console.log("deploying...");
 
     let sourceCode = this.code
@@ -136,9 +136,11 @@ export class CompilerService {
     
     // Deploy the contract
     try {
-      await myContract.deploy([])
+      console.log("Deployment params:", _deploymentParams)
+      await myContract.methods.init.apply(null, _deploymentParams);
     } catch(e){
       console.log("Something went wrong, investigating tx!");
+      console.log(e);
       e.verifyTx();
         }
 

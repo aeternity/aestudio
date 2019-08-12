@@ -116,9 +116,17 @@ gitLibSelector: SuiMultiSelect<any, any>;
     // display loading
     this.deploymentLoading = true;
 
+      // fetch all entered params
+    let params: any[] = [];
+
+    this.initACI.functions[0].arguments.forEach(oneArg => {
+      console.log("Ein arg: ", oneArg.currentInputData)
+      params.push(oneArg.currentInputData)
+    });
+
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
-    this.compiler.compileAndDeploy();
+    this.compiler.compileAndDeploy(params);
     
 /*     setTimeout(() => {
       console.log("Hier kommts:");
@@ -195,6 +203,7 @@ async callFunction(_theFunction: string, _theFunctionIndex: number){
   this.aci.functions[_theFunctionIndex].loading = true
   //this.changeDetectorRef.detectChanges()
   console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
+  
   // fetch all entered params
   var params: any[] = [];
 
@@ -204,7 +213,7 @@ async callFunction(_theFunction: string, _theFunctionIndex: number){
   });
 
 
-  // "Apply" parameters and call function
+  // "Apply" parameters a.k.a call function
   console.log("Called function: ", _theFunction);
 
   let callresult = await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);

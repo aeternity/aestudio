@@ -1,21 +1,8 @@
 <div id="theSettings" class="ui orange segment">
         <a class="ui orange ribbon label">Settings</a>
-    <!-- <p>Single Select (with <code>selection</code> class applied)</p>
-        <sui-select
-            class="selection"
-            (selectedOptionsChange)="exportchange($event)"
-            [optionsLookup]="libsLookUp"
-            [optionFormatter]="lib_formatter"
-            labelField="name"
-            valueField="id"
-            [isSearchable]="true"
-            #gitLibSelector
-            >
-                <sui-select-option *ngFor="let o of gitLibSelector.filteredOptions" (click) = "log_option(o.name)" [value]="o"> </sui-select-option>
-
-</sui-select> -->
-
+   
 <!-- Accountauswahl -->
+<div class="optionrow">
     <div class="fluid ui labeled button" tabindex="0">
         <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
             <div class="text">Account:</div>
@@ -67,87 +54,90 @@
         </ng-container>
 
     </div>
-
+</div>
 
 
 <!-- Node Auswahl -->
-<div class="fluid ui labeled button optionrow" tabindex="1">
-    
-        <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
-            <div class="text">Provider:</div>
-            <i class="dropdown icon"></i>
-            <div class="menu" suiDropdownMenu>
+<div class="optionrow">
+    <div class="fluid ui labeled button optionrow" tabindex="1">
+        
+            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
+                <div class="text">Provider:</div>
+                <i class="dropdown icon"></i>
+                <div class="menu" suiDropdownMenu>
+                    
+                    <ng-container *ngIf="currentSDKsettings">
+                        <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
+                            <span class="description">{{node.nodeNetworkId}}</span>
+    <!--                         <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+    -->                        <p class="address-item">{{node.url}} </p>
+                        </div>
+                    </ng-container>
+                    
                 
-                <ng-container *ngIf="currentSDKsettings">
-                    <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
-                        <span class="description">{{node.nodeNetworkId}}</span>
-<!--                         <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
- -->                        <p class="address-item">{{node.url}} </p>
-                    </div>
-                </ng-container>
-                
-               
 
-                <div class="divider"></div>
-                <div class="item" suiDropdown>
-                    <i class="folder open icon"></i>
-                    <i class="dropdown icon"></i>
-                    Add...
-                    <span class="description"><i>(coming soon)</i></span>
-                    <div class="menu" suiDropdownMenu>
-                        <div class="item">Google Docs</div>
-                        <div class="item">Google Drive</div>
-                        <div class="item">Dropbox</div>
-                        <div class="item">Another Service...</div>
-                    </div>
-                </div>
-                <div class="item">
+                    <div class="divider"></div>
+                    <div class="item" suiDropdown>
+                        <i class="folder open icon"></i>
+                        <i class="dropdown icon"></i>
+                        Add...
                         <span class="description"><i>(coming soon)</i></span>
-                        <i class="trash icon"></i>
-                        Delete
+                        <div class="menu" suiDropdownMenu>
+                            <div class="item">Google Docs</div>
+                            <div class="item">Google Drive</div>
+                            <div class="item">Dropbox</div>
+                            <div class="item">Another Service...</div>
+                        </div>
+                    </div>
+                    <div class="item">
+                            <span class="description"><i>(coming soon)</i></span>
+                            <i class="trash icon"></i>
+                            Delete
+                    </div>
                 </div>
             </div>
+
+            <ng-container *ngIf="currentSDKsettings">
+            <a *ngIf="currentSDKsettings" id="options-accountlabel" class=" ui basic label">
+            {{currentSDKsettings.getNodeInfo.url | slice:0:30}}
+            </a> 
+            </ng-container>
+            <ng-container *ngIf="currentSDKsettings">
+            <a id="options-balancelabel" class=" ui basic label">
+                    {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
+            </a> 
+            </ng-container>
         </div>
-
-        <ng-container *ngIf="currentSDKsettings">
-        <a *ngIf="currentSDKsettings" id="options-accountlabel" class=" ui basic label">
-           {{currentSDKsettings.getNodeInfo.url | slice:0:30}}
-        </a> 
-        </ng-container>
-        <ng-container *ngIf="currentSDKsettings">
-        <a id="options-balancelabel" class=" ui basic label">
-                {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
-        </a> 
-        </ng-container>
-
     </div>
-
-
-
-
 </div>
+
 <div class="ui section divider"></div>
 
 
 
 <!-- compiled contract  -->
-<div *ngIf="initACI.name">
-        <h4>Compiled Contract:</h4>
-        <div class="ui segment container">
+<div *ngIf="initACI.name">           
+        <div class="ui orange segment container">
+                <a class="ui orange ribbon label">Compiled Contract</a>
             <h4>{{this.initACI.name}}</h4>
             <button class="ui black button" (click)="deployContract()">Deploy</button>
-    <!-- 
-            <form class="ui form">
-                <div class="field" *ngFor="let arg of oneFunction.arguments">
-                    
-                    <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
-                    <input type="text"
-                            class="arg-field"
-                            id="{{oneFunction.name + '-' + arg.name}}"   
-                            placeholder="{{arg.name}}"
-                    >
+                <div *ngIf="initACI.functions[0].arguments.length > 0">
+                    <form class="ui form">
+                        <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
+                            
+                            <label class="arg-label" for="{{initACI.name + 'init' + '-' + arg.name}}">{{arg.name | replace : '_' : ' '}} : </label>
+                            <input [(ngModel)]="this.initACI.functions[0].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.initACI.functions[0].arguments[arg.IDEindex].currentInputData)" 
+                                    name="{{initACI.name + 'init' + '-' + arg.name}}"
+                                    type="text"
+                                    class="arg-field"
+                                    id="{{initACI.name + 'init' + '-' + arg.name}}"   
+                                    placeholder="{{arg.name}}"
+                            >
+                        </div>
+                    </form>
                 </div>
-            </form> -->
+
+
         <app-loader *ngIf="this.deploymentLoading == true" ></app-loader>
     </div>
     <div class="ui section divider"></div>
@@ -156,36 +146,50 @@
 
 
 <!-- Deployed contract  -->
-<div *ngIf="aci">
-    <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
-        <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
-            <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
 
-            <!-- TODO: Add form control -->
-            <form class="ui form">
-                <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
+<sui-accordion [transitionDuration]="500" *ngIf="aci" class="styled fluid">
+        <sui-accordion-panel [isOpen]="true">
+            <div title>
+                <i class="dropdown icon"></i>
+                {{aci.name}}
+            </div>
+            <div content>
+
+                    <div> 
+                            <!-- <div *ngIf="aci"> -->
+                                <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
+                                    <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
+                                        <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
                     
-                    <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
-                    <input [(ngModel)]="this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
-                            name="{{oneFunction.name + '-' + arg.name}}"
-                            type="text"
-                            class="arg-field"
-                            id="{{oneFunction.name + '-' + arg.name}}"   
-                            placeholder="{{arg.type}}"
-                    >
-                   
-                </div>
-            </form>
-            <br>
-            <app-loader *ngIf="this.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
-
-            <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Send Transaction</button>
-            <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Locally</button>
-            <h4 *ngIf="this.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
-        </div>
-        
-    </ng-container>
-</div>
+                                        <!-- TODO: Add form control -->
+                                        <form class="ui form">
+                                            <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
+                                                
+                                                <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
+                                                <input [(ngModel)]="this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
+                                                        name="{{oneFunction.name + '-' + arg.name}}"
+                                                        type="text"
+                                                        class="arg-field"
+                                                        id="{{oneFunction.name + '-' + arg.name}}"   
+                                                        placeholder="{{arg.type}}"
+                                                >
+                                            
+                                            </div>
+                                        </form>
+                                        <br>
+                                        <app-loader *ngIf="this.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
+                    
+                                        <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Send Transaction</button>
+                                        <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Locally</button>
+                                        <h4 *ngIf="this.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
+                                    </div>
+                                    
+                                </ng-container>
+                            </div>
+           
+            </div>
+        </sui-accordion-panel>
+    </sui-accordion>
 
 <div class="ui segment container">
     <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
