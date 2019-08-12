@@ -106,11 +106,14 @@ export class CompilerService {
     if (this.Chain != undefined) {
     var returnObject = {};
  
+      console.log("mempool shit", this.Chain.mempool);
+
     // execute all functions by their name, which have 0 params
     for(var key in this.Chain) {
-      if(this.Chain[key].length == 0) 
+      if(this.Chain[key].length == 0 && key != 'mempool'){ 
+      console.log("Calling function:", key)
       returnObject[key] = await this.Chain[key]()  } 
-    }
+    }}
   
       return returnObject;
    }
@@ -141,7 +144,7 @@ export class CompilerService {
     } catch(e){
       console.log("Something went wrong, investigating tx!");
       console.log(e);
-      e.verifyTx();
+      //e.verifyTx();
         }
 
     console.log("My contract: ", myContract);
