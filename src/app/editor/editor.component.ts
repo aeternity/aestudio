@@ -31,6 +31,9 @@ export class EditorComponent implements OnInit {
 
   highlightedRows: any = []; // the rows to highlight (when opening a shared contract)
 
+  // debug - multiple instances running, or same code two times?
+  runTimes: number = 0;
+
   // set the editor's style:
   //@HostBinding('attr.class') css = 'ui segment container';
 
@@ -56,7 +59,28 @@ export class EditorComponent implements OnInit {
    // get code if param is there
 
     // get URL parameters 
+   
+
+    // activate this line to override trying to fetch a contract from backend
+   //this.contract = new Contract();
+  }
+
+  editorOptions = {theme: 'vs-dark', 
+    language: 'aes', 
+    cursorBlinking: 'phase', 
+    cursorSmoothCaretAnimation:'true',
+    renderIndentGuides:'true',
+  contextmenu:'true'};
+
+  ngOnInit() {
+    const syncRoute: any = this._route.snapshot;
+    console.log("Die gesamt route: ", syncRoute)
+    console.log(">>>>>>Durchlauf:  ",  ++this.runTimes)
+
+
     this._route.queryParamMap.subscribe(parameter => {
+      // quickfix for stupid racing condition
+      this.runTimes++;
 
       // get the parameters for code highlighting
       let codeToHighlight = parameter.get("highlight");
@@ -82,7 +106,7 @@ export class EditorComponent implements OnInit {
           // if the backend responds, initialize a new contract with the code from the backend. 
           // if there is no contract in the response, initialize the default contract
           // TODO: Show a message is a contract was tried to be fetched that doesnt exist anymore 
-          console.log("is it there? ", res['contract'])
+          //console.log("is it there? ", res['contract'])
           res['contract'] !== undefined ? this.contract = new Contract(res['contract']) : this.contract = new Contract();
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
@@ -98,27 +122,19 @@ export class EditorComponent implements OnInit {
         })
       } else {
         // if there is no contractID provided in the URL, initialize the default one
-        this.contract = new Contract();
-        this.compiler.generateACIonly(this.contract.code);
+        // fix for stupid racing condition
+        if (this.runTimes >= 2) {
+          console.log("No contract ID found, initializing the default one.");
+          this.contract = new Contract();
+          this.compiler.generateACIonly(this.contract.code);
+        }
       }
     });
 
-    // activate this line to override trying to fetch a contract from backend
-   //this.contract = new Contract();
-  }
-
-  editorOptions = {theme: 'vs-dark', 
-    language: 'aes', 
-    cursorBlinking: 'phase', 
-    cursorSmoothCaretAnimation:'true',
-    renderIndentGuides:'true',
-  contextmenu:'true'};
-
-  ngOnInit() {
     // If the compiler asks for code, give it to him and deploy the contract
     this.subscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
-      console.log("Current code ist: ", this.contract.code)
+      //console.log("Current code ist: ", this.contract.code)
        // fix stupid race condition displaying default contract even if one is fetched from DB 
       //this.contract.code= ''
       

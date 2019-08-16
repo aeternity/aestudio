@@ -148,7 +148,6 @@ export class CompilerService {
         }
 
     console.log("My contract: ", myContract);
-    console.log("Test call:", await myContract.methods.read_test_value())
     console.log("My account: ", this.Chain.addresses());
     console.log("Das ganze SDK: ", this.Chain);
 
@@ -183,7 +182,7 @@ export class CompilerService {
       console.log(this.aci);
       this._notifyDeployedContract.next(0);
     },
-    error => console.log(error.error));
+    error => console.log("oops fehler ", error.error));
     return true;
   }
 
@@ -230,9 +229,15 @@ export class CompilerService {
       this._notifyCompiledAndACI.next(0);
       //this._notifyCurrentSDKsettings.next(0);
     },
-    error => console.log(error.error));
+    (error) =>  {console.log("oooops fehler ", error.error) 
     this.initACI = {} as ContractBase<any>;
-    console.log("compilation error");
+
+    // tell sidebar et al. that there is no valid contract there right now
+    this._notifyCompiledAndACI.next(0);
+    return true;
+  } );
+    
+    this.initACI = {} as ContractBase<any>;
 
     // tell sidebar et al. that there is no valid contract there right now
     this._notifyCompiledAndACI.next(0);
