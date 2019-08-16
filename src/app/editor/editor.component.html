@@ -1,2 +1,7 @@
 <ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="change()" (onInit)="initializeEditorObject($event)" (onContextMenu)="log('Context menu open !')" class="editor" [options]="editorOptions"></ngx-monaco-editor>
 <!-- <button (click)="compile()">Compile</button> -->
+<sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
+    <h1 class="ui inverted header">Link copied to clipboard!</h1>
+    <br>
+    <p style="font-size: 35px">🎉</p>
+</sui-dimmer>

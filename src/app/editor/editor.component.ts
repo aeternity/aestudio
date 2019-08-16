@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges  } from '@angular/core';
+import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { ContractControlService } from '../contract-control.service';
@@ -23,7 +23,7 @@ import { ClipboardService } from 'ngx-clipboard'
 })
 export class EditorComponent implements OnInit {
   
-
+  isDimmed: boolean = false;
   //Fires when the SDK does something
   editorAction: Subscription;
 
@@ -55,7 +55,8 @@ export class EditorComponent implements OnInit {
     private _router: Router, 
     private _route: ActivatedRoute, 
     private http: HttpClient,
-    private _clipboardService: ClipboardService) { 
+    private _clipboardService: ClipboardService,
+    private changeDetectorRef: ChangeDetectorRef) { 
    // get code if param is there
 
     // get URL parameters 
@@ -186,7 +187,14 @@ this.editorInstance.addAction ({
          let constructedUrl = `http://localhost:4200/?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
          console.log("DIE URL: ", constructedUrl)
          this._clipboardService.copyFromContent(constructedUrl);
-
+         // display success message ;)
+         this.isDimmed = true;
+         // tell angular to detect changes because we're in a event subscription here -.-
+         this.changeDetectorRef.detectChanges()
+          setTimeout(() => {
+            this.isDimmed = false;
+            this.changeDetectorRef.detectChanges()
+          }, 900);
 
       });
 
