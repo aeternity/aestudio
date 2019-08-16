@@ -115,6 +115,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
 
     // display loading
     this.deploymentLoading = true;
+    this.changeDetectorRef.detectChanges()
 
       // fetch all entered params
     let params: any[] = [];
@@ -201,6 +202,8 @@ async callFunction(_theFunction: string, _theFunctionIndex: number){
 
   // activate loader
   this.aci.functions[_theFunctionIndex].loading = true
+  this.changeDetectorRef.detectChanges()
+
   //this.changeDetectorRef.detectChanges()
   console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
   

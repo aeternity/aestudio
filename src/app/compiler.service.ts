@@ -232,6 +232,7 @@ export class CompilerService {
     },
     error => console.log(error.error));
     this.initACI = {} as ContractBase<any>;
+    console.log("compilation error");
 
     // tell sidebar et al. that there is no valid contract there right now
     this._notifyCompiledAndACI.next(0);

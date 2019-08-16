@@ -27,6 +27,7 @@
     "buffer": "^5.2.1",
     "ng-inline-svg": "^8.5.1",
     "ng2-semantic-ui": "^0.9.7",
+    "ngx-clipboard": "^12.2.0",
     "ngx-monaco-editor": "^7.0.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",

@@ -17,6 +17,8 @@ import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { SuiSelectModule } from 'ng2-semantic-ui';
+import { ClipboardModule } from 'ngx-clipboard';
+
 
 
 @NgModule({
@@ -34,7 +36,8 @@ import { SuiSelectModule } from 'ng2-semantic-ui';
     HttpClientModule,
     MonacoEditorModule.forRoot(),
     SuiModule,
-    InlineSVGModule.forRoot()    
+    InlineSVGModule.forRoot(),
+    ClipboardModule    
   ],
   providers: [],
   bootstrap: [AppComponent]

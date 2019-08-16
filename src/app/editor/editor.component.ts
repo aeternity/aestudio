@@ -7,8 +7,13 @@ import { Subscription } from 'rxjs';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-ui';
+import { ClipboardService } from 'ngx-clipboard'
+
+
+
 
 @Component({
   selector: 'app-editor',
@@ -17,6 +22,7 @@ import { environment } from '../../environments/environment';
   providers: [ CompilerService ] */
 })
 export class EditorComponent implements OnInit {
+  
 
   //Fires when the SDK does something
   editorAction: Subscription;
@@ -42,7 +48,11 @@ export class EditorComponent implements OnInit {
   // INITIALIZATION RACE DEBUGGING contract: Contract<string>
   contract: any;
 
-  constructor(private compiler: CompilerService, private _router: Router, private _route: ActivatedRoute, private http: HttpClient) { 
+  constructor(private compiler: CompilerService, 
+    private _router: Router, 
+    private _route: ActivatedRoute, 
+    private http: HttpClient,
+    private _clipboardService: ClipboardService) { 
    // get code if param is there
 
     // get URL parameters 
@@ -53,11 +63,15 @@ export class EditorComponent implements OnInit {
       try{ this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
       console.log("highlight:", codeToHighlight);
       console.log(this.highlightedRows);
-      
+      console.log("Parameters are: ", parameter)
+
+      let contractID = parameter.get("contract");
+      console.log("contract ID: ", contractID);
+
       // get contract ID from URl parameter for fetching code from DB
       if(parameter.get("contract") !== null) {
         let contractID = parameter.get("contract");
-        console.log("contract ID:", contractID);
+        console.log("contract ID: ", contractID);
         // call backend
         let requestURL = `${environment.contractSharingBackend}${contractID}`
         console.log("Die request URL ist: ", requestURL);
@@ -75,6 +89,12 @@ export class EditorComponent implements OnInit {
           this.compiler.generateACIonly(this.contract.code);
           this.compiler.code = this.contract.code;
           this.compiler.generateACIonly(this.contract.code);
+
+          // add the highlighter
+          if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
+            this.editorInstance.deltaDecorations([], [
+              { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
+            ]);}
         })
       } else {
         // if there is no contractID provided in the URL, initialize the default one
@@ -135,7 +155,26 @@ this.editorInstance.addAction ({
     keybindings: [], // Hotkeys
     // function called when clicking
     // press the specified keys
-    run: () => console.log(this.compiler.activeCodeSelection)
+    run: () => {console.log(this.compiler.activeCodeSelection)
+      let postData = {"contract":this.contract.code ,"contractName": "some", "editorVersion":1}
+      console.log("So sieht post data aus:", postData);
+
+      this.http.post(environment.contractSharingBackend, postData, {
+        headers: new HttpHeaders({
+             'Content-Type':  'application/json',
+           })
+      }).subscribe(data=>{
+         console.log("Post hat ergeben?", data)
+
+         let s = this.compiler.activeCodeSelection
+         let constructedUrl = `http://localhost:4200/?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+         console.log("DIE URL: ", constructedUrl)
+         this._clipboardService.copyFromContent(constructedUrl);
+
+
+      });
+
+    }
   });
 
     // when right-clicking
@@ -148,7 +187,7 @@ this.editorInstance.addAction ({
       // log selection coordinates only if it's actually a selection, not just a click.
       if (result.selection.endColumn != result.selection.startColumn && result.selection.startLineNumber != result.selection.endLineNumber) {
           this.compiler.activeCodeSelection = result.selection;
-          console.log(result.selection);
+          console.log("selected: ", result.selection);
           }
     });
 
