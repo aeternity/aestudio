@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "npm run sophia && ng serve",
     "build": "npm run sophia && ng build",
+    "buildprod": "npm run sophia && ng build --configuration=production && node inject-metadata.js",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",

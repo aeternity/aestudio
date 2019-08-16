@@ -4,7 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FireEditorComponent } from './fire-editor/fire-editor.component';
+//import { FireEditorComponent } from './fire-editor/fire-editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { DynamicFormComponent }         from './dynamic-form/dynamic-form.component';
 import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
@@ -23,8 +23,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    FireEditorComponent, 
+    AppComponent, 
     DynamicFormComponent, 
     DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent
   ],

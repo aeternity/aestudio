@@ -184,7 +184,7 @@ this.editorInstance.addAction ({
          console.log("Post hat ergeben?", data)
 
          let s = this.compiler.activeCodeSelection
-         let constructedUrl = `http://localhost:4200/?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+         let constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
          console.log("DIE URL: ", constructedUrl)
          this._clipboardService.copyFromContent(constructedUrl);
          // display success message ;)
