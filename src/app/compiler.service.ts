@@ -21,7 +21,9 @@ var Ae = Universal;
 export class CompilerService {
 
   // setting default code, later pulled from editor
-  code: string = new Contract().code;
+  //code: string = new Contract().code;
+  
+  public code: string = ''
 
   // the code from the currently active compiler window
   aci: ContractBase<any>;
@@ -106,12 +108,10 @@ export class CompilerService {
     if (this.Chain != undefined) {
     var returnObject = {};
  
-      console.log("mempool shit", this.Chain.mempool);
-
     // execute all functions by their name, which have 0 params
     for(var key in this.Chain) {
-      if(this.Chain[key].length == 0 && key != 'mempool'){ 
-      console.log("Calling function:", key)
+      if(this.Chain[key].length == 0){ 
+      //console.log("Calling function:", key)
       returnObject[key] = await this.Chain[key]()  } 
     }}
   
@@ -148,6 +148,7 @@ export class CompilerService {
         }
 
     console.log("My contract: ", myContract);
+    console.log("Test call:", await myContract.methods.read_test_value())
     console.log("My account: ", this.Chain.addresses());
     console.log("Das ganze SDK: ", this.Chain);
 
@@ -295,6 +296,9 @@ export class CompilerService {
  
   /* listeners end */
 
+  /* all things sharing related start */
+  public activeCodeSelection : any
+  /* all things sharing related end */
 }
 
 

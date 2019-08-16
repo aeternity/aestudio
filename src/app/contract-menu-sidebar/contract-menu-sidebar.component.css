@@ -31,3 +31,20 @@
 .optionrow {
     padding-top: 1em !important;
 }
+
+/* content in settings' tab content START */
+
+.ui.tabular.menu+.bottom.attached.segment  {
+    border: 0 !important;
+    padding: 0 !important;
+}
+
+.ui.attached+.ui.attached.segment:not(.top){
+    border: 0 !important;
+}
+
+.settingsTabsRow {
+    padding-top: 1em !important;
+}
+
+/* content in settings' tab content END */

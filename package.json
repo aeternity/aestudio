@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run sophia && ng serve",
-    "build": "ng build",
+    "build": "npm run sophia && ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
@@ -23,12 +23,14 @@
     "@angular/platform-browser": "~8.1.1",
     "@angular/platform-browser-dynamic": "~8.1.1",
     "@angular/router": "~8.1.1",
+    "bluebird": "^3.5.5",
     "buffer": "^5.2.1",
     "ng-inline-svg": "^8.5.1",
     "ng2-semantic-ui": "^0.9.7",
     "ngx-monaco-editor": "^7.0.0",
     "rxjs": "~6.4.0",
     "tslib": "^1.9.0",
+    "uuid": "^3.3.2",
     "zone.js": "~0.9.1"
   },
   "devDependencies": {

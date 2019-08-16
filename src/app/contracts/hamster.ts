@@ -1,8 +1,8 @@
 export class Contract<T> {
   code: string;
 
-  constructor(){
-    this.code = `
+  constructor(_code? : string){
+    _code != undefined ? this.code = _code : this.code = `
 contract CryptoHamster =
 
     record state = {

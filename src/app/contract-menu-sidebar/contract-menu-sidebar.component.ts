@@ -78,7 +78,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
 
   //displays loading icon when deploying contract
   deploymentLoading: boolean = false;
-
+  
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
     .address - public address of the current active account in SDK instance

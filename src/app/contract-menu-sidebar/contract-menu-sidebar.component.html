@@ -1,114 +1,133 @@
+
+
 <div id="theSettings" class="ui orange segment">
         <a class="ui orange ribbon label">Settings</a>
-   
-
-<!-- Accountauswahl -->
-<div class="optionrow">
-        <div class="fluid ui labeled button" tabindex="0">
-            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
-                <div class="text">Account:</div>
-                <i class="dropdown icon"></i>
-                <div class="menu" suiDropdownMenu>
-                    
-                    <ng-container *ngIf="currentSDKsettings">
-                        <div *ngFor="let address of currentSDKsettings.addresses" class="item">
-                            <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
-                            <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
-                        </div>
-                    </ng-container>
-                    
-                   
-    
-                    <div class="divider"></div>
-                    <div class="item">
-                            <span class="description"><i>(coming soon)</i></span>
-                            <i class="file icon"></i>
-                            New</div>
-                    <div class="item">
-                            <span class="description"><i>(coming soon)</i></span>
-                            <i class="trash icon"></i>
-                            Delete
-                    </div>
-                    <div class="item" suiDropdown>
-                        <i class="folder open icon"></i>
-                        <i class="dropdown icon"></i>
-                        Add...
-                        <span class="description"><i>(coming soon)</i></span>
-                        <div class="menu" suiDropdownMenu>
-                            <div class="item">Google Docs</div>
-                            <div class="item">Google Drive</div>
-                            <div class="item">Dropbox</div>
-                            <div class="item">Another Service...</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <ng-container *ngIf="currentSDKsettings">
-            <a id="options-accountlabel" class=" ui basic label">
-               <p>{{(currentSDKsettings.address | slice:0:25)+'..'}}</p>
-            </a> 
-            </ng-container>
-            <ng-container *ngIf="currentSDKsettings">
-            <a id="options-balancelabel" class=" ui basic label">
-                    {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
-            </a> 
-            </ng-container>
-    
-        </div>
-    </div>
-
-<!-- Node Auswahl -->
-<div class="optionrow">
-    <div class="fluid ui labeled button optionrow" tabindex="1">
+  
         
-            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
-                <div class="text">Provider:</div>
-                <i class="dropdown icon"></i>
-                <div class="menu" suiDropdownMenu>
-                    
-                    <ng-container *ngIf="currentSDKsettings">
-                        <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
-                            <span class="description">{{node.nodeNetworkId}}</span>
-    <!--                         <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
-    -->                        <p class="address-item">{{node.url}} </p>
-                        </div>
-                    </ng-container>
-                    
-                
-
-                    <div class="divider"></div>
-                    <div class="item" suiDropdown>
-                        <i class="folder open icon"></i>
-                        <i class="dropdown icon"></i>
-                        Add...
-                        <span class="description"><i>(coming soon)</i></span>
-                        <div class="menu" suiDropdownMenu>
-                            <div class="item">Google Docs</div>
-                            <div class="item">Google Drive</div>
-                            <div class="item">Dropbox</div>
-                            <div class="item">Another Service...</div>
-                        </div>
-                    </div>
-                    <div class="item">
-                            <span class="description"><i>(coming soon)</i></span>
-                            <i class="trash icon"></i>
-                            Delete
-                    </div>
-                </div>
+        <sui-tabset>
+            <div class="ui orange top attached tabular menu settingsTabsRow">
+                <a class="item" suiTabHeader="1"><i class="user icon"></i></a>
+                <a class="item" suiTabHeader="2"><i class="share alternate icon"></i></a>
+                <a class="item" suiTabHeader="3">Third</a>
             </div>
+            <!-- First tab: Account and Provider ! -->
+            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
+                
+                <!-- Accountauswahl -->
+                <div class="optionrow">
+                        <div class="fluid ui labeled button" tabindex="0">
+                            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
+                                <div class="text">Account:</div>
+                                <i class="dropdown icon"></i>
+                                <div class="menu" suiDropdownMenu>
+                                    
+                                    <ng-container *ngIf="currentSDKsettings">
+                                        <div *ngFor="let address of currentSDKsettings.addresses" class="item">
+                                            <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                            <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                                        </div>
+                                    </ng-container>
+                                    
+                                
+                    
+                                    <div class="divider"></div>
+                                    <div class="item">
+                                            <span class="description"><i>(coming soon)</i></span>
+                                            <i class="file icon"></i>
+                                            New</div>
+                                    <div class="item">
+                                            <span class="description"><i>(coming soon)</i></span>
+                                            <i class="trash icon"></i>
+                                            Delete
+                                    </div>
+                                    <div class="item" suiDropdown>
+                                        <i class="folder open icon"></i>
+                                        <i class="dropdown icon"></i>
+                                        Add...
+                                        <span class="description"><i>(coming soon)</i></span>
+                                        <div class="menu" suiDropdownMenu>
+                                            <div class="item">Google Docs</div>
+                                            <div class="item">Google Drive</div>
+                                            <div class="item">Dropbox</div>
+                                            <div class="item">Another Service...</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-container *ngIf="currentSDKsettings">
+                            <a id="options-accountlabel" class=" ui basic label">
+                            <p>{{(currentSDKsettings.address | slice:0:25)+'..'}}</p>
+                            </a> 
+                            </ng-container>
+                            <ng-container *ngIf="currentSDKsettings">
+                            <a id="options-balancelabel" class=" ui basic label">
+                                    {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
+                            </a> 
+                            </ng-container>
+                    
+                        </div>
+                </div>
 
-            <ng-container *ngIf="currentSDKsettings">
-            <a *ngIf="currentSDKsettings" id="options-accountlabel" class=" ui basic label">
-            {{currentSDKsettings.getNodeInfo.url | slice:0:30}}
-            </a> 
-            </ng-container>
-            <ng-container *ngIf="currentSDKsettings">
-            <a id="options-balancelabel" class=" ui basic label">
-                    {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
-            </a> 
-            </ng-container>
-        </div>
-    </div>
+                <!-- Node Auswahl -->
+                <div class="optionrow">
+                    <div class="fluid ui labeled button optionrow" tabindex="1">
+                        
+                            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
+                                <div class="text">Provider:</div>
+                                <i class="dropdown icon"></i>
+                                <div class="menu" suiDropdownMenu>
+                                    
+                                    <ng-container *ngIf="currentSDKsettings">
+                                        <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
+                                            <span class="description">{{node.nodeNetworkId}}</span>
+                    <!--                         <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                    -->                        <p class="address-item">{{node.url}} </p>
+                                        </div>
+                                    </ng-container>
+                                    
+                                
+
+                                    <div class="divider"></div>
+                                    <div class="item" suiDropdown>
+                                        <i class="folder open icon"></i>
+                                        <i class="dropdown icon"></i>
+                                        Add...
+                                        <span class="description"><i>(coming soon)</i></span>
+                                        <div class="menu" suiDropdownMenu>
+                                            <div class="item">Google Docs</div>
+                                            <div class="item">Google Drive</div>
+                                            <div class="item">Dropbox</div>
+                                            <div class="item">Another Service...</div>
+                                        </div>
+                                    </div>
+                                    <div class="item">
+                                            <span class="description"><i>(coming soon)</i></span>
+                                            <i class="trash icon"></i>
+                                            Delete
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ng-container *ngIf="currentSDKsettings">
+                            <a *ngIf="currentSDKsettings" id="options-accountlabel" class=" ui basic label">
+                            {{currentSDKsettings.getNodeInfo.url | slice:0:30}}
+                            </a> 
+                            </ng-container>
+                            <ng-container *ngIf="currentSDKsettings">
+                            <a id="options-balancelabel" class=" ui basic label">
+                                    {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
+                            </a> 
+                            </ng-container>
+                        </div>
+                </div>
+
+            </div>
+            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2">Second tab!</div>
+            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="3">Third tab!</div>
+        </sui-tabset>
+
+
+
 </div>
 
 <div class="ui section divider"></div>
