@@ -151,36 +151,53 @@ export class CompilerService {
     console.log("My account: ", this.Chain.addresses());
     console.log("Das ganze SDK: ", this.Chain);
 
-    //TODO: Make multi-contract supportive here !
-    this.activeContracts[0] = myContract;
+    
 
     this.fromCodeToACI(sourceCode)
     .subscribe(
       (data: EncodedACI) => {
       // save ACI to generate a contract instance for the editor
-      this.rawACI = data.encoded_aci
+      let rawACI = data.encoded_aci
         
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
         
-        this.rawACI.contract.functions.sort(
+        rawACI.contract.functions.sort(
           (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
       )
 
       // 2. enumerate functions explicitly with index
-      this.rawACI.contract.functions.forEach((one, i) => {
+      rawACI.contract.functions.forEach((one, i) => {
 
-          this.rawACI.contract.functions[i].IDEindex = i;
+          rawACI.contract.functions[i].IDEindex = i;
           //console.log(one);
           //console.log(i);
       })
 
-      // 3.  now that we have it, generate the formgroups for the function args
-      this.aci = this.addFormGroupsForFunctions(this.rawACI);
+      // 3.  now that we have it, generate the formgroups for the function args for input validation
+      let aci = this.addFormGroupsForFunctions(rawACI);
       
-      console.log("Hier final contract object:", this.aci)
-      console.log(this.aci);
-      this._notifyDeployedContract.next(0);
+      // 4. put the ammended ACi into the aci of the contract object
+      myContract.aci = aci;
+
+      
+      console.log("Hier final aci object:", aci)
+      console.log(aci);
+      
+      console.log("Hier final contract object:", myContract);
+      console.log(myContract);
+
+      this.aci = aci;
+      // add an index to allow self-referencing its position in the array..
+      myContract.IDEindex = this.activeContracts.length;
+
+      
+      // for now, (also) store in compiler. not decided yet where it's better.
+      // sidebar currently references the contracts stored in this compiler service
+      // for function calls.
+      this.activeContracts.push(myContract);
+      // 5. tell sidebar about the new contract so it can store it
+      this._notifyDeployedContract.next(myContract);
     },
     error => console.log("oops fehler ", error.error));
     return true;
@@ -293,7 +310,7 @@ export class CompilerService {
    newRawACI = this._notifyCompiledAndACI.asObservable();
  
    // a new contract was deployed!
-   public _notifyDeployedContract = new BehaviorSubject<number>(0);
+   public _notifyDeployedContract = new BehaviorSubject<any>(null);
    newContract = this._notifyDeployedContract.asObservable();
    
    // a (new) account was found!

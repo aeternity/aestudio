@@ -89,7 +89,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
 */
   currentSDKsettings: any = {address: '', addresses: [], balances: [2], getNodeInfo: {url: ''}} 
 
-  aci: ContractBase<any>;
+  activeContracts: any[] = [];
   initACI: ContractBase<any>;
 
   // mess around:
@@ -184,33 +184,56 @@ gitLibSelector: SuiMultiSelect<any, any>;
           this.changeDetectorRef.detectChanges()
     });
 
-    // fires when new contract got deployed
+    // fires with a new contract when it got deployed
     this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
-      .subscribe( async item => {
+      .subscribe( async newContract => {
 
-        // generate the interface for the contract
+        // woraround for event firing on its own when loading the editor, thereby not sending any data: 
+      if(newContract != null) {
+           // push contract in an array, later, when calling a function, find it by is addres
+        // in this array
+       /*  let theContractAddress = newContract.deployInfo.address;
+        this.activeContracts[theContractAddress] = newContract; */
+
+        this.activeContracts.push(newContract);
+            
+        // temp test
+        console.log("Current array of contracts: ", this.activeContracts);
+
+        console.log("Reading data from contracts - Name: ", this.activeContracts[0].aci.name)
+        console.log("Reading data from contracts - functions: ", this.activeContracts[0].aci.functions)
+        console.log("Reading data from contrct -  IDEindex: ", newContract.IDEindex)
+      console.log("try self-referencing ?", this.activeContracts[newContract.IDEindex]);
+        // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
-        this.aci = this.compiler.aci;
+        //this.activeContracts = this.compiler.activeContracts;
         this.changeDetectorRef.detectChanges()
+        } else {
+          console.log("False alert...");
+        }
+       
       })
 }
 
 //desparate workaround for issue: contract to deploy is not being rendered since adding node choosing interface
 
  
-async callFunction(_theFunction: string, _theFunctionIndex: number){
+async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
 
+  let theContract = this.activeContracts[_contractIDEindex];
+
+  console.log("theContract is: ", theContract.aci.functions[0]);
   // activate loader
-  this.aci.functions[_theFunctionIndex].loading = true
+  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = true
   this.changeDetectorRef.detectChanges()
 
   //this.changeDetectorRef.detectChanges()
-  console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
+  console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
   
   // fetch all entered params
   var params: any[] = [];
 
-  this.aci.functions[_theFunctionIndex].arguments.forEach(oneArg => {
+  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].arguments.forEach(oneArg => {
     console.log("Ein arg: ", oneArg.currentInputData)
     params.push(oneArg.currentInputData)
   });
@@ -219,20 +242,21 @@ async callFunction(_theFunction: string, _theFunctionIndex: number){
   // "Apply" parameters a.k.a call function
   console.log("Called function: ", _theFunction);
 
-  let callresult = await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);
+  let callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction].apply(null, params);
   console.log("Das call object: ", callresult);
   console.log("Hier kommt callresult: ", callresult.decodedResult);
 
   //deactivate loader
-  this.aci.functions[_theFunctionIndex].loading = false
+  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = false
   //this.changeDetectorRef.detectChanges()
 
-  // set decoded result
-  this.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
+  
+  // set decoded result to GUI
+  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
   this.changeDetectorRef.detectChanges()
-  console.log("Loader ist: ", this.aci.functions[_theFunctionIndex].loading )
-  console.log("Das wurde als callresult geschrieben: ", this.aci.functions[_theFunctionIndex].lastReturnData)
-   
+  console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
+  console.log("Das wurde als callresult geschrieben: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData)
+    
 }
 
 async changeActiveAccount(newAccount: any) {

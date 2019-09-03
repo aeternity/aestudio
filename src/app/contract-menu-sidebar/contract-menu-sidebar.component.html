@@ -171,17 +171,20 @@
 
 <!-- Deployed contract  -->
 
-<sui-accordion [transitionDuration]="500" *ngIf="aci" class="styled fluid">
-        <sui-accordion-panel [isOpen]="true">
+<!--  ng-for aci of ACIs... -->
+
+    <div *ngFor=" let contract of activeContracts">
+    <sui-accordion [transitionDuration]="500" class="styled fluid">
+        <sui-accordion-panel [isOpen]="">
             <div title>
                 <i class="dropdown icon"></i>
-                {{aci.name}}
+                {{contract.aci.name}}
             </div>
             <div content>
 
                     <div> 
                             <!-- <div *ngIf="aci"> -->
-                                <ng-container class="ui segment container" *ngFor="let oneFunction of aci.functions">
+                                <ng-container class="ui segment container" *ngFor="let oneFunction of contract.aci.functions">
                                     <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
                                         <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
                     
@@ -189,8 +192,10 @@
                                         <form class="ui form">
                                             <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
                                                 
-                                                <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label>
-                                                <input [(ngModel)]="this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
+                                                <!-- <label class="arg-label" for="{{oneFunction.name + '-' + arg.name}}">{{arg.name}} : </label> -->
+<!-- <input [(ngModel)]="activeContracts.find(function(address){return activeContracts.deployInfo.address == address})(contract.deployInfo.address).aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
+ -->
+                                                <input [(ngModel)]="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
                                                         name="{{oneFunction.name + '-' + arg.name}}"
                                                         type="text"
                                                         class="arg-field"
@@ -201,11 +206,11 @@
                                             </div>
                                         </form>
                                         <br>
-                                        <app-loader *ngIf="this.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
+                                        <app-loader *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
                     
-                                        <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Send Transaction</button>
-                                        <button *ngIf="this.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex)" [disabled]="">Call Locally</button>
-                                        <h4 *ngIf="this.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{this.aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
+                                        <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Send Transaction</button>
+                                        <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Call Locally</button>
+                                        <h4 *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
                                     </div>
                                     
                                 </ng-container>
@@ -214,6 +219,9 @@
             </div>
         </sui-accordion-panel>
     </sui-accordion>
+
+</div>
+
 
 <div class="ui segment container">
     <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
