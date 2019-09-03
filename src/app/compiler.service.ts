@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject } from 'rxjs';
 
-//import { Crypto } from '@aeternity/aepp-sdk/es/';
+import { Crypto } from '@aeternity/aepp-sdk/es/';
 
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'

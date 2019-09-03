@@ -12,6 +12,10 @@
     padding-right: 0px !important;
 }
 
+.resizable-horizontally {
+    resize: horizontal !important;
+}
+
 .noMarginButPadding {
     margin-left: 0px !important;
     padding-left: 2em !important;
