@@ -48,3 +48,17 @@
 }
 
 /* content in settings' tab content END */
+
+.overflow-truncator{
+    flex: 1;
+    min-width: 0; /* or some value */
+    white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+  }
+
+.truncated{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

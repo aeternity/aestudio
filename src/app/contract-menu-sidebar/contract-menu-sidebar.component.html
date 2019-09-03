@@ -1,5 +1,5 @@
 
-
+<!-- settings menu-->
 <div id="theSettings" class="ui orange segment">
         <a class="ui orange ribbon label">Settings</a>
   
@@ -14,9 +14,9 @@
             <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
                 
                 <!-- Accountauswahl -->
-                <div class="optionrow">
+                <div class="optionrow hide-overflow overflow-truncator">
                         <div class="fluid ui labeled button" tabindex="0">
-                            <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
+                            <div id="options-dropdownbutton" class=" ui basic button dropdown " suiDropdown>
                                 <div class="text">Account:</div>
                                 <i class="dropdown icon"></i>
                                 <div class="menu" suiDropdownMenu>
@@ -24,7 +24,7 @@
                                     <ng-container *ngIf="currentSDKsettings">
                                         <div *ngFor="let address of currentSDKsettings.addresses" class="item">
                                             <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
-                                            <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                                            <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
                                         </div>
                                     </ng-container>
                                     
@@ -54,15 +54,20 @@
                                     </div>
                                 </div>
                             </div>
+
                             <ng-container *ngIf="currentSDKsettings">
-                            <a id="options-accountlabel" class=" ui basic label">
-                            <p>{{(currentSDKsettings.address | slice:0:25)+'..'}}</p>
-                            </a> 
+                               
+                                    <a id="options-accountlabel" class=" ui basic label truncated">
+                                        <p style="font-size: 14px" class="truncated">{{(currentSDKsettings.address)}}</p>
+                                    <!-- <p class="truncate">{{(currentSDKsettings.address | slice:0:25)+'..'}}</p> -->
+                                    </a>
+                                
                             </ng-container>
+
                             <ng-container *ngIf="currentSDKsettings">
-                            <a id="options-balancelabel" class=" ui basic label">
-                                    {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
-                            </a> 
+                                <a id="options-balancelabel" class=" ui basic label">
+                                        {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
+                                </a> 
                             </ng-container>
                     
                         </div>
@@ -109,13 +114,13 @@
                             </div>
 
                             <ng-container *ngIf="currentSDKsettings">
-                            <a *ngIf="currentSDKsettings" id="options-accountlabel" class=" ui basic label">
-                            {{currentSDKsettings.getNodeInfo.url | slice:0:30}}
+                            <a *ngIf="currentSDKsettings" id="options-accountlabel" class="ui basic label truncated">
+                                <p class="truncated">{{currentSDKsettings.getNodeInfo.url | slice:0:30}}</p>
                             </a> 
                             </ng-container>
                             <ng-container *ngIf="currentSDKsettings">
-                            <a id="options-balancelabel" class=" ui basic label">
-                                    {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
+                            <a id="options-balancelabel" class=" ui basic label ">
+                                   {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
                             </a> 
                             </ng-container>
                         </div>

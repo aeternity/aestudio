@@ -33,11 +33,23 @@
     margin-bottom: 2em;
 }
 
+/* Color for units */
 .mtk8{
     color:#f2701d !important
 }
 
+/* Color for brackets and signs */
+.mtk9{
+    color:#F9C80E !important
+}
+
+/* Let's use this for errors: #EA3546 */
+
 .problematicCodeLine{
     background: rgb(117, 74, 8) !important;
     border: green !important;
+}
+
+.truncate{
+    text-overflow: ellipsis
 }
