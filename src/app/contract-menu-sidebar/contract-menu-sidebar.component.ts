@@ -8,13 +8,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { SuiModule } from 'ng2-semantic-ui';
 //mport { SuiMultiSelect } from 'ng2-semantic-ui/dist';
 import { SuiMultiSelect } from 'ng2-semantic-ui/dist';
+import { environment } from '../../environments/environment';
 
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 //import 'rxjs/add/operator/map';
 
 
 import { delay, share } from 'rxjs/operators';
+import fetchRandomAccounts from '../helpers/prefilled-accounts';
 //import 'rxjs/add/operator/toPromise';
 
 
@@ -99,7 +101,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
     console.log(input);
   }
 
-  constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef) { }
+  constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef, private http: HttpClient) { }
  
   buildAContract() {
     // make compiler emit event
@@ -127,31 +129,18 @@ gitLibSelector: SuiMultiSelect<any, any>;
 
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
-    this.compiler.compileAndDeploy(params);
-    
-/*     setTimeout(() => {
-      console.log("Hier kommts:");
-      this.aci = this.compiler.aci;
-      console.log(this.aci);
-    }, 10000); */
-     
-    
+    this.compiler.compileAndDeploy(params);   
   } 
+
 
   ngOnInit() {
     this.buildAContract();
-  
-  /*  this.subscription = this.compiler._fetchActiveCode
-     .subscribe(item => console.log("Event in sidebar angekommen"));
-*/
-
-    /* //fetch available account(s) from compiler service
-    this.availableAccounts = this.compiler.Chain.addresses();
-    console.log("Could fetch addresses: ", this.availableAccounts);
-*/
-
-    // fires when SDK/chain settings are changed
-
+    
+    setInterval(async () => {
+     //console.log("Feteching balance in interval...");
+     // call with "false" to query faucet for balance if it's too low
+       this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 6000
+    )
 
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
@@ -200,10 +189,6 @@ gitLibSelector: SuiMultiSelect<any, any>;
         // temp test
         console.log("Current array of contracts: ", this.activeContracts);
 
-        console.log("Reading data from contracts - Name: ", this.activeContracts[0].aci.name)
-        console.log("Reading data from contracts - functions: ", this.activeContracts[0].aci.functions)
-        console.log("Reading data from contrct -  IDEindex: ", newContract.IDEindex)
-      console.log("try self-referencing ?", this.activeContracts[newContract.IDEindex]);
         // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
         //this.activeContracts = this.compiler.activeContracts;
@@ -282,25 +267,80 @@ async changeSDKsetting(setting: string, params: any){
 }
 
 // get all balances from all addresses currently added to SDK
-async getAllBalances(){
+// @param dontFillUp: boolean - if passed, do not top up accounts if one or some are low
+async getAllBalances(_dontFillUp? : boolean){
   //console.log("verfügbare addresses: ", this.currentSDKsettings.addresses)
+ 
+  /* for (let i = 0; i<this.currentSDKsettings.addresses.length; i++ ) {
+    console.log("having that many accounts: ", i);
+    console.log("fetching for account: ", this.currentSDKsettings.addresses[i])
+    this.currentSDKsettings.balances[i] = await this.getOneBalance(this.currentSDKsettings.addresses[i], false);
+    console.log("Die balances sind: ", this.currentSDKsettings.balances);
+  } */
+ 
   this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
-    this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress);
-  })
+    this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress, _dontFillUp != true ? false : true);
+  }) 
 }
 
 // get balance of only one address
 // TODO: option parameter einbauen, Format ist 
 // async ƒ balance(address, { height, hash, format = false } = {})
-async getOneBalance(_address: string, _height?: number, _format?: boolean, _hash?: any, ){
-  
+async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any, ){
   // if only the address is defined, don't call with options.
+  var balance;
+  //console.log("Fetching balan ce for..." + _address);
   if (!_height && !_format && !_hash ) {
-    var balance = await this.compiler.Chain.balance(_address);
+    try {
+      balance = await this.compiler.Chain.balance(_address);
+      //console.log("als balance für " + _address + " kam:", balance);
+      this.changeDetectorRef.detectChanges();
+    } catch(e) {
+      balance = 0;
+      //this.changeDetectorRef.detectChanges();
+
+    }
+    // in case the balance is too low or zero, fill up the account
+    if (balance < 1000000000000000000 && _dontFillUp == false){
+     console.log("Balance low, filling up from faucet..")
+     let httpOptions = {
+      headers: new HttpHeaders({
+        'sec-fetch-mode':' cors' ,
+        'dnt':' 1' ,
+        'accept-encoding':' gzip, deflate, br' ,
+        'accept-language':' de,en-US;q=0.9,en;q=0.8,de-DE;q=0.7,et;q=0.6' ,
+        'user-agent':' Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36' ,
+        'accept':' application/json, text/plain, */*' ,
+        'referer':' https://testnet.faucet.aepps.com/',
+        'authority':' testnet.faucet.aepps.com' ,
+        'sec-fetch-site':' same-origin' ,
+        'content-length':' 0' ,
+        'origin':' https://testnet.faucet.aepps.com'
+
+      })
+    };
+    try{ 
+     let query = await this.http.post<any>(`${environment.testnetFaucetUrl}${_address}`, {}, httpOptions).subscribe(resp => {
+       console.log("Antwort vom faucet: ", query);
+       this.getAllBalances(true);
+       
+       this.changeDetectorRef.detectChanges();
+       
+
+     })
+     console.log("Response vom faucet: ",query);
+
+    } catch(e){
+      console.log("...error from querying faucet");
+    }
+
+    }
   } else {
     // TODO: Implement calling with options here
   }
-  
+  //console.log("Balance returned für " + _address +" :", balance);
+  this.changeDetectorRef.detectChanges();
+
   return balance;
   }
 
