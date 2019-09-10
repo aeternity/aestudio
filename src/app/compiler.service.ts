@@ -104,8 +104,8 @@ export class CompilerService {
   }
 
    fromCodeToACI(code) {
-    //let compilerUrl = "http://localhost:3080";
-    let compilerUrl = "https://compiler.aepps.com/aci";
+    let compilerUrl = "http://localhost:3080/aci";
+    //let compilerUrl = "https://compiler.aepps.com/aci";
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json'
@@ -144,11 +144,13 @@ export class CompilerService {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
-    //console.log("Hier kommt der code: ", sourceCode);
+    console.log("Hier kommt der code: ", sourceCode);
     
     // create a contract instance
     var myContract = await this.Chain.getContractInstance(this.code);
     
+    console.log(">>>> cvompilation result (mycontract): ", myContract);
+
     // Deploy the contract
     try {
       console.log("Deployment params:", _deploymentParams)
@@ -258,7 +260,7 @@ export class CompilerService {
       this._notifyCompiledAndACI.next(0);
       //this._notifyCurrentSDKsettings.next(0);
     },
-    (error) =>  {console.log("oooops fehler ", error.error) 
+    (error) =>  {console.log("oooops fehler ", error.error[0]) 
     this.initACI = {} as ContractBase<any>;
 
     // tell sidebar et al. that there is no valid contract there right now
@@ -325,9 +327,13 @@ export class CompilerService {
    public _notifyDeployedContract = new BehaviorSubject<any>(null);
    newContract = this._notifyDeployedContract.asObservable();
    
-   // a (new) account was found!
+   // (new) SDK settings were found !
    public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
-   newAccounts = this._notifyCurrentSDKsettings.asObservable();
+   newSdkSettings = this._notifyCurrentSDKsettings.asObservable();
+
+  // a (new) account was found!
+  public _notifyCodeError = new BehaviorSubject<any>({});
+  newCodeError = this._notifyCurrentSDKsettings.asObservable();
  
   /* listeners end */
 

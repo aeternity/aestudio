@@ -136,11 +136,12 @@ gitLibSelector: SuiMultiSelect<any, any>;
   ngOnInit() {
     this.buildAContract();
     
-    setInterval(async () => {
+   /*  setInterval(async () => {
      //console.log("Feteching balance in interval...");
      // call with "false" to query faucet for balance if it's too low
        this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 6000
-    )
+    ) */
+    this.getAllBalances(true);
 
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
@@ -297,12 +298,12 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
       this.changeDetectorRef.detectChanges();
     } catch(e) {
       balance = 0;
-      //this.changeDetectorRef.detectChanges();
+      this.changeDetectorRef.detectChanges();
 
     }
-    console.log("Don't fill up ist: ", _dontFillUp)
+    //console.log("Don't fill up ist: ", _dontFillUp)
     // in case the balance is too low or zero, fill up the account
-    if (balance < 1000000000000000000 && _dontFillUp != true){
+    /* if (balance < 1000000000000000000 && _dontFillUp != true){
      console.log("Balance low, filling up from faucet..")
      let httpOptions = {
       headers: new HttpHeaders({
@@ -311,7 +312,7 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
         'accept-encoding':' gzip, deflate, br' ,
         'accept-language':' de,en-US;q=0.9,en;q=0.8,de-DE;q=0.7,et;q=0.6' ,
         'user-agent':' Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36' ,
-        'accept':' application/json, text/plain, */*' ,
+        'accept':' application/json' ,
         'referer':' https://testnet.faucet.aepps.com/',
         'authority':' testnet.faucet.aepps.com' ,
         'sec-fetch-site':' same-origin' ,
@@ -335,7 +336,7 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
       console.log("...error from querying faucet");
     }
 
-    }
+    } */
   } else {
     // TODO: Implement calling with options here
   }
