@@ -170,7 +170,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
      this.rawACIsubscription = this.compiler._notifyCompiledAndACI
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
           this.initACI = this.compiler.initACI;
-          console.log("Hier kommt init aci:", this.initACI);
+          //console.log("Hier kommt init aci:", this.initACI);
           this.changeDetectorRef.detectChanges()
     });
 

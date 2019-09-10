@@ -15,7 +15,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "https://github.com/aeternity/aepp-sdk-js.git#lima",
+    "@aeternity/aepp-sdk": "^4.6.0",
     "@angular/animations": "~8.1.1",
     "@angular/common": "~8.1.1",
     "@angular/compiler": "~8.1.1",
