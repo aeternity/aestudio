@@ -6,7 +6,9 @@ export const environment = {
     production: false,
     contractSharingBackend: 'https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/',
     appUrl: 'http://localhost:4200/',
-    testnetFaucetUrl: 'https://testnet.faucet.aepps.com/account/'
+    testnetFaucetUrl: 'https://testnet.faucet.aepps.com/account/',
+    /* compilerURL:'https://compiler.aepps.com' */
+    compilerURL:'http://localhost:3080'
 };
 
 

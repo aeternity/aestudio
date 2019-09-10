@@ -300,8 +300,9 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
       //this.changeDetectorRef.detectChanges();
 
     }
+    console.log("Don't fill up ist: ", _dontFillUp)
     // in case the balance is too low or zero, fill up the account
-    if (balance < 1000000000000000000 && _dontFillUp == false){
+    if (balance < 1000000000000000000 && _dontFillUp != true){
      console.log("Balance low, filling up from faucet..")
      let httpOptions = {
       headers: new HttpHeaders({

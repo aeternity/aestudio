@@ -3,6 +3,8 @@ import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject } from 'rxjs';
+import { environment } from '../environments/environment';
+
 
 import { Crypto } from '@aeternity/aepp-sdk/es/';
 
@@ -76,7 +78,7 @@ export class CompilerService {
       url: 'https://sdk-testnet.aepps.com',
       //internalUrl: 'http://localhost:3001/internal/',
       //compilerUrl: 'http://localhost:3080',
-      compilerUrl: 'https://compiler.aepps.com',
+      compilerUrl: `${environment.compilerURL}`,
       nativeMode: true,
       accounts: theAccounts 
       

@@ -11,6 +11,7 @@ import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-fo
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
+import {LogMonitorModule} from 'ngx-log-monitor';
 //import { SuiSelectModule } from 'ng2-semantic-ui';
 
 import { ReplacePipe } from './helpers/replace-pipe';
@@ -29,6 +30,7 @@ import { ClipboardModule } from 'ngx-clipboard';
   ],
   imports: [
     BrowserModule,
+    LogMonitorModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
