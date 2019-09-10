@@ -14,7 +14,6 @@ import { ClipboardService } from 'ngx-clipboard'
 
 
 
-
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
@@ -31,6 +30,8 @@ export class EditorComponent implements OnInit {
 
   highlightedRows: any = []; // the rows to highlight (when opening a shared contract)
 
+  errorHighlights: any = []; // code highlights from compilation errors - reset to empty on every new error and successful compilation
+
   // debug - multiple instances running, or same code two times?
   runTimes: number = 0;
 
@@ -40,8 +41,9 @@ export class EditorComponent implements OnInit {
   @HostBinding('style.border') value = 'red';
 
   // listen to compiler events asking to send code
-  subscription: Subscription;
-
+  fetchActiveCodeSubscription: Subscription;
+  newErrorSubscription: Subscription;
+  
   // note if this editor is currently in active tab
   isActiveTab : boolean = true;
 
@@ -77,7 +79,22 @@ export class EditorComponent implements OnInit {
     const syncRoute: any = this._route.snapshot;
     console.log("Die gesamt route: ", syncRoute)
     console.log(">>>>>>Durchlauf:  ",  ++this.runTimes)
+    
+    /* setInterval( () => {try{
+      console.log("clearing markers..");
 
+      var elems = document.querySelectorAll(".problematicCodeLine");
+      console.log(elems);
+
+      [].forEach.call(elems, function(el) {
+        el.classList.remove("problematicCodeLine");
+    });
+
+      this.editorInstance.deltaDecorations(this.errorHighlights, [{ range: new monaco.Range(1,1,1,1), options: { inlineClassName: 'blackCodeLine' }}])
+
+    } catch(e){
+
+    }}, 3000) */
 
     this._route.queryParamMap.subscribe(parameter => {
       // quickfix for stupid racing condition
@@ -133,14 +150,38 @@ export class EditorComponent implements OnInit {
     });
 
     // If the compiler asks for code, give it to him and deploy the contract
-    this.subscription = this.compiler._fetchActiveCode
+    this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
        // fix stupid race condition displaying default contract even if one is fetched from DB 
       //this.contract.code= ''
-      
-      this.compiler.generateACIonly(this.contract.code);
-    // Beim start schon copilen oder nicht ?
+    
+    // if the compiler / debugger submitts errors, highlight them:
+    this.newErrorSubscription = this.compiler._notifyCodeError
+      .subscribe(async error =>  {
+          await error;
+          //let theError = error.__zone_symbol__value;
+          console.log("Nur error: ", error)
+
+          //clear all existing
+          this.clearAllHighlighters("problematicCodeLine");
+
+          // add new one
+          this.errorHighlights = [
+            // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
+          { range: new monaco.Range(error.pos.line,
+                                  error.pos.col +1,
+                                  error.pos.line,
+                                  error.pos.col), options: { inlineClassName: 'problematicCodeLine' }},
+          ]
+
+          this.editorInstance.deltaDecorations([], this.errorHighlights)
+
+      })  
+
+    // try generating ACI for init-interface
+    this.compiler.generateACIonly(this.contract.code);
+    
     //  return this.compile();
 
 
@@ -226,13 +267,27 @@ this.editorInstance.addAction ({
     //console.log("Shit done changed!");
     // put the active code into compiler
     this.compiler.makeCompilerAskForCode(0);
-  console.log("code ist gerade: ",this.contract.code);
+    console.log("code ist gerade: ",this.contract.code);
     // generate some ACI just to display init() function for deployment
     this.compiler.generateACIonly(this.contract.code);
   }
 
+  // clear highlighters by identifier
+  clearAllHighlighters(_classSelector: string){
+
+              //clear all existing
+              var elems = document.querySelectorAll(`.${_classSelector}`);
+              console.log(elems);
+    
+              [].forEach.call(elems, function(el) {
+                el.classList.remove(`${_classSelector}`);
+              });
+    
+  }
+
   ngOnDestroy() {
     // prevent memory leak when component is destroyed
-    this.subscription.unsubscribe();
+    this.fetchActiveCodeSubscription.unsubscribe();
+    this.newErrorSubscription.unsubscribe();
   }
 }
