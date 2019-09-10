@@ -50,7 +50,7 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
-
+  
 
   
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
@@ -104,7 +104,18 @@ export class CompilerService {
   }
 
    fromCodeToACI(code) {
-    let compilerUrl = "http://localhost:3080/aci";
+    let compilerUrl = `${environment.compilerURL}/aci`;
+    //let compilerUrl = "https://compiler.aepps.com/aci";
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json'
+      })
+    };
+    return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
+   }
+
+   getErrorsFromDebugCompiler(code) {
+    let compilerUrl = `${environment.debugCompilerURL}/aci`;
     //let compilerUrl = "https://compiler.aepps.com/aci";
     const httpOptions = {
       headers: new HttpHeaders({
@@ -149,7 +160,7 @@ export class CompilerService {
     // create a contract instance
     var myContract = await this.Chain.getContractInstance(this.code);
     
-    console.log(">>>> cvompilation result (mycontract): ", myContract);
+    //console.log(">>>> compilation result (mycontract): ", myContract);
 
     // Deploy the contract
     try {
@@ -164,8 +175,6 @@ export class CompilerService {
     console.log("My contract: ", myContract);
     console.log("My account: ", this.Chain.addresses());
     console.log("Das ganze SDK: ", this.Chain);
-
-    
 
     this.fromCodeToACI(sourceCode)
     .subscribe(
@@ -213,8 +222,26 @@ export class CompilerService {
       // 5. tell sidebar about the new contract so it can store it
       this._notifyDeployedContract.next(myContract);
     },
-    error => console.log("oops fehler ", error.error));
+    error => this.fetchErrorsFromDebugCompiler(sourceCode));
+    console.log("fetching error from debug compiler..")
+
+    
     return true;
+  }
+  async fetchErrorsFromDebugCompiler(sourceCode: string) : Promise<string> {
+    return new Promise((resolve,reject)=> {
+      console.log("fetching errors...")
+    var returnValue;
+    this.getErrorsFromDebugCompiler(sourceCode)
+    .subscribe(
+        (data: EncodedACI) => {},
+      error => {console.log("Found the error: ", error.error[0])
+      returnValue = error.error[0];
+      resolve(returnValue);
+      }
+    );
+    })
+    
   }
 
   async generateACIonly(sourceCode: any) : Promise<any> {
@@ -260,7 +287,10 @@ export class CompilerService {
       this._notifyCompiledAndACI.next(0);
       //this._notifyCurrentSDKsettings.next(0);
     },
-    (error) =>  {console.log("oooops fehler ", error.error[0]) 
+    async (error) =>  {
+      //console.log("oooops fehler ", error.error)
+      let theError = await this.fetchErrorsFromDebugCompiler(sourceCode); 
+      this._notifyCodeError.next(theError);
     this.initACI = {} as ContractBase<any>;
 
     // tell sidebar et al. that there is no valid contract there right now
@@ -333,7 +363,7 @@ export class CompilerService {
 
   // a (new) account was found!
   public _notifyCodeError = new BehaviorSubject<any>({});
-  newCodeError = this._notifyCurrentSDKsettings.asObservable();
+  newCodeError = this._notifyCodeError.asObservable();
  
   /* listeners end */
 
