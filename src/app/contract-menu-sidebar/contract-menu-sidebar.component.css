@@ -62,3 +62,41 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+/* error box start */
+.errorbox {
+width: auto;
+margin: auto;
+border: 0px solid grey;
+display: flex;
+}
+.errorbox-icon,
+.right {
+display: flex;
+flex-direction: column;
+}
+.errorbox-icon,
+.right > div {
+padding: 1em;
+}
+.errorbox-icon {
+background: white;
+}
+.div2 {
+background: white
+
+}
+.div3 {
+background: #F8DDA4;
+margin-left: 1em;
+}
+
+.bug.icon{
+ color: rgba(0,0,0,.6);
+ font-size: 4.6em;
+ margin-top: 0.7em;
+}
+.code{
+    background: lightgray
+}
+  /* error box end */

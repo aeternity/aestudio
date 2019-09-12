@@ -137,6 +137,25 @@
 
 <div class="ui section divider"></div>
 
+<!-- errors from compiler -->
+<div *ngIf="(currentError | json) != ({}| json)  ">           
+    <div class="ui orange segment container">
+            <a class="ui orange ribbon label">Compilation Issues</a>
+
+           
+       
+            <div class="errorbox">
+                <div class="errorbox-icon"> <i class="bug icon"></i></div>
+                <div class="right">
+                  <div class="div2">{{currentError.type}}: {{currentError.message}} <br> At: Line {{currentError.pos.line}}, column {{currentError.pos.col}}</div>
+                  
+                  <div class="div3" *ngIf="currentError.type == 'parse_error'">Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i></div>
+                </div>
+              </div>
+</div>
+<div class="ui section divider"></div>
+</div>
+
 
 
 <!-- compiled contract  -->
@@ -169,11 +188,8 @@
     
 
 
-<!-- Deployed contract  -->
+<!-- Deployed contracts  -->
 
-<!--  ng-for aci of ACIs... -->
-
-<!--     <div *ngFor=" let contract of activeContracts"> -->
     <sui-accordion [transitionDuration]="500" [closeOthers] = "true" class="styled fluid">
         <sui-accordion-panel *ngFor=" let contract of activeContracts; let i = index" [isDisabled]="false" >
             <div title>
@@ -210,9 +226,6 @@
             </div>
         </sui-accordion-panel>
     </sui-accordion>
-
-<!-- </div> -->
-
 
 <div class="ui segment container">
     <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>

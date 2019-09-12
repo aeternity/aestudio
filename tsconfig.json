@@ -14,7 +14,7 @@
     "target": "es2015",
     "strictNullChecks": false,
     "typeRoots": [
-      "node_modules/@types"
+      "node_modules/@types", "src/app/editor/typings.d.ts"
     ],
     "lib": [
       "es2018",

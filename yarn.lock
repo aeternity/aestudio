@@ -2,13 +2,13 @@
 # yarn lockfile v1
 
 
-"@aeternity/aepp-sdk@^4.6.0":
-  version "4.6.0"
-  resolved "https://registry.yarnpkg.com/@aeternity/aepp-sdk/-/aepp-sdk-4.6.0.tgz#9ac03c266c75a399ddfb2eb19147d2bae30dd837"
-  integrity sha512-sSIPCqUXKsOKMst2gzNukrmUeOwtDk687PcZLmMOhZUw9Zm/rxwHA9QjvvAhJvFKAxl8GFFLn2UQvnKdEbfxiA==
+"@aeternity/aepp-sdk@^4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@aeternity/aepp-sdk/-/aepp-sdk-4.7.0.tgz#f99ac2badb8351dd967b066053fa2c9a3a193f98"
+  integrity sha512-RK1S9Js6920f56knaqTD12siBtfovBFGowdWxp5H/5SwnMnFdZxfT0d4ZMwgNZ51l5zAX+ZQsCI/wI4q9MwRqQ==
   dependencies:
     "@aeternity/bip39" "^0.1.0"
-    "@babel/runtime" "^7.5.5"
+    "@babel/runtime" "^7.6.0"
     "@stamp/it" "^1.0.3"
     "@stamp/required" "^1.0.1"
     aes-js "^3.1.1"
@@ -23,7 +23,7 @@
     libsodium-wrappers-sumo "0.7.5"
     ramda "^0.26.1"
     rlp "2.2.3"
-    serialize-javascript "^1.5.0"
+    serialize-javascript "^2.0.0"
     sha.js "^2.4.11"
     tweetnacl "^1.0.0"
     tweetnacl-auth "^1.0.1"
@@ -302,7 +302,7 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.6.0.tgz#3e05d0647432a8326cb28d0de03895ae5a57f39b"
   integrity sha512-+o2q111WEx4srBs7L9eJmcwi655eD8sXniLqMB93TBK9GrNzGrxDWSjiqz2hLU0Ha8MTXFIP0yd9fNdP+m43ZQ==
 
-"@babel/runtime@^7.5.5":
+"@babel/runtime@^7.6.0":
   version "7.6.0"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.6.0.tgz#4fc1d642a9fd0299754e8b5de62c631cf5568205"
   integrity sha512-89eSBLJsxNxOERC0Op4vd+0Bqm6wRMqMbFtV3i0/fbaWw/mJ8Q3eBvgX0G4SyrOOLCtbu98HspF8o09MRT+KzQ==
@@ -6654,7 +6654,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@6.4.0, rxjs@~6.4.0:
+rxjs@6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.4.0.tgz#f3bb0fe7bda7fb69deac0c16f17b50b0b8790504"
   integrity sha512-Z9Yfa11F6B9Sg/BK9MnqnQ+aQYicPLtilXBp2yUtDt2JRCE0h26d33EnfO3ZxoNxG0T92OUucP3Ct7cpfkdFfw==
@@ -6668,7 +6668,7 @@ rxjs@^5.0.1:
   dependencies:
     symbol-observable "1.0.1"
 
-rxjs@^6.4.0:
+rxjs@^6.4.0, rxjs@^6.5.3:
   version "6.5.3"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.3.tgz#510e26317f4db91a7eb1de77d9dd9ba0a4899a3a"
   integrity sha512-wuYsAYYFdWTAnAaPoKGNhfpWwKZbJW+HgAJ+mImp+Epl7BG8oNWBCTyRM8gba9k4lk8BgWdoYm21Mo/RYhhbgA==
@@ -6826,10 +6826,15 @@ send@0.17.1:
     range-parser "~1.2.1"
     statuses "~1.5.0"
 
-serialize-javascript@^1.5.0, serialize-javascript@^1.7.0:
+serialize-javascript@^1.7.0:
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.9.1.tgz#cfc200aef77b600c47da9bb8149c943e798c2fdb"
   integrity sha512-0Vb/54WJ6k5v8sSWN09S0ora+Hnr+cX40r9F170nT+mSkaxltoE/7R3OrIdBSUv1OoiobH1QoWQbCnAO+e8J1A==
+
+serialize-javascript@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-2.1.0.tgz#9310276819efd0eb128258bb341957f6eb2fc570"
+  integrity sha512-a/mxFfU00QT88umAJQsNWOnUKckhNCqOl028N48e7wFmo2/EHpTo9Wso+iJJCMrQnmFvcjto5RJdAHEvVhcyUQ==
 
 serve-index@^1.9.1:
   version "1.9.1"

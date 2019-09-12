@@ -50,7 +50,7 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
-  
+
 
   
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
@@ -95,6 +95,9 @@ export class CompilerService {
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
 
+    let balanceTest = await this.Chain.getBalance("ak_2F5gdaeb75T5RscQ8UkpycGkEumrfPtB42A7nFkAU9gUFpBBh5");
+    console.log("Testing balance getting: ", balanceTest);
+
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
@@ -116,10 +119,11 @@ export class CompilerService {
 
    getErrorsFromDebugCompiler(code) {
     let compilerUrl = `${environment.debugCompilerURL}/aci`;
-    //let compilerUrl = "https://compiler.aepps.com/aci";
+    //let compilerUrl = "http://145.239.150.239:3080/aci";
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+        'Content-Type':  'application/json',
+        'Sophia-Compiler-Version': '4.0.0-rc2'
       })
     };
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);

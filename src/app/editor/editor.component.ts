@@ -10,7 +10,7 @@ import { filter, map } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-ui';
-import { ClipboardService } from 'ngx-clipboard'
+import { ClipboardService } from 'ngx-clipboard';
 
 
 
@@ -23,14 +23,16 @@ import { ClipboardService } from 'ngx-clipboard'
 export class EditorComponent implements OnInit {
   
   isDimmed: boolean = false;
-  //Fires when the SDK does something
-  editorAction: Subscription;
-
+ 
   editorInstance: any; // the editor, initialized by the component
 
   highlightedRows: any = []; // the rows to highlight (when opening a shared contract)
 
+  // buggy monaco colletion of highlights -emptying this or resetting doesn't remove anything.
   errorHighlights: any = []; // code highlights from compilation errors - reset to empty on every new error and successful compilation
+  // workaround for annoying angular bug firing events dozens of times: collect hashes of errors in this map and set new ones only if hash is unused 
+  lastError: string;
+  currentDecorations: any;
 
   // debug - multiple instances running, or same code two times?
   runTimes: number = 0;
@@ -40,10 +42,18 @@ export class EditorComponent implements OnInit {
 
   @HostBinding('style.border') value = 'red';
 
+  //Fires when the SDK does something
+  editorAction: Subscription;
+
   // listen to compiler events asking to send code
   fetchActiveCodeSubscription: Subscription;
-  newErrorSubscription: Subscription;
   
+  // listen for new errors
+  newErrorSubscription: Subscription;
+
+  // Listen to compilation success (e.g. to remove highlights)
+  rawACIsubscription: Subscription;
+
   // note if this editor is currently in active tab
   isActiveTab : boolean = true;
 
@@ -75,26 +85,15 @@ export class EditorComponent implements OnInit {
     renderIndentGuides:'true',
   contextmenu:'true'};
 
+
   ngOnInit() {
+    /* setInterval(() => {
+      this.removeDuplicates("errorMarker");
+    }, 4000); */
+
     const syncRoute: any = this._route.snapshot;
     console.log("Die gesamt route: ", syncRoute)
     console.log(">>>>>>Durchlauf:  ",  ++this.runTimes)
-    
-    /* setInterval( () => {try{
-      console.log("clearing markers..");
-
-      var elems = document.querySelectorAll(".problematicCodeLine");
-      console.log(elems);
-
-      [].forEach.call(elems, function(el) {
-        el.classList.remove("problematicCodeLine");
-    });
-
-      this.editorInstance.deltaDecorations(this.errorHighlights, [{ range: new monaco.Range(1,1,1,1), options: { inlineClassName: 'blackCodeLine' }}])
-
-    } catch(e){
-
-    }}, 3000) */
 
     this._route.queryParamMap.subscribe(parameter => {
       // quickfix for stupid racing condition
@@ -153,37 +152,63 @@ export class EditorComponent implements OnInit {
     this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
-       // fix stupid race condition displaying default contract even if one is fetched from DB 
-      //this.contract.code= ''
     
     // if the compiler / debugger submitts errors, highlight them:
     this.newErrorSubscription = this.compiler._notifyCodeError
       .subscribe(async error =>  {
           await error;
           //let theError = error.__zone_symbol__value;
-          console.log("Nur error: ", error)
+          console.log("Nur error: ", error);
 
-          //clear all existing
-          this.clearAllHighlighters("problematicCodeLine");
+          // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
+          let errorHash = this.hash(error);
+          //console.log("Error hash: ", errorHash) 
+          // if angular isn't trying to report the already known error again...
+          if (errorHash != this.lastError){
+            this.lastError = errorHash; // mark error as used
+             
+            // remove highlights the soft way...
+            this.clearAllHighlighters()
 
-          // add new one
-          this.errorHighlights = [
-            // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-          { range: new monaco.Range(error.pos.line,
-                                  error.pos.col +1,
-                                  error.pos.line,
-                                  error.pos.col), options: { inlineClassName: 'problematicCodeLine' }},
-          ]
+            // add new highlighter
+            try{
+              this.errorHighlights = [
+                // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
+              { range: new monaco.Range(error.pos.line,
+                                      error.pos.col +1,
+                                      error.pos.line,
+                                      error.pos.col), options: { inlineClassName: 'errorMarker', marginClassName: 'problematicCodeLine' }},
+              ]
+            
+              this.currentDecorations = this.editorInstance.deltaDecorations([], this.errorHighlights)
+            } catch(e){
+              console.log("triedd adding highlights...")
+            }
 
-          this.editorInstance.deltaDecorations([], this.errorHighlights)
+            //this.removeDuplicates("errorMarker");
 
+          } else {
+            //console.log("tried adding known error.")
+          }
+          //this.removeDuplicates("errorMarker");
       })  
+
+       // fires when new contract got compiled
+       this.rawACIsubscription = this.compiler._notifyCompiledAndACI
+       .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
+         //console.log("Clearing error marker..");
+        this.clearAllHighlighters();
+         
+         // reset the error tracker
+         //console.log("Resetting last known error..");
+         this.lastError = "";
+        });
+ 
 
     // try generating ACI for init-interface
     this.compiler.generateACIonly(this.contract.code);
     
     //  return this.compile();
-
 
   }); 
   }
@@ -193,54 +218,54 @@ export class EditorComponent implements OnInit {
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
     console.log("The editor:", theEditor);
     this.editorInstance = theEditor;
-    // test code background highlighting
+    // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
     if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
       this.editorInstance.deltaDecorations([], [
-        { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
+        { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
       ]);}
 
 
-// custom context menu options
-this.editorInstance.addAction ({
-    // ID of the group in which the new item will appear.
-    contextMenuGroupId: '1_modification',
-    // there are three of them: 1 - 'navigation', 2 - '1_modification', 3 - '9_cutcopypaste';
-    // you can create your own
-    contextMenuOrder: 3, // order of a menu item within a group
-    label: '<i class="share alternate icon"></i> Share contract and selection...',
-    id: 'showDiff',
-    keybindings: [], // Hotkeys
-    // function called when clicking
-    // press the specified keys
-    run: () => {console.log(this.compiler.activeCodeSelection)
-      let postData = {"contract":this.contract.code ,"contractName": "some", "editorVersion":1}
-      console.log("So sieht post data aus:", postData);
+    // custom context menu options
+    this.editorInstance.addAction ({
+        // ID of the group in which the new item will appear.
+        contextMenuGroupId: '1_modification',
+        // there are three of them: 1 - 'navigation', 2 - '1_modification', 3 - '9_cutcopypaste';
+        // you can create your own
+        contextMenuOrder: 3, // order of a menu item within a group
+        label: '<i class="share alternate icon"></i> Share contract and selection...',
+        id: 'showDiff',
+        keybindings: [], // Hotkeys
+        // function called when clicking
+        // press the specified keys
+        run: () => {console.log(this.compiler.activeCodeSelection)
+          let postData = {"contract":this.contract.code ,"contractName": "some", "editorVersion":1}
+          console.log("So sieht post data aus:", postData);
 
-      this.http.post(environment.contractSharingBackend, postData, {
-        headers: new HttpHeaders({
-             'Content-Type':  'application/json',
-           })
-      }).subscribe(data=>{
-         console.log("Post hat ergeben?", data)
+          this.http.post(environment.contractSharingBackend, postData, {
+            headers: new HttpHeaders({
+                'Content-Type':  'application/json',
+              })
+          }).subscribe(data=>{
+            console.log("Post hat ergeben?", data)
 
-         let s = this.compiler.activeCodeSelection
-         let constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
-         console.log("DIE URL: ", constructedUrl)
-         this._clipboardService.copyFromContent(constructedUrl);
-         // display success message ;)
-         this.isDimmed = true;
-         // tell angular to detect changes because we're in a event subscription here -.-
-         this.changeDetectorRef.detectChanges()
-          setTimeout(() => {
-            this.isDimmed = false;
+            let s = this.compiler.activeCodeSelection
+            let constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+            console.log("DIE URL: ", constructedUrl)
+            this._clipboardService.copyFromContent(constructedUrl);
+            // display success message ;)
+            this.isDimmed = true;
+            // tell angular to detect changes because we're in a event subscription here -.-
             this.changeDetectorRef.detectChanges()
-          }, 900);
+              setTimeout(() => {
+                this.isDimmed = false;
+                this.changeDetectorRef.detectChanges()
+              }, 900);
 
+          });
+
+        }
       });
-
-    }
-  });
 
     // when right-clicking
     this.editorInstance.onContextMenu(function (e) {
@@ -273,16 +298,84 @@ this.editorInstance.addAction ({
   }
 
   // clear highlighters by identifier
-  clearAllHighlighters(_classSelector: string){
+  clearAllHighlighters(){
+    //clear all existing
+    try{        
+      this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
+    } catch(e){
+    }
+    
+  }
 
-              //clear all existing
-              var elems = document.querySelectorAll(`.${_classSelector}`);
-              console.log(elems);
-    
-              [].forEach.call(elems, function(el) {
-                el.classList.remove(`${_classSelector}`);
-              });
-    
+  // helpers
+
+  sortObjectKeys(obj){
+        if(obj == null || obj == undefined){
+            return obj;
+        }
+        if(typeof obj != 'object'){ // it is a primitive: number/string (in an array)
+            return obj;
+        }
+        return Object.keys(obj).sort().reduce((acc,key)=>{
+            if (Array.isArray(obj[key])){
+                acc[key]=obj[key].map(this.sortObjectKeys);
+            }
+            else if (typeof obj[key] === 'object'){
+                acc[key]=this.sortObjectKeys(obj[key]);
+            }
+            else{
+                acc[key]=obj[key];
+            }
+            return acc;
+        },{});
+  }
+
+  toHex = function (_input) {
+      var ret = ((_input<0?0x8:0)+((_input >> 28) & 0x7)).toString(16) + (_input & 0xfffffff).toString(16);
+      while (ret.length < 8) ret = '0'+ret;
+      return ret;
+  };
+
+  hash = function hashCode(o, l?) {
+    o = this.sortObjectKeys(o);
+    l = l || 2;
+    var i, c, r = [];
+    for (i=0; i<l; i++)
+        r.push(i*268803292);
+    function stringify(o) {
+        var i,r;
+        if (o === null) return 'n';
+        if (o === true) return 't';
+        if (o === false) return 'f';
+        //if (o instanceof Date) return 'd:'+(0+o);
+        i=typeof o;
+        if (i === 'string') return 's:'+o.replace(/([\\\\;])/g,'\\$1');
+        if (i === 'number') return 'n:'+o;
+        if (o instanceof Function) return 'm:'+o.toString().replace(/([\\\\;])/g,'\\$1');
+        if (o instanceof Array) {
+            r=[];
+            for (i=0; i<o.length; i++) 
+                r.push(stringify(o[i]));
+            return 'a:'+r.join(';');
+        }
+        r=[];
+        for (i in o) {
+            r.push(i+':'+stringify(o[i]))
+        }
+        return 'o:'+r.join(';');
+    }
+    o = stringify(o);
+    for (i=0; i<o.length; i++) {
+        for (c=0; c<r.length; c++) {
+            r[c] = (r[c] << 13)-(r[c] >> 19);
+            r[c] += o.charCodeAt(i) << (r[c] % 24);
+            r[c] = r[c] & r[c];
+        }
+    }
+    for (i=0; i<r.length; i++) {
+        r[i] = this.toHex(r[i]);
+    }
+    return r.join('');
   }
 
   ngOnDestroy() {
@@ -290,4 +383,5 @@ this.editorInstance.addAction ({
     this.fetchActiveCodeSubscription.unsubscribe();
     this.newErrorSubscription.unsubscribe();
   }
+
 }

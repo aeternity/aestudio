@@ -47,12 +47,12 @@
 
 .problematicCodeLine{
     background: rgb(117, 74, 8) !important;
-    border: green !important;
+    transition: all 2.6s cubic-bezier(0.075, 0.82, 0.165, 1) !important;;
 }
 
-.blackCodeLine{
-    background: rgb(0, 0, 0) !important;
-    border: green !important;
+.errorMarker{
+    background: rgb(187, 13, 71) !important;
+    transition: all 2.6s cubic-bezier(0.075, 0.82, 0.165, 1) !important;;
 }
 
 .truncate{

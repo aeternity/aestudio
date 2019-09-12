@@ -48,29 +48,13 @@ export class ContractMenuSidebarComponent implements OnInit {
 @ViewChild('gitLibSelector', {static: true})
 gitLibSelector: SuiMultiSelect<any, any>;
 
-  options: any = [{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "dfdf", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "dff", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "sd2345", full_name: "patmanpp/gdfdg"},{id: 3980326, node_id: "MDEwOlJlcG9zaXRvcnkzOTgwMzI2", name: "2345465", full_name: "patmanpp/gdfdg"},]
-
-  libsLookUp = async (query: string, initial: number) =>  {
-    return this.options
-  }
-
-  lib_formatter(option: any, query?: string): string {
-     //console.log(option);
-    return option.name;
-  }
-
-  log_option(name: string){
-    console.log(name);
-
-  }
-
-  exportchange(event: any) {
-    console.log(event);
-  }
+ 
 // dropdown end
 
   //Fires when new SDK settings are available(Accounts, )
   sdkSettingsSubscription: Subscription;
+  // listen for new errors
+  newErrorSubscription: Subscription;
 
   //Fires when a raw ACI is available (for gnerating init()'s interface
   rawACIsubscription: Subscription;
@@ -81,6 +65,9 @@ gitLibSelector: SuiMultiSelect<any, any>;
   //displays loading icon when deploying contract
   deploymentLoading: boolean = false;
   
+  // the current compilation error
+  currentError: any = {};
+
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
     .address - public address of the current active account in SDK instance
@@ -170,7 +157,13 @@ gitLibSelector: SuiMultiSelect<any, any>;
      this.rawACIsubscription = this.compiler._notifyCompiledAndACI
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
           this.initACI = this.compiler.initACI;
-          //console.log("Hier kommt init aci:", this.initACI);
+          console.log("Hier kommt init aci:", this.initACI);
+          // if the new ACI is not {} (empty), reset the last reported error.
+          if(Object.entries(this.initACI).length > 0) { 
+            this.currentError = {};
+          }
+          console.log("Current error ist nun: ", this.currentError);
+          //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
     });
 
@@ -199,6 +192,16 @@ gitLibSelector: SuiMultiSelect<any, any>;
         }
        
       })
+
+    this.newErrorSubscription = this.compiler._notifyCodeError
+    .subscribe(async error =>  {
+        await error;
+        //let theError = error.__zone_symbol__value;
+        console.log("Nur error in sidebar: ", error);
+        this.currentError = error;
+
+    })  
+
 }
 
 //desparate workaround for issue: contract to deploy is not being rendered since adding node choosing interface
@@ -293,7 +296,7 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
   //console.log("Fetching balan ce for..." + _address);
   if (!_height && !_format && !_hash ) {
     try {
-      balance = await this.compiler.Chain.balance(_address);
+      balance = await this.compiler.Chain.getBalance(_address);
       //console.log("als balance für " + _address + " kam:", balance);
       this.changeDetectorRef.detectChanges();
     } catch(e) {
