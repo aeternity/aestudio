@@ -13,7 +13,6 @@ import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-m
 import {SuiModule} from 'ng2-semantic-ui';
 import {LogMonitorModule} from 'ngx-log-monitor';
 //import { SuiSelectModule } from 'ng2-semantic-ui';
-
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';

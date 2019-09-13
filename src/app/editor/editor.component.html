@@ -1,5 +1,16 @@
 <ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="change()" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
 <!-- <button (click)="compile()">Compile</button> -->
+<log-monitor
+    [logStream]="logStream$"
+    theme="dark"
+    title="Event Log"
+    [animated]="true"
+    [icons]="true"
+    [(history)]="logs" 
+    [(ngModel)]="logs"
+    (ngModelChange)="updateMyLogs(logs)"
+></log-monitor>
+
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
     <h1 class="ui inverted header">Link copied to clipboard!</h1>
     <br>

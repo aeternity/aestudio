@@ -3,7 +3,7 @@ import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { ContractControlService } from '../contract-control.service';
 import { ContractBase } from '../question/contract-base';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, Subject } from 'rxjs';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-ui';
 import { ClipboardService } from 'ngx-clipboard';
+import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 
 
 
@@ -22,6 +23,13 @@ import { ClipboardService } from 'ngx-clipboard';
 })
 export class EditorComponent implements OnInit {
   
+  // logger start //
+  logs: NgxLogMessage[] = [
+  ];
+  
+  logStream$: any;
+
+  // logger end // 
   isDimmed: boolean = false;
  
   editorInstance: any; // the editor, initialized by the component
@@ -87,9 +95,13 @@ export class EditorComponent implements OnInit {
 
 
   ngOnInit() {
-    /* setInterval(() => {
-      this.removeDuplicates("errorMarker");
-    }, 4000); */
+    setInterval(() => {
+      // fetching logs from compiler...
+      this.logs = this.compiler.logs;
+    }, 3000);
+
+    this.logStream$ = this.logs[1];
+    this.logStream$ = this.logs[2];
 
     const syncRoute: any = this._route.snapshot;
     console.log("Die gesamt route: ", syncRoute)

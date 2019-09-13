@@ -23,8 +23,8 @@ contract CryptoHamster =
     public entrypoint read_test_value() : int =
         state.testvalue
     
-    public entrypoint return_caller() : address =
-        Call.caller
+    public entrypoint return_caller() : string =
+        require(2 == 1, "require failed")
     
     public stateful entrypoint add_test_value(one: int, two: int) : int =
         put(state{testvalue = one + two})

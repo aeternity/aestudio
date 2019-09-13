@@ -14,6 +14,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
+import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
@@ -23,6 +24,19 @@ var Ae = Universal;
   providedIn: 'root'
 })
 export class CompilerService {
+
+// to be displayed in logs
+  public logs: NgxLogMessage[] = [
+    {message: 'Initialized'},
+    
+  ];
+
+
+  /* {message: 'A success message', type: 'SUCCESS'},
+    {message: 'A warning message', type: 'WARN'},
+    {message: 'An error message', type: 'ERR'},
+    {message: 'An info message', type: 'INFO'},
+ */
 
   // setting default code, later pulled from editor
   //code: string = new Contract().code;
@@ -168,11 +182,16 @@ export class CompilerService {
 
     // Deploy the contract
     try {
-      console.log("Deployment params:", _deploymentParams)
+      console.log("Deployment params: ", _deploymentParams)
       await myContract.methods.init.apply(null, _deploymentParams);
+      let successString = 
+      this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+
     } catch(e){
       console.log("Something went wrong, investigating tx!");
       console.log(e);
+      this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+
       //e.verifyTx();
         }
 
@@ -374,6 +393,39 @@ export class CompilerService {
   /* all things sharing related start */
   public activeCodeSelection : any
   /* all things sharing related end */
+
+  logMessage(_message: string, _type: string, _contract? : string) {
+    let hours = new Date().getHours().toString();
+    let minutes = new Date().getMinutes().toString();
+    let time = hours + ':' + minutes;
+    var log : NgxLogMessage;
+
+    switch (_type) {
+      case "log" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'LOG'}
+        this.logs.push(log);
+        break;
+      case "warn" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'WARN'}
+        this.logs.push(log);  
+        break;
+      case "success" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'SUCCESS'}
+        this.logs.push(log); 
+        break;
+      case "error" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'ERR'}
+        this.logs.push(log); 
+        break;
+      case "info" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'INFO'}
+        this.logs.push(log); 
+        break;
+      default:
+        break;
+    }
+  }
+
 }
 
 

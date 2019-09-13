@@ -9,6 +9,7 @@ import { SuiModule } from 'ng2-semantic-ui';
 //mport { SuiMultiSelect } from 'ng2-semantic-ui/dist';
 import { SuiMultiSelect } from 'ng2-semantic-ui/dist';
 import { environment } from '../../environments/environment';
+import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -123,11 +124,11 @@ gitLibSelector: SuiMultiSelect<any, any>;
   ngOnInit() {
     this.buildAContract();
     
-   /*  setInterval(async () => {
+     setInterval(async () => {
      //console.log("Feteching balance in interval...");
      // call with "false" to query faucet for balance if it's too low
        this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 6000
-    ) */
+    ) 
     this.getAllBalances(true);
 
     // fires when new accounts are available
@@ -177,7 +178,7 @@ gitLibSelector: SuiMultiSelect<any, any>;
         // in this array
        /*  let theContractAddress = newContract.deployInfo.address;
         this.activeContracts[theContractAddress] = newContract; */
-
+        //newContract.expanded = false;
         this.activeContracts.push(newContract);
             
         // temp test
@@ -230,18 +231,26 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
 
   // "Apply" parameters a.k.a call function
   console.log("Called function: ", _theFunction);
-
-  let callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction].apply(null, params);
-  console.log("Das call object: ", callresult);
-  console.log("Hier kommt callresult: ", callresult.decodedResult);
-
+  var callresult;
+  try {
+    callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction].apply(null, params);
+    console.log("Das callresult object: ", callresult);
+    console.log("Hier kommt callresult: ", callresult.decodedResult);
+    this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.activeContracts[_contractIDEindex].aci.name)
+    this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
+  } catch(e) {
+    console.log("Call failed (for a good or bad reason)");
+    console.log("Error war: ", e);
+    this.logMessage(_theFunction + " call errored: " + e, "error",  this.activeContracts[_contractIDEindex].aci.name)
+    this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
+  }
   //deactivate loader
   this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = false
   //this.changeDetectorRef.detectChanges()
 
   
   // set decoded result to GUI
-  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
+  
   this.changeDetectorRef.detectChanges()
   console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
   console.log("Das wurde als callresult geschrieben: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData)
@@ -351,5 +360,36 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
 
   getSDKsettings = () => { this.compiler.sendSDKsettings()}
 
+  logMessage(_message: string, _type: string, _contract? : string) {
+    let hours = new Date().getHours().toString();
+    let minutes = new Date().getMinutes().toString();
+    let time = hours + ':' + minutes;
+    var log : NgxLogMessage;
+
+    switch (_type) {
+      case "log" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'LOG'}
+        this.compiler.logs.push(log);
+        break;
+      case "warn" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'WARN'}
+        this.compiler.logs.push(log);  
+        break;
+      case "success" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'SUCCESS'}
+        this.compiler.logs.push(log); 
+        break;
+      case "error" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'ERR'}
+        this.compiler.logs.push(log); 
+        break;
+      case "info" :
+        log = {timestamp: time , message: _contract + ':'  + _message , type: 'INFO'}
+        this.compiler.logs.push(log); 
+        break;
+      default:
+        break;
+    }
+  }
 }
 
