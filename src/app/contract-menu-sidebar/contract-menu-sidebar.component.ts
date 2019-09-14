@@ -241,7 +241,7 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
   } catch(e) {
     console.log("Call failed (for a good or bad reason)");
     console.log("Error war: ", e);
-    this.logMessage(_theFunction + " call errored: " + e, "error",  this.activeContracts[_contractIDEindex].aci.name)
+    this.logMessage(_theFunction + " call errored: " + e.returnType + " : " + e.decodedError, "error",  this.activeContracts[_contractIDEindex].aci.name)
     this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
   }
   //deactivate loader

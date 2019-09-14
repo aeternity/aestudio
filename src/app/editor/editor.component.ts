@@ -233,9 +233,12 @@ export class EditorComponent implements OnInit {
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
     if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
-      this.editorInstance.deltaDecorations([], [
-        { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
-      ]);}
+      setTimeout(() => {
+        this.editorInstance.deltaDecorations([], [
+          { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
+        ])
+      }, 400);
+      ;}
 
 
     // custom context menu options
@@ -261,8 +264,16 @@ export class EditorComponent implements OnInit {
           }).subscribe(data=>{
             console.log("Post hat ergeben?", data)
 
-            let s = this.compiler.activeCodeSelection
-            let constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+            var constructedUrl;
+            var s = this.compiler.activeCodeSelection || "";
+            
+            // share code with our without highlighter
+            if (s.endLineNumber != undefined){
+              constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+            } else {
+              constructedUrl = `${environment.appUrl}?contract=${data['candidateId']}`
+            }
+            
             console.log("DIE URL: ", constructedUrl)
             this._clipboardService.copyFromContent(constructedUrl);
             // display success message ;)
