@@ -237,6 +237,8 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
     console.log("Das callresult object: ", callresult);
     console.log("Hier kommt callresult: ", callresult.decodedResult);
     this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.activeContracts[_contractIDEindex].aci.name)
+    // handle "false" result case not displaying call result data
+    callresult.decodedResult == false ? callresult.decodedResult = "false" : true
     this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
   } catch(e) {
     console.log("Error war: ", e);
