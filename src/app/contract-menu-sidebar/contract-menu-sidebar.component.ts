@@ -1,7 +1,7 @@
 
 import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
-import { Subscription } from 'rxjs';
+import { Subscription, asapScheduler } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
 import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
@@ -209,7 +209,6 @@ gitLibSelector: SuiMultiSelect<any, any>;
 
  
 async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
-
   let theContract = this.activeContracts[_contractIDEindex];
 
   console.log("theContract is: ", theContract.aci.functions[0]);
@@ -221,11 +220,14 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
   console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
   
   // fetch all entered params
-  var params: any[] = [];
+  const jsonTypes = ["map", "list", "tuple", "record", "bytes"]
 
-  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].arguments.forEach(oneArg => {
-    console.log("Ein arg: ", oneArg.currentInputData)
-    params.push(oneArg.currentInputData)
+  var params: any[] = this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].arguments.map(oneArg => {
+    console.log("One arg: ", oneArg.currentInputData)
+    console.log("One arg: ", oneArg.currentInputData)
+    // try parsing input data as JSON to try handling complex input data cases - work in progess !
+    if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
+    return oneArg.currentInputData
   });
 
 
@@ -233,15 +235,15 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
   console.log("Called function: ", _theFunction);
   var callresult;
   try {
-    callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction].apply(null, params);
-    console.log("Das callresult object: ", callresult);
-    console.log("Hier kommt callresult: ", callresult.decodedResult);
+    callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...params);
+    console.log("The callresult object: ", callresult);
+    console.log("Decoded result ", callresult.decodedResult);
     this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.activeContracts[_contractIDEindex].aci.name)
     // handle "false" result case not displaying call result data
     callresult.decodedResult == false ? callresult.decodedResult = "false" : true
     this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
   } catch(e) {
-    console.log("Error war: ", e);
+    console.log("Error was: ", e);
     this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.activeContracts[_contractIDEindex].aci.name)
     this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
   }
