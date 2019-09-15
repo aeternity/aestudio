@@ -4,5 +4,6 @@ export const environment = {
   appUrl: 'http://fireeditor.nikitafuchs.de/',
   testnetFaucetUrl: 'https://testnet.faucet.aepps.com/account/',
   compilerURL:'https://compiler.aepps.com',
-  debugCompilerURL : 'http://145.239.150.239:3080'
+  debugCompilerURL : 'http://145.239.150.239:3080',
+  compilerRequestDelay : 400
 };

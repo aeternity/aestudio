@@ -6,12 +6,13 @@ import { ContractBase } from '../question/contract-base';
 import { Subscription, Observable, Subject } from 'rxjs';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-ui';
 import { ClipboardService } from 'ngx-clipboard';
 import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
+import { debounceTime } from 'rxjs/operators';
 
 
 
@@ -77,13 +78,18 @@ export class EditorComponent implements OnInit {
     private http: HttpClient,
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef) { 
-   // get code if param is there
+      
+      // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
+      this.codeChanged.pipe(
+      debounceTime(environment.compilerRequestDelay) // wait 1 sec after the last event before emitting last event
+      ). // only emit if value is different from previous value
+      subscribe(something => {
 
-    // get URL parameters 
-   
-
-    // activate this line to override trying to fetch a contract from backend
-   //this.contract = new Contract();
+        // Call your function which calls API or do anything you would like do after a lag of 1 sec
+        this.change();
+       })
+       
+       ;
   }
 
   editorOptions = {theme: 'vs-dark', 
@@ -310,6 +316,10 @@ export class EditorComponent implements OnInit {
           console.log(peng);
         }) */
   }
+  throttledChange(){
+    this.codeChanged.next();
+  }
+  codeChanged: Subject<string> = new Subject<string>();
 
   change(){
     //console.log("Shit done changed!");

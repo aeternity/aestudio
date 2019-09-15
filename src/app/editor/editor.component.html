@@ -1,4 +1,4 @@
-<ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="change()" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
+<ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
 <!-- <button (click)="compile()">Compile</button> -->
 <log-monitor
     [logStream]="logStream$"
