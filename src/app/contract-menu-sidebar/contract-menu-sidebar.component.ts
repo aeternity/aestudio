@@ -224,7 +224,6 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
 
   var params: any[] = this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].arguments.map(oneArg => {
     console.log("One arg: ", oneArg.currentInputData)
-    console.log("One arg: ", oneArg.currentInputData)
     // try parsing input data as JSON to try handling complex input data cases - work in progess !
     if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
     return oneArg.currentInputData
