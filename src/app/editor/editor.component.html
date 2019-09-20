@@ -16,3 +16,16 @@
     <br>
     <p style="font-size: 35px">🎉</p>
 </sui-dimmer>
+
+<sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
+        <h1 class="ui inverted header">Generated Code:</h1>
+        <br>
+        <p style="font-size: 35px">🎉</p>
+        <div class="ui form">
+             <div class="field">
+             <label></label>
+             <textarea>{{this.generatedCode}}</textarea>
+            </div>
+        </div>
+
+</sui-dimmer>

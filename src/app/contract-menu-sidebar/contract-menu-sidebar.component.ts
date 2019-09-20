@@ -18,6 +18,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { delay, share } from 'rxjs/operators';
 import fetchRandomAccounts from '../helpers/prefilled-accounts';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
 //import 'rxjs/add/operator/toPromise';
 
 
@@ -243,8 +244,14 @@ async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDE
     this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
   } catch(e) {
     console.log("Error was: ", e);
-    this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.activeContracts[_contractIDEindex].aci.name)
-    this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
+    debugger;
+    if (e.decodedError != undefined) {
+      this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.activeContracts[_contractIDEindex].aci.name)
+      this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
+    } else {
+      this.logMessage(_theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again.",  this.activeContracts[_contractIDEindex].aci.name)
+
+    }
   }
   //deactivate loader
   this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = false
@@ -392,6 +399,26 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
       default:
         break;
     }
+  }
+
+  generateCode(_theContractCode: string, _theFunctionName: string, _theParams: any){
+    console.log("Generate in sidebar getriggert");
+    console.log("Als parameter wurden übergeben:");
+    console.log("_thefunctionName: " , _theFunctionName);
+    console.log("the params: ", _theParams);
+    console.log("contract code is: ", this.activeContracts[0].source)
+    let arryOfInputData = [];
+    _theParams.arguments.forEach(oneArg => {
+      //console.log("One input is: ", oneArg)
+      arryOfInputData.push(oneArg.currentInputData);
+    });
+   
+    console.log("final array of input data: ", arryOfInputData);
+     this.compiler._generateCode.next(
+      { theContractCode: _theContractCode,
+        theFunctionName: _theFunctionName,
+        theParams: arryOfInputData
+    }); 
   }
 }
 

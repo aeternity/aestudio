@@ -184,7 +184,7 @@ export class CompilerService {
     try {
       console.log("Deployment params: ", _deploymentParams)
       await myContract.methods.init.apply(null, _deploymentParams);
-      let successString = 
+      //let successString = 
       this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 
     } catch(e){
@@ -387,7 +387,10 @@ export class CompilerService {
   // a (new) account was found!
   public _notifyCodeError = new BehaviorSubject<any>({});
   newCodeError = this._notifyCodeError.asObservable();
- 
+  
+  // notify the editor to display generated code
+  public _generateCode = new BehaviorSubject<any>({});
+   codeGenerator = this._generateCode.asObservable();
   /* listeners end */
 
   /* all things sharing related start */
@@ -425,6 +428,8 @@ export class CompilerService {
         break;
     }
   }
+
+
 
 }
 

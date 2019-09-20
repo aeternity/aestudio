@@ -219,7 +219,31 @@
             
                                 <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Send Transaction</button>
                                 <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Call Locally</button>
-                                <h4 *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData}}</h4> 
+                                
+                                <!-- Experimental Code generator start -->
+                                <div id="options-dropdownbutton" class="generator-menu-button ui basic button dropdown "  suiDropdown>
+                                        <i class="magic icon"></i>
+                                        <div class="text">Generate</div>
+                                        
+                                        <div class="menu" suiDropdownMenu>
+                                            
+                                            <!-- <ng-container *ngIf="currentSDKsettings">
+                                                <div *ngFor="let address of currentSDKsettings.addresses" class="item">
+                                                    <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                                    <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                                                </div>
+                                            </ng-container> 
+                                            
+                                            <div class="divider"></div> -->
+                                            <div class="item" (click)="generateCode(activeContracts[contract.IDEindex].source, activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].name, activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex])">
+                                                    
+                                                    <i class="computer icon"></i>
+                                                    NodeJS</div>
+                                        </div>
+                                    </div>
+                                <!-- Experimental code generator end -->
+
+                                <h4 *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
                             </div>
                         </ng-container>
                     </div>

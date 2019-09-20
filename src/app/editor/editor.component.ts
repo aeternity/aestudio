@@ -3,7 +3,7 @@ import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { ContractControlService } from '../contract-control.service';
 import { ContractBase } from '../question/contract-base';
-import { Subscription, Observable, Subject } from 'rxjs';
+import { Subscription, Observable, Subject, BehaviorSubject } from 'rxjs';
 import { getNumberOfCurrencyDigits } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
@@ -13,6 +13,7 @@ import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-
 import { ClipboardService } from 'ngx-clipboard';
 import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
+import { IfStmt } from '@angular/compiler';
 
 
 
@@ -32,6 +33,8 @@ export class EditorComponent implements OnInit {
 
   // logger end // 
   isDimmed: boolean = false;
+
+
  
   editorInstance: any; // the editor, initialized by the component
 
@@ -63,10 +66,19 @@ export class EditorComponent implements OnInit {
   // Listen to compilation success (e.g. to remove highlights)
   rawACIsubscription: Subscription;
 
+  // Listen to compilation success (e.g. to remove highlights)
+  codeGenerator: Subscription;
+
   // note if this editor is currently in active tab
   isActiveTab : boolean = true;
 
+  // handles the case of event emitter emitting three error events instead of 1
+  previousErrorHash : any = "";
   // import default contract, after that set this with editor's content
+
+  // var for the dimmer, whether the codegenerator is to be displayed or not
+  codeGeneratorVisible = false;
+  generatedCode : any = ""
 
   //the current active code - initialized either as default code, or code fetched from DB, later on set by editor content
   // INITIALIZATION RACE DEBUGGING contract: Contract<string>
@@ -171,8 +183,26 @@ export class EditorComponent implements OnInit {
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
     
+
     // if the compiler / debugger submitts errors, highlight them:
-    this.newErrorSubscription = this.compiler._notifyCodeError
+    
+    this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
+      distinctUntilChanged((prev, curr) => {
+        
+       /*  console.log("comparing...")
+        console.log("Prev", this.previousErrorHash )
+        //console.log(this.hash(prev));
+        //console.log("Curr", curr)
+        console.log(this.hash(curr)); */
+        this.previousErrorHash = this.hash(curr);
+
+        let currhash = this.hash(curr);
+
+        //console.log("Equal?", this.previousErrorHash  == currhash);
+        //debugger
+        return this.previousErrorHash  == currhash;
+      })
+    )
       .subscribe(async error =>  {
           await error;
           //let theError = error.__zone_symbol__value;
@@ -227,6 +257,111 @@ export class EditorComponent implements OnInit {
     this.compiler.generateACIonly(this.contract.code);
     
     //  return this.compile();
+
+
+    this.codeGenerator = this.compiler._generateCode
+    .subscribe(item => {
+      if (Object.entries(item).length > 1)
+      this.codeGeneratorVisible = true;
+      console.log(">>>>>>>>>>>> Codegeneration parameters are:", item)
+
+      this.generatedCode = `const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
+
+      // GLOBALS START 
+      
+      // account that will be used for the transactions
+      const acc1 = MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } });
+      
+      // a reference to the aeternity blockchain
+      var Chain;
+      
+      // a reference to your contract
+      var myContract;
+      
+      // the name of the function you want to call
+      var yourFunction = \"${item.theFunctionName}\";
+      
+      // the parameters of your function
+      yourParams = [${item.theParams}];
+      
+      // the code of your contract - watch out for correct indentations !
+      var code = 
+      \`${item.theContractCode}\`
+      
+      // GLOBALS END
+      
+      // instantiate a connection to the aeternity blockchain
+      const main = async () => {
+        const node1 = await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' })
+        // const node2 = ...
+      
+          Chain = await Ae({
+           // This two params deprecated and will be remove in next major release
+            url: 'https://sdk-testnet.aepps.com',
+            internalUrl: 'https://sdk-testnet.aepps.com',
+            // instead use
+            nodes: [
+              { name: 'someNode', instance: node1 },
+              // mode2
+            ],
+            compilerUrl: 'https://compiler.aepps.com',
+            // \`keypair\` param deprecated and will be removed in next major release
+           
+            accounts: [
+              acc1,
+              // acc2
+            ],
+            address: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+        })
+        const height = await Chain.height()
+        console.log('Connected to Testned Node! Current Block:', height)
+      
+        // deploy the contract
+        await deployContract()
+      
+        // call your function
+        console.log("Calling your function " + yourFunction);
+        let callresult = await myContract.methods[yourFunction](...yourParams);
+        console.log("Transaction ID: ", callresult.hash);
+        console.log("Function call returned: ", callresult.decodedResult);
+        
+      }
+      
+      // call main
+      main()
+      
+      deployContract = async () => {    
+              let sourceCode = code
+              // replace " => \\"
+              sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\\"');
+          
+              // remove comments
+              sourceCode = sourceCode.replace(new RegExp('\\\\/\\\\/.*', 'g'), '');
+              sourceCode = sourceCode.replace(new RegExp('\\\\/\\\\*.*[\\s\\S]*\\\\*\\\\/', 'g'), '');
+          
+              // create a contract instance
+              myContract = await Chain.getContractInstance(sourceCode);
+          
+          
+              // Deploy the contract
+              try {
+                console.log("Deploying contract....")
+                console.log("Using account for deployment: ", Chain.addresses());
+                await myContract.methods.init();
+              } catch(e){
+                console.log("Something went wrong, investigating tx!");
+                console.log(e);
+                console.log(" Deployment failed: " + e, "error",  myContract.aci.name)
+                  }
+              console.log("Contract deployed successfully!")
+              console.log("Contract address: ", myContract.deployInfo.address)
+              console.log("Transaction ID: ", myContract.deployInfo.transaction)
+              console.log("\\n \\n")
+      
+              return true;
+            }`
+           
+     });
 
   }); 
   }
@@ -410,6 +545,8 @@ export class EditorComponent implements OnInit {
     }
     return r.join('');
   }
+
+  
 
   ngOnDestroy() {
     // prevent memory leak when component is destroyed

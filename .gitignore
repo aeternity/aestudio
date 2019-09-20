@@ -47,3 +47,4 @@ Thumbs.db
 contract-storage-backend
 .push.settings.jsonc
 src/app/helpers/topUpAllAccounts
+src/app/helpers/generate-nodejs/node_modules

@@ -100,3 +100,10 @@ margin-left: 1em;
     background: lightgray
 }
   /* error box end */
+
+.generator-menu-button {
+    right: 2em !important;
+    position: absolute !important;
+    right: 1em !important;
+    min-width: fit-content;
+}
