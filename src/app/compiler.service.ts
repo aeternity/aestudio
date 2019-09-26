@@ -307,7 +307,7 @@ export class CompilerService {
       
       //console.log("Hier init ACI object:", this.aci)
       
-      this._notifyCompiledAndACI.next(0);
+      this._notifyCompiledAndACI.next(this.rawACI);
       //this._notifyCurrentSDKsettings.next(0);
     },
     async (error) =>  {

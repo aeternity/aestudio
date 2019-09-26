@@ -116,7 +116,7 @@ export class EditorComponent implements OnInit {
     setInterval(() => {
       // fetching logs from compiler...
       this.logs = this.compiler.logs;
-    }, 3000);
+    }, 1000);
 
     this.logStream$ = this.logs[1];
     this.logStream$ = this.logs[2];
@@ -185,23 +185,9 @@ export class EditorComponent implements OnInit {
     
 
     // if the compiler / debugger submitts errors, highlight them:
-    
+    // repetitive compiler errors
     this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
-      distinctUntilChanged((prev, curr) => {
-        
-       /*  console.log("comparing...")
-        console.log("Prev", this.previousErrorHash )
-        //console.log(this.hash(prev));
-        //console.log("Curr", curr)
-        console.log(this.hash(curr)); */
-        this.previousErrorHash = this.hash(curr);
-
-        let currhash = this.hash(curr);
-
-        //console.log("Equal?", this.previousErrorHash  == currhash);
-        //debugger
-        return this.previousErrorHash  == currhash;
-      })
+      distinctUntilChanged()
     )
       .subscribe(async error =>  {
           await error;
@@ -243,13 +229,16 @@ export class EditorComponent implements OnInit {
 
        // fires when new contract got compiled
        this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-       .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
+       .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
+       if (Object.entries(item).length > 0) {
          //console.log("Clearing error marker..");
         this.clearAllHighlighters();
          
          // reset the error tracker
          //console.log("Resetting last known error..");
-         this.lastError = "";
+         this.lastError = "";} else {
+           console.log("Empty ACI was received, not removing error")
+         }
         });
  
 

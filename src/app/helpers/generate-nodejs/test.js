@@ -12,15 +12,15 @@ const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
       var myContract;
       
       // the name of the function you want to call
-      var yourFunction = "sub_test_value";
+      var yourFunction = "add_test_value";
       
       // the parameters of your function
-      yourParams = [10,3];
+      yourParams = [2,3];
       
       // the code of your contract - watch out for correct indentations !
       var code = 
       `
-contract CryptoElfe =
+contract CryptoHamster =
 
     record state = {
         index : int, 
@@ -46,9 +46,9 @@ contract CryptoElfe =
     public entrypoint cause_error() : string =
         require(2 == 1, "require failed") 
 
-    public stateful entrypoint sub_test_value(one: int, two: int) : int =
-        put(state{testvalue = one - two})
-        one - two
+    public stateful entrypoint add_test_value(one: int, two: int) : int =
+        put(state{testvalue = one + two})
+        one + two
     
     public entrypoint locally_add_two(one: int, two: int) : int =
         one + two
