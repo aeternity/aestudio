@@ -1,8 +1,6 @@
 # ae-angular-fiddle
 
-This is an effort trying to get thre JS SDK to work in angular. 
-
-Check `src/app/compiler.service.ts` for the problematic code.
+This is an effort trying to get the JS SDK to work in angular. 
 
 0. install angular `npm install -g @angular/cli`
 1. `npm install`
