@@ -13,7 +13,7 @@
 }
 
 
-/* tweakings of the semantic UI*/
+/* tweakings of the semantic UI START*/
 
 .noSideSpace {
     margin-left: 0px !important;
@@ -21,6 +21,22 @@
     margin-right: 0px !important;
     padding-right: 0px !important;
 }
+
+/* eliminate white space when shrinking the screen */
+@media only screen and (max-width: 1199px) and (min-width: 992px){
+    .ui.grid.container{
+        width:auto !important;
+    }
+}
+/* eliminate white space when shrinking the screen even further */
+@media only screen and (max-width: 991px) and (min-width: 768px){
+    .ui.grid.container {
+        width: auto !important;
+    }
+}
+
+
+/* tweakings of the semantic UI END*/
 
 /* scheiß monaco editor container height */
 .editor-container{
@@ -58,3 +74,4 @@
 .truncate{
     text-overflow: ellipsis
 }
+

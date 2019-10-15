@@ -1,0 +1,16 @@
+{
+  "name": "codegen-test",
+  "version": "1.0.0",
+  "description": "pure code for generating code from docs. should also contain tests for the scripts.",
+  "main": "node-generator.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "nikita fuchs",
+  "license": "ISC",
+  "dependencies": {
+    "atob": "^2.1.2",
+    "axios": "^0.19.0",
+    "md-2-json": "^1.0.6"
+  }
+}

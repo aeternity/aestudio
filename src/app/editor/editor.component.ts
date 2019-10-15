@@ -2,26 +2,21 @@ import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChang
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
 import { ContractControlService } from '../contract-control.service';
-import { ContractBase } from '../question/contract-base';
 import { Subscription, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { getNumberOfCurrencyDigits } from '@angular/common';
 import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
 import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import {SuiModalService, TemplateModalConfig, ModalTemplate} from 'ng2-semantic-ui';
 import { ClipboardService } from 'ngx-clipboard';
 import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
-import { IfStmt } from '@angular/compiler';
 
 
 
 @Component({
   selector: 'app-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']/* ,
-  providers: [ CompilerService ] */
+  styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
   
@@ -193,7 +188,7 @@ export class EditorComponent implements OnInit {
           await error;
           //let theError = error.__zone_symbol__value;
           console.log("Nur error: ", error);
-
+        
           // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
           let errorHash = this.hash(error);
           //console.log("Error hash: ", errorHash) 

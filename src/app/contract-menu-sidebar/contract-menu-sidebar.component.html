@@ -188,96 +188,17 @@
     
 
 
-<!-- Deployed contracts  -->
+<!-- Deployed contracts start -->
+<div *ngIf="activeContracts.length > 0" id="deployedContractsLabel" class="ui orange segment container">
+    <a class="ui orange ribbon label">Deployed Contracts</a>
+</div>
 
-    <sui-accordion [transitionDuration]="500" [closeOthers] = "true" class="styled fluid">
-        <sui-accordion-panel *ngFor=" let contract of activeContracts; let i = index" [isDisabled]="false" >
-            <div title>
-                <i class="dropdown icon" (click)="panelOpen = !panelOpen"></i>
-                {{contract.aci.name}}
-            </div>
-            <div content>
-                    <div>
-                        <ng-container class="ui segment container" *ngFor="let oneFunction of contract.aci.functions">
-                            <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
-                                <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
-            
-                                <!-- TODO: Add form control -->
-                                <form class="ui form">
-                                    <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
-                                        <input [(ngModel)]="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
-                                                name="{{oneFunction.name + '-' + arg.name}}"
-                                                type="text"
-                                                class="arg-field"
-                                                id="{{oneFunction.name + '-' + arg.name}}"   
-                                                placeholder="{{arg.type}}"
-                                        >
-                                    </div>
-                                </form>
-                                <br>
-                                <app-loader *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
-            
-                                <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Send Transaction</button>
-                                <button *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Call Locally</button>
-                                
-                                <!-- Experimental Code generator start -->
-                                <div id="options-dropdownbutton" class="generator-menu-button ui basic button dropdown "  suiDropdown>
-                                        <i class="magic icon"></i>
-                                        <div class="text">Generate</div>
-                                        
-                                        <div class="menu" suiDropdownMenu>
-                                            
-                                            <!-- <ng-container *ngIf="currentSDKsettings">
-                                                <div *ngFor="let address of currentSDKsettings.addresses" class="item">
-                                                    <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
-                                                    <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
-                                                </div>
-                                            </ng-container> 
-                                            
-                                            <div class="divider"></div> -->
-                                            <div class="item" (click)="generateCode(activeContracts[contract.IDEindex].source, activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].name, activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex])">
-                                                    
-                                                    <i class="computer icon"></i>
-                                                    NodeJS</div>
-                                        </div>
-                                    </div>
-                                <!-- Experimental code generator end -->
-
-                                <h4 *ngIf="activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{activeContracts[contract.IDEindex].aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
-                            </div>
-                        </ng-container>
-                    </div>
-            </div>
-        </sui-accordion-panel>
-    </sui-accordion>
+<sui-accordion [transitionDuration]="500" [closeOthers] = "true" id="deployedContractsDropdown" class="styled fluid">
+    <app-deployed-contract *ngFor="let contract of activeContracts" [contract]="contract"></app-deployed-contract>
+</sui-accordion>
+<br>
+<!-- Deployed contracts end -->
 
 <div class="ui segment container">
     <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
 </div>
-
-<!-- <div [formGroup] = "form">
-    <div class="ui segment container">
-
-    <h3 class ="ui header">Demo Form: Sku</h3>
-    <form [formGroup]="myForm"
-        (ngSubmit)="onSubmit(myForm.value)"
-        class="ui form">
-        
-        <div class="field"
-            [class.error]="!sku.valid && sku.touched"
-            >
-            <label for="skuInput">SKU</label>
-            <input type="text"
-                   id="skuInput"
-                   placeholder="SKU"
-                   [formControl]="myForm.controls['sku']">
-                   
-            <div *ngIf="myForm.controls['sku'].hasError('required') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU is invalid</div>
-            <div *ngIf="!myForm.controls['sku'].hasError('required') && myForm.controls['sku'].hasError('invalidSku') && myForm.controls['sku'].touched" [style.display]="'block'" class="ui error message">SKU needs to start with 123</div>
-
-        </div>      
-
-        <button type="submit" class="ui button">Submit</button>
-    </form>
-</div>
-</div> -->

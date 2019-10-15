@@ -45,14 +45,6 @@ export class ReplacePipe implements PipeTransform {
 
 export class ContractMenuSidebarComponent implements OnInit {
 
-  // dropdown start
-
-@ViewChild('gitLibSelector', {static: true})
-gitLibSelector: SuiMultiSelect<any, any>;
-
- 
-// dropdown end
-
   //Fires when new SDK settings are available(Accounts, )
   sdkSettingsSubscription: Subscription;
   // listen for new errors
@@ -209,63 +201,6 @@ gitLibSelector: SuiMultiSelect<any, any>;
 //desparate workaround for issue: contract to deploy is not being rendered since adding node choosing interface
 
  
-async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
-  let theContract = this.activeContracts[_contractIDEindex];
-
-  console.log("theContract is: ", theContract.aci.functions[0]);
-  // activate loader
-  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = true
-  this.changeDetectorRef.detectChanges()
-
-  //this.changeDetectorRef.detectChanges()
-  console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
-  
-  // fetch all entered params
-  const jsonTypes = ["map", "list", "tuple", "record", "bytes"]
-
-  var params: any[] = this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].arguments.map(oneArg => {
-    console.log("One arg: ", oneArg.currentInputData)
-    // try parsing input data as JSON to try handling complex input data cases - work in progess !
-    if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
-    return oneArg.currentInputData
-  });
-
-
-  // "Apply" parameters a.k.a call function
-  console.log("Called function: ", _theFunction);
-  var callresult;
-  try {
-    callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...params);
-    console.log("The callresult object: ", callresult);
-    console.log("Decoded result ", callresult.decodedResult);
-    this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.activeContracts[_contractIDEindex].aci.name)
-    // handle "false" result case not displaying call result data
-    callresult.decodedResult == false ? callresult.decodedResult = "false" : true
-    this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
-  } catch(e) {
-    console.log("Error was: ", e);
-    debugger;
-    if (e.decodedError != undefined) {
-      this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.activeContracts[_contractIDEindex].aci.name)
-      this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
-    } else {
-      this.logMessage(_theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again.",  this.activeContracts[_contractIDEindex].aci.name)
-
-    }
-  }
-  //deactivate loader
-  this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading = false
-  //this.changeDetectorRef.detectChanges()
-
-  
-  // set decoded result to GUI
-  
-  this.changeDetectorRef.detectChanges()
-  console.log("Loader ist: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].loading )
-  console.log("Das wurde als callresult geschrieben: ", this.activeContracts[_contractIDEindex].aci.functions[_theFunctionIndex].lastReturnData)
-    
-}
-
 async changeActiveAccount(newAccount: any) {
   console.log("So wird der neue account gesetzt: ", newAccount);
   

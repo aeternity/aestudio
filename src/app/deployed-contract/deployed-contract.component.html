@@ -1,0 +1,59 @@
+
+<sui-accordion-panel [isDisabled]="false" >
+    <div title>
+        <i class="dropdown icon" (click)="panelOpen = !panelOpen"></i>
+        {{contract.aci.name}}
+    </div>
+    <div content>
+            <div>
+                <ng-container class="ui segment container" *ngFor="let oneFunction of contract.aci.functions">
+                    <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
+                        <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
+    
+                        <!-- TODO: Add form control -->
+                        <form class="ui form">
+                            <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
+                                <input [(ngModel)]="contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
+                                        name="{{oneFunction.name + '-' + arg.name}}"
+                                        type="text"
+                                        class="arg-field"
+                                        id="{{oneFunction.name + '-' + arg.name}}"   
+                                        placeholder="{{arg.type}}"
+                                >
+                            </div>
+                        </form>
+                        <br>
+                        <app-loader *ngIf="contract.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
+    
+                        <button *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Send Transaction</button>
+                        <button *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Call Locally</button>
+                        
+                        <!-- Experimental Code generator start -->
+                        <div id="options-dropdownbutton" class="generator-menu-button ui basic button dropdown "  suiDropdown>
+                                <i class="magic icon"></i>
+                                <div class="text">Code</div>
+                                
+                                <div class="menu" suiDropdownMenu>
+                                    
+                                    <!-- <ng-container *ngIf="currentSDKsettings">
+                                        <div *ngFor="let address of currentSDKsettings.addresses" class="item">
+                                            <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                            <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                                        </div>
+                                    </ng-container> 
+                                    
+                                    <div class="divider"></div> -->
+                                    <div class="item" (click)="generateCode(contract.source, contract.aci.functions[oneFunction.IDEindex].name, contract.aci.functions[oneFunction.IDEindex])">
+                                            
+                                            <i class="computer icon"></i>
+                                            NodeJS</div>
+                                </div>
+                            </div>
+                        <!-- Experimental code generator end -->
+
+                        <h4 *ngIf="contract.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{contract.aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
+                    </div>
+                </ng-container>
+            </div>
+    </div>
+</sui-accordion-panel>

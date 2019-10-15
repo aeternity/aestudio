@@ -107,3 +107,37 @@ margin-left: 1em;
     right: 1em !important;
     min-width: fit-content;
 }
+
+/* deployed contracts start */
+#deployedContractsLabel{
+    margin-bottom: 0 !important;
+    border-bottom: 0px;
+    border-radius: .28571429rem .28571429rem 0 0;
+    box-shadow: none !important;
+    max-width: calc(100% + 2px) !important;
+    left: -1px;
+    position: relative;
+    z-index: 1;
+}
+
+#deployedContractsDropdown{
+    border-radius: 0 0 .28571429rem .28571429rem;
+}
+
+.deployedContractsWrapper{
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15)
+}
+
+.ui.ribbon.label {
+    left: calc(-1rem - 1.2em - 1px);
+}
+
+/* .ui.ribbon.label:after {
+    left: -2px;
+} */
+/* deployed contracts end */
+/* 
+box-shadow: 5px 5px 15px 4px rgba(44,44,44);
+    left: -1px;
+    position:unset;
+    z-index: 1; */

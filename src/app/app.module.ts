@@ -18,6 +18,7 @@ import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
 import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ClipboardModule } from 'ngx-clipboard';
+import { DeployedContractComponent } from './deployed-contract/deployed-contract.component';
 
 
 
@@ -25,7 +26,7 @@ import { ClipboardModule } from 'ngx-clipboard';
   declarations: [
     AppComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent
+    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent, DeployedContractComponent
   ],
   imports: [
     BrowserModule,
