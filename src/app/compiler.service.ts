@@ -94,7 +94,7 @@ export class CompilerService {
       //compilerUrl: 'http://localhost:3080',
       compilerUrl: `${environment.compilerURL}`,
       nativeMode: true,
-      accounts: theAccounts 
+      accounts: theAccounts
       
       /* [
           MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } }),
@@ -125,7 +125,8 @@ export class CompilerService {
     //let compilerUrl = "https://compiler.aepps.com/aci";
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json'
+        'Content-Type':  'application/json', 
+        'Sophia-Compiler-Version': '4.0.0'
       })
     };
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
@@ -137,7 +138,7 @@ export class CompilerService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json',
-        'Sophia-Compiler-Version': '4.0.0-rc2'
+        'Sophia-Compiler-Version': '4.0.0'
       })
     };
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
