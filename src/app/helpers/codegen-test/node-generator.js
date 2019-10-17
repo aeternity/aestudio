@@ -78,7 +78,7 @@ generateCodeStructure = async () => {
                 topLevelParent == undefined ? globals['top'] = found_globals : globals[topLevelParent] = found_globals;
                 }
             }
-
+ 
 
             if( (typeof obj[key] == "object"))  {
                 // if called recursiely, pass parent's name (but only if the parent is a top-level key)
