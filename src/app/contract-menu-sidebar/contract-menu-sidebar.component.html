@@ -189,13 +189,16 @@
 
 
 <!-- Deployed contracts start -->
-<div *ngIf="activeContracts.length > 0" id="deployedContractsLabel" class="ui orange segment container">
-    <a class="ui orange ribbon label">Deployed Contracts</a>
+<div id = deployedContracts (mouseover)="hover=true" (mouseleave)="hover=false">
+    <span [ngStyle]="{'box-shadow': hover==true  ? '0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)' : '0 1px 2px 0 rgba(34,36,38,.15)' }" > 
+        <div *ngIf="activeContracts.length > 0" id="deployedContractsLabel" class="ui orange segment container">
+            <a class="ui orange ribbon label">Deployed Contracts</a>
+        </div>
+        <sui-accordion [transitionDuration]="500" [closeOthers] = "true" id="deployedContractsDropdown" class="styled fluid">
+            <app-deployed-contract *ngFor="let contract of activeContracts" [contract]="contract"></app-deployed-contract>
+        </sui-accordion>
+    </span>
 </div>
-
-<sui-accordion [transitionDuration]="500" [closeOthers] = "true" id="deployedContractsDropdown" class="styled fluid">
-    <app-deployed-contract *ngFor="let contract of activeContracts" [contract]="contract"></app-deployed-contract>
-</sui-accordion>
 <br>
 <!-- Deployed contracts end -->
 

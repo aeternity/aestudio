@@ -290,7 +290,7 @@ export class EditorComponent implements OnInit {
             ],
             compilerUrl: 'https://compiler.aepps.com',
             // \`keypair\` param deprecated and will be removed in next major release
-           
+            
             accounts: [
               acc1,
               // acc2
@@ -385,6 +385,7 @@ export class EditorComponent implements OnInit {
           this.http.post(environment.contractSharingBackend, postData, {
             headers: new HttpHeaders({
                 'Content-Type':  'application/json',
+                'Sophia-Compiler-Version': '4.0.0'
               })
           }).subscribe(data=>{
             console.log("Post hat ergeben?", data)
