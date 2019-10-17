@@ -26,7 +26,7 @@ contract CryptoHamster =
     public entrypoint return_caller() : address =
         Call.caller
 
-    public entrypoint cause_error() : string =
+    public entrypoint cause_error() : unit =
         require(2 == 1, "require failed") 
 
     public stateful entrypoint add_test_value(one: int, two: int) : int =
