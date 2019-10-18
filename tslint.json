@@ -1,6 +1,6 @@
 {
   "extends": "tslint:recommended",
-  "rules": {
+  "rules":  {
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {
