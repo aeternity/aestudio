@@ -245,10 +245,10 @@ export class EditorComponent implements OnInit {
 
     this.codeGenerator = this.compiler._generateCode
     .subscribe(item => {
-      if (Object.entries(item).length > 1)
+      if (Object.entries(item).length > 1)  // <-- marie, aufpassen !
       this.codeGeneratorVisible = true;
       console.log(">>>>>>>>>>>> Codegeneration parameters are:", item)
-
+      
       this.generatedCode = `const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
 
       // GLOBALS START 
