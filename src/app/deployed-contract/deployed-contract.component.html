@@ -35,14 +35,7 @@
                                 
                                 <div class="menu" suiDropdownMenu>
                                     
-                                    <!-- <ng-container *ngIf="currentSDKsettings">
-                                        <div *ngFor="let address of currentSDKsettings.addresses" class="item">
-                                            <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
-                                            <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
-                                        </div>
-                                    </ng-container> 
-                                    
-                                    <div class="divider"></div> -->
+                                  
                                     <div class="item" (click)="generateCode(contract.source, contract.aci.functions[oneFunction.IDEindex].name, contract.aci.functions[oneFunction.IDEindex])">
                                             
                                             <i class="computer icon"></i>

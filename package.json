@@ -9,8 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "postinstall": "node patch.js",
-    "sophia": "./sophia-workaround.sh",
+    "postinstall": "node patch.js && ./custom-modules/install-modified-logmonitor.sh && ./custom-modules/sophia-workaround.sh",
+    "sophia": "./custom-modules/sophia-workaround.sh",
     "postbuild": "node inject-metadata.js"
   },
   "private": true,
