@@ -1,22 +1,29 @@
 import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
-import { CompilerService } from '../compiler.service'
+import { CompilerService } from '../compiler.service';
+import { CodeFactoryService } from '../code-factory.service';
+import { BehaviorSubject, Subscription, generate } from 'rxjs';
 
 @Component({
   selector: 'app-deployed-contract',
   templateUrl: './deployed-contract.component.html',
   styleUrls: ['./deployed-contract.component.css']
+  
 })
 export class DeployedContractComponent implements OnInit {
 
   @Input() contract: any;
   panelOpen: boolean;
 
-  constructor(private compiler: CompilerService) { }
-
+  constructor(private compiler: CompilerService, 
+              private codeFactory: CodeFactoryService){
+   
+     }
+  
   ngOnInit() {
     console.log("Als contract wurde übergeben: ");
     console.log(this.contract);
   }
+
 
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
     let theContract = this.contract;
@@ -36,7 +43,7 @@ export class DeployedContractComponent implements OnInit {
       if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
       return oneArg.currentInputData
     });
-  
+    
   
     // "Apply" parameters a.k.a call function
     console.log("Called function: ", _theFunction);
@@ -65,10 +72,14 @@ export class DeployedContractComponent implements OnInit {
     
     // set decoded result to GUI
     
-    console.log("Loader ist: ", this.contract.aci.functions[_theFunctionIndex].loading )
-    console.log("Das wurde als callresult geschrieben: ", this.contract.aci.functions[_theFunctionIndex].lastReturnData)
-      
+    console.log("Loader ist: ", this.contract.aci.functions[_theFunctionIndex].loading );
+    console.log("Das wurde als callresult geschrieben: ", this.contract.aci.functions[_theFunctionIndex].lastReturnData);
   }
-
-
+  
+  callCodeFactory(_theContractCode: string, _theFunctionName: string, _theParams: any) {
+    this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams);
+  }
+  
 }
+
+

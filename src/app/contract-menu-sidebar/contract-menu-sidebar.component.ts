@@ -336,24 +336,5 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
     }
   }
 
-  generateCode(_theContractCode: string, _theFunctionName: string, _theParams: any){
-    console.log("Generate in sidebar getriggert");
-    console.log("Als parameter wurden übergeben:");
-    console.log("_thefunctionName: " , _theFunctionName);
-    console.log("the params: ", _theParams);
-    console.log("contract code is: ", this.activeContracts[0].source)
-    let arryOfInputData = [];
-    _theParams.arguments.forEach(oneArg => {
-      //console.log("One input is: ", oneArg)
-      arryOfInputData.push(oneArg.currentInputData);
-    });
-   
-    console.log("final array of input data: ", arryOfInputData);
-     this.compiler._generateCode.next(
-      { theContractCode: _theContractCode,
-        theFunctionName: _theFunctionName,
-        theParams: arryOfInputData
-    }); 
-  }
 }
 

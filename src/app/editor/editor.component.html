@@ -17,15 +17,18 @@
     <p style="font-size: 35px">🎉</p>
 </sui-dimmer>
 
+<div class = "codeGenerator">
 <sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
-        <h1 class="ui inverted header">Generated Code:</h1>
+        <div id="header"><h1 class="ui inverted header">Generated Code:</h1></div>
         <br>
         <p style="font-size: 35px">🎉</p>
         <div class="ui form">
              <div class="field">
              <label></label>
-             <textarea>{{this.generatedCode}}</textarea>
-            </div>
+            <!-- <ngx-monaco-editor  [(ngModel)]="this.generatedCode" id="generatedCodeEditor" [options]="editorOptions" ></ngx-monaco-editor>-->
+                <textarea id="generatedCodeEditor">{{this.generatedCode}}</textarea>
+        </div>
         </div>
 
 </sui-dimmer>
+</div>

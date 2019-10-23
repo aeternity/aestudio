@@ -8,8 +8,9 @@ import { filter, map, distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ClipboardService } from 'ngx-clipboard';
-import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
+import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
+import { CodeFactoryService } from '../code-factory.service';
 
 
 
@@ -20,6 +21,7 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class EditorComponent implements OnInit {
   
+  @Input() 
   // logger start //
   logs: NgxLogMessage[] = [
   ];
@@ -28,8 +30,6 @@ export class EditorComponent implements OnInit {
 
   // logger end // 
   isDimmed: boolean = false;
-
-
  
   editorInstance: any; // the editor, initialized by the component
 
@@ -55,6 +55,7 @@ export class EditorComponent implements OnInit {
   // listen to compiler events asking to send code
   fetchActiveCodeSubscription: Subscription;
   
+  
   // listen for new errors
   newErrorSubscription: Subscription;
 
@@ -63,7 +64,7 @@ export class EditorComponent implements OnInit {
 
   // Listen to compilation success (e.g. to remove highlights)
   codeGenerator: Subscription;
-
+  templateCode: string = '';
   // note if this editor is currently in active tab
   isActiveTab : boolean = true;
 
@@ -84,7 +85,9 @@ export class EditorComponent implements OnInit {
     private _route: ActivatedRoute, 
     private http: HttpClient,
     private _clipboardService: ClipboardService,
-    private changeDetectorRef: ChangeDetectorRef) { 
+    private changeDetectorRef: ChangeDetectorRef, 
+    private generator: CodeFactoryService, 
+    ) { 
       
       // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
       this.codeChanged.pipe(
@@ -94,9 +97,7 @@ export class EditorComponent implements OnInit {
 
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
-       })
-       
-       ;
+       });
   }
 
   editorOptions = {theme: 'vs-dark', 
@@ -232,7 +233,7 @@ export class EditorComponent implements OnInit {
          // reset the error tracker
          //console.log("Resetting last known error..");
          this.lastError = "";} else {
-           console.log("Empty ACI was received, not removing error")
+           console.log("Empty ACI was received, not removing error");
          }
         });
  
@@ -243,107 +244,13 @@ export class EditorComponent implements OnInit {
     //  return this.compile();
 
 
-    this.codeGenerator = this.compiler._generateCode
-    .subscribe(item => {
-      if (Object.entries(item).length > 1)  // <-- marie, aufpassen !
+    this.codeGenerator = this.generator._generateCode.subscribe(code => {
+      if (Object.entries(code).length > 0)// <-- marie, aufpassen !
       this.codeGeneratorVisible = true;
-      console.log(">>>>>>>>>>>> Codegeneration parameters are:", item)
       
-      this.generatedCode = `const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
-
-      // GLOBALS START 
+      console.log(">>>>>>>>>>>> Codegeneration parameters are:", code);
       
-      // account that will be used for the transactions
-      const acc1 = MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } });
-      
-      // a reference to the aeternity blockchain
-      var Chain;
-      
-      // a reference to your contract
-      var myContract;
-      
-      // the name of the function you want to call
-      var yourFunction = \"${item.theFunctionName}\";
-      
-      // the parameters of your function
-      yourParams = [${item.theParams}];
-      
-      // the code of your contract - watch out for correct indentations !
-      var code = 
-      \`${item.theContractCode}\`
-      
-      // GLOBALS END
-      
-      // instantiate a connection to the aeternity blockchain
-      const main = async () => {
-        const node1 = await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' })
-        // const node2 = ...
-      
-          Chain = await Ae({
-           // This two params deprecated and will be remove in next major release
-            url: 'https://sdk-testnet.aepps.com',
-            internalUrl: 'https://sdk-testnet.aepps.com',
-            // instead use
-            nodes: [
-              { name: 'someNode', instance: node1 },
-              // mode2
-            ],
-            compilerUrl: 'https://compiler.aepps.com',
-            // \`keypair\` param deprecated and will be removed in next major release
-            
-            accounts: [
-              acc1,
-              // acc2
-            ],
-            address: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
-        })
-        const height = await Chain.height()
-        console.log('Connected to Testned Node! Current Block:', height)
-      
-        // deploy the contract
-        await deployContract()
-      
-        // call your function
-        console.log("Calling your function " + yourFunction);
-        let callresult = await myContract.methods[yourFunction](...yourParams);
-        console.log("Transaction ID: ", callresult.hash);
-        console.log("Function call returned: ", callresult.decodedResult);
-        
-      }
-      
-      // call main
-      main()
-      
-      deployContract = async () => {    
-              let sourceCode = code
-              // replace " => \\"
-              sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\\"');
-          
-              // remove comments
-              sourceCode = sourceCode.replace(new RegExp('\\\\/\\\\/.*', 'g'), '');
-              sourceCode = sourceCode.replace(new RegExp('\\\\/\\\\*.*[\\s\\S]*\\\\*\\\\/', 'g'), '');
-          
-              // create a contract instance
-              myContract = await Chain.getContractInstance(sourceCode);
-          
-          
-              // Deploy the contract
-              try {
-                console.log("Deploying contract....")
-                console.log("Using account for deployment: ", Chain.addresses());
-                await myContract.methods.init();
-              } catch(e){
-                console.log("Something went wrong, investigating tx!");
-                console.log(e);
-                console.log(" Deployment failed: " + e, "error",  myContract.aci.name)
-                  }
-              console.log("Contract deployed successfully!")
-              console.log("Contract address: ", myContract.deployInfo.address)
-              console.log("Transaction ID: ", myContract.deployInfo.transaction)
-              console.log("\\n \\n")
-      
-              return true;
-            }`
+      this.generatedCode = `${code}`;
            
      });
 
@@ -538,5 +445,6 @@ export class EditorComponent implements OnInit {
     this.fetchActiveCodeSubscription.unsubscribe();
     this.newErrorSubscription.unsubscribe();
   }
+  
 
 }
