@@ -75,3 +75,21 @@
     text-overflow: ellipsis
 }
 
+/* generated-Code  */
+
+.codeGenerator{
+    top: 10px !important;
+    vertical-align: top !important;
+}
+
+#generatedCodeEditor{
+    position: relative !important;
+    resize: none !important;
+    height:90vh;
+    width: 100%;
+    text-align: left;
+}
+
+#header{
+    margin-top: 10% !important;
+}
