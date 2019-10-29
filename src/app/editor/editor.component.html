@@ -19,14 +19,21 @@
 
 <div class = "codeGenerator">
 <sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
-        <div id="header"><h1 class="ui inverted header">Generated Code:</h1></div>
-        <br>
-        <p style="font-size: 35px">🎉</p>
+        
+        <div id="header">
+            <!-- <p style="font-size: 35px; display:contents">🎉</p> -->
+            <a href="#" id="codeEditorClosingIcon" (click)="closeCodeEditor()" > <i class="close icon"></i> </a> <br>
+            <p style="font-size: 35px">🎉</p>
+            <h1 class="ui inverted header">Generated Code:</h1> 
+            <br>
+
+        </div>
+        <ngx-monaco-editor *ngIf="this.generatedCode" id="generatedCodeEditor" [(ngModel)]="this.generatedCode" id="generatedCodeEditor" [options]="generatedCodeEditorOptions" ></ngx-monaco-editor>
         <div class="ui form">
              <div class="field">
              <label></label>
-            <!-- <ngx-monaco-editor  [(ngModel)]="this.generatedCode" id="generatedCodeEditor" [options]="editorOptions" ></ngx-monaco-editor>-->
-                <textarea id="generatedCodeEditor">{{this.generatedCode}}</textarea>
+            
+                <!-- <textarea id="generatedCodeEditor">{{this.generatedCode}}</textarea> -->
         </div>
         </div>
 

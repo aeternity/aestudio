@@ -138,14 +138,21 @@
 <div class="ui section divider"></div>
 
 <!-- errors from compiler -->
-<div *ngIf="(currentError | json) != ({}| json)  ">           
+<div *ngIf="(currentError | json) != ({}| json) || this.initFunctionIsPresent == false ">           
     <div class="ui orange segment container">
             <a class="ui orange ribbon label">Compilation Issues</a>
 
-           
+            <div *ngIf="this.initFunctionIsPresent == false"  class="errorbox">
+                    <div class="errorbox-icon"> <i class="plug icon sidebar-icon"></i></div>
+                    <div class="right">
+                      <div class="div2"><b>Oops ! Looks like you forgot the init function ? </b></div>
+                      
+                      <div class="div3" style="padding-bottom: 0; margin-top: 1em" *ngIf="true">Hint: The init() function runs code during the deployment of a contract and is never callable again. As its return it must define all data in your state with some value of your choice. Like: <div class="code" style="padding: 2px; padding-left: 5px; margin-top: 1em; font-family: Courier New; font-size: 11px"> {{"public entrypoint init(num1 : int, num2: int) ="}} <br> &nbsp; &nbsp; {{ "let sum = num1 + num2"}} <br>  &nbsp; &nbsp; {{ "// next comes the last statement "}} <br> &nbsp; &nbsp; {{ "// in which we return/define the state"}} <br> &nbsp; &nbsp; {{ "{ index = sum, "}}  <br> &nbsp; &nbsp; {{  "map_hamsters = {}, "}} <br> &nbsp; &nbsp;  {{"testvalue = 42}" }} </div>  <i class="exclamation triangle icon"></i></div>
+                    </div>
+                  </div>
        
-            <div class="errorbox">
-                <div class="errorbox-icon"> <i class="bug icon"></i></div>
+            <div *ngIf="(currentError | json) != ({}| json)" class="errorbox">
+                <div class="errorbox-icon"> <i class="bug icon sidebar-icon"></i></div>
                 <div class="right">
                   <div class="div2">{{currentError.type}}: {{currentError.message}} <br> At: Line {{currentError.pos.line}}, column {{currentError.pos.col}}</div>
                   
@@ -163,9 +170,10 @@
         <div class="ui orange segment container">
                 <a class="ui orange ribbon label">Compiled Contract</a>
             <h4>{{this.initACI.name}}</h4>
-            <button class="ui black button" (click)="deployContract()">Deploy</button>
+            <button *ngIf="this.initFunctionIsPresent" class="ui black button" (click)="deployContract()">Deploy</button>
                 <div *ngIf="initACI.functions[0].arguments.length > 0">
                     <form class="ui form">
+                        
                         <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
                             
                             <label class="arg-label" for="{{initACI.name + 'init' + '-' + arg.name}}">{{arg.name | replace : '_' : ' '}} : </label>

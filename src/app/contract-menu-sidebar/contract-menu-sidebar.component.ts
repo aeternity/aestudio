@@ -62,6 +62,9 @@ export class ContractMenuSidebarComponent implements OnInit {
   // the current compilation error
   currentError: any = {};
 
+  // is an init function present in the contract ?
+  initFunctionIsPresent : boolean = true;
+
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
     .address - public address of the current active account in SDK instance
@@ -118,9 +121,10 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.buildAContract();
     
      setInterval(async () => {
-     //console.log("Feteching balance in interval...");
+
+     
      // call with "false" to query faucet for balance if it's too low
-       this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 6000
+       this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 3000
     ) 
     this.getAllBalances(true);
 
@@ -152,10 +156,14 @@ export class ContractMenuSidebarComponent implements OnInit {
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
           this.initACI = this.compiler.initACI;
           console.log("Hier kommt init aci:", this.initACI);
+
           // if the new ACI is not {} (empty), reset the last reported error.
           if(Object.entries(this.initACI).length > 0) { 
             this.currentError = {};
           }
+          // check if there is an init function present for the current generated ACI
+          this.initACI.name != undefined ? this.initFunctionIsPresent = this.checkIfInitFunctionIsPresent() : true
+
           console.log("Current error ist nun: ", this.currentError);
           //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
@@ -165,9 +173,9 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
       .subscribe( async newContract => {
 
-        // woraround for event firing on its own when loading the editor, thereby not sending any data: 
+        // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
-           // push contract in an array, later, when calling a function, find it by is addres
+           // push contract in an array, later, when calling a function, find it by is address
         // in this array
        /*  let theContractAddress = newContract.deployInfo.address;
         this.activeContracts[theContractAddress] = newContract; */
@@ -257,42 +265,7 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
       this.changeDetectorRef.detectChanges();
 
     }
-    //console.log("Don't fill up ist: ", _dontFillUp)
-    // in case the balance is too low or zero, fill up the account
-    /* if (balance < 1000000000000000000 && _dontFillUp != true){
-     console.log("Balance low, filling up from faucet..")
-     let httpOptions = {
-      headers: new HttpHeaders({
-        'sec-fetch-mode':' cors' ,
-        'dnt':' 1' ,
-        'accept-encoding':' gzip, deflate, br' ,
-        'accept-language':' de,en-US;q=0.9,en;q=0.8,de-DE;q=0.7,et;q=0.6' ,
-        'user-agent':' Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36' ,
-        'accept':' application/json' ,
-        'referer':' https://testnet.faucet.aepps.com/',
-        'authority':' testnet.faucet.aepps.com' ,
-        'sec-fetch-site':' same-origin' ,
-        'content-length':' 0' ,
-        'origin':' https://testnet.faucet.aepps.com'
-
-      })
-    };
-    try{ 
-     let query = await this.http.post<any>(`${environment.testnetFaucetUrl}${_address}`, {}, httpOptions).subscribe(resp => {
-       console.log("Antwort vom faucet: ", query);
-       this.getAllBalances(true);
-       
-       this.changeDetectorRef.detectChanges();
-       
-
-     })
-     console.log("Response vom faucet: ",query);
-
-    } catch(e){
-      console.log("...error from querying faucet");
-    }
-
-    } */
+  
   } else {
     // TODO: Implement calling with options here
   }
@@ -335,6 +308,22 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
         break;
     }
   }
+  
+  
+checkIfInitFunctionIsPresent() : boolean { 
+  var found : boolean  = false
+
+  this.initACI.functions.forEach(oneFunction => {
+    oneFunction.name == 'init' ? found = true : null
+  })
+
+  console.log("Init found ? ", found)
+
+  return found
+}
+
+
+
 
 }
 

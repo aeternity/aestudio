@@ -107,6 +107,13 @@ export class EditorComponent implements OnInit {
     renderIndentGuides:'true',
   contextmenu:'true'};
 
+  generatedCodeEditorOptions = {theme: 'vs-dark', 
+    language: 'javascript', 
+    cursorBlinking: 'phase', 
+    cursorSmoothCaretAnimation:'true',
+    renderIndentGuides:'true',
+    contextmenu:'false',
+    minimap:'false'};
 
   ngOnInit() {
     setInterval(() => {
@@ -247,10 +254,20 @@ export class EditorComponent implements OnInit {
     this.codeGenerator = this.generator._generateCode.subscribe(code => {
       if (Object.entries(code).length > 0)// <-- marie, aufpassen !
       this.codeGeneratorVisible = true;
-      
+
       console.log(">>>>>>>>>>>> Codegeneration parameters are:", code);
       
       this.generatedCode = `${code}`;
+      setTimeout(() => {
+        var el = document; // This can be your element on which to trigger the event
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('resize', true, false);
+        el.dispatchEvent(event)
+
+        console.log("changedetector ran");
+      }, 50);
+      
+
            
      });
 
@@ -438,7 +455,9 @@ export class EditorComponent implements OnInit {
     return r.join('');
   }
 
-  
+  closeCodeEditor = () => {
+    this.codeGeneratorVisible = false;
+  }
 
   ngOnDestroy() {
     // prevent memory leak when component is destroyed

@@ -43,8 +43,8 @@ contract CryptoHamster =
     public entrypoint return_caller() : address =
         Call.caller
 
-    public entrypoint cause_error() : string =
-        require(2 == 1, "require failed") 
+    public entrypoint cause_error() : unit =
+        require(2 == 1, "require failed") // comment
 
     public stateful entrypoint add_test_value(one: int, two: int) : int =
         put(state{testvalue = one + two})
@@ -102,19 +102,21 @@ contract CryptoHamster =
            // This two params deprecated and will be remove in next major release
             url: 'https://sdk-testnet.aepps.com',
             internalUrl: 'https://sdk-testnet.aepps.com',
+            verify: true,
             // instead use
             nodes: [
               { name: 'someNode', instance: node1 },
               // mode2
             ],
-            compilerUrl: 'https://compiler.aepps.com',
+            compilerUrl: 'https://latest.compiler.aepps.com',
             // `keypair` param deprecated and will be removed in next major release
-           
+            
             accounts: [
               acc1,
               // acc2
             ],
             address: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU'
+            //"th_2YL9DU4ZnKwhRx6AkDf8fgch7HMiU6vpjJWfkeBWWz3pedG2pC"
         })
         const height = await Chain.height()
         console.log('Connected to Testned Node! Current Block:', height)
@@ -144,7 +146,6 @@ contract CryptoHamster =
           
               // create a contract instance
               myContract = await Chain.getContractInstance(sourceCode);
-          
           
               // Deploy the contract
               try {

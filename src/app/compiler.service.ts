@@ -166,13 +166,14 @@ export class CompilerService {
     console.log("deploying...");
 
     let sourceCode = this.code
-    // replace " => \"
+    // this is seemingly being taken care of by the node now.
+   /*  // replace " => \"
     sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
 
     // remove comments
     sourceCode = sourceCode.replace(new RegExp('\\/\\/.*', 'g'), '');
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
-
+ */
     // code to aci
     console.log("Hier kommt der code: ", sourceCode);
     
