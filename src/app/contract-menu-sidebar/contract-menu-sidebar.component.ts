@@ -65,6 +65,9 @@ export class ContractMenuSidebarComponent implements OnInit {
   // is an init function present in the contract ?
   initFunctionIsPresent : boolean = true;
 
+  // the address of the existing contract the user wants to interact with.
+  addressOfExistingContract : string = "";
+
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
     .address - public address of the current active account in SDK instance
@@ -95,15 +98,13 @@ export class ContractMenuSidebarComponent implements OnInit {
 
   } 
 
-  deployContract() {
-
-    console.log("Testing: ", this.compiler.Chain.addresses());
+  deployContract(_existingContract? : boolean) {
 
     // display loading
     this.deploymentLoading = true;
     this.changeDetectorRef.detectChanges()
-
-      // fetch all entered params
+    
+    // fetch all entered params
     let params: any[] = [];
 
     this.initACI.functions[0].arguments.forEach(oneArg => {
@@ -111,9 +112,12 @@ export class ContractMenuSidebarComponent implements OnInit {
       params.push(oneArg.currentInputData)
     });
 
+    console.log("_existingContract ist ", _existingContract);
+    console.log("addressOfExistingContract ist ", this.addressOfExistingContract);
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
-    this.compiler.compileAndDeploy(params);   
+    // "If the user is trying to interact with an existing contract and something is in the address field, try bringing up the existing contract, else deploy a new one"
+    _existingContract && this.addressOfExistingContract.length > 50 ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
   } 
 
 
@@ -121,7 +125,6 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.buildAContract();
     
      setInterval(async () => {
-
      
      // call with "false" to query faucet for balance if it's too low
        this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 3000

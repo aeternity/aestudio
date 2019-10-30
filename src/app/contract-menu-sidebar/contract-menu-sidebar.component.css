@@ -63,6 +63,15 @@
     text-overflow: ellipsis;
   }
 
+/* compiled contract start */
+.atAddressField {
+   
+    font-family: Courier New !important;
+    padding-bottom: 0.5em !important;
+}
+
+/* compiled contract end */ 
+
 /* error box start */
 .errorbox {
 width: auto;

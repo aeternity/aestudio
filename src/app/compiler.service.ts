@@ -162,7 +162,7 @@ export class CompilerService {
 
 
   // converts code to ACI and deploys.
-  async compileAndDeploy(_deploymentParams: any[]) : Promise<any> {
+  async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: string) : Promise<any> {
     console.log("deploying...");
 
     let sourceCode = this.code
@@ -175,27 +175,34 @@ export class CompilerService {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
  */
     // code to aci
-    console.log("Hier kommt der code: ", sourceCode);
-    
+    //console.log("Hier kommt der code: ", sourceCode);
+
     // create a contract instance
-    var myContract = await this.Chain.getContractInstance(this.code);
-    
-    //console.log(">>>> compilation result (mycontract): ", myContract);
+    var myContract;
 
-    // Deploy the contract
-    try {
-      console.log("Deployment params: ", _deploymentParams)
-      await myContract.methods.init.apply(null, _deploymentParams);
-      //let successString = 
-      this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+    if (!_existingContractAddress) {
+      // Here we deploy the contract
+      
+      myContract = await this.Chain.getContractInstance(this.code);
+      //console.log(">>>> compilation result (mycontract): ", myContract);
+      try {
+        console.log("Deployment params: ", _deploymentParams)
+        await myContract.methods.init.apply(null, _deploymentParams);
+        //let successString = 
+        this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 
-    } catch(e){
-      console.log("Something went wrong, investigating tx!");
-      console.log(e);
-      this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+      } catch(e){
+        console.log("Something went wrong, investigating tx!");
+        console.log(e);
+        this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
 
-      //e.verifyTx();
+        //e.verifyTx();
         }
+    } else {
+      //here we want to interact with an existing one.
+      myContract = await this.Chain.getContractInstance(this.code, {contractAddress: _existingContractAddress});
+      this.logMessage(" Successfully casted contract at: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+    }
 
     console.log("My contract: ", myContract);
     console.log("My account: ", this.Chain.addresses());

@@ -168,12 +168,25 @@
 <!-- compiled contract  -->
 <div *ngIf="initACI.name">           
         <div class="ui orange segment container">
-                <a class="ui orange ribbon label">Compiled Contract</a>
+            <a class="ui orange ribbon label">Compiled Contract</a>
             <h4>{{this.initACI.name}}</h4>
-            <button *ngIf="this.initFunctionIsPresent" class="ui black button" (click)="deployContract()">Deploy</button>
+        <!-- <button *ngIf="this.initFunctionIsPresent" class="ui black button" (click)="deployContract()">Deploy</button>
+-->    <!-- Deploy button & "at address" button -->
+            <div *ngIf="this.initFunctionIsPresent" class="ui buttons">
+                <button (click)="deployContract()" class="ui black button">Deploy</button>
+                <div class="or"></div>
+                <button (click)="deployContract(true)" class="ui orange button atAddressButton" suiPopup popupHeader="Please Note" popupText="Currently, the SDK checks the validity of the entered address only upon attempting to call contract functions, this issue is being taken care of." >Use at address: </button>
+            </div>
+                <!-- "at address" field -->
+            <div class="ui icon input">
+                <input [(ngModel)]="addressOfExistingContract" type="text" class="atAddressField" placeholder="ct_nv5B9...Mp59bv...">
+                <i class="search icon"></i>
+            </div>
+
+            <!-- Todo: instead of relying the init function always coming first, find a way to directly pic the init function !  -->
                 <div *ngIf="initACI.functions[0].arguments.length > 0">
                     <form class="ui form">
-                        
+                        <!-- todo: Also here, get the init function directly from somewhere -->
                         <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
                             
                             <label class="arg-label" for="{{initACI.name + 'init' + '-' + arg.name}}">{{arg.name | replace : '_' : ' '}} : </label>

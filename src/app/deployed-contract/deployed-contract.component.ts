@@ -58,7 +58,7 @@ export class DeployedContractComponent implements OnInit {
       this.contract.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
     } catch(e) {
       console.log("Error was: ", e);
-      debugger;
+      
       if (e.decodedError != undefined) {
         //this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.contract.aci.name)
         this.contract.aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"

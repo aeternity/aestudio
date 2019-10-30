@@ -75,7 +75,7 @@
     text-overflow: ellipsis
 }
 
-/* generated-Code  */
+/* generated-Code start */
 
 .codeGenerator{
     top: 10px !important;
@@ -93,3 +93,20 @@
 #header{
     margin-top: 10% !important;
 }
+
+/* generated-Code end */
+
+/* sidebar start */
+
+.atAddressButton {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important
+}
+
+.atAddressField{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 0px !important;
+}
+
+/* sidebar end */ 
