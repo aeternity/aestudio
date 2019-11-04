@@ -44,9 +44,10 @@
 }
 
 .aeLoader {
+    margin-top: 2em !important;
     display: block;
     margin: auto;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
 }
 
 /* Color for units */
@@ -85,7 +86,7 @@
 #generatedCodeEditor{
     position: relative !important;
     resize: none !important;
-    height:90vh;
+    height:100vh;
     width: 100%;
     text-align: left;
 }
@@ -107,6 +108,24 @@
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
     border-left: 0px !important;
+
+}
+
+.ui.input input:focus, .ui.input.focus input {
+    border-color: #F2711C;
 }
 
 /* sidebar end */ 
+
+/* sidemenu start */
+
+.theSideMenu .ui.basic.segment{
+    padding: 0;
+}
+
+#theSideMenu {
+    height: auto;
+    margin: 0;
+    border-left: 0;
+}
+/* sidemenu end */

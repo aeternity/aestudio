@@ -1,4 +1,26 @@
-<ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
+<div class="ui top attached inverted demo menu">
+    <a class="item" (click)="sidebar.toggle()">
+        <i class="sidebar icon"></i> Menu
+    </a>
+</div>
+
+    <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
+        <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
+            <a class="item">1</a>
+            <a class="item">2</a>
+        </sui-sidebar>
+        <sui-sidebar-sibling [isDimmedWhenVisible]="false">
+            <!-- <div class="ui basic segment"> -->
+                
+                <ngx-monaco-editor [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
+
+           <!--  </div> -->
+        </sui-sidebar-sibling>
+    </sui-sidebar-container>
+
+
+<!-- <ngx-monaco-editor [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
+ -->
 <!-- <button (click)="compile()">Compile</button> -->
 <log-monitor
     [logStream]="logStream$"
