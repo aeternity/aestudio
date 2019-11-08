@@ -1,6 +1,8 @@
 export class Contract<T> {
   code: string;
-
+  public showInTabs: boolean = true;
+  public nameInTab: string = "CryptoHamster";
+  public shareId: string = "";
   constructor(_code? : string){
     _code != undefined ? this.code = _code : this.code = `
 contract CryptoHamster =

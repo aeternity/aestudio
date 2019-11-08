@@ -19,6 +19,8 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ClipboardModule } from 'ngx-clipboard';
 import { DeployedContractComponent } from './deployed-contract/deployed-contract.component';
+import { StorageServiceModule } from 'ngx-webstorage-service';
+import { LocalStorageService } from './local-storage.service';
 
 
 
@@ -38,9 +40,10 @@ import { DeployedContractComponent } from './deployed-contract/deployed-contract
     MonacoEditorModule.forRoot(),
     SuiModule,
     InlineSVGModule.forRoot(),
-    ClipboardModule    
+    ClipboardModule,
+    StorageServiceModule    
   ],
-  providers: [],
+  providers: [LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

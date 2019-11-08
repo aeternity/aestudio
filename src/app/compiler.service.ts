@@ -318,6 +318,7 @@ export class CompilerService {
       
       this._notifyCompiledAndACI.next(this.rawACI);
       //this._notifyCurrentSDKsettings.next(0);
+      return this.rawACI;
     },
     async (error) =>  {
       //console.log("oooops fehler ", error.error)
@@ -334,7 +335,7 @@ export class CompilerService {
 
     // tell sidebar et al. that there is no valid contract there right now
     this._notifyCompiledAndACI.next(0);
-    return true;
+    return this.rawACI;
   }
 
 

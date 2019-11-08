@@ -117,7 +117,7 @@
 
 /* sidebar end */ 
 
-/* sidemenu start */
+/* contracts side menu start */
 
 .theSideMenu .ui.basic.segment{
     padding: 0;
@@ -128,4 +128,38 @@
     margin: 0;
     border-left: 0;
 }
-/* sidemenu end */
+
+
+/* contracts sidemenu end */
+
+/* helpers start*/
+
+@-webkit-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-moz-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-ms-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-o-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+
+.blinkOnLoad{
+    animation-name: orange_blink;
+	animation-duration: 0.5s;
+	animation-iteration-count: 6;
+    animation-direction: alternate;
+    animation-delay: 2s;
+}
+/* helpers end */

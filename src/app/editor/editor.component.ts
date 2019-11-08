@@ -11,7 +11,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
 import { CodeFactoryService } from '../code-factory.service';
-
+import { LocalStorageService } from '../local-storage.service';
 
 
 @Component({
@@ -76,9 +76,10 @@ export class EditorComponent implements OnInit {
   codeGeneratorVisible = false;
   generatedCode : any = ""
 
-  //the current active code - initialized either as default code, or code fetched from DB, later on set by editor content
+  //the currently available contracts - initialized either as default code, or code fetched from DB, later on set by editor content
   // INITIALIZATION RACE DEBUGGING contract: Contract<string>
-  contract: any;
+  contracts: any[] = [];
+  activeContract: any;
 
   constructor(private compiler: CompilerService, 
     private _router: Router, 
@@ -87,6 +88,7 @@ export class EditorComponent implements OnInit {
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef, 
     private generator: CodeFactoryService, 
+    private localStorage: LocalStorageService
     ) { 
       
       // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
@@ -116,13 +118,13 @@ export class EditorComponent implements OnInit {
     minimap:'false'};
 
   ngOnInit() {
-    setInterval(() => {
+    /* setInterval(() => {
       // fetching logs from compiler...
       this.logs = this.compiler.logs;
-    }, 1000);
-
+    }, 1000); */
+/* 
     this.logStream$ = this.logs[1];
-    this.logStream$ = this.logs[2];
+    this.logStream$ = this.logs[2]; */
 
     const syncRoute: any = this._route.snapshot;
     console.log("Die gesamt route: ", syncRoute)
@@ -139,12 +141,12 @@ export class EditorComponent implements OnInit {
       console.log(this.highlightedRows);
       console.log("Parameters are: ", parameter)
 
-      let contractID = parameter.get("contract");
+      /* var contractID = parameter.get("contract");
       console.log("contract ID: ", contractID);
-
+ */
       // get contract ID from URl parameter for fetching code from DB
       if(parameter.get("contract") !== null) {
-        let contractID = parameter.get("contract");
+        var contractID = parameter.get("contract");
         console.log("contract ID: ", contractID);
         // call backend
         let requestURL = `${environment.contractSharingBackend}${contractID}`
@@ -152,17 +154,52 @@ export class EditorComponent implements OnInit {
 
         //let something = this.http.get(`https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/9702aa10-b`)
 
-        this.http.get(`${environment.contractSharingBackend}${contractID}`).subscribe((res) => {
-          // if the backend responds, initialize a new contract with the code from the backend. 
-          // if there is no contract in the response, initialize the default contract
+        this.http.get(`${environment.contractSharingBackend}${contractID}`).subscribe(async (res) => {
+          // if the backend responds, load contracts from local storage and ...
+          // ...initialize a new contract with the code from the backend and push it to the contracts array.
+          // if there is no contract in the response, just load the contracts from storage.
+
           // TODO: Show a message is a contract was tried to be fetched that doesnt exist anymore 
+
           //console.log("is it there? ", res['contract'])
-          res['contract'] !== undefined ? this.contract = new Contract(res['contract']) : this.contract = new Contract();
+          if (res['contract'] !== undefined) {
+            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            this.contracts = this.localStorage.getAllContracts();
+            // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
+            this.activeContract = new Contract(res['contract'])
+
+            // GET THE CONTRACT'S NAME...
+            this.compiler.fromCodeToACI(this.activeContract.code).subscribe(
+              (data: EncodedACI) => {
+                let namestring = data.encoded_aci.contract.name + " External";
+                console.log("Namestring: ", namestring); 
+                this.activeContract.nameInTab = namestring;
+                console.log("Name in scope ? ", this.activeContract.nameInTab)
+
+                STOPPED HERE 
+               })
+            // set and push.
+            this.activeContract.shareID = contractID;
+            console.log(">>>>>>Name and share ID?", this.activeContract.nameInTab, this.activeContract.shareID)
+            this.contracts.push(this.activeContract);
+          } else {
+            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            this.contracts = this.localStorage.getAllContracts();
+            // if there is no contract in the storage initialize an empty one
+            this.contracts.length == 0 ? this.contracts.push(new Contract()) : true
+            this.activeContract = this.contracts[0];
+          }
+
+          // save the current contracts code states to local storage
+          this.localStorage.storeAllContracts(this.contracts);
+
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
-          this.compiler.generateACIonly(this.contract.code);
-          this.compiler.code = this.contract.code;
-          this.compiler.generateACIonly(this.contract.code);
+          this.compiler.generateACIonly(this.activeContract.code);
+          this.compiler.code = this.activeContract.code;
+          
+          
+          
 
           // add the highlighter
           if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
@@ -170,14 +207,22 @@ export class EditorComponent implements OnInit {
               { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
             ]);}
         })
+      
       } else {
+        
         // if there is no contractID provided in the URL, initialize the default one
         // fix for stupid racing condition
         if (this.runTimes >= 2) {
-          console.log("No contract ID found, initializing the default one.");
-          this.contract = new Contract();
-          this.compiler.generateACIonly(this.contract.code);
+          console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+          this.contracts = this.localStorage.getAllContracts();
+          // if there is no contract in the storage initialize an empty one
+          this.contracts.length == 0 ? this.contracts.push(new Contract()) : true
+          this.activeContract = this.contracts[0];
+          this.localStorage.storeAllContracts(this.contracts);
+
+
         }
+        
       }
     });
 
@@ -185,7 +230,8 @@ export class EditorComponent implements OnInit {
     this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
-    
+  
+      // TODO: Look into wrong closure of this event listener !
 
     // if the compiler / debugger submitts errors, highlight them:
     // repetitive compiler errors
@@ -246,7 +292,7 @@ export class EditorComponent implements OnInit {
  
 
     // try generating ACI for init-interface
-    this.compiler.generateACIonly(this.contract.code);
+    this.compiler.generateACIonly(this.activeContract.code);
     
     //  return this.compile();
 
@@ -277,7 +323,7 @@ export class EditorComponent implements OnInit {
   // initializes editor object to interact with - called by the editor component
   initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
-    console.log("The editor:", theEditor);
+    //console.log("The editor:", theEditor);    
     this.editorInstance = theEditor;
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
@@ -303,13 +349,12 @@ export class EditorComponent implements OnInit {
         // function called when clicking
         // press the specified keys
         run: () => {console.log(this.compiler.activeCodeSelection)
-          let postData = {"contract":this.contract.code ,"contractName": "some", "editorVersion":1}
+          let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
           console.log("So sieht post data aus:", postData);
 
           this.http.post(environment.contractSharingBackend, postData, {
             headers: new HttpHeaders({
-                'Content-Type':  'application/json',
-                'Sophia-Compiler-Version': '4.0.0'
+                'Content-Type':  'application/json'
               })
           }).subscribe(data=>{
             console.log("Post hat ergeben?", data)
@@ -369,9 +414,9 @@ export class EditorComponent implements OnInit {
     //console.log("Shit done changed!");
     // put the active code into compiler
     this.compiler.makeCompilerAskForCode(0);
-    console.log("code ist gerade: ",this.contract.code);
+    console.log("code ist gerade: ",this.activeContract.code);
     // generate some ACI just to display init() function for deployment
-    this.compiler.generateACIonly(this.contract.code);
+    this.compiler.generateACIonly(this.activeContract.code);
   }
 
   // clear highlighters by identifier
