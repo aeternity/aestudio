@@ -75,3 +75,38 @@
     text-overflow: ellipsis
 }
 
+/* generated-Code start */
+
+.codeGenerator{
+    top: 10px !important;
+    vertical-align: top !important;
+}
+
+#generatedCodeEditor{
+    position: relative !important;
+    resize: none !important;
+    height:90vh;
+    width: 100%;
+    text-align: left;
+}
+
+#header{
+    margin-top: 10% !important;
+}
+
+/* generated-Code end */
+
+/* sidebar start */
+
+.atAddressButton {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important
+}
+
+.atAddressField{
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-left: 0px !important;
+}
+
+/* sidebar end */ 

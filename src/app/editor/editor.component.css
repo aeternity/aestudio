@@ -5,3 +5,10 @@
     width: 100%;
 }
 
+#codeEditorClosingIcon {
+    font-size: 3em;
+    color: white;
+    display: flex; 
+    justify-content: flex-end;
+    padding-right: 4vw;
+}

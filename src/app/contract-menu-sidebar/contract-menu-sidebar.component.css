@@ -63,6 +63,15 @@
     text-overflow: ellipsis;
   }
 
+/* compiled contract start */
+.atAddressField {
+   
+    font-family: Courier New !important;
+    padding-bottom: 0.5em !important;
+}
+
+/* compiled contract end */ 
+
 /* error box start */
 .errorbox {
 width: auto;
@@ -91,7 +100,7 @@ background: #F8DDA4;
 margin-left: 1em;
 }
 
-.bug.icon{
+.sidebar-icon{
  color: rgba(0,0,0,.6);
  font-size: 4.6em;
  margin-top: 0.7em;
