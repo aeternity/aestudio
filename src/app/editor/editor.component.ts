@@ -171,7 +171,6 @@ export class EditorComponent implements OnInit {
             // GET THE CONTRACT'S NAME...
             this.compiler.fromCodeToACI(this.activeContract.code).subscribe(
               (data: EncodedACI) => {
-                
                 let namestring = `${data.encoded_aci.contract.name} [External]`;
                 this.activeContract.nameInTab = namestring;
                  // set and push.
@@ -180,17 +179,19 @@ export class EditorComponent implements OnInit {
 
                 // only push this shared contract into the array of active contracts if it's not known yet
                 var contractExists: boolean = false;
+                console.log(" same? ", this.contracts[0].shareId);
+                console.log(" same? ", this.activeContract);
+                console.log("same ?" , this.contracts[0].shareId == this.activeContract.shareId);
                 contractExists = this.contracts.some((oneContract) => {
                   console.log("save oneContract.shareId :" , oneContract.shareId);
                   return oneContract.shareId == this.activeContract.shareId;  
                 })
                 
                 console.log("save ContractExists: ", contractExists)
-                
-                // if no contract with this shareID was found, put it into the dictionary.
-                contractExists == false ? this.contracts[this.activeContract.contractUID] = this.activeContract : true
+                // if no contract with this shareID was found, push it.
+                contractExists != true ? this.contracts.push(this.activeContract) : true
 
-                debugger
+                
                 // save the current contracts code states to local storage
                 this.localStorage.storeAllContracts(this.contracts);
                })
@@ -199,12 +200,9 @@ export class EditorComponent implements OnInit {
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // if there is no contract in the storage initialize an empty one
-            let newContract = new Contract({});
-            debugger
-            this.contracts[newContract.contractUID] = newContract;
-            debugger
-            this.activeContract = this.contracts[Object.keys(this.contracts)[0]];
-            debugger
+            this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
+            this.activeContract = this.contracts[0];
+
             // save the current contracts code states to local storage
           this.localStorage.storeAllContracts(this.contracts);
           }
@@ -234,8 +232,7 @@ export class EditorComponent implements OnInit {
           console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
           this.contracts = this.localStorage.getAllContracts();
           // if there is no contract in the storage initialize an empty one
-          let newContract = new Contract({});
-          this.contracts.length == 0 ? this.contracts[newContract.contractUID] : true
+          this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
           this.activeContract = this.contracts[0];
           this.localStorage.storeAllContracts(this.contracts);
 
@@ -526,7 +523,7 @@ export class EditorComponent implements OnInit {
       el.dispatchEvent(event)
 
       console.log("changedetector ran");
-    }, millisecondsDelay || 55);
+    }, millisecondsDelay || 55)
   }
 
   ngOnDestroy() {
