@@ -1,10 +1,15 @@
 export class Contract<T> {
-  code: string;
+  public contractUID: string = "";
+  public code: string;
   public showInTabs: boolean = true;
   public nameInTab: string = "CryptoHamster";
   public shareId: string = "";
-  constructor(_code? : string){
-    _code != undefined ? this.code = _code : this.code = `
+
+  constructor(params : {[key: string]: any} ){
+    this.contractUID = String(Date.now());
+    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
+    params._shareId != undefined ? this.shareId = params._shareId : true;
+    params._code != undefined ? this.code = params._code : this.code = `
 contract CryptoHamster =
 
     record state = {

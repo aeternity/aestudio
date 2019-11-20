@@ -12,3 +12,18 @@
     justify-content: flex-end;
     padding-right: 4vw;
 }
+
+/* outdated */
+.contractInLeftMenuWrapper{
+    border-bottom-color: #303030;
+    border-bottom-style: ridge;
+    border-width: 1px; 
+}
+
+.blinkOnLoad:hover {
+    background: #F2711C !important;
+}
+
+.editor-container {
+    background: #1d1d1d !important;
+}

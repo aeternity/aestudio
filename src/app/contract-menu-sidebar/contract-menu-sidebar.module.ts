@@ -11,13 +11,15 @@ import { ReplacePipe } from './contract-menu-sidebar.component'
 import { SuiModule } from 'ng2-semantic-ui';
 import { SuiSelectModule } from 'ng2-semantic-ui';
 
+
+
 //import { SuiDropdownModule } from 'ng2-semantic-ui';
 
-@NgModule({
+@NgModule({ 
   declarations: [ReplacePipe
   ],
   imports: [
-    BrowserModule, SuiModule, SuiSelectModule
+    BrowserModule, SuiModule, SuiSelectModule,
   ],
   providers: [],
   bootstrap: []

@@ -159,39 +159,57 @@ export class EditorComponent implements OnInit {
           // ...initialize a new contract with the code from the backend and push it to the contracts array.
           // if there is no contract in the response, just load the contracts from storage.
 
-          // TODO: Show a message is a contract was tried to be fetched that doesnt exist anymore 
+          // TODO: Show a message if a contract was tried to be fetched that doesnt exist (anymore) 
 
           //console.log("is it there? ", res['contract'])
           if (res['contract'] !== undefined) {
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
-            this.activeContract = new Contract(res['contract'])
+            this.activeContract = new Contract({_code : res['contract']})
 
             // GET THE CONTRACT'S NAME...
             this.compiler.fromCodeToACI(this.activeContract.code).subscribe(
               (data: EncodedACI) => {
-                let namestring = data.encoded_aci.contract.name + " External";
-                console.log("Namestring: ", namestring); 
+                
+                let namestring = `${data.encoded_aci.contract.name} [External]`;
                 this.activeContract.nameInTab = namestring;
-                console.log("Name in scope ? ", this.activeContract.nameInTab)
+                 // set and push.
+                this.activeContract.shareId = contractID;
+                console.log(">>>>>>Name and share ID?", this.activeContract.nameInTab, this.activeContract.shareID)
 
-                STOPPED HERE 
+                // only push this shared contract into the array of active contracts if it's not known yet
+                var contractExists: boolean = false;
+                contractExists = this.contracts.some((oneContract) => {
+                  console.log("save oneContract.shareId :" , oneContract.shareId);
+                  return oneContract.shareId == this.activeContract.shareId;  
+                })
+                
+                console.log("save ContractExists: ", contractExists)
+                
+                // if no contract with this shareID was found, put it into the dictionary.
+                contractExists == false ? this.contracts[this.activeContract.contractUID] = this.activeContract : true
+
+                debugger
+                // save the current contracts code states to local storage
+                this.localStorage.storeAllContracts(this.contracts);
                })
-            // set and push.
-            this.activeContract.shareID = contractID;
-            console.log(">>>>>>Name and share ID?", this.activeContract.nameInTab, this.activeContract.shareID)
-            this.contracts.push(this.activeContract);
+           
           } else {
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // if there is no contract in the storage initialize an empty one
-            this.contracts.length == 0 ? this.contracts.push(new Contract()) : true
-            this.activeContract = this.contracts[0];
+            let newContract = new Contract({});
+            debugger
+            this.contracts[newContract.contractUID] = newContract;
+            debugger
+            this.activeContract = this.contracts[Object.keys(this.contracts)[0]];
+            debugger
+            // save the current contracts code states to local storage
+          this.localStorage.storeAllContracts(this.contracts);
           }
 
-          // save the current contracts code states to local storage
-          this.localStorage.storeAllContracts(this.contracts);
+          
 
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
@@ -216,7 +234,8 @@ export class EditorComponent implements OnInit {
           console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
           this.contracts = this.localStorage.getAllContracts();
           // if there is no contract in the storage initialize an empty one
-          this.contracts.length == 0 ? this.contracts.push(new Contract()) : true
+          let newContract = new Contract({});
+          this.contracts.length == 0 ? this.contracts[newContract.contractUID] : true
           this.activeContract = this.contracts[0];
           this.localStorage.storeAllContracts(this.contracts);
 
@@ -304,17 +323,8 @@ export class EditorComponent implements OnInit {
       console.log(">>>>>>>>>>>> Codegeneration parameters are:", code);
       
       this.generatedCode = `${code}`;
-      setTimeout(() => {
-        var el = document; // This can be your element on which to trigger the event
-        var event = document.createEvent('HTMLEvents');
-        event.initEvent('resize', true, false);
-        el.dispatchEvent(event)
-
-        console.log("changedetector ran");
-      }, 50);
-      
-
-           
+      // workaround for code window not showing:
+      this.triggerWindowRefresh();           
      });
 
   }); 
@@ -325,6 +335,9 @@ export class EditorComponent implements OnInit {
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
     //console.log("The editor:", theEditor);    
     this.editorInstance = theEditor;
+
+    this.triggerWindowRefresh(); 
+
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
     if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
@@ -332,7 +345,7 @@ export class EditorComponent implements OnInit {
         this.editorInstance.deltaDecorations([], [
           { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
         ])
-      }, 400);
+      }, 300);
       ;}
 
 
@@ -502,6 +515,18 @@ export class EditorComponent implements OnInit {
 
   closeCodeEditor = () => {
     this.codeGeneratorVisible = false;
+  }
+
+  // if stupid-ass chrome won't render the editor but show it as a small square instead..
+  triggerWindowRefresh(millisecondsDelay?: number) {
+    setTimeout(() => {
+      var el = document; // This can be your element on which to trigger the event
+      var event = document.createEvent('HTMLEvents');
+      event.initEvent('resize', true, false);
+      el.dispatchEvent(event)
+
+      console.log("changedetector ran");
+    }, millisecondsDelay || 55);
   }
 
   ngOnDestroy() {

@@ -21,6 +21,8 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { DeployedContractComponent } from './deployed-contract/deployed-contract.component';
 import { StorageServiceModule } from 'ngx-webstorage-service';
 import { LocalStorageService } from './local-storage.service';
+import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in-left-menu.component';
+
 
 
 
@@ -28,7 +30,13 @@ import { LocalStorageService } from './local-storage.service';
   declarations: [
     AppComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent, DeployedContractComponent
+    DynamicFormQuestionComponent, 
+    EditorComponent,
+    ContractMenuSidebarComponent,
+    ReplacePipe,
+    LoaderComponent,
+    DeployedContractComponent, 
+    ContractInLeftMenuComponent
   ],
   imports: [
     BrowserModule,
@@ -41,7 +49,7 @@ import { LocalStorageService } from './local-storage.service';
     SuiModule,
     InlineSVGModule.forRoot(),
     ClipboardModule,
-    StorageServiceModule    
+    StorageServiceModule
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]

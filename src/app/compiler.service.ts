@@ -187,7 +187,7 @@ export class CompilerService {
       //console.log(">>>> compilation result (mycontract): ", myContract);
       try {
         console.log("Deployment params: ", _deploymentParams)
-        await myContract.methods.init.apply(null, _deploymentParams);
+        await myContract.deploy(... _deploymentParams);
         //let successString = 
         this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 

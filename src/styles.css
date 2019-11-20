@@ -35,12 +35,19 @@
     }
 }
 
+/* don't apply usual itel hover effect on contract sidemenu on the left */
+
+.contractInLeftMenu :hover
+{
+    background: #1a1b1e !important;
+}
 
 /* tweakings of the semantic UI END*/
 
 /* scheiß monaco editor container height */
 .editor-container{
-    height: 100% !important
+    height: 100% !important;
+    background: #1d1d1d;
 }
 
 .aeLoader {
@@ -128,6 +135,12 @@
     margin: 0;
     border-left: 0;
 }
+
+.contractInLeftMenu{
+    width: 100%;
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
 
 
 /* contracts sidemenu end */

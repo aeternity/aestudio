@@ -6,22 +6,43 @@
 
     <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
         <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
-            <a class="item" *ngFor="let savedContract of contracts; let i = index"> 1</a>
-            <a class="item">2</a>
+                <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
+            <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
+                *ngFor="let oneContract of contracts | keyvalue ; let i = index"
+                [contract] = "oneContract"
+                (mouseover) = "oneCon.onHover()"
+                (mouseleave) = "oneCon.unHover()">
+                </app-contract-in-left-menu>
+
+            <!-- <div class="contractInLeftMenuWrapper" *ngFor="let savedContract of contracts; let i = index" >
+                <div class="contractInLeftMenu" ><a class="item" >{{i}}. {{savedContract.nameInTab}}</a> </div>
+            </div> -->
+            <!-- reserved for eventual extra stuff<a class="item">2</a> -->
         </sui-sidebar>
         <sui-sidebar-sibling [isDimmedWhenVisible]="false">
-            <!-- <div class="ui basic segment"> -->
+           
                 
-                <ngx-monaco-editor [(ngModel)]="contracts[0].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
 
-           <!--  </div> -->
+                  
+
+                <sui-tabset>
+                    <div class="ui top attached tabular menu">
+                        <a *ngFor="let oneContract of contracts; let i = index" (click)=triggerWindowRefresh(5) class="item" suiTabHeader="{{i}}">{{oneContract.nameInTab}}</a>
+                       
+                    </div>
+                    <div *ngFor="let oneContract of contracts; let i = index" class="ui bottom attached segment" suiTabContent="{{i}}">
+                        <ngx-monaco-editor [(ngModel)]="contracts[i].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
+                    </div>
+                </sui-tabset>
+
+
         </sui-sidebar-sibling>
     </sui-sidebar-container>
 
 
 <!-- <ngx-monaco-editor [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
  -->
-<!-- <button (click)="compile()">Compile</button> -->
+
 <log-monitor
     [logStream]="logStream$"
     theme="dark"
