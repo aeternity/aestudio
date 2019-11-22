@@ -11,7 +11,8 @@
                 *ngFor="let oneContract of contracts; let i = index"
                 [contract] = "oneContract"
                 (mouseover) = "oneCon.onHover()"
-                (mouseleave) = "oneCon.unHover()">
+                (mouseleave) = "oneCon.unHover()"
+                (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})">
                 </app-contract-in-left-menu>
 
             <!-- <div class="contractInLeftMenuWrapper" *ngFor="let savedContract of contracts; let i = index" >
@@ -23,14 +24,19 @@
             <!-- <div class="ui basic segment"> -->
                 
 
-                  
-
                 <sui-tabset>
-                    <div class="ui top attached tabular menu">
-                        <a *ngFor="let oneContract of contracts; let i = index" (click)=triggerWindowRefresh(5) class="item" suiTabHeader="{{i}}">{{oneContract.nameInTab}}</a>
-                        <!-- <a class="item" suiTabHeader="2">Second</a>
-                        <a class="item" suiTabHeader="3">Third</a> -->
-                    </div>
+                    <div class="ui top attached tabular menu">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+                        <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
+                          <div class="oneTab" *ngIf="oneContract.showInTabs" >  
+                              <a style="float: left"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(5); setTabAsActive(oneContract); logSomeShit()"  class="item" suiTabHeader="{{i}}">{{oneContract.nameInTab}} </a> 
+                              <i style="float: right" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'})" class="close icon"></i>  
+                          </div>
+                        </ng-container>
+
+                        <a class="item" > <i (click)="addNewContract()" class="plus icon"></i>  </a> 
+
+<!--                         <a class="item" suiTabHeader="3">Third</a>
+ -->                    </div>
                     <div *ngFor="let oneContract of contracts; let i = index" class="ui bottom attached segment" suiTabContent="{{i}}">
                         <ngx-monaco-editor [(ngModel)]="contracts[i].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
                     </div>

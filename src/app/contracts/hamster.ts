@@ -4,6 +4,7 @@ export class Contract<T> {
   public showInTabs: boolean = true;
   public nameInTab: string = "CryptoHamster";
   public shareId: string = "";
+  public activeTab: boolean = false;
 
   constructor(params : {[key: string]: any} ){
     this.contractUID = String(Date.now());
@@ -82,5 +83,9 @@ contract CryptoHamster =
         String.sha3(name)`;
   }
 
+  //experimental
+  public showInTabsOrNot() : boolean  {
+    return this.showInTabs;
+  }  
   
 }

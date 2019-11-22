@@ -35,6 +35,8 @@
     }
 }
 
+
+
 /* don't apply usual itel hover effect on contract sidemenu on the left */
 
 .contractInLeftMenu :hover
@@ -141,8 +143,71 @@
     transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
+.oneTab {
+    -webkit-box-direction: normal;
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    font-size: 1rem;
+    box-sizing: inherit;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    flex: 0 0 auto;
+    user-select: none;
+    text-transform: none;
+    transition: background .1s ease,box-shadow .1s ease,color .1s ease;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    border-bottom: none;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-top: 2px solid transparent;
+    padding: .92857143em 1.42857143em;
+    background: #FFF;
+    color: rgba(0,0,0,.95);
+    border-top-width: 1px;
+    border-color: #D4D4D5;
+    font-weight: 700;
+    margin-bottom: -1px;
+    box-shadow: none;
+    border-radius: .28571429rem .28571429rem 0 0!important;
+    float: left;
+}
 
-
+.oneTab .item {
+    
+    box-sizing: inherit;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    flex: 0 0 auto;
+    user-select: none;
+    text-transform: none;
+    transition: background .1s ease,box-shadow .1s ease,color .1s ease;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    border-bottom: none;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    padding: none !important;
+    background: #FFF;
+    color: rgba(0,0,0,.95);
+    border-top-width: none !important;
+    border-color: none !important;
+    font-weight: 700;
+    margin-bottom: none !important;
+    box-shadow: none;
+    border-radius: none !important;
+    float: left;
+}
 /* contracts sidemenu end */
 
 /* helpers start*/

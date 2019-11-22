@@ -27,3 +27,17 @@
 .editor-container {
     background: #1d1d1d !important;
 }
+/* no white border around editor under tabs */
+.ui.segment {
+    padding: 0px !important;
+}
+
+.theSideMenu .ui.menu i {
+    margin-left: 10px;
+    margin-right: 0px;
+}
+
+.theSideMenu .ui.menu i:hover {
+    color: #f9c80e;
+}
+

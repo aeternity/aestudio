@@ -26,6 +26,8 @@ export class EditorComponent implements OnInit {
   logs: NgxLogMessage[] = [
   ];
   
+  deleteme: any = 2;
+
   logStream$: any;
 
   // logger end // 
@@ -65,8 +67,12 @@ export class EditorComponent implements OnInit {
   // Listen to compilation success (e.g. to remove highlights)
   codeGenerator: Subscription;
   templateCode: string = '';
-  // note if this editor is currently in active tab
-  isActiveTab : boolean = true;
+
+  // store all contractUIDs that are to be shown in the tabs
+  activeTabUIDs : string[] = [];
+
+  // the currently opened tab's UID
+  currentTabUID: string = "1574358512052";
 
   // handles the case of event emitter emitting three error events instead of 1
   previousErrorHash : any = "";
@@ -165,6 +171,7 @@ export class EditorComponent implements OnInit {
           if (res['contract'] !== undefined) {
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
+            
             // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
             this.activeContract = new Contract({_code : res['contract']})
 
@@ -182,6 +189,7 @@ export class EditorComponent implements OnInit {
                 console.log(" same? ", this.contracts[0].shareId);
                 console.log(" same? ", this.activeContract);
                 console.log("same ?" , this.contracts[0].shareId == this.activeContract.shareId);
+
                 contractExists = this.contracts.some((oneContract) => {
                   console.log("save oneContract.shareId :" , oneContract.shareId);
                   return oneContract.shareId == this.activeContract.shareId;  
@@ -190,32 +198,35 @@ export class EditorComponent implements OnInit {
                 console.log("save ContractExists: ", contractExists)
                 // if no contract with this shareID was found, push it.
                 contractExists != true ? this.contracts.push(this.activeContract) : true
-
                 
+                //  put this contract in the tabs
+                this.activeTabUIDs.push(this.activeContract.contractUID);
+                // TODO make this tab the active one
+                //this.currentTabUID = this.activeContract.contractUID;
+
                 // save the current contracts code states to local storage
                 this.localStorage.storeAllContracts(this.contracts);
+                debugger
                })
            
           } else {
+            debugger
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // if there is no contract in the storage initialize an empty one
             this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
             this.activeContract = this.contracts[0];
+            // moved this to ngAfterViewInit because of racing conditions between this and the tabs - this.currentTabUID = this.activeContract.contractUID;
 
             // save the current contracts code states to local storage
           this.localStorage.storeAllContracts(this.contracts);
+          debugger
           }
-
-          
 
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
           this.compiler.generateACIonly(this.activeContract.code);
           this.compiler.code = this.activeContract.code;
-          
-          
-          
 
           // add the highlighter
           if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
@@ -428,6 +439,23 @@ export class EditorComponent implements OnInit {
     // generate some ACI just to display init() function for deployment
     this.compiler.generateACIonly(this.activeContract.code);
   }
+  // Tabs functionality start
+  setTabAsActive(_oneContract: any) {
+    //this.currentTabUID = _oneContract.contractUID;
+    this.activeContract = _oneContract;
+    // change all the other contracts to inactive
+
+    this.localStorage.storeAllContracts(this.contracts);
+
+    // next two commands are a workaround for some stupid race condition that leaves the default contract in place
+    this.compiler.code = '';
+    this.compiler.generateACIonly(this.activeContract.code);
+    this.compiler.code = this.activeContract.code;
+  }
+
+  // Tabs functionality end
+
+  // helpers:
 
   // clear highlighters by identifier
   clearAllHighlighters(){
@@ -439,8 +467,50 @@ export class EditorComponent implements OnInit {
     
   }
 
-  // helpers
+  logSomeShit (_shit?: any) {
+    console.log("Shit to log: ", _shit)
+  }
 
+  // trigger whether the contract is displayed in the tabs or not
+  toggleTabAppearance(_params: any){
+    this.contracts.forEach((oneContract) => {
+      console.log("Comparing with contractUID: ", oneContract.contractUID)
+      //console.log("save oneContract.shareId :" , oneContract.shareId);
+      console.log("Clicked on contract: ", _params.contract)
+      console.log("In this case, these are the contracts: ", this.contracts)
+      if (oneContract.contractUID == _params.contract.contractUID){
+        
+        //debugger
+        switch (_params.triggerMode) {
+          case "off":
+            oneContract.showInTabs = false;
+            break;
+          case "on":
+            oneContract.showInTabs = true;
+            break;
+          case "trigger":
+            oneContract.showInTabs == true ? oneContract.showInTabs = false : oneContract.showInTabs = true;
+            break;
+          default:
+            break;
+        }
+      }
+      return oneContract.contractUID == this.activeContract.contractUID;  
+    });
+    //debugger
+    this.localStorage.storeAllContracts(this.contracts);
+    this.changeDetectorRef.detectChanges()
+  }
+
+  addNewContract(){
+    console.log("comparing.. right now there are ", this.contracts.length)
+    let newContract = new Contract({})
+    this.contracts.push(newContract);
+    this.localStorage.storeAllContracts(this.contracts);
+    this.changeDetectorRef.detectChanges();
+    console.log("comparing.. now there are ", this.contracts.length)
+
+  }
   sortObjectKeys(obj){
         if(obj == null || obj == undefined){
             return obj;
@@ -521,9 +591,14 @@ export class EditorComponent implements OnInit {
       var event = document.createEvent('HTMLEvents');
       event.initEvent('resize', true, false);
       el.dispatchEvent(event)
-
-      console.log("changedetector ran");
     }, millisecondsDelay || 55)
+  }
+
+  ngAfterViewInit(){
+  /*   this.currentTabUID = this.activeContract.contractUID;
+    console.log("After view init fired")
+    this.changeDetectorRef.detectChanges()
+ */
   }
 
   ngOnDestroy() {
