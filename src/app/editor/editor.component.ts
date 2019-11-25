@@ -438,6 +438,7 @@ export class EditorComponent implements OnInit {
     console.log("code ist gerade: ",this.activeContract.code);
     // generate some ACI just to display init() function for deployment
     this.compiler.generateACIonly(this.activeContract.code);
+    this.saveActiveContractChangesToContractsArray();
   }
   // Tabs functionality start
   setTabAsActive(_oneContract: any) {
@@ -457,7 +458,14 @@ export class EditorComponent implements OnInit {
 
   // helpers:
 
-  // clear highlighters by identifier
+  // saves 
+  saveActiveContractChangesToContractsArray() {
+    this.contracts.forEach((oneContract, index, array) => {
+      oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
+    })
+  }
+
+  // clear highlighters (todo: by identifier)
   clearAllHighlighters(){
     //clear all existing
     try{        
