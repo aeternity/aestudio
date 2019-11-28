@@ -9,9 +9,10 @@ export class LocalStorageService {
      constructor(@Inject(LOCAL_STORAGE) private storage: StorageService) { }
 
      public storeAllContracts(_allContracts: string[]): void {
+          //console.log("Storage service trying to log contracts: ", _allContracts);
           // insert updated array to local storage
           this.storage.set("ALL_CONTRACT_CODES", _allContracts);
-          console.log("Stored contracts to storage.", _allContracts);
+          //console.log("Stored contracts to storage.", _allContracts);
      }
 
      public getAllContracts() : string[] {

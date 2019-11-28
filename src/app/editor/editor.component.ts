@@ -1,10 +1,9 @@
 import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
-import { ContractControlService } from '../contract-control.service';
-import { Subscription, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
-import { filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ClipboardService } from 'ngx-clipboard';
@@ -83,7 +82,7 @@ export class EditorComponent implements OnInit {
   generatedCode : any = ""
 
   //the currently available contracts - initialized either as default code, or code fetched from DB, later on set by editor content
-  // INITIALIZATION RACE DEBUGGING contract: Contract<string>
+  
   contracts: any[] = [];
   activeContract: any;
 
@@ -97,7 +96,8 @@ export class EditorComponent implements OnInit {
     private localStorage: LocalStorageService
     ) { 
       
-      // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
+      // deprecation testing
+      /* // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
       this.codeChanged.pipe(
       debounceTime(environment.compilerRequestDelay) // wait 1 sec after the last event before emitting last event
       ). // only emit if value is different from previous value
@@ -105,7 +105,7 @@ export class EditorComponent implements OnInit {
 
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
-       });
+       }); */
   }
 
   editorOptions = {theme: 'vs-dark', 
@@ -113,7 +113,9 @@ export class EditorComponent implements OnInit {
     cursorBlinking: 'phase', 
     cursorSmoothCaretAnimation:'true',
     renderIndentGuides:'true',
-  contextmenu:'true'};
+    contextmenu:'true'/* ,
+    scrollBeyondLastLine: 'false',
+    automaticLayout: 'true' */};
 
   generatedCodeEditorOptions = {theme: 'vs-dark', 
     language: 'javascript', 
@@ -137,14 +139,15 @@ export class EditorComponent implements OnInit {
     console.log(">>>>>>Durchlauf:  ",  ++this.runTimes)
 
     this._route.queryParamMap.subscribe(parameter => {
+      
       // quickfix for stupid racing condition
       this.runTimes++;
-
+      console.log("Run times: ", this.runTimes);
       // get the parameters for code highlighting
       let codeToHighlight = parameter.get("highlight");
-      try{ this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
+      try{  this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
       console.log("highlight:", codeToHighlight);
-      console.log(this.highlightedRows);
+      console.log("Highlighted rows:", this.highlightedRows);
       console.log("Parameters are: ", parameter)
 
       /* var contractID = parameter.get("contract");
@@ -180,8 +183,12 @@ export class EditorComponent implements OnInit {
               (data: EncodedACI) => {
                 let namestring = `${data.encoded_aci.contract.name} [External]`;
                 this.activeContract.nameInTab = namestring;
-                 // set and push.
+                
+                // TODO : make being the active tab a property to the contract object and tell tab shit to use it !
+
+                 // set contract parameters
                 this.activeContract.shareId = contractID;
+                this.activeContract.sharingHighlighters = this.highlightedRows;
                 console.log(">>>>>>Name and share ID?", this.activeContract.nameInTab, this.activeContract.shareID)
 
                 // only push this shared contract into the array of active contracts if it's not known yet
@@ -190,27 +197,42 @@ export class EditorComponent implements OnInit {
                 console.log(" same? ", this.activeContract);
                 console.log("same ?" , this.contracts[0].shareId == this.activeContract.shareId);
 
-                contractExists = this.contracts.some((oneContract) => {
+                // check if the contract is already there...
+                this.contracts.forEach((oneContract) => {
                   console.log("save oneContract.shareId :" , oneContract.shareId);
-                  return oneContract.shareId == this.activeContract.shareId;  
+                  if (oneContract.shareId == this.activeContract.shareId) {
+                    // if the contract already exists, set it's highlighted rows though!
+                    this.activeContract.sharingHighlighters = this.highlightedRows;
+                    contractExists = true;
+                  };  
                 })
                 
                 console.log("save ContractExists: ", contractExists)
                 // if no contract with this shareID was found, push it.
-                contractExists != true ? this.contracts.push(this.activeContract) : true
+                contractExists == false ? this.contracts.push(this.activeContract) : true
                 
                 //  put this contract in the tabs
                 this.activeTabUIDs.push(this.activeContract.contractUID);
                 // TODO make this tab the active one
-                //this.currentTabUID = this.activeContract.contractUID;
+                //old idea: this.currentTabUID = this.activeContract.contractUID;
 
                 // save the current contracts code states to local storage
                 this.localStorage.storeAllContracts(this.contracts);
-                debugger
+                
+                
+                // save the highlighted rows to the contract object
+                if (this.highlightedRows.length > 3) {
+                  let rows = this.highlightedRows;
+                  this.editorInstance.deltaDecorations([], [
+                    { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
+                  ]);}
+
+
+
                })
            
           } else {
-            debugger
+            
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // if there is no contract in the storage initialize an empty one
@@ -220,19 +242,16 @@ export class EditorComponent implements OnInit {
 
             // save the current contracts code states to local storage
           this.localStorage.storeAllContracts(this.contracts);
-          debugger
           }
 
+
+         
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
-          this.compiler.generateACIonly(this.activeContract.code);
+          this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
           this.compiler.code = this.activeContract.code;
 
-          // add the highlighter
-          if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
-            this.editorInstance.deltaDecorations([], [
-              { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
-            ]);}
+          
         })
       
       } else {
@@ -258,11 +277,15 @@ export class EditorComponent implements OnInit {
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
   
-      // TODO: Look into wrong closure of this event listener !
+      // try generating ACI for init-interface
+      this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+    
+      })
 
-    // if the compiler / debugger submitts errors, highlight them:
-    // repetitive compiler errors
-    this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
+  // if the compiler / debugger submitts errors, highlight them:
+ // DEPRECATION TESTING
+    /* this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
+      // repetitive compiler errors
       distinctUntilChanged()
     )
       .subscribe(async error =>  {
@@ -282,17 +305,20 @@ export class EditorComponent implements OnInit {
 
             // add new highlighter
             try{
-              this.errorHighlights = [
+              let errorHighlights = [
                 // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
               { range: new monaco.Range(error.pos.line,
                                       error.pos.col +1,
                                       error.pos.line,
                                       error.pos.col), options: { inlineClassName: 'errorMarker', marginClassName: 'problematicCodeLine' }},
               ]
-            
-              this.currentDecorations = this.editorInstance.deltaDecorations([], this.errorHighlights)
+              // save error highlights to contract object 
+              this.activeContract.errorHighlights = errorHighlights;
+              this.saveActiveContractChangesToContractsArray();
+
+              this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights)
             } catch(e){
-              console.log("triedd adding highlights...")
+              console.log("tried adding highlights...")
             }
 
             //this.removeDuplicates("errorMarker");
@@ -301,27 +327,28 @@ export class EditorComponent implements OnInit {
             //console.log("tried adding known error.")
           }
           //this.removeDuplicates("errorMarker");
-      })  
+      })   */
 
-       // fires when new contract got compiled
-       this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-       .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
-       if (Object.entries(item).length > 0) {
-         //console.log("Clearing error marker..");
-        this.clearAllHighlighters();
-         
-         // reset the error tracker
-         //console.log("Resetting last known error..");
-         this.lastError = "";} else {
-           console.log("Empty ACI was received, not removing error");
-         }
-        });
+
+
+    // fires when new contract got compiled
+ // deprecation testing
+    /* this.rawACIsubscription = this.compiler._notifyCompiledAndACI
+    .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
+    debugger
+    if (Object.entries(item).length > 0) {
+      //console.log("Clearing error marker..");
+    this.clearAllHighlighters();
+      
+      // reset the error tracker
+      //console.log("Resetting last known error..");
+      this.lastError = "";} else {
+        console.log("Empty ACI was received, not removing error");
+      }
+    }); */
  
 
-    // try generating ACI for init-interface
-    this.compiler.generateACIonly(this.activeContract.code);
     
-    //  return this.compile();
 
 
     this.codeGenerator = this.generator._generateCode.subscribe(code => {
@@ -335,7 +362,7 @@ export class EditorComponent implements OnInit {
       this.triggerWindowRefresh();           
      });
 
-  }); 
+    console.log("activeContract Contracts: ", this.contracts); 
   }
 
   // initializes editor object to interact with - called by the editor component
@@ -348,13 +375,13 @@ export class EditorComponent implements OnInit {
 
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-    if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
+   /*  if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
       setTimeout(() => {
         this.editorInstance.deltaDecorations([], [
           { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
         ])
       }, 300);
-      ;}
+      ;} */
 
 
     // custom context menu options
@@ -426,32 +453,41 @@ export class EditorComponent implements OnInit {
           console.log(peng);
         }) */
   }
+
   throttledChange(){
     this.codeChanged.next();
   }
   codeChanged: Subject<string> = new Subject<string>();
 
-  change(){
+  // deprecation testing :
+  /* change(){
     //console.log("Shit done changed!");
     // put the active code into compiler
-    this.compiler.makeCompilerAskForCode(0);
+    this.compiler.makeCompilerAskForCode(this.activeContract.contractUID);
     console.log("code ist gerade: ",this.activeContract.code);
     // generate some ACI just to display init() function for deployment
-    this.compiler.generateACIonly(this.activeContract.code);
+    this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
     this.saveActiveContractChangesToContractsArray();
-  }
-  // Tabs functionality start
+  } */
+
+  // todo: move this logic into one-editor tabs !
+
+  // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
   setTabAsActive(_oneContract: any) {
     //this.currentTabUID = _oneContract.contractUID;
     this.activeContract = _oneContract;
-    // change all the other contracts to inactive
+    // change all the other contracts to inactive - maybe ?
+
+    /* this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, this.activeContract.errorHighlights);
 
     this.localStorage.storeAllContracts(this.contracts);
-
+ */
     // next two commands are a workaround for some stupid race condition that leaves the default contract in place
-    this.compiler.code = '';
-    this.compiler.generateACIonly(this.activeContract.code);
-    this.compiler.code = this.activeContract.code;
+    //this.compiler.code = '';
+    //this.compiler.code = this.activeContract.code;
+    this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+    
+    //this.compiler.code = this.activeContract.code;
   }
 
   // Tabs functionality end
@@ -462,7 +498,26 @@ export class EditorComponent implements OnInit {
   saveActiveContractChangesToContractsArray() {
     this.contracts.forEach((oneContract, index, array) => {
       oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
+      this.localStorage.storeAllContracts(this.contracts);
     })
+  }
+
+  // saves arbitrary contract's changes 
+  saveContractChangesToContractsArray(_contract: any) {
+    
+    console.log("save zum saven übergeben wurde", _contract);
+    // console.log("suche contract zum aktualisieren...")
+    this.contracts.forEach((oneContract, index, array) => {
+      if (oneContract.contractUID == _contract.contractUID) {
+        array[index] = _contract;
+        //console.log("Changes of one contract saved!");
+        this.localStorage.storeAllContracts(this.contracts);
+        
+      } 
+    })
+    this.localStorage.storeAllContracts(this.contracts);
+
+    this.changeDetectorRef.detectChanges()
   }
 
   // clear highlighters (todo: by identifier)
@@ -470,13 +525,15 @@ export class EditorComponent implements OnInit {
     //clear all existing
     try{        
       this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
+      this.activeContract.errorHighlights = [];
+      this.saveActiveContractChangesToContractsArray();
     } catch(e){
     }
     
   }
 
   logSomeShit (_shit?: any) {
-    console.log("Shit to log: ", _shit)
+    //console.log("Shit to log: ", _shit)
   }
 
   // trigger whether the contract is displayed in the tabs or not
@@ -488,7 +545,6 @@ export class EditorComponent implements OnInit {
       console.log("In this case, these are the contracts: ", this.contracts)
       if (oneContract.contractUID == _params.contract.contractUID){
         
-        //debugger
         switch (_params.triggerMode) {
           case "off":
             oneContract.showInTabs = false;
@@ -503,9 +559,11 @@ export class EditorComponent implements OnInit {
             break;
         }
       }
+      // i thibnk this is not used anymore ? or maybe for setting the code in the compiler in order to talk to the right sidebar
+      //, to be deprecated soon ? 
       return oneContract.contractUID == this.activeContract.contractUID;  
     });
-    //debugger
+    
     this.localStorage.storeAllContracts(this.contracts);
     this.changeDetectorRef.detectChanges()
   }
@@ -513,11 +571,11 @@ export class EditorComponent implements OnInit {
   addNewContract(){
     console.log("comparing.. right now there are ", this.contracts.length)
     let newContract = new Contract({})
+    console.log("new contract ist:", newContract);
     this.contracts.push(newContract);
     this.localStorage.storeAllContracts(this.contracts);
     this.changeDetectorRef.detectChanges();
     console.log("comparing.. now there are ", this.contracts.length)
-
   }
   sortObjectKeys(obj){
         if(obj == null || obj == undefined){

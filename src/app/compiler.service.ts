@@ -2,7 +2,7 @@
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 
 
@@ -10,7 +10,7 @@ import { Crypto } from '@aeternity/aepp-sdk/es/';
 
 import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+// import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
@@ -19,6 +19,7 @@ import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
 var Ae = Universal;
+
 
 @Injectable({
   providedIn: 'root'
@@ -65,13 +66,25 @@ export class CompilerService {
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
 
+  private aciObs: BehaviorSubject < any > = new BehaviorSubject < any > (null);
 
+// ____ helpers start 
+
+public nextAci(value: any): void {
+  this.aciObs.next(value);
+}
+public tellAci(): Observable < string > {
+  return this.aciObs;
+}
+
+
+// ____ helpers end
   
   // Part 2/3 of asking active tab's editor for code - this needs to be triggered by tab component !
  // ask the components to send code
-  public makeCompilerAskForCode(number){
+  public makeCompilerAskForCode(_uid: string){
     //console.log("im compiler angekommen");
-    this._fetchActiveCode.next(number);
+    this._fetchActiveCode.next(_uid);
   }
 
   constructor(private http: HttpClient) {
@@ -229,8 +242,11 @@ export class CompilerService {
           //console.log(i);
       })
 
-      // 3.  now that we have it, generate the formgroups for the function args for input validation
+      // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.addFormGroupsForFunctions(rawACI);
+
+      /* // actually, short-circuit problematic formgroup generation
+      let aci = rawACI; */
       
       // 4. put the ammended ACi into the aci of the contract object
       myContract.aci = aci;
@@ -275,10 +291,17 @@ export class CompilerService {
     })
     
   }
-
-  async generateACIonly(sourceCode: any) : Promise<any> {
+// params example: {sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID }
+// sourceCode: the contract's source code
+// contractUID: the UID of the contract. it is being returned in the event, so one knows which contract this refers to.
+ 
+  async generateACIonly(params : {sourceCode: string, contractUID: string}) : Promise<any> {
+    
+    //console.log("Compiler erhielt als source: ", params.sourceCode);
     // replace " => \"
-    sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
+    if (params.sourceCode == undefined) { return false}
+
+    var sourceCode = params.sourceCode.replace(new RegExp('"', 'g'), '\"');
 
     // remove comments
     sourceCode = sourceCode.replace(new RegExp('\\/\\/.*', 'g'), '');
@@ -312,47 +335,66 @@ export class CompilerService {
       })
 
       // 3.  now that we have it, generate the formgroups for the function args
-      this.initACI = this.addFormGroupsForFunctions(this.rawACI);
+      //this.initACI = this.addFormGroupsForFunctions(this.rawACI);
       
       //console.log("Hier init ACI object:", this.aci)
       
-      this._notifyCompiledAndACI.next(this.rawACI);
+      //this._newACI.next("good");
+      this._newACI.next({aci: this.rawACI, contractUID: params.contractUID});
+
       //this._notifyCurrentSDKsettings.next(0);
+      
+      
       return this.rawACI;
     },
     async (error) =>  {
       //console.log("oooops fehler ", error.error)
-      let theError = await this.fetchErrorsFromDebugCompiler(sourceCode); 
-      this._notifyCodeError.next(theError);
-    this.initACI = {} as ContractBase<any>;
+      var theError = await this.fetchErrorsFromDebugCompiler(sourceCode); 
+      
 
+      // diese error subscription in den one-editor übertragen, stattdessen errors als Teil der ACI returnen
+      // HIER TEST !!
+      this._notifyCodeError.next(theError);
+    //this.initACI = {} as ContractBase<any>;
+ 
     // tell sidebar et al. that there is no valid contract there right now
-    this._notifyCompiledAndACI.next(0);
+    // deprecated soon, one-editor will tell sidebar stuff.
+    //this.nextAci({"aci": {}, "contractUID": params.contractUID, "error": theError});
+    //this.nextAci("error");
+    this._newACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
+
+    //this._notifyCompiledAndACI.next({"shit": "lol"});
+
+        this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
+      
     return true;
   } );
     
+    /* 
+    eventuell wieder aktivieren !
+
     this.initACI = {} as ContractBase<any>;
 
     // tell sidebar et al. that there is no valid contract there right now
-    this._notifyCompiledAndACI.next(0);
-    return this.rawACI;
+    this._notifyCompiledAndACI.next({aci: {}, contractUID: params.contractUID});
+    return this.rawACI; */
   }
 
+ 
 
+ 
+  // reactivate this function for eventual input validation later...
  // generates a typescript-safe contract instance with a FormGroup in functions array
  addFormGroupsForFunctions(aci: any): ContractBase<any> {
-
-  // 1. create several formgroups: one FG for each fun, return final contract
+ 
+ // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
   let functions = aci.contract.functions;
-
   // 2. ... for every function of the contract....
   functions.forEach(fun => {
       //onsole.log("Taking care of ", fun.name);
-
       // add field to later store latest return data
       fun.lastReturnData = '';
-
       // add field to later store loading state (e.g. transaction being mined or waiting for local call..)
       fun.loading = false
       // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required 
@@ -362,38 +404,49 @@ export class CompilerService {
           // add field to sotre current input value
           arg.currentInput = '';
           arg.IDEindex = i;
-
-          controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
+          
+          /* controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
               : new FormControl(arg.name || '', Validators.required);
-
           //console.log(`For ${arg.name} adding ${controlls.length} controlls`)
               // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
-          fun.formGroup = new FormGroup(controlls)
-
+          fun.formGroup = new FormGroup(controlls) */
       })
   });
-
   return new ContractBase(aci);
+
+  //return new ContractBase(untouchedAci);
 }
+
+
+
 
 /* listeners start */
 
+ // new observable style testing
+ 
    // Part 1/3 for asking currently open editor for its code
-   public _fetchActiveCode = new BehaviorSubject<number>(0);
+   public _fetchActiveCode = new BehaviorSubject<string>("");
    oneEvent = this._fetchActiveCode.asObservable();
  
+   // DEPRECATE !
    // "new ACI available to generate GUI for contract deployment / init() function "
-   public _notifyCompiledAndACI = new BehaviorSubject<number>(0);
+   public _notifyCompiledAndACI = new BehaviorSubject<object>({});
    newRawACI = this._notifyCompiledAndACI.asObservable();
  
+   
+   public _newACI = new Subject<any>();
+   _newACIEvent = this._notifyCompiledAndACI.asObservable();
+ 
+
    // a new contract was deployed!
-   public _notifyDeployedContract = new BehaviorSubject<any>(null);
+   public _notifyDeployedContract = new Subject<any>();
    newContract = this._notifyDeployedContract.asObservable();
    
    // (new) SDK settings were found !
    public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
    newSdkSettings = this._notifyCurrentSDKsettings.asObservable();
 
+   // DEPRECATE !
   // a (new) account was found!
   public _notifyCodeError = new BehaviorSubject<any>({});
   newCodeError = this._notifyCodeError.asObservable();

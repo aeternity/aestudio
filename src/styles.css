@@ -47,6 +47,16 @@
 /* tweakings of the semantic UI END*/
 
 /* scheiß monaco editor container height */
+.accordion .content {
+    height: 300px;
+}
+.log-monitor .container {
+    height: 300px;
+}
+.editor {
+    display: flex !important;
+    height: 80vh !important;
+}
 .editor-container{
     height: 100% !important;
     background: #1d1d1d;

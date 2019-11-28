@@ -24,7 +24,7 @@ export class ContractBase<T> {
                 lastReturnData?: any;
                 loading: boolean;
                 IDEindex: number; // custom shit for generating the angular formControls, added by the contract-control service
-                formGroup: FormGroup;
+               // formGroup: FormGroup;
             }[];
             state: {
                 record: any[];

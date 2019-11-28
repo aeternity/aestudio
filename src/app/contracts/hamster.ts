@@ -5,6 +5,9 @@ export class Contract<T> {
   public nameInTab: string = "CryptoHamster";
   public shareId: string = "";
   public activeTab: boolean = false;
+  public errorHighlights : any;
+  public sharingHighlighters : any[] = [];
+  public latestACI : string;
 
   constructor(params : {[key: string]: any} ){
     this.contractUID = String(Date.now());

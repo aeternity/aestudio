@@ -22,6 +22,8 @@ export class DeployedContractComponent implements OnInit {
   ngOnInit() {
     console.log("Als contract wurde übergeben: ");
     console.log(this.contract);
+    //this.contract.aci = this.contract.aci.contract;
+    debugger;
   }
 
 
@@ -80,6 +82,10 @@ export class DeployedContractComponent implements OnInit {
     this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams);
   }
   
+  logTemp(something: any){
+    true
+  }
+
 }
 
 

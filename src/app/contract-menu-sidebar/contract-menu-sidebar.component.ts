@@ -90,13 +90,13 @@ export class ContractMenuSidebarComponent implements OnInit {
 
   constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef, private http: HttpClient) { }
  
-  buildAContract() {
+ /*  buildAContract() {
     // make compiler emit event
 
     // @parm: Maybe use param for editor identification later
     this.compiler.makeCompilerAskForCode(1);
 
-  } 
+  }  */
 
   deployContract(_existingContract? : boolean) {
 
@@ -122,7 +122,7 @@ export class ContractMenuSidebarComponent implements OnInit {
 
 
   ngOnInit() {
-    this.buildAContract();
+    //this.buildAContract();
     
      setInterval(async () => {
      
@@ -155,27 +155,30 @@ export class ContractMenuSidebarComponent implements OnInit {
       });
 
     // fires when new contract got compiled
-     this.rawACIsubscription = this.compiler._notifyCompiledAndACI
+    this.compiler._newACI
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
-          this.initACI = this.compiler.initACI;
-          console.log("Hier kommt init aci:", this.initACI);
-
+        
+        if(Object.entries(item['aci']).length > 0) {
+          this.initACI = item['aci'].contract;
+          
           // if the new ACI is not {} (empty), reset the last reported error.
           if(Object.entries(this.initACI).length > 0) { 
             this.currentError = {};
           }
-          // check if there is an init function present for the current generated ACI
+          // check if there is an init function present for the current generated ACI Trainee TODO task: do this in template !
           this.initACI.name != undefined ? this.initFunctionIsPresent = this.checkIfInitFunctionIsPresent() : true
 
           console.log("Current error ist nun: ", this.currentError);
           //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
+        }
+
     });
 
     // fires with a new contract when it got deployed
     this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
       .subscribe( async newContract => {
-
+        
         // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
            // push contract in an array, later, when calling a function, find it by is address
@@ -191,9 +194,11 @@ export class ContractMenuSidebarComponent implements OnInit {
         // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
         //this.activeContracts = this.compiler.activeContracts;
+        debugger
         this.changeDetectorRef.detectChanges()
         } else {
           console.log("False alert...");
+          debugger
         }
        
       })

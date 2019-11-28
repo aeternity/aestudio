@@ -22,6 +22,7 @@ import { DeployedContractComponent } from './deployed-contract/deployed-contract
 import { StorageServiceModule } from 'ngx-webstorage-service';
 import { LocalStorageService } from './local-storage.service';
 import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in-left-menu.component';
+import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component';
 
 
 
@@ -36,7 +37,7 @@ import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in
     ReplacePipe,
     LoaderComponent,
     DeployedContractComponent, 
-    ContractInLeftMenuComponent
+    ContractInLeftMenuComponent, OneEditorTabComponent
   ],
   imports: [
     BrowserModule,
