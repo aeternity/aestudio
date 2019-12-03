@@ -5,6 +5,10 @@
     width: 100%;
 }
 
+.ui.bottom.attached.segment.theSideMenu.pushable{
+    border-radius: 0px;
+}
+
 #codeEditorClosingIcon {
     font-size: 3em;
     color: white;
@@ -41,3 +45,13 @@
     color: #f9c80e;
 }
 
+.logMonitorPanel {
+    padding:0 !important
+}
+
+
+
+/* tabs start */
+.oneTab a {
+    color: #1d1d1d;
+}

@@ -1,0 +1,24 @@
+<sui-accordion-panel [isOpen]="true">
+        <div title>
+            <i class="dropdown icon"></i>
+            {{log.message}}
+        </div>
+        <div content>
+                <div class="errorbox"> <!-- log V, warn, success V, error V, info V-->
+                        <div class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'success' ? 'check circle' : log.type == 'error' ? 'exclamation triangle' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
+                        <div class="right">
+                          <div class="div2" title> 
+
+                                <div *ngFor="let key of objectKeys(log.data)">  
+                                    <br *ngIf="objectKeys(log.data).length < 3">
+                                    <br *ngIf="objectKeys(log.data).length < 3">
+                                    
+                                    <p>{{key}}: {{log.data[key]}} </p>  </div>
+                          </div>
+                          
+<!--                           <div class="div3" content>     Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i></div>
+ -->                        
+                          </div>
+                      </div> 
+        </div>
+</sui-accordion-panel>

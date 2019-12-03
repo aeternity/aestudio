@@ -11,7 +11,6 @@ import { Subscription, Subject } from 'rxjs';
 import { setInterval, clearInterval } from 'timers';
 
 
-
 @Component({
   selector: 'app-one-editor-tab',
   templateUrl: './one-editor-tab.component.html',
@@ -108,7 +107,7 @@ this.compiler._newACI.subscribe(item => {
   console.log(">>> ACI subscription gab: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
-    debugger
+    
     //this.filtersLoaded = Promise.resolve(true);
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'].contract;
@@ -144,11 +143,11 @@ this.compiler._newACI.subscribe(item => {
     .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
 
     
-debugger
+
     console.log(">>> ACI subscription gab: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
-    debugger
+    
     //this.filtersLoaded = Promise.resolve(true);
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'].contract;

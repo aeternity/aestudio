@@ -14,7 +14,8 @@ import { ContractBase } from './question/contract-base'
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
-import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
+import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
+import { EventlogService } from './services/eventlog/eventlog.service'
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
@@ -32,16 +33,6 @@ export class CompilerService {
     
   ];
 
-
-  /* {message: 'A success message', type: 'SUCCESS'},
-    {message: 'A warning message', type: 'WARN'},
-    {message: 'An error message', type: 'ERR'},
-    {message: 'An info message', type: 'INFO'},
- */
-
-  // setting default code, later pulled from editor
-  //code: string = new Contract().code;
-  
   public code: string = ''
 
   // the code from the currently active compiler window
@@ -87,7 +78,8 @@ public tellAci(): Observable < string > {
     this._fetchActiveCode.next(_uid);
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+    private eventlog: EventlogService) {
     this.setupClient();
     //console.log("Compilerservice initialized!");  
    }
@@ -201,20 +193,27 @@ public tellAci(): Observable < string > {
       try {
         console.log("Deployment params: ", _deploymentParams)
         await myContract.deploy(... _deploymentParams);
-        //let successString = 
-        this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+        
+        // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
+        //  
+        this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
+        
+        //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 
-      } catch(e){
+      } catch(_e){
         console.log("Something went wrong, investigating tx!");
-        console.log(e);
-        this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+        console.log(_e);
+
+        //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+        this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: _e})
 
         //e.verifyTx();
         }
     } else {
       //here we want to interact with an existing one.
       myContract = await this.Chain.getContractInstance(this.code, {contractAddress: _existingContractAddress});
-      this.logMessage(" Successfully casted contract at: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+
+      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract.aci.name, data: myContract.deployInfo})
     }
 
     console.log("My contract: ", myContract);
@@ -365,7 +364,8 @@ public tellAci(): Observable < string > {
 
     //this._notifyCompiledAndACI.next({"shit": "lol"});
 
-        this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
+    //Deprecate
+    this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
       
     return true;
   } );
@@ -433,9 +433,15 @@ public tellAci(): Observable < string > {
    public _notifyCompiledAndACI = new BehaviorSubject<object>({});
    newRawACI = this._notifyCompiledAndACI.asObservable();
  
-   
+   // New best practice for implementing events
+   // Notify on existance of new, formatted/extended api
    public _newACI = new Subject<any>();
    _newACIEvent = this._notifyCompiledAndACI.asObservable();
+ 
+   // New best practice for implementing events
+   // Notify on existance of new, formatted/extended api
+   public _newLog = new Subject<any>();
+   _newLogEvent = this._newLog.asObservable();
  
 
    // a new contract was deployed!
@@ -460,40 +466,14 @@ public tellAci(): Observable < string > {
   public activeCodeSelection : any
   /* all things sharing related end */
 
-  logMessage(_message: string, _type: string, _contract? : string) {
-    let hours = new Date().getHours().toString();
-    let minutes = new Date().getMinutes().toString();
-    let time = hours + ':' + minutes;
-    var log : NgxLogMessage;
+  logMessage(_log: {type: string, message: string, contract?: string, data: {}}) {
+    
+    //example:
+    //this.eventlog.log({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
+    
+    this.eventlog.log(_log)
 
-    switch (_type) {
-      case "log" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'LOG'}
-        this.logs.push(log);
-        break;
-      case "warn" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'WARN'}
-        this.logs.push(log);  
-        break;
-      case "success" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'SUCCESS'}
-        this.logs.push(log); 
-        break;
-      case "error" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'ERR'}
-        this.logs.push(log); 
-        break;
-      case "info" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'INFO'}
-        this.logs.push(log); 
-        break;
-      default:
-        break;
-    }
   }
-
-
-
 }
 
 

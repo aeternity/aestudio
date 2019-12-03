@@ -1,0 +1,54 @@
+.logMonitorPanel .title.active {
+    background: #1d1d1d !important;
+}
+
+.logMonitorPanel p {
+    color: #cf590c;
+    display: inline;
+
+}
+
+.logMonitorPanel i {
+    color: #cf590c;
+    display: inline;
+}
+
+.eventlog{
+    margin: 0px;
+    background-color: #1e1e1e;
+    border-radius: 0px;
+    
+}
+
+.innereventlog{
+    background-color: #1e1e1e;
+    padding:0px;
+}
+
+.expanded .ui.segment{
+    background-color: #1e1e1e;
+    -webkit-box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
+    -moz-box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
+    box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
+}
+
+.expanded .ui.segment{
+    border-radius: 0px !important;
+}
+
+.innereventlog p, .innereventlog i, .ui.accordion p {
+    color: #d4d4d4;
+}
+
+.title.active{
+    color: #d4d4d4 !important;
+}
+
+.ui.accordion {
+    margin-left: 12px;
+    margin-top: 0px;
+}
+
+.theLogs {
+    padding: 0px;
+}

@@ -35,9 +35,12 @@
     }
 }
 
+/* font color of a title in the event log*/
+.theLogs .title{
+    color: #d4d4d4 !important;
+} 
 
-
-/* don't apply usual itel hover effect on contract sidemenu on the left */
+/* don't apply usual titel hover effect on contract sidemenu on the left */
 
 .contractInLeftMenu :hover
 {
@@ -56,6 +59,7 @@
 .editor {
     display: flex !important;
     height: 80vh !important;
+    margin-bottom: -1px;
 }
 .editor-container{
     height: 100% !important;
@@ -67,6 +71,10 @@
     display: block;
     margin: auto;
     margin-bottom: 1em;
+}
+
+.ui.bottom.attached.segment.tab.active {
+    margin: 0 !important;
 }
 
 /* Color for units */
@@ -220,6 +228,15 @@
 }
 /* contracts sidemenu end */
 
+/* right menu start */
+
+.content.transition.active.visible {
+    height: auto;
+    padding: 0px;
+}
+
+/* right menu end */
+
 /* helpers start*/
 
 @-webkit-keyframes orange_blink {
@@ -251,3 +268,18 @@
     animation-delay: 2s;
 }
 /* helpers end */
+
+/* Log monitor start  */
+.logMonitorPanel .title.active {
+    background: #1d1d1d !important;
+}
+
+.logMonitorPanel .title {
+    background: #1d1d1d !important;
+}
+
+.ui.bottom.attached.segment.tab.active {
+    border-width: inherit;
+}
+
+/* Log monitor end */

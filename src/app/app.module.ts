@@ -23,7 +23,9 @@ import { StorageServiceModule } from 'ngx-webstorage-service';
 import { LocalStorageService } from './local-storage.service';
 import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in-left-menu.component';
 import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component';
-
+import { EventlogService } from './services/eventlog/eventlog.service';
+import { LogConsoleComponent } from './log-console/log-console.component';
+import { OneLogComponent } from './one-log/one-log.component'
 
 
 
@@ -37,7 +39,8 @@ import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component
     ReplacePipe,
     LoaderComponent,
     DeployedContractComponent, 
-    ContractInLeftMenuComponent, OneEditorTabComponent
+    ContractInLeftMenuComponent, 
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent
   ],
   imports: [
     BrowserModule,
