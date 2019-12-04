@@ -55,7 +55,7 @@ export class OneEditorTabComponent implements OnInit {
     this.codeChanged.next();
     this.activeContractChange.emit(this.activeContract);
     this.save();
-    console.log(">>>>>>>>>> CHANGE")
+
   }
   
   editorOptions = {theme: 'vs-dark', 
@@ -88,8 +88,6 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     this.setupThrottledCompilerRequests();
     this.save();
 
- 
-
    }
 
   ngOnInit() {
@@ -110,7 +108,7 @@ this.compiler._newACI.subscribe(item => {
     
     //this.filtersLoaded = Promise.resolve(true);
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
-    this.activeContract.latestACI = item['aci'].contract;
+    this.activeContract.latestACI = item['aci'];
     
     console.log("Es kam ein neuer change rein für contract: ", item['contractUID']);
     
@@ -127,13 +125,11 @@ this.compiler._newACI.subscribe(item => {
       
       let theError = item['error'];
       console.log("Error erhalten für" + this.activeContract.contractUID, theError);
-      debugger
+      
     } else {
       //console.log("Empty or other contract's ACI was received, not removing error");
     }
 })
-
-
     
   }
 
@@ -141,8 +137,6 @@ this.compiler._newACI.subscribe(item => {
   aciSubscription(){
     this.rawACIsubscription = this.compiler._notifyCompiledAndACI
     .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
-
-    
 
     console.log(">>> ACI subscription gab: ", item);
  
@@ -165,7 +159,7 @@ this.compiler._newACI.subscribe(item => {
     // reset the error tracker
     //console.log("Resetting last known error..");
     this.lastError = "";} else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
-      debugger
+      
       let theError = item['error'];
       console.log("Error erhalten für" + this.activeContract.contractUID, theError);
     } else {
@@ -295,14 +289,14 @@ this.compiler._newACI.subscribe(item => {
   setupErrorHighlighting(){
      // if the compiler / debugger submitts errors, highlight them:
      this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
-      // repetitive compiler errors
+      // handle repetitive compiler errors
       distinctUntilChanged()
     )
       .subscribe(async error =>  {
           await error;
           
           //let theError = error.__zone_symbol__value;
-          console.log("Nur error: ", error);
+          console.log(`Nur error, in ${this.activeContract.nameInTab} : , ${error}`);
         
           // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
           let errorHash = this.hash(error);
@@ -325,7 +319,6 @@ this.compiler._newACI.subscribe(item => {
               ]
               // save error highlights to contract object 
               this.activeContract.errorHighlights = errorHighlights;
-              //  TODO : EMIT A CONTRACT SAVE here this.saveActiveContractChangesToContractsArray();
               this.save(); // like this ? 
               this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights)
             } catch(e){
@@ -368,11 +361,11 @@ this.compiler._newACI.subscribe(item => {
       // fires when contract got compiled or there was an error
   this.rawACIsubscription = this.compiler._notifyCompiledAndACI
   .subscribe(item => { 
-debugger
+
     console.log(">>> ACI subscription gab: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
-    debugger
+    
     //this.filtersLoaded = Promise.resolve(true);
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'].contract;
@@ -390,9 +383,28 @@ debugger
     // reset the error tracker
     //console.log("Resetting last known error..");
     this.lastError = "";} else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
-      debugger
+      
       let theError = item['error'];
       console.log("Error erhalten für" + this.activeContract.contractUID, theError);
+
+         // add new highlighter
+         try{
+          let errorHighlights = [
+            // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
+          { range: new monaco.Range(theError.pos.line,
+                                  theError.pos.col +1,
+                                  theError.pos.line,
+                                  theError.pos.col), options: { inlineClassName: 'errorMarker', marginClassName: 'problematicCodeLine' }},
+          ]
+          // save error highlights to contract object 
+          this.activeContract.errorHighlights = errorHighlights;
+          this.save(); // like this ? 
+          this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights)
+        } catch(e){
+          console.log("tried adding highlights, but failed, for: ", this.activeContract.contractUID)
+        }
+
+
     } else {
       //console.log("Empty or other contract's ACI was received, not removing error");
     }
@@ -401,7 +413,6 @@ debugger
 
   // alias to emit contract change
   save(){
-    
     this.activeContractChange.emit(this.activeContract);
   }
 

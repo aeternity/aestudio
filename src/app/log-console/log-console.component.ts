@@ -24,6 +24,7 @@ export class LogConsoleComponent implements OnInit {
     this.eventlog._newLog.subscribe(log => {
       console.log("Log console got:", log)
       this.logs.push(log);
+      debugger
     })
   }
 

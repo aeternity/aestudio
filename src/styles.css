@@ -230,11 +230,14 @@
 
 /* right menu start */
 
-.content.transition.active.visible {
+.theLogs .content.transition.active.visible {
     height: auto;
     padding: 0px;
 }
 
+.content.transition.active.visible {
+    height: auto;
+}
 /* right menu end */
 
 /* helpers start*/

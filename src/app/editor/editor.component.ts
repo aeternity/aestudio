@@ -282,73 +282,6 @@ export class EditorComponent implements OnInit {
     
       })
 
-  // if the compiler / debugger submitts errors, highlight them:
- // DEPRECATION TESTING
-    /* this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
-      // repetitive compiler errors
-      distinctUntilChanged()
-    )
-      .subscribe(async error =>  {
-          await error;
-          //let theError = error.__zone_symbol__value;
-          console.log("Nur error: ", error);
-        
-          // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
-          let errorHash = this.hash(error);
-          //console.log("Error hash: ", errorHash) 
-          // if angular isn't trying to report the already known error again...
-          if (errorHash != this.lastError){
-            this.lastError = errorHash; // mark error as used
-             
-            // remove highlights the soft way...
-            this.clearAllHighlighters()
-
-            // add new highlighter
-            try{
-              let errorHighlights = [
-                // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-              { range: new monaco.Range(error.pos.line,
-                                      error.pos.col +1,
-                                      error.pos.line,
-                                      error.pos.col), options: { inlineClassName: 'errorMarker', marginClassName: 'problematicCodeLine' }},
-              ]
-              // save error highlights to contract object 
-              this.activeContract.errorHighlights = errorHighlights;
-              this.saveActiveContractChangesToContractsArray();
-
-              this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights)
-            } catch(e){
-              console.log("tried adding highlights...")
-            }
-
-            //this.removeDuplicates("errorMarker");
-
-          } else {
-            //console.log("tried adding known error.")
-          }
-          //this.removeDuplicates("errorMarker");
-      })   */
-
-
-
-    // fires when new contract got compiled
- // deprecation testing
-    /* this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-    .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
-    debugger
-    if (Object.entries(item).length > 0) {
-      //console.log("Clearing error marker..");
-    this.clearAllHighlighters();
-      
-      // reset the error tracker
-      //console.log("Resetting last known error..");
-      this.lastError = "";} else {
-        console.log("Empty ACI was received, not removing error");
-      }
-    }); */
- 
-
-    
 
 
     this.codeGenerator = this.generator._generateCode.subscribe(code => {
@@ -361,6 +294,12 @@ export class EditorComponent implements OnInit {
       // workaround for code window not showing:
       this.triggerWindowRefresh();           
      });
+
+    // remove when implementing fix for #8 - introduce means to dynamically controll which tab is active
+    setTimeout(() => {
+      this.setTabAsActive(this.contracts[0]);
+
+    }, 1500);
 
     console.log("activeContract Contracts: ", this.contracts); 
   }
@@ -459,32 +398,11 @@ export class EditorComponent implements OnInit {
   }
   codeChanged: Subject<string> = new Subject<string>();
 
-  // deprecation testing :
-  /* change(){
-    //console.log("Shit done changed!");
-    // put the active code into compiler
-    this.compiler.makeCompilerAskForCode(this.activeContract.contractUID);
-    console.log("code ist gerade: ",this.activeContract.code);
-    // generate some ACI just to display init() function for deployment
-    this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
-    this.saveActiveContractChangesToContractsArray();
-  } */
-
-  // todo: move this logic into one-editor tabs !
-
   // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
   setTabAsActive(_oneContract: any) {
-    //this.currentTabUID = _oneContract.contractUID;
     this.activeContract = _oneContract;
     // change all the other contracts to inactive - maybe ?
 
-    /* this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, this.activeContract.errorHighlights);
-
-    this.localStorage.storeAllContracts(this.contracts);
- */
-    // next two commands are a workaround for some stupid race condition that leaves the default contract in place
-    //this.compiler.code = '';
-    //this.compiler.code = this.activeContract.code;
     this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
     
     //this.compiler.code = this.activeContract.code;
@@ -494,7 +412,7 @@ export class EditorComponent implements OnInit {
 
   // helpers:
 
-  // saves 
+  // saves all contracts
   saveActiveContractChangesToContractsArray() {
     this.contracts.forEach((oneContract, index, array) => {
       oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
@@ -502,7 +420,7 @@ export class EditorComponent implements OnInit {
     })
   }
 
-  // saves arbitrary contract's changes 
+  // saves changes of any contract you pass to this function
   saveContractChangesToContractsArray(_contract: any) {
     
     console.log("save zum saven übergeben wurde", _contract);
@@ -522,7 +440,6 @@ export class EditorComponent implements OnInit {
 
   // clear highlighters (todo: by identifier)
   clearAllHighlighters(){
-    //clear all existing
     try{        
       this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
       this.activeContract.errorHighlights = [];

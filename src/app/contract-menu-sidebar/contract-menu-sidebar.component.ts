@@ -85,10 +85,13 @@ export class ContractMenuSidebarComponent implements OnInit {
   temp: any;
 
   logTemp(input: any){
-    console.log(input);
+    console.log("current input:", input);
   }
 
-  constructor(private compiler: CompilerService, private changeDetectorRef: ChangeDetectorRef, private http: HttpClient) { }
+  constructor(
+    private compiler: CompilerService, 
+    private changeDetectorRef: ChangeDetectorRef, 
+    private http: HttpClient) { }
  
  /*  buildAContract() {
     // make compiler emit event
@@ -157,20 +160,22 @@ export class ContractMenuSidebarComponent implements OnInit {
     // fires when new contract got compiled
     this.compiler._newACI
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
-        
+        console.log("Sidebar recieved an ACI!", item)
+        // if the new ACI is not {} (empty), reset the last reported error.
         if(Object.entries(item['aci']).length > 0) {
-          this.initACI = item['aci'].contract;
+          this.initACI = item['aci'];
           
-          // if the new ACI is not {} (empty), reset the last reported error.
-          if(Object.entries(this.initACI).length > 0) { 
-            this.currentError = {};
-          }
+          this.currentError = {};
+          
           // check if there is an init function present for the current generated ACI Trainee TODO task: do this in template !
           this.initACI.name != undefined ? this.initFunctionIsPresent = this.checkIfInitFunctionIsPresent() : true
 
           console.log("Current error ist nun: ", this.currentError);
           //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
+        } else {
+          // if there was obviously not an ACI recieved, make deployment window disappear
+          this.initACI = null
         }
 
     });

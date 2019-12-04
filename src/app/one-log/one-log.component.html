@@ -4,8 +4,8 @@
             {{log.message}}
         </div>
         <div content>
-                <div class="errorbox"> <!-- log V, warn, success V, error V, info V-->
-                        <div class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'success' ? 'check circle' : log.type == 'error' ? 'exclamation triangle' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
+                <div class="errorbox"> 
+                        <div *ngIf="log.type" class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'success' ? 'check circle' : log.type == 'error' ? 'bug' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
                         <div class="right">
                           <div class="div2" title> 
 
@@ -13,12 +13,23 @@
                                     <br *ngIf="objectKeys(log.data).length < 3">
                                     <br *ngIf="objectKeys(log.data).length < 3">
                                     
-                                    <p>{{key}}: {{log.data[key]}} </p>  </div>
+                                    <!-- if it's just a string -->
+                                    <p> <b>{{key}} </b> : {{objectKeys(log.data[key]).length > 0 ? (log.data[key] | json) : log.data[key]}}  </p> </div>
+                                    
+                                    
                           </div>
-                          
+                          <!-- A second field for content down here -->
 <!--                           <div class="div3" content>     Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i></div>
  -->                        
                           </div>
                       </div> 
         </div>
 </sui-accordion-panel>
+
+
+<!-- differentiate between one-liner and object logs  -->
+  <!--  <p *ngIf="objectKeys(log.data[key]).length < 2"> <b>{{key}} </b> : {{objectKeys(log.data[key]).length > 0 ? (log.data[key] | json) : log.data[key]}}  </p> </div>
+                                    
+   <app-one-log *ngIf="objectKeys(log.data[key]).length < 2"
+   [log]="{{ '{' message:"here", data:log.data[key]'}' }}"
+   ></app-one-log> -->

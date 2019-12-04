@@ -120,9 +120,6 @@ public tellAci(): Observable < string > {
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
-
-  
-    //this.compileAndDeploy(this.code);
   }
 
    fromCodeToACI(code) {
@@ -190,12 +187,14 @@ public tellAci(): Observable < string > {
       
       myContract = await this.Chain.getContractInstance(this.code);
       //console.log(">>>> compilation result (mycontract): ", myContract);
+      
       try {
         console.log("Deployment params: ", _deploymentParams)
         await myContract.deploy(... _deploymentParams);
         
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
+        
         this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
         
         //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
@@ -207,8 +206,8 @@ public tellAci(): Observable < string > {
         //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
         this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: _e})
 
-        //e.verifyTx();
-        }
+        //e.verifyTx();  - is this a thing ? 
+         }
     } else {
       //here we want to interact with an existing one.
       myContract = await this.Chain.getContractInstance(this.code, {contractAddress: _existingContractAddress});
@@ -224,7 +223,7 @@ public tellAci(): Observable < string > {
     .subscribe(
       (data: EncodedACI) => {
       // save ACI to generate a contract instance for the editor
-      let rawACI = data.encoded_aci
+      var rawACI = data.encoded_aci
         
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
@@ -240,13 +239,13 @@ public tellAci(): Observable < string > {
           //console.log(one);
           //console.log(i);
       })
-
+      debugger
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
-      let aci = this.addFormGroupsForFunctions(rawACI);
+      let aci = this.modifyAci(rawACI);
 
       /* // actually, short-circuit problematic formgroup generation
       let aci = rawACI; */
-      
+      console.log("Formatted aci now looks like: ", aci)
       // 4. put the ammended ACi into the aci of the contract object
       myContract.aci = aci;
 
@@ -316,35 +315,35 @@ public tellAci(): Observable < string > {
     .subscribe(
       (data: EncodedACI) => {
       // save ACI to generate a contract instance for the editor
-      this.rawACI = data.encoded_aci
+      var rawACI = data.encoded_aci
         
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
         
-        this.rawACI.contract.functions.sort(
+        rawACI.contract.functions.sort(
           (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
       )
 
       // 2. enumerate functions explicitly with index
-      this.rawACI.contract.functions.forEach((one, i) => {
+      rawACI.contract.functions.forEach((one, i) => {
 
-          this.rawACI.contract.functions[i].IDEindex = i;
+          rawACI.contract.functions[i].IDEindex = i;
           //console.log(one);
           //console.log(i);
       })
-
+      debugger
       // 3.  now that we have it, generate the formgroups for the function args
-      //this.initACI = this.addFormGroupsForFunctions(this.rawACI);
+      rawACI = this.modifyAci(rawACI);
       
       //console.log("Hier init ACI object:", this.aci)
       
       //this._newACI.next("good");
-      this._newACI.next({aci: this.rawACI, contractUID: params.contractUID});
+      this._newACI.next({aci: rawACI, contractUID: params.contractUID});
 
       //this._notifyCurrentSDKsettings.next(0);
       
       
-      return this.rawACI;
+      return rawACI;
     },
     async (error) =>  {
       //console.log("oooops fehler ", error.error)
@@ -353,16 +352,10 @@ public tellAci(): Observable < string > {
 
       // diese error subscription in den one-editor übertragen, stattdessen errors als Teil der ACI returnen
       // HIER TEST !!
-      this._notifyCodeError.next(theError);
-    //this.initACI = {} as ContractBase<any>;
+    this._notifyCodeError.next(theError);
  
-    // tell sidebar et al. that there is no valid contract there right now
-    // deprecated soon, one-editor will tell sidebar stuff.
-    //this.nextAci({"aci": {}, "contractUID": params.contractUID, "error": theError});
-    //this.nextAci("error");
     this._newACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
-
-    //this._notifyCompiledAndACI.next({"shit": "lol"});
+    
 
     //Deprecate
     this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
@@ -385,8 +378,9 @@ public tellAci(): Observable < string > {
  
   // reactivate this function for eventual input validation later...
  // generates a typescript-safe contract instance with a FormGroup in functions array
- addFormGroupsForFunctions(aci: any): ContractBase<any> {
+ modifyAci(aci: any): ContractBase<any> {
  
+  debugger
  // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
   let functions = aci.contract.functions;
@@ -466,13 +460,13 @@ public tellAci(): Observable < string > {
   public activeCodeSelection : any
   /* all things sharing related end */
 
-  logMessage(_log: {type: string, message: string, contract?: string, data: {}}) {
+  logMessage(_log: any) {
     
     //example:
     //this.eventlog.log({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
     
     this.eventlog.log(_log)
-
+    debugger
   }
 }
 

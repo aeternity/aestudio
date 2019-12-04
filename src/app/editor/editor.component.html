@@ -27,7 +27,7 @@
                     <div class="ui top attached tabular menu">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
                         <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
                           <div class="oneTab" *ngIf="oneContract.showInTabs" >  
-                              <a style="float: left"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(5); setTabAsActive(oneContract); logSomeShit();"  class="item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }} </a> 
+                              <a style="float: left"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }} </a>
                               <a href="" > <i style="float: right" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'})" class="close icon"></i>  </a>
                           </div>
                         </ng-container>
