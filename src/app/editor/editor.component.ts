@@ -1,17 +1,16 @@
 import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
-import { ContractControlService } from '../contract-control.service';
-import { Subscription, Observable, Subject, BehaviorSubject } from 'rxjs';
-import { Router, ActivatedRoute, NavigationEnd, ResolveStart } from '@angular/router';
-import { filter, map, distinctUntilChanged } from 'rxjs/operators';
+import { Subscription, Subject } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ClipboardService } from 'ngx-clipboard';
 import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
 import { CodeFactoryService } from '../code-factory.service';
-
+import { LocalStorageService } from '../local-storage.service';
 
 
 @Component({
@@ -26,6 +25,8 @@ export class EditorComponent implements OnInit {
   logs: NgxLogMessage[] = [
   ];
   
+  deleteme: any = 2;
+
   logStream$: any;
 
   // logger end // 
@@ -65,8 +66,12 @@ export class EditorComponent implements OnInit {
   // Listen to compilation success (e.g. to remove highlights)
   codeGenerator: Subscription;
   templateCode: string = '';
-  // note if this editor is currently in active tab
-  isActiveTab : boolean = true;
+
+  // store all contractUIDs that are to be shown in the tabs
+  activeTabUIDs : string[] = [];
+
+  // the currently opened tab's UID
+  currentTabUID: string = "1574358512052";
 
   // handles the case of event emitter emitting three error events instead of 1
   previousErrorHash : any = "";
@@ -76,9 +81,10 @@ export class EditorComponent implements OnInit {
   codeGeneratorVisible = false;
   generatedCode : any = ""
 
-  //the current active code - initialized either as default code, or code fetched from DB, later on set by editor content
-  // INITIALIZATION RACE DEBUGGING contract: Contract<string>
-  contract: any;
+  //the currently available contracts - initialized either as default code, or code fetched from DB, later on set by editor content
+  
+  contracts: any[] = [];
+  activeContract: any;
 
   constructor(private compiler: CompilerService, 
     private _router: Router, 
@@ -87,9 +93,11 @@ export class EditorComponent implements OnInit {
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef, 
     private generator: CodeFactoryService, 
+    private localStorage: LocalStorageService
     ) { 
       
-      // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
+      // deprecation testing
+      /* // This throttles the requests to the compiler, so not always one is sent once a user types a key, but is delayed a little.
       this.codeChanged.pipe(
       debounceTime(environment.compilerRequestDelay) // wait 1 sec after the last event before emitting last event
       ). // only emit if value is different from previous value
@@ -97,7 +105,7 @@ export class EditorComponent implements OnInit {
 
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
-       });
+       }); */
   }
 
   editorOptions = {theme: 'vs-dark', 
@@ -105,7 +113,9 @@ export class EditorComponent implements OnInit {
     cursorBlinking: 'phase', 
     cursorSmoothCaretAnimation:'true',
     renderIndentGuides:'true',
-  contextmenu:'true'};
+    contextmenu:'true'/* ,
+    scrollBeyondLastLine: 'false',
+    automaticLayout: 'true' */};
 
   generatedCodeEditorOptions = {theme: 'vs-dark', 
     language: 'javascript', 
@@ -116,35 +126,36 @@ export class EditorComponent implements OnInit {
     minimap:'false'};
 
   ngOnInit() {
-    setInterval(() => {
+    /* setInterval(() => {
       // fetching logs from compiler...
       this.logs = this.compiler.logs;
-    }, 1000);
-
+    }, 1000); */
+/* 
     this.logStream$ = this.logs[1];
-    this.logStream$ = this.logs[2];
+    this.logStream$ = this.logs[2]; */
 
     const syncRoute: any = this._route.snapshot;
     console.log("Die gesamt route: ", syncRoute)
     console.log(">>>>>>Durchlauf:  ",  ++this.runTimes)
 
     this._route.queryParamMap.subscribe(parameter => {
+      
       // quickfix for stupid racing condition
       this.runTimes++;
-
+      console.log("Run times: ", this.runTimes);
       // get the parameters for code highlighting
       let codeToHighlight = parameter.get("highlight");
-      try{ this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
+      try{  this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
       console.log("highlight:", codeToHighlight);
-      console.log(this.highlightedRows);
+      console.log("Highlighted rows:", this.highlightedRows);
       console.log("Parameters are: ", parameter)
 
-      let contractID = parameter.get("contract");
+      /* var contractID = parameter.get("contract");
       console.log("contract ID: ", contractID);
-
+ */
       // get contract ID from URl parameter for fetching code from DB
       if(parameter.get("contract") !== null) {
-        let contractID = parameter.get("contract");
+        var contractID = parameter.get("contract");
         console.log("contract ID: ", contractID);
         // call backend
         let requestURL = `${environment.contractSharingBackend}${contractID}`
@@ -152,32 +163,112 @@ export class EditorComponent implements OnInit {
 
         //let something = this.http.get(`https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/9702aa10-b`)
 
-        this.http.get(`${environment.contractSharingBackend}${contractID}`).subscribe((res) => {
-          // if the backend responds, initialize a new contract with the code from the backend. 
-          // if there is no contract in the response, initialize the default contract
-          // TODO: Show a message is a contract was tried to be fetched that doesnt exist anymore 
+        this.http.get(`${environment.contractSharingBackend}${contractID}`).subscribe(async (res) => {
+          // if the backend responds, load contracts from local storage and ...
+          // ...initialize a new contract with the code from the backend and push it to the contracts array.
+          // if there is no contract in the response, just load the contracts from storage.
+
+          // TODO: Show a message if a contract was tried to be fetched that doesnt exist (anymore) 
+
           //console.log("is it there? ", res['contract'])
-          res['contract'] !== undefined ? this.contract = new Contract(res['contract']) : this.contract = new Contract();
+          if (res['contract'] !== undefined) {
+            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            this.contracts = this.localStorage.getAllContracts();
+            
+            // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
+            this.activeContract = new Contract({_code : res['contract']})
+
+            // GET THE CONTRACT'S NAME...
+            this.compiler.fromCodeToACI(this.activeContract.code).subscribe(
+              (data: EncodedACI) => {
+                let namestring = `${data.encoded_aci.contract.name} [External]`;
+                this.activeContract.nameInTab = namestring;
+                
+                // TODO : make being the active tab a property to the contract object and tell tab shit to use it !
+
+                 // set contract parameters
+                this.activeContract.shareId = contractID;
+                this.activeContract.sharingHighlighters = this.highlightedRows;
+                console.log(">>>>>>Name and share ID?", this.activeContract.nameInTab, this.activeContract.shareID)
+
+                // only push this shared contract into the array of active contracts if it's not known yet
+                var contractExists: boolean = false;
+                console.log(" same? ", this.contracts[0].shareId);
+                console.log(" same? ", this.activeContract);
+                console.log("same ?" , this.contracts[0].shareId == this.activeContract.shareId);
+
+                // check if the contract is already there...
+                this.contracts.forEach((oneContract) => {
+                  console.log("save oneContract.shareId :" , oneContract.shareId);
+                  if (oneContract.shareId == this.activeContract.shareId) {
+                    // if the contract already exists, set it's highlighted rows though!
+                    this.activeContract.sharingHighlighters = this.highlightedRows;
+                    contractExists = true;
+                  };  
+                })
+                
+                console.log("save ContractExists: ", contractExists)
+                // if no contract with this shareID was found, push it.
+                contractExists == false ? this.contracts.push(this.activeContract) : true
+                
+                //  put this contract in the tabs
+                this.activeTabUIDs.push(this.activeContract.contractUID);
+                // TODO make this tab the active one
+                //old idea: this.currentTabUID = this.activeContract.contractUID;
+
+                // save the current contracts code states to local storage
+                this.localStorage.storeAllContracts(this.contracts);
+                
+                
+                // save the highlighted rows to the contract object
+                if (this.highlightedRows.length > 3) {
+                  let rows = this.highlightedRows;
+                  this.editorInstance.deltaDecorations([], [
+                    { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
+                  ]);}
+
+
+
+               })
+           
+          } else {
+            
+            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            this.contracts = this.localStorage.getAllContracts();
+            // if there is no contract in the storage initialize an empty one
+            this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
+            this.activeContract = this.contracts[0];
+            // moved this to ngAfterViewInit because of racing conditions between this and the tabs - this.currentTabUID = this.activeContract.contractUID;
+
+            // save the current contracts code states to local storage
+          this.localStorage.storeAllContracts(this.contracts);
+          }
+
+
+         
           // next two commands are a workaround for some stupid race condition that leaves the default contract in place
           this.compiler.code = '';
-          this.compiler.generateACIonly(this.contract.code);
-          this.compiler.code = this.contract.code;
-          this.compiler.generateACIonly(this.contract.code);
+          this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+          this.compiler.code = this.activeContract.code;
 
-          // add the highlighter
-          if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
-            this.editorInstance.deltaDecorations([], [
-              { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine' }},
-            ]);}
+          
         })
+      
       } else {
+        
         // if there is no contractID provided in the URL, initialize the default one
         // fix for stupid racing condition
         if (this.runTimes >= 2) {
-          console.log("No contract ID found, initializing the default one.");
-          this.contract = new Contract();
-          this.compiler.generateACIonly(this.contract.code);
+          console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+          this.contracts = this.localStorage.getAllContracts();
+          // if there is no contract in the storage initialize an empty one
+          this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
+          this.activeContract = this.contracts[0];
+          this.localStorage.storeAllContracts(this.contracts);
+
+
         }
+        
       }
     });
 
@@ -185,70 +276,12 @@ export class EditorComponent implements OnInit {
     this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
       .subscribe(item => {console.log("Im editor angekommen !"); 
       //console.log("Current code ist: ", this.contract.code)
+  
+      // try generating ACI for init-interface
+      this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
     
+      })
 
-    // if the compiler / debugger submitts errors, highlight them:
-    // repetitive compiler errors
-    this.newErrorSubscription = this.compiler._notifyCodeError.pipe(
-      distinctUntilChanged()
-    )
-      .subscribe(async error =>  {
-          await error;
-          //let theError = error.__zone_symbol__value;
-          console.log("Nur error: ", error);
-        
-          // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
-          let errorHash = this.hash(error);
-          //console.log("Error hash: ", errorHash) 
-          // if angular isn't trying to report the already known error again...
-          if (errorHash != this.lastError){
-            this.lastError = errorHash; // mark error as used
-             
-            // remove highlights the soft way...
-            this.clearAllHighlighters()
-
-            // add new highlighter
-            try{
-              this.errorHighlights = [
-                // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-              { range: new monaco.Range(error.pos.line,
-                                      error.pos.col +1,
-                                      error.pos.line,
-                                      error.pos.col), options: { inlineClassName: 'errorMarker', marginClassName: 'problematicCodeLine' }},
-              ]
-            
-              this.currentDecorations = this.editorInstance.deltaDecorations([], this.errorHighlights)
-            } catch(e){
-              console.log("triedd adding highlights...")
-            }
-
-            //this.removeDuplicates("errorMarker");
-
-          } else {
-            //console.log("tried adding known error.")
-          }
-          //this.removeDuplicates("errorMarker");
-      })  
-
-       // fires when new contract got compiled
-       this.rawACIsubscription = this.compiler._notifyCompiledAndACI
-       .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
-       if (Object.entries(item).length > 0) {
-         //console.log("Clearing error marker..");
-        this.clearAllHighlighters();
-         
-         // reset the error tracker
-         //console.log("Resetting last known error..");
-         this.lastError = "";} else {
-           console.log("Empty ACI was received, not removing error");
-         }
-        });
- 
-
-    // try generating ACI for init-interface
-    this.compiler.generateACIonly(this.contract.code);
-    
-    //  return this.compile();
 
 
     this.codeGenerator = this.generator._generateCode.subscribe(code => {
@@ -258,36 +291,36 @@ export class EditorComponent implements OnInit {
       console.log(">>>>>>>>>>>> Codegeneration parameters are:", code);
       
       this.generatedCode = `${code}`;
-      setTimeout(() => {
-        var el = document; // This can be your element on which to trigger the event
-        var event = document.createEvent('HTMLEvents');
-        event.initEvent('resize', true, false);
-        el.dispatchEvent(event)
-
-        console.log("changedetector ran");
-      }, 50);
-      
-
-           
+      // workaround for code window not showing:
+      this.triggerWindowRefresh();           
      });
 
-  }); 
+    // remove when implementing fix for #8 - introduce means to dynamically controll which tab is active
+    setTimeout(() => {
+      this.setTabAsActive(this.contracts[0]);
+
+    }, 1500);
+
+    console.log("activeContract Contracts: ", this.contracts); 
   }
 
   // initializes editor object to interact with - called by the editor component
   initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
-    console.log("The editor:", theEditor);
+    //console.log("The editor:", theEditor);    
     this.editorInstance = theEditor;
+
+    this.triggerWindowRefresh(); 
+
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-    if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
+   /*  if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
       setTimeout(() => {
         this.editorInstance.deltaDecorations([], [
           { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
         ])
-      }, 400);
-      ;}
+      }, 300);
+      ;} */
 
 
     // custom context menu options
@@ -303,13 +336,12 @@ export class EditorComponent implements OnInit {
         // function called when clicking
         // press the specified keys
         run: () => {console.log(this.compiler.activeCodeSelection)
-          let postData = {"contract":this.contract.code ,"contractName": "some", "editorVersion":1}
+          let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
           console.log("So sieht post data aus:", postData);
 
           this.http.post(environment.contractSharingBackend, postData, {
             headers: new HttpHeaders({
-                'Content-Type':  'application/json',
-                'Sophia-Compiler-Version': '4.0.0'
+                'Content-Type':  'application/json'
               })
           }).subscribe(data=>{
             console.log("Post hat ergeben?", data)
@@ -360,32 +392,108 @@ export class EditorComponent implements OnInit {
           console.log(peng);
         }) */
   }
+
   throttledChange(){
     this.codeChanged.next();
   }
   codeChanged: Subject<string> = new Subject<string>();
 
-  change(){
-    //console.log("Shit done changed!");
-    // put the active code into compiler
-    this.compiler.makeCompilerAskForCode(0);
-    console.log("code ist gerade: ",this.contract.code);
-    // generate some ACI just to display init() function for deployment
-    this.compiler.generateACIonly(this.contract.code);
+  // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
+  setTabAsActive(_oneContract: any) {
+    this.activeContract = _oneContract;
+    // change all the other contracts to inactive - maybe ?
+
+    this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+    
+    //this.compiler.code = this.activeContract.code;
   }
 
-  // clear highlighters by identifier
+  // Tabs functionality end
+
+  // helpers:
+
+  // saves all contracts
+  saveActiveContractChangesToContractsArray() {
+    this.contracts.forEach((oneContract, index, array) => {
+      oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
+      this.localStorage.storeAllContracts(this.contracts);
+    })
+  }
+
+  // saves changes of any contract you pass to this function
+  saveContractChangesToContractsArray(_contract: any) {
+    
+    console.log("save zum saven übergeben wurde", _contract);
+    // console.log("suche contract zum aktualisieren...")
+    this.contracts.forEach((oneContract, index, array) => {
+      if (oneContract.contractUID == _contract.contractUID) {
+        array[index] = _contract;
+        //console.log("Changes of one contract saved!");
+        this.localStorage.storeAllContracts(this.contracts);
+        
+      } 
+    })
+    this.localStorage.storeAllContracts(this.contracts);
+
+    this.changeDetectorRef.detectChanges()
+  }
+
+  // clear highlighters (todo: by identifier)
   clearAllHighlighters(){
-    //clear all existing
     try{        
       this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
+      this.activeContract.errorHighlights = [];
+      this.saveActiveContractChangesToContractsArray();
     } catch(e){
     }
     
   }
 
-  // helpers
+  logSomeShit (_shit?: any) {
+    //console.log("Shit to log: ", _shit)
+  }
 
+  // trigger whether the contract is displayed in the tabs or not
+  toggleTabAppearance(_params: any){
+    this.contracts.forEach((oneContract) => {
+      console.log("Comparing with contractUID: ", oneContract.contractUID)
+      //console.log("save oneContract.shareId :" , oneContract.shareId);
+      console.log("Clicked on contract: ", _params.contract)
+      console.log("In this case, these are the contracts: ", this.contracts)
+      if (oneContract.contractUID == _params.contract.contractUID){
+        
+        switch (_params.triggerMode) {
+          case "off":
+            oneContract.showInTabs = false;
+            break;
+          case "on":
+            oneContract.showInTabs = true;
+            break;
+          case "trigger":
+            oneContract.showInTabs == true ? oneContract.showInTabs = false : oneContract.showInTabs = true;
+            break;
+          default:
+            break;
+        }
+      }
+      // i thibnk this is not used anymore ? or maybe for setting the code in the compiler in order to talk to the right sidebar
+      //, to be deprecated soon ? 
+      return oneContract.contractUID == this.activeContract.contractUID;  
+    });
+    
+    this.localStorage.storeAllContracts(this.contracts);
+    this.changeDetectorRef.detectChanges()
+  }
+
+  addNewContract(){
+    console.log("comparing.. right now there are ", this.contracts.length)
+    let newContract = new Contract({})
+    console.log("new contract ist:", newContract);
+    this.contracts.push(newContract);
+    this.localStorage.storeAllContracts(this.contracts);
+    this.changeDetectorRef.detectChanges();
+    console.log("comparing.. now there are ", this.contracts.length)
+  }
   sortObjectKeys(obj){
         if(obj == null || obj == undefined){
             return obj;
@@ -457,6 +565,23 @@ export class EditorComponent implements OnInit {
 
   closeCodeEditor = () => {
     this.codeGeneratorVisible = false;
+  }
+
+  // if stupid-ass chrome won't render the editor but show it as a small square instead..
+  triggerWindowRefresh(millisecondsDelay?: number) {
+    setTimeout(() => {
+      var el = document; // This can be your element on which to trigger the event
+      var event = document.createEvent('HTMLEvents');
+      event.initEvent('resize', true, false);
+      el.dispatchEvent(event)
+    }, millisecondsDelay || 55)
+  }
+
+  ngAfterViewInit(){
+  /*   this.currentTabUID = this.activeContract.contractUID;
+    console.log("After view init fired")
+    this.changeDetectorRef.detectChanges()
+ */
   }
 
   ngOnDestroy() {

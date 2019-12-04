@@ -1,0 +1,6 @@
+<div class="contractInLeftMenuWrapper">
+
+   <!-- the style of this component is handled in its code, see "styleLabel" etc. -->
+          <div class="contractInLeftMenu" [ngStyle]="styleLabel"><a class="item labelFont" >{{contract.latestACI?.name == undefined ? 'Compiling..' : contract.latestACI.name }}</a> </div>
+          <div class="ContractInLeftMenuRightButton" [ngStyle]="rightButtonLabel"> <div class="iconwrapper"> <i class="trash icon"></i> </div>  </div>
+    </div>

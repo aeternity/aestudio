@@ -35,18 +35,46 @@
     }
 }
 
+/* font color of a title in the event log*/
+.theLogs .title{
+    color: #d4d4d4 !important;
+} 
+
+/* don't apply usual titel hover effect on contract sidemenu on the left */
+
+.contractInLeftMenu :hover
+{
+    background: #1a1b1e !important;
+}
 
 /* tweakings of the semantic UI END*/
 
 /* scheiß monaco editor container height */
+.accordion .content {
+    height: 300px;
+}
+.log-monitor .container {
+    height: 300px;
+}
+.editor {
+    display: flex !important;
+    height: 80vh !important;
+    margin-bottom: -1px;
+}
 .editor-container{
-    height: 100% !important
+    height: 100% !important;
+    background: #1d1d1d;
 }
 
 .aeLoader {
+    margin-top: 2em !important;
     display: block;
     margin: auto;
-    margin-bottom: 2em;
+    margin-bottom: 1em;
+}
+
+.ui.bottom.attached.segment.tab.active {
+    margin: 0 !important;
 }
 
 /* Color for units */
@@ -85,7 +113,7 @@
 #generatedCodeEditor{
     position: relative !important;
     resize: none !important;
-    height:90vh;
+    height:100vh;
     width: 100%;
     text-align: left;
 }
@@ -107,6 +135,154 @@
     border-top-left-radius: 0 !important;
     border-bottom-left-radius: 0 !important;
     border-left: 0px !important;
+
+}
+
+.ui.input input:focus, .ui.input.focus input {
+    border-color: #F2711C;
 }
 
 /* sidebar end */ 
+
+/* contracts side menu start */
+
+.theSideMenu .ui.basic.segment{
+    padding: 0;
+}
+
+#theSideMenu {
+    height: auto;
+    margin: 0;
+    border-left: 0;
+}
+
+.contractInLeftMenu{
+    width: 100%;
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.oneTab {
+    -webkit-box-direction: normal;
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    font-size: 1rem;
+    box-sizing: inherit;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    flex: 0 0 auto;
+    user-select: none;
+    text-transform: none;
+    transition: background .1s ease,box-shadow .1s ease,color .1s ease;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    border-bottom: none;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-top: 2px solid transparent;
+    padding: .92857143em 1.42857143em;
+    background: #FFF;
+    color: rgba(0,0,0,.95);
+    border-top-width: 1px;
+    border-color: #D4D4D5;
+    font-weight: 700;
+    margin-bottom: -1px;
+    box-shadow: none;
+    border-radius: .28571429rem .28571429rem 0 0!important;
+    float: left;
+}
+
+.oneTab .item {
+    
+    box-sizing: inherit;
+    position: relative;
+    vertical-align: middle;
+    line-height: 1;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-box-flex: 0;
+    flex: 0 0 auto;
+    user-select: none;
+    text-transform: none;
+    transition: background .1s ease,box-shadow .1s ease,color .1s ease;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    border-bottom: none;
+    border-left: none !important;
+    border-right: none !important;
+    border-top: none !important;
+    padding: none !important;
+    background: #FFF;
+    color: rgba(0,0,0,.95);
+    border-top-width: none !important;
+    border-color: none !important;
+    font-weight: 700;
+    margin-bottom: none !important;
+    box-shadow: none;
+    border-radius: none !important;
+    float: left;
+}
+/* contracts sidemenu end */
+
+/* right menu start */
+
+.theLogs .content.transition.active.visible {
+    height: auto;
+    padding: 0px;
+}
+
+.content.transition.active.visible {
+    height: auto;
+}
+/* right menu end */
+
+/* helpers start*/
+
+@-webkit-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-moz-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-ms-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@-o-keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+@keyframes orange_blink {
+	from { background-color: initial; }
+	to { background-color: #F2711C; }
+}
+
+.blinkOnLoad{
+    animation-name: orange_blink;
+	animation-duration: 0.5s;
+	animation-iteration-count: 6;
+    animation-direction: alternate;
+    animation-delay: 2s;
+}
+/* helpers end */
+
+/* Log monitor start  */
+.logMonitorPanel .title.active {
+    background: #1d1d1d !important;
+}
+
+.logMonitorPanel .title {
+    background: #1d1d1d !important;
+}
+
+.ui.bottom.attached.segment.tab.active {
+    border-width: inherit;
+}
+
+/* Log monitor end */

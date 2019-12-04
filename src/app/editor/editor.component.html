@@ -1,22 +1,67 @@
-<ngx-monaco-editor  [(ngModel)]="contract.code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>
-<!-- <button (click)="compile()">Compile</button> -->
-<log-monitor
-    [logStream]="logStream$"
-    theme="dark"
-    title="Event Log"
-    [animated]="true"
-    [icons]="true"
-    [(history)]="logs" 
-    [(ngModel)]="logs"
-    
-></log-monitor>
-<!-- (ngModelChange)="updateMyLogs(logs)" -->
+<div class="ui top attached inverted demo menu">
+    <a class="item blinkOnLoad" (click)="sidebar.toggle()">
+        <i class="sidebar icon"></i> Menu
+    </a>
+</div>
+<!-- left side menu start -->
+    <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
+        <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
+                <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
+            <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
+                *ngFor="let oneContract of contracts; let i = index"
+                [contract] = "oneContract"
+                (mouseover) = "oneCon.onHover()"
+                (mouseleave) = "oneCon.unHover()"
+                (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})">
+                </app-contract-in-left-menu>
+
+            <!-- reserved for eventual extra stuff<a class="item">2</a> -->
+        </sui-sidebar>
+        <sui-sidebar-sibling [isDimmedWhenVisible]="false">
+            <!-- <div class="ui basic segment"> -->
+
+<!-- left side menu end -->
+
+<!-- Tab menu start -->
+                <sui-tabset >
+                    <div class="ui top attached tabular menu">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+                        <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
+                          <div class="oneTab" *ngIf="oneContract.showInTabs" >  
+                              <a style="float: left"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }} </a>
+                              <a href="" > <i style="float: right" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'})" class="close icon"></i>  </a>
+                          </div>
+                        </ng-container>
+
+                        <a class="item" (click)="addNewContract()" > <i class="plus icon"></i>  </a> 
+
+<!--                         <a class="item" suiTabHeader="3">Third</a>
+ -->                </div>
+ <!-- Tab menu end -->
+
+ <!-- Editor Start -->
+                    <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
+                        <div  *ngIf="oneContract.showInTabs" class="ui bottom attached segment" suiTabContent="{{i}}">
+                            <app-one-editor-tab  [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
+                    <!--  <ngx-monaco-editor [(ngModel)]="contracts[i].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>-->                    
+                        </div>
+                    </ng-container>
+<!-- Editor End -->
+                </sui-tabset>
+
+        </sui-sidebar-sibling>
+    </sui-sidebar-container>
+
+<!-- The log console -->
+<app-log-console style="padding: 0px"> </app-log-console>
+
+<!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
     <h1 class="ui inverted header">Link copied to clipboard!</h1>
     <br>
     <p style="font-size: 35px">🎉</p>
 </sui-dimmer>
 
+<!-- Code generator  -->
 <div class = "codeGenerator">
 <sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
         
@@ -32,7 +77,6 @@
         <div class="ui form">
              <div class="field">
             
-                <!-- <textarea id="generatedCodeEditor">{{this.generatedCode}}</textarea> -->
         </div>
         </div>
 

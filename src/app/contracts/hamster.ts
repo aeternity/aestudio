@@ -1,8 +1,19 @@
 export class Contract<T> {
-  code: string;
+  public contractUID: string = "";
+  public code: string;
+  public showInTabs: boolean = true;
+  public nameInTab: string = "CryptoHamster";
+  public shareId: string = "";
+  public activeTab: boolean = false;
+  public errorHighlights : any;
+  public sharingHighlighters : any[] = [];
+  public latestACI : string;
 
-  constructor(_code? : string){
-    _code != undefined ? this.code = _code : this.code = `
+  constructor(params : {[key: string]: any} ){
+    this.contractUID = String(Date.now());
+    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
+    params._shareId != undefined ? this.shareId = params._shareId : true;
+    params._code != undefined ? this.code = params._code : this.code = `
 contract CryptoHamster =
 
     record state = {
@@ -75,5 +86,9 @@ contract CryptoHamster =
         String.sha3(name)`;
   }
 
+  //experimental
+  public showInTabsOrNot() : boolean  {
+    return this.showInTabs;
+  }  
   
 }

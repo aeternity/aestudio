@@ -2,6 +2,8 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
+import { EventlogService } from '../services/eventlog/eventlog.service'
+
 
 @Component({
   selector: 'app-deployed-contract',
@@ -15,13 +17,15 @@ export class DeployedContractComponent implements OnInit {
   panelOpen: boolean;
 
   constructor(private compiler: CompilerService, 
-              private codeFactory: CodeFactoryService){
+              private codeFactory: CodeFactoryService,
+              private eventlog: EventlogService){
    
      }
   
   ngOnInit() {
     console.log("Als contract wurde übergeben: ");
     console.log(this.contract);
+    //this.contract.aci = this.contract.aci.contract;
   }
 
 
@@ -56,12 +60,18 @@ export class DeployedContractComponent implements OnInit {
       // handle "false" result case not displaying call result data
       callresult.decodedResult == false ? callresult.decodedResult = "false" : true
       this.contract.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
+
+      this.eventlog.log({type:"success", message:"Call successfull", data: callresult})
+
+
     } catch(e) {
       console.log("Error was: ", e);
       
       if (e.decodedError != undefined) {
         //this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.contract.aci.name)
         this.contract.aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
+        this.eventlog.log({type:"error", message:"Call failure", data: e})
+
       } else {
         //this.logMessage(_theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again.",  this.contract.aci.name)
   
@@ -80,6 +90,10 @@ export class DeployedContractComponent implements OnInit {
     this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams);
   }
   
+  logTemp(something: any){
+    true
+  }
+
 }
 
 

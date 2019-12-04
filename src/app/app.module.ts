@@ -19,6 +19,13 @@ import { InlineSVGModule } from 'ng-inline-svg';
 import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ClipboardModule } from 'ngx-clipboard';
 import { DeployedContractComponent } from './deployed-contract/deployed-contract.component';
+import { StorageServiceModule } from 'ngx-webstorage-service';
+import { LocalStorageService } from './local-storage.service';
+import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in-left-menu.component';
+import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component';
+import { EventlogService } from './services/eventlog/eventlog.service';
+import { LogConsoleComponent } from './log-console/log-console.component';
+import { OneLogComponent } from './one-log/one-log.component'
 
 
 
@@ -26,7 +33,14 @@ import { DeployedContractComponent } from './deployed-contract/deployed-contract
   declarations: [
     AppComponent, 
     DynamicFormComponent, 
-    DynamicFormQuestionComponent, EditorComponent, ContractMenuSidebarComponent, ReplacePipe, LoaderComponent, DeployedContractComponent
+    DynamicFormQuestionComponent, 
+    EditorComponent,
+    ContractMenuSidebarComponent,
+    ReplacePipe,
+    LoaderComponent,
+    DeployedContractComponent, 
+    ContractInLeftMenuComponent, 
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent
   ],
   imports: [
     BrowserModule,
@@ -38,9 +52,10 @@ import { DeployedContractComponent } from './deployed-contract/deployed-contract
     MonacoEditorModule.forRoot(),
     SuiModule,
     InlineSVGModule.forRoot(),
-    ClipboardModule    
+    ClipboardModule,
+    StorageServiceModule
   ],
-  providers: [],
+  providers: [LocalStorageService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

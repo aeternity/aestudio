@@ -1,0 +1,47 @@
+.contractInLeftMenuWrapper{
+    border-bottom-color: #303030;
+    border-bottom-style: ridge;
+    border-width: 1px;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    background-position-x: -40px !important;
+}
+
+.ContractInLeftMenuRightButton {
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+/* .trash.icon {
+    color: lightgreen;
+    size: "40px";
+} */
+
+i{
+    color: #1a1b1e;
+    size: "40px";
+    padding-left: 4px;
+    margin-right: 0px;
+}
+
+.iconwrapper {
+    width: 50%;
+    margin: auto;
+}
+
+
+a:hover{
+    color: #F2711C !important
+}
+
+.contractInLeftMenuWrapper{
+    
+    background: rgba(125,60,20,1);
+    background: -moz-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
+    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(125,60,20,1)), color-stop(5%, rgba(242,113,28,1)), color-stop(100%, rgba(242,113,28,1)));
+    background: -webkit-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
+    background: -o-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
+    background: -ms-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
+    background: linear-gradient(to right, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d3c14', endColorstr='#f2711c', GradientType=1 );
+}

@@ -1,8 +1,12 @@
 .editor 
 {      
     /*height: calc(100vh - 100px); */
-    height:90vh;
+    height:100vh;
     width: 100%;
+}
+
+.ui.bottom.attached.segment.theSideMenu.pushable{
+    border-radius: 0px;
 }
 
 #codeEditorClosingIcon {
@@ -11,4 +15,43 @@
     display: flex; 
     justify-content: flex-end;
     padding-right: 4vw;
+}
+
+/* outdated */
+.contractInLeftMenuWrapper{
+    border-bottom-color: #303030;
+    border-bottom-style: ridge;
+    border-width: 1px; 
+}
+
+.blinkOnLoad:hover {
+    background: #F2711C !important;
+}
+
+.editor-container {
+    background: #1d1d1d !important;
+}
+/* no white border around editor under tabs */
+.ui.segment {
+    padding: 0px !important;
+}
+
+.theSideMenu .ui.menu i {
+    margin-left: 10px;
+    margin-right: 0px;
+}
+
+.theSideMenu .ui.menu i:hover {
+    color: #f9c80e;
+}
+
+.logMonitorPanel {
+    padding:0 !important
+}
+
+
+
+/* tabs start */
+.oneTab a {
+    color: #1d1d1d;
 }

@@ -166,7 +166,7 @@
 
 
 <!-- compiled contract  -->
-<div *ngIf="initACI.name">           
+<div *ngIf="initACI?.name">           
         <div class="ui orange segment container">
             <a class="ui orange ribbon label">Compiled Contract</a>
             <h4>{{this.initACI.name}}</h4>
@@ -184,25 +184,26 @@
             </div>
 
             <!-- Todo: instead of relying the init function always coming first, find a way to directly pic the init function !  -->
-                <div *ngIf="initACI.functions[0].arguments.length > 0">
+                <div *ngIf="initACI.functions[0].name == 'init' && initACI.functions[0].arguments.length > 0">
                     <form class="ui form">
                         <!-- todo: Also here, get the init function directly from somewhere -->
                         <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
                             
                             <label class="arg-label" for="{{initACI.name + 'init' + '-' + arg.name}}">{{arg.name | replace : '_' : ' '}} : </label>
-                            <input [(ngModel)]="this.initACI.functions[0].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(this.initACI.functions[0].arguments[arg.IDEindex].currentInputData)" 
+                            
+                            <input [(ngModel)]="this.initACI.functions[0].arguments[arg.IDEindex].currentInput" (ngModelChange)="logTemp(this.initACI.functions[0].arguments[arg.IDEindex].currentInput)" 
                                     name="{{initACI.name + 'init' + '-' + arg.name}}"
                                     type="text"
                                     class="arg-field"
                                     id="{{initACI.name + 'init' + '-' + arg.name}}"   
-                                    placeholder="{{arg.name}}"
+                                    placeholder="{{arg.type}}"
                             >
-                        </div>
+                        </div> 
                     </form>
                 </div>
 
-
-        <app-loader *ngIf="this.deploymentLoading == true" ></app-loader>
+                
+               <app-loader class="deploymentLoader" *ngIf="this.deploymentLoading == true" ></app-loader>
     </div>
     <div class="ui section divider"></div>
 </div>
