@@ -191,10 +191,6 @@ public tellAci(): Observable < string > {
       try {
         console.log("Deployment params: ", _deploymentParams)
         await myContract.deploy(... _deploymentParams);
-<<<<<<< HEAD
-        //let successString = 
-        this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
-=======
         
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
@@ -202,7 +198,6 @@ public tellAci(): Observable < string > {
         this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
         
         //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
->>>>>>> introducing-sub-editors
 
       } catch(_e){
         console.log("Something went wrong, investigating tx!");
