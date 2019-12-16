@@ -326,10 +326,7 @@ public tellAci(): Observable < string > {
 
       // 2. enumerate functions explicitly with index
       rawACI.contract.functions.forEach((one, i) => {
-
           rawACI.contract.functions[i].IDEindex = i;
-          //console.log(one);
-          //console.log(i);
       })
       debugger
       // 3.  now that we have it, generate the formgroups for the function args

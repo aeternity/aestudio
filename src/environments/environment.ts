@@ -10,6 +10,7 @@ export const environment = {
     compilerURL:'https://latest.compiler.aepps.com',
     debugCompilerURL : 'https://latest.compiler.aepps.com',
     compilerRequestDelay : 400
+    
 };
 
 

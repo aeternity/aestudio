@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -26,6 +27,13 @@ import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component
 import { EventlogService } from './services/eventlog/eventlog.service';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
+import { environment } from '../environments/environment';
+
+// firebase start 
+/* import { AngularFireModule } from "@angular/fire";
+import { AngularFireAuthModule } from "@angular/fire/auth";
+import { AngularFirestoreModule } from '@angular/fire/firestore'; */
+// firebase end
 
 
 
@@ -53,7 +61,10 @@ import { OneLogComponent } from './one-log/one-log.component'
     SuiModule,
     InlineSVGModule.forRoot(),
     ClipboardModule,
-    StorageServiceModule
+    StorageServiceModule,
+    //AngularFireModule.initializeApp(environment.firebase),
+    /* AngularFireAuthModule,
+    AngularFirestoreModule, */
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]
