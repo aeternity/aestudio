@@ -1,0 +1,21 @@
+<div *ngIf="auth.user$ | async"> 
+
+</div>
+
+<div>
+    <h3>Howdy, GUEST</h3>
+    <p>Login to get started...</p>
+    
+    <button (click)="auth.googleSignin()">
+        <i class="fa fa-google"></i> Connect Google
+    </button>
+</div>
+
+<div>
+    <div *ngIf="true">
+        <h3>Howdy, {{ auth.theUser?.displayName }}</h3>
+        <!--<img  [src]="user.photoURL"> --> 
+        <p>UID: {{ auth.theUser?.uid }}</p>
+        <button (click)="auth.signOut()">Logout</button>
+    </div>
+</div>

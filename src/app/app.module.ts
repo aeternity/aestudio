@@ -1,5 +1,4 @@
 import { BrowserModule } from '@angular/platform-browser';
-
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -30,9 +29,11 @@ import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
 
 // firebase start 
-/* import { AngularFireModule } from "@angular/fire";
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFirestoreModule } from '@angular/fire/firestore'; */
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 // firebase end
 
 
@@ -48,10 +49,11 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, UserProfileComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     LogMonitorModule,
     AppRoutingModule,
     FormsModule,
@@ -62,9 +64,10 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,
-    //AngularFireModule.initializeApp(environment.firebase),
-    /* AngularFireAuthModule,
-    AngularFirestoreModule, */
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireStorageModule
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]

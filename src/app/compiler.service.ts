@@ -239,7 +239,7 @@ public tellAci(): Observable < string > {
           //console.log(one);
           //console.log(i);
       })
-      debugger
+      
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
 
@@ -328,7 +328,7 @@ public tellAci(): Observable < string > {
       rawACI.contract.functions.forEach((one, i) => {
           rawACI.contract.functions[i].IDEindex = i;
       })
-      debugger
+      
       // 3.  now that we have it, generate the formgroups for the function args
       rawACI = this.modifyAci(rawACI);
       
@@ -377,7 +377,7 @@ public tellAci(): Observable < string > {
  // generates a typescript-safe contract instance with a FormGroup in functions array
  modifyAci(aci: any): ContractBase<any> {
  
-  debugger
+  
  // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
   let functions = aci.contract.functions;
@@ -463,7 +463,7 @@ public tellAci(): Observable < string > {
     //this.eventlog.log({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
     
     this.eventlog.log(_log)
-    debugger
+    
   }
 }
 
