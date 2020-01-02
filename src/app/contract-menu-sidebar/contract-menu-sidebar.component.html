@@ -27,8 +27,9 @@
                                 
                                 <ng-container *ngIf="currentSDKsettings">
                                     <div *ngFor="let address of currentSDKsettings.addresses" class="item">
-                                        <span class="description">{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
-                                        <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
+                                        
+                                        <span class="description"><i style="color: #f2721d" *ngIf="auth.theUser" class="user icon"></i>{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                        <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:28)+'...'}} </p>
                                     </div>
                                 </ng-container>
                                 

@@ -27,6 +27,7 @@ import { EventlogService } from './services/eventlog/eventlog.service';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 // firebase start 
 import { AngularFireModule } from '@angular/fire';
@@ -67,7 +68,17 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFireStorageModule
+    AngularFireStorageModule,
+    // Specify ng-circle-progress as an import
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 500,
+    })
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]

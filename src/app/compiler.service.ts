@@ -27,12 +27,6 @@ var Ae = Universal;
 })
 export class CompilerService {
 
-// to be displayed in logs
-  public logs: NgxLogMessage[] = [
-    {message: 'Initialized'},
-    
-  ];
-
   public code: string = ''
 
   // the code from the currently active compiler window
@@ -49,6 +43,9 @@ export class CompilerService {
 
   // the SDK initialization
   public Chain: any;
+
+  public defaultSdkConfig;
+  public sdkConfigOverrides = {};
  
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
@@ -80,51 +77,56 @@ public tellAci(): Observable < string > {
 
   constructor(private http: HttpClient,
     private eventlog: EventlogService) {
-    this.setupClient();
-    //console.log("Compilerservice initialized!");  
-   }
 
-  async setupClient(){
-    console.log("The random accounts: ", publicAccounts());
+    // define the default SDK settings
+    var theAccounts : MemoryAccount[] = [];
 
-    let theAccounts = [];
     publicAccounts().forEach(account => {
       theAccounts.push(MemoryAccount({keypair: account}))
     });
 
+    this.defaultSdkConfig = {
+      nodeUrl : "https://sdk-testnet.aepps.com",
+      compilerUrl : `${environment.compilerURL}`,
+      accounts : theAccounts
+    }
+
+    this.setupClient();
+    //console.log("Compilerservice initialized!");  
+   }
+
+  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, accounts? : MemoryAccount[]}){
+
+    // if a config is provided, apply its values to the sdkConfigOverrides
+   if (_config){
+     console.log("Compiler: Received custom config for SDK: ", _config)
+     
+      Object.keys(_config).forEach(setting => {
+       this.sdkConfigOverrides[setting] = _config[setting]
+     });
+   }
+
     // Use Flavor   
     this.Chain = await Ae({
-      url: 'https://sdk-testnet.aepps.com',
-      //internalUrl: 'http://localhost:3001/internal/',
-      //compilerUrl: 'http://localhost:3080',
-      compilerUrl: `${environment.compilerURL}`,
+      url: this.defaultOrCustomSDKsetting("nodeUrl"),
+      compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
       nativeMode: true,
-      accounts: theAccounts
+      accounts: this.defaultOrCustomSDKsetting("accounts")
       
-      /* [
-          MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } }),
-          MemoryAccount({ keypair: { secretKey: '7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d', publicKey: 'ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk' } }),
-          MemoryAccount({ keypair: { secretKey: '7fa7934d142c8c1c944e1585ec700f671cbc71fb035dc9e54ee4fb880edfe8d974f58feba752ae0426ecbee3a31414d8e6b3335d64ec416f3e574e106c7e5412', publicKey: 'ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP' } }),
-        ]  */ 
-      //networkId: 'ae_devnet' // or any other networkId your client should connect to
     }).catch(e => { console.log("Shit, it didn't work:", e)})
 
 
     // todo: wrap in try catch
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
-
-    let balanceTest = await this.Chain.getBalance("ak_2F5gdaeb75T5RscQ8UkpycGkEumrfPtB42A7nFkAU9gUFpBBh5");
-    console.log("Testing balance getting: ", balanceTest);
-
+     
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
   }
 
    fromCodeToACI(code) {
-    let compilerUrl = `${environment.compilerURL}/aci`;
-    //let compilerUrl = "https://compiler.aepps.com/aci";
+    let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json', 
@@ -464,6 +466,11 @@ public tellAci(): Observable < string > {
     
     this.eventlog.log(_log)
     
+  }
+
+  private defaultOrCustomSDKsetting(_setting){
+    // if there is no override set, return the default.
+    return this.sdkConfigOverrides[_setting] == undefined ? this.defaultSdkConfig[_setting] : this.sdkConfigOverrides[_setting];
   }
 }
 

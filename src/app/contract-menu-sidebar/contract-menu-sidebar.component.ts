@@ -10,6 +10,7 @@ import { SuiModule } from 'ng2-semantic-ui';
 import { SuiMultiSelect } from 'ng2-semantic-ui/dist';
 import { environment } from '../../environments/environment';
 import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
+import { AuthService } from '../services/auth/auth.service'
 
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -91,7 +92,9 @@ export class ContractMenuSidebarComponent implements OnInit {
   constructor(
     private compiler: CompilerService, 
     private changeDetectorRef: ChangeDetectorRef, 
-    private http: HttpClient) { }
+    private http: HttpClient,
+    private auth: AuthService
+    ) { }
  
  /*  buildAContract() {
     // make compiler emit event
@@ -289,38 +292,7 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
   }
 
   getSDKsettings = () => { this.compiler.sendSDKsettings()}
-
-  logMessage(_message: string, _type: string, _contract? : string) {
-    let hours = new Date().getHours().toString();
-    let minutes = new Date().getMinutes().toString();
-    let time = hours + ':' + minutes;
-    var log : NgxLogMessage;
-
-    switch (_type) {
-      case "log" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'LOG'}
-        this.compiler.logs.push(log);
-        break;
-      case "warn" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'WARN'}
-        this.compiler.logs.push(log);  
-        break;
-      case "success" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'SUCCESS'}
-        this.compiler.logs.push(log); 
-        break;
-      case "error" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'ERR'}
-        this.compiler.logs.push(log); 
-        break;
-      case "info" :
-        log = {timestamp: time , message: _contract + ':'  + _message , type: 'INFO'}
-        this.compiler.logs.push(log); 
-        break;
-      default:
-        break;
-    }
-  }
+  
   
   
 checkIfInitFunctionIsPresent() : boolean { 

@@ -1,21 +1,45 @@
-<div *ngIf="auth.user$ | async"> 
+<div></div> 
 
-</div>
 
-<div>
-    <h3>Howdy, GUEST</h3>
-    <p>Login to get started...</p>
+
+<div  *ngIf="!auth.theUser">
+    <h3>Hello, Guest !</h3>
+    <p>Sign up and get personal testnet accounts with AE - it's free!</p>
     
-    <button (click)="auth.googleSignin()">
-        <i class="fa fa-google"></i> Connect Google
-    </button>
+    <button (click)="auth.googleSignin()" class="ui black button">
+        <i class="github icon"></i>
+        Connect with Github
+      </button>
 </div>
 
+
+
 <div>
-    <div *ngIf="true">
+    <div *ngIf="auth.user$ | async">
         <h3>Howdy, {{ auth.theUser?.displayName }}</h3>
         <!--<img  [src]="user.photoURL"> --> 
-        <p>UID: {{ auth.theUser?.uid }}</p>
-        <button (click)="auth.signOut()">Logout</button>
+        <!-- <p>UID: {{ auth.theUser?.uid }}</p> -->
     </div>
+</div>
+
+<div  *ngIf="auth.fillingUpAccounts.active == true">
+    <div>Looks like it's your first time here - let's create you four accounts with free testnet AE. </div>
+   
+   <div id="loadingCircle"> 
+    <circle-progress
+  [percent]="auth.fillingUpAccounts.percentage"
+  [radius]="100"
+  [space]="17"
+  [outerStrokeWidth]="16"
+  [innerStrokeWidth]="8"
+  [outerStrokeColor]="'#f1711c'"
+  [innerStrokeColor]="'#cf5a0b'"
+  [animation]="true"
+  [animationDuration]="500"
+></circle-progress>
+</div>
+
+</div>
+<div *ngIf="auth.user$ | async">
+    <button (click)="auth.signOut()">Logout</button>
 </div>
