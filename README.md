@@ -1,35 +1,12 @@
-# ae-angular-fiddle
+# 🔥Fire Editor 🔥 for writing Smart Cpntracts for the Æternity Blockchain
 
-This is an effort trying to get the JS SDK to work in angular. 
+## Install for Linux / Mac
 
-0. install angular `npm install -g @angular/cli`
-1. `npm install`
-2. In project folder, `ng serve`
-3. open browser at localhost:4200 and see console
+```npm run init```
 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.0.6.
+## Install for Win
 
-## Development server
+```npm run init-win```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Questions / Feature requests: https://forum.aeternity.com/t/update-no-2-october-fire-editor-release-the-easy-to-use-web-ide-for-sophia/4673
