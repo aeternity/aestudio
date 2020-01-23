@@ -3,24 +3,10 @@ import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '
 import { CompilerService } from '../compiler.service'
 import { Subscription, asapScheduler } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
-import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
-import { SuiModule } from 'ng2-semantic-ui';
-//mport { SuiMultiSelect } from 'ng2-semantic-ui/dist';
-import { SuiMultiSelect } from 'ng2-semantic-ui/dist';
-import { environment } from '../../environments/environment';
-import {LogMessage as NgxLogMessage} from 'ngx-log-monitor';
 import { AuthService } from '../services/auth/auth.service'
+import { HttpClient } from '@angular/common/http';
 
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-
-//import 'rxjs/add/operator/map';
-
-
-import { delay, share } from 'rxjs/operators';
-import fetchRandomAccounts from '../helpers/prefilled-accounts';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-//import 'rxjs/add/operator/toPromise';
 
 
 @Pipe({name: 'replace'})
@@ -202,11 +188,11 @@ export class ContractMenuSidebarComponent implements OnInit {
         // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
         //this.activeContracts = this.compiler.activeContracts;
-        debugger
+        //debugger
         this.changeDetectorRef.detectChanges()
         } else {
           console.log("False alert...");
-          debugger
+          //debugger
         }
        
       })

@@ -28,7 +28,20 @@
                                 <ng-container *ngIf="currentSDKsettings">
                                     <div *ngFor="let address of currentSDKsettings.addresses" class="item">
                                         
-                                        <span class="description"><i style="color: #f2721d" *ngIf="auth.theUser" class="user icon"></i>{{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                        <span class="description"> 
+                                            <i style="color: #f2721d" *ngIf="auth.theUser" class="user icon"></i>
+                                            <i style="color: #C5283D" *ngIf="!auth.theUser" class="unlock icon"></i>
+                                           
+                                            
+                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                                <div class="ui fluid popup top left transition visible animating scale out">
+                                                    <div class="ui four column divided center aligned grid">
+                                                      <div class="column">1</div>
+                                                      <div class="column">2</div>
+                                                      <div class="column">3</div>
+                                                      <div class="column">4</div>
+                                                    </div>
+                                                  </div>
                                         <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:28)+'...'}} </p>
                                     </div>
                                 </ng-container>
@@ -180,7 +193,7 @@
             <div *ngIf="true" class="ui buttons">
                 <button (click)="deployContract()" class="ui black button">Deploy</button>
                 <div class="or"></div>
-                <button (click)="deployContract(true)" class="ui orange button atAddressButton" suiPopup popupHeader="Please Note" popupText="Currently, the SDK checks the validity of the entered address only upon attempting to call contract functions, this issue is being taken care of." >Use at address: </button>
+                <button (click)="deployContract(true)" class="ui orange button atAddressButton" suiPopup popupHeader="Please Note" popupTrigger="hover" popupText="Currently, the SDK checks the validity of the entered address only upon attempting to call contract functions, this issue is being taken care of." >Use at address: </button>
             </div>
                 <!-- "at address" field -->
             <div class="ui icon input">

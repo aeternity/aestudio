@@ -41,5 +41,7 @@
 
 </div>
 <div *ngIf="auth.user$ | async">
-    <button (click)="auth.signOut()">Logout</button>
+    <button (click)="auth.signOut()" class="ui black button">
+        Sign Out
+      </button>
 </div>

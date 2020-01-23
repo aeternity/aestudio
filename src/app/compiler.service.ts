@@ -44,7 +44,7 @@ export class CompilerService {
   // the SDK initialization
   public Chain: any;
 
-  public defaultSdkConfig;
+  public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
  
   public getAvailableAccounts = () => {
@@ -82,7 +82,9 @@ public tellAci(): Observable < string > {
     var theAccounts : MemoryAccount[] = [];
 
     publicAccounts().forEach(account => {
-      theAccounts.push(MemoryAccount({keypair: account}))
+      let oneAccount = MemoryAccount({keypair: account});
+      oneAccount.property = "public";
+      theAccounts.push(oneAccount);
     });
 
     this.defaultSdkConfig = {
@@ -95,12 +97,14 @@ public tellAci(): Observable < string > {
     //console.log("Compilerservice initialized!");  
    }
 
-  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, accounts? : MemoryAccount[]}){
+  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, accounts? : MemoryAccount[], command? : string}){
 
     // if a config is provided, apply its values to the sdkConfigOverrides
    if (_config){
      console.log("Compiler: Received custom config for SDK: ", _config)
-     
+     // first, clear old custom config values
+     this.sdkConfigOverrides = {};
+
       Object.keys(_config).forEach(setting => {
        this.sdkConfigOverrides[setting] = _config[setting]
      });

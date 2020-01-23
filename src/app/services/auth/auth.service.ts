@@ -35,7 +35,6 @@ export class AuthService {
       percentage: 0
     }
 
-
     constructor(
         private afAuth: AngularFireAuth,
         private afs: AngularFirestore,  // TODO: rename to afStore
@@ -69,10 +68,11 @@ export class AuthService {
         return this.updateUserData(credential.user);
     }
 
+    // get the user's testnet private keys
     async checkForKeys(user) {
       var userRef = this.afs.collection('users').doc(user.uid);
       
-        let getUser = await userRef.get().subscribe(doc => {
+        let getUser = await userRef.get().subscribe(async doc => {
           if (!doc.exists) {
             console.log('Login: No such document!');
           } else {
@@ -83,12 +83,12 @@ export class AuthService {
 
 
           if ((theData as any).accounts == undefined) {
-            // if he doesn't have accounts yet, create and fill some, and restart SDK with ne account (taken care for by the generateAndFill function)
-             this.generateAndFillAccounts();
-
+            // if he doesn't have accounts yet, create and fill some, and restart SDK with new accounts
+             let memoryAccs = await this.generateAndFillAccounts();
+             this.compiler.setupClient({accounts: memoryAccs}); 
             } else {
               // else, restart the SDK with the accounts fetched from backend
-              let theAccounts;
+              var theAccounts;
               (theData as any).accounts.forEach(account => {
                 theAccounts.push(MemoryAccount({keypair: account}))
               });
@@ -121,50 +121,59 @@ export class AuthService {
         this.theUser = null;
         this.fillingUpAccounts.active = false;
         // put eventual router command here.. this,router.navigate(['/'])
+
+        // make SDK restart with public testnet accounts
+        this.compiler.setupClient({command: "reset"});
     }
 
     // helpers
 
 
-    private async generateAndFillAccounts() {
-      console.log("Login: fillup triggered")
-      this.fillingUpAccounts.active = true;
-     var accs: any[] = [];
-     for(let i=0; i<4; i++){
-       accs.push(Crypto.generateKeyPair());
-     }
-     
-     var memoryAccs: MemoryAccount[] = [];
-     accs.forEach(acc => {
-       let oneAccount = new MemoryAccount({keypair: acc})
-       // add custom property to memory account to later know it belongs to a logged-in user
-       oneAccount.property = "personal"
-       memoryAccs.push(oneAccount)
+    private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
+      return new Promise ((resolve, reject) => {
+
+        console.log("Login: fillup triggered")
+        this.fillingUpAccounts.active = true;
+       var accs: any[] = [];
+       for(let i=0; i<4; i++){
+         accs.push(Crypto.generateKeyPair());
+       }
+       
+       var memoryAccs: MemoryAccount[] = [];
+       
+
+       accs.forEach(acc => {
+         let oneAccount = new MemoryAccount({keypair: acc})
+         // add custom property to memory account to later know it belongs to a logged-in user
+         oneAccount.property = "personal"
+         memoryAccs.push(oneAccount)
+        })
+  
+       observableFrom(accs).pipe(
+          concatMap(acc => this.http.post(`https://testnet.faucet.aepps.com/account/${acc.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}))
+      ).subscribe(
+          response => {
+            this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
+            console.log("Login: fillup transaction response:", response)}, //do something with responses
+          error => console.error("Login: fillup transaction error error" ,error), // so something on error
+          () => {
+            console.info("All requests done") // do something when all requests are done 
+            console.log(accs);
+            // MAKE MEMORY ACCOUNTS !
+            resolve(memoryAccs);
+            
+            
+  
+          }
+      );
       })
-
-     observableFrom(accs).pipe(
-        concatMap(acc => this.http.post(`https://testnet.faucet.aepps.com/account/${acc.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}))
-    ).subscribe(
-        response => {
-          this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
-          console.log("Login: fillup transaction response:", response)}, //do something with responses
-        error => console.error("Login: fillup transaction error error" ,error), // so something on error
-        () => {
-          console.info("All requests done") // do something when all requests are done 
-          console.log(accs);
-          // MAKE MEMORY ACCOUNTS !
-          this.compiler.setupClient({accounts: memoryAccs}); 
-          
-
-        }
-    );
+     
 
     }
 
 }
 
 // TODO: accs in backend speichern
-// TODO: accs in accounts verfügbar machen
 // TODO: auto re-fill accounts when empty
 // https://fireship.io/lessons/angularfire-google-oauth/
 // https://www.techiediaries.com/angular-firestore-tutorial/

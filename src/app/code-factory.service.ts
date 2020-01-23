@@ -1,6 +1,7 @@
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Injectable, Input, EventEmitter, Output } from '@angular/core';
 
+// vorlage für nodeJS: https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/import-nodejs.md#nodejs-bundle
 @Injectable({
   providedIn: 'root'
 })
