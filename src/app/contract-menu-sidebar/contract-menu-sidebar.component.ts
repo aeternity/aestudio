@@ -199,11 +199,11 @@ export class ContractMenuSidebarComponent implements OnInit {
         // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
         //this.activeContracts = this.compiler.activeContracts;
-        debugger
+        //debugger
         this.changeDetectorRef.detectChanges()
         } else {
           console.log("False alert...");
-          debugger
+          //debugger
         }
        
       })

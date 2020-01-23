@@ -31,7 +31,7 @@ export class EventlogService {
 
     // tell log console about new event
     this._newLog.next(log);
-    debugger
+    //debugger
   }
 
   public clear(){
