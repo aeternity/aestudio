@@ -191,7 +191,7 @@ public tellAci(): Observable < string > {
       
       try {
         console.log("Deployment params: ", _deploymentParams)
-        await myContract.deploy(... _deploymentParams);
+        await myContract.deploy( _deploymentParams, { interval: 500, blocks: 3, allowUnsynced: true });
         
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
@@ -273,6 +273,10 @@ public tellAci(): Observable < string > {
     console.log("fetching error from debug compiler..")
 
     
+    //TODO: check if the contract was successfully deployed by checking the contract object for deployed address
+    // TODO: Try working with resolve/reject instead of return true here, to handle deployment failure.
+    // TODO: Investigate where the contract in the sidemenu is created - maybe in fromCodeTOAci ? 
+
     return true;
   }
   async fetchErrorsFromDebugCompiler(sourceCode: string) : Promise<string> {
