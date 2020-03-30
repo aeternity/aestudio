@@ -25,11 +25,12 @@
                             <i class="dropdown icon"></i>
                             <div class="menu" suiDropdownMenu>
                                 
-                                <ng-container *ngIf="currentSDKsettings">
-                                    <div *ngFor="let address of currentSDKsettings.addresses" class="item">
+                                <ng-container *ngIf="currentSDKsettings" >
+                                            <div *ngFor="let address of currentSDKsettings.addresses" (click)="changeSDKsetting('selectAccount', address)" class="item" suiPopup popupHeader="{{!auth.theUser ? 'Public Demo Accounts!' : 'Personal     Testnet Account' }}" popupText=" {{!auth.theUser ? 'Click the user Tab and get your free personal testnet accounts' : 'Do NEVER use this account on the mainnet. It is for developing purposes only.' }} " popupPlacement="top right" popupDelay="{{auth.theUser ? 600 : 0}}" >
                                         
-                                        <span class="description"> 
-                                            <i style="color: #f2721d" *ngIf="auth.theUser" class="user icon"></i>
+                                        <span class="description" > 
+                                            <i style="color: #f2721d" *ngIf="compiler.sdkConfigOverrides.personalAccounts" class="user icon" ></i>
+                                            <!-- <i style="color: #C5283D" *ngIf="!auth.theUser" class="unlock icon tooltip"><span class="tooltiptext">Tooltip text</span></i> -->
                                             <i style="color: #C5283D" *ngIf="!auth.theUser" class="unlock icon"></i>
                                            
                                             

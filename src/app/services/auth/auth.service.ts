@@ -4,7 +4,7 @@ import { User } from './user.model';
 import { HttpClient } from '@angular/common/http';
 //import { from } from 'rxjs';
 import { from as observableFrom } from 'rxjs';
-import { concatMap, take } from 'rxjs/operators';
+import { concatMap, take, retryWhen, delay } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
@@ -30,8 +30,11 @@ export class AuthService {
 
     theUser: any;
 
+    // workaround for stupid swatchMap rxJS thingy triggering twice after response
+    loginRetrieved: boolean = false;
+
     fillingUpAccounts = {
-      active: false,
+      active: "false",
       percentage: 0
     }
 
@@ -46,14 +49,20 @@ export class AuthService {
           this.user$ = this.afAuth.authState.pipe(
             switchMap(user => {
                 // Logged in
+
               if (user) {
                   console.log("Login: Als user kam:", user);
                   this.theUser = user;
-                  this.checkForKeys(user);
+                  if (this.loginRetrieved == false) {
+                    this.loginRetrieved = true
+                    this.checkForKeys(user);
+                  }
+                  
                 return this.afs.doc<User>("users/" + user.uid).valueChanges();
               } else {
                   console.log("Login: Ausgeloggt")
                 // Logged out
+                this.loginRetrieved = false // remove the lock for next login
                 this.theUser = null;
                 return of(null);
               }
@@ -68,8 +77,9 @@ export class AuthService {
         return this.updateUserData(credential.user);
     }
 
-    // get the user's testnet private keys
+    // get the user's testnet keys
     async checkForKeys(user) {
+      
       var userRef = this.afs.collection('users').doc(user.uid);
       
         let getUser = await userRef.get().subscribe(async doc => {
@@ -84,15 +94,31 @@ export class AuthService {
 
           if ((theData as any).accounts == undefined) {
             // if he doesn't have accounts yet, create and fill some, and restart SDK with new accounts
-             let memoryAccs = await this.generateAndFillAccounts();
-             this.compiler.setupClient({accounts: memoryAccs}); 
+
+             let keypairs = await this.generateAndFillAccounts();
+
+             console.log("Login: Have these accounts to write: ", keypairs)
+             let writeDB =  await this.afs.collection('users').doc(user.uid).set({accounts: keypairs}, {merge: true});
+           
+             console.log("Login: writing to db was like: ", writeDB)
+
+             let memoryaccounts = [];
+
+             keypairs.forEach(account => {
+              memoryaccounts.push(MemoryAccount({keypair: account}))
+            });
+
+             this.compiler.setupClient({accounts: memoryaccounts}); 
+
             } else {
               // else, restart the SDK with the accounts fetched from backend
-              var theAccounts;
+              var theAccounts: any[] = []
+              console.log("Login: Retrieved user's accounts:", theData);
+
               (theData as any).accounts.forEach(account => {
                 theAccounts.push(MemoryAccount({keypair: account}))
               });
-              this.compiler.setupClient({accounts: theAccounts});
+              this.compiler.setupClient({accounts: theAccounts, personalAccounts: true});
             }
           /* const keypair = Crypto.generateKeyPair()
           //console.log(`Secret key: ${keypair.secretKey}`)
@@ -119,7 +145,7 @@ export class AuthService {
     async signOut() {
         await this.afAuth.auth.signOut();
         this.theUser = null;
-        this.fillingUpAccounts.active = false;
+        this.fillingUpAccounts.active = "false";
         // put eventual router command here.. this,router.navigate(['/'])
 
         // make SDK restart with public testnet accounts
@@ -128,48 +154,99 @@ export class AuthService {
 
     // helpers
 
-
     private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
       return new Promise ((resolve, reject) => {
 
         console.log("Login: fillup triggered")
+        this.fillingUpAccounts.active = "true";
+  
+        
+        var maxFourBusy: number = 0
+        var keypairs:any[] = []
+        // enough of RxJS bullshit - just looping over the fillup request as long as is needed to fill up 4 accounts.
+        setInterval(async ()=>{
+          if (keypairs.length >= 4){
+            this.fillingUpAccounts.active = "done";
+            resolve(keypairs)
+          } else {
+            if(maxFourBusy < 4){
+              maxFourBusy++;
+              var keypair = Crypto.generateKeyPair()
+              
+              //console.log("Login: Keypair: ", keypair)
+              
+              // add custom property to memory account to later know it belongs to a logged-in user
+              //oneAccount.property = "personal"
+              //console.log("Login: oneAccount: ", oneAccount)
+
+              //debugger
+
+              this.http.post(`https://testnet.faucet.aepps.com/account/${keypair.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).subscribe({
+                next: data => {
+                  keypairs.push(keypair);
+                  maxFourBusy--; 
+                  this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
+                  console.log("Login: Finished account ", data)
+                },
+                error: error => {/* console.log('Faucet request errored, waiting for next run.', error); */ maxFourBusy--}
+            })
+              
+            }
+
+          }
+        }, 1000)
+
+    })}
+
+    /* private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
+      return new Promise ((resolve, reject) => {
+
+        console.log("Login: fillup triggered")
         this.fillingUpAccounts.active = true;
-       var accs: any[] = [];
-       for(let i=0; i<4; i++){
-         accs.push(Crypto.generateKeyPair());
+       var dummy: any[] = [];
+       // stupid quick workaround for rxJS requiring an array to iterate over - feed it one, create keys only if needed.
+       // this is a workaround to handle the fillup requests failing. 
+       for(let i=0; i<100; i++){
+         dummy.push("a");
        }
        
        var memoryAccs: MemoryAccount[] = [];
-       
+       //var that = this
 
-       accs.forEach(acc => {
-         let oneAccount = new MemoryAccount({keypair: acc})
+  
+       observableFrom(dummy).pipe(
+        concatMap(someDummy => {if (memoryAccs.length < 4) {
+
+          let keypair = Crypto.generateKeyPair()
+          let oneAccount = new MemoryAccount({keypair: keypair})
          // add custom property to memory account to later know it belongs to a logged-in user
          oneAccount.property = "personal"
-         memoryAccs.push(oneAccount)
-        })
-  
-       observableFrom(accs).pipe(
-          concatMap(acc => this.http.post(`https://testnet.faucet.aepps.com/account/${acc.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}))
-      ).subscribe(
+
+          return this.http.post(`https://testnet.faucet.aepps.com/account/${oneAccount.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
+          } else {
+                    this.fillingUpAccounts.active = false;
+                    resolve(memoryAccs)
+                    return new Observable;
+
+          }})
+        ).subscribe(
           response => {
+            //TODO: Evaluate if error !
             this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
-            console.log("Login: fillup transaction response:", response)}, //do something with responses
+            console.log("Login: fillup transaction response:", response)
+          }, //do something with responses
           error => console.error("Login: fillup transaction error error" ,error), // so something on error
           () => {
             console.info("All requests done") // do something when all requests are done 
-            console.log(accs);
+            console.log(memoryAccs);
             // MAKE MEMORY ACCOUNTS !
             resolve(memoryAccs);
-            
-            
-  
           }
       );
       })
      
 
-    }
+    } */
 
 }
 
@@ -178,4 +255,4 @@ export class AuthService {
 // https://fireship.io/lessons/angularfire-google-oauth/
 // https://www.techiediaries.com/angular-firestore-tutorial/
 
-// chrome-extension://klbibkeccnjlkjkiokjodocebajanakg/suspended.html#ttl=Get%20data%20with%20Cloud%20Firestore%20%C2%A0%7C%C2%A0%20Firebase&pos=0&uri=https://firebase.google.com/docs/firestore/query-data/get-data
+//https://firebase.google.com/docs/firestore/query-data/get-data

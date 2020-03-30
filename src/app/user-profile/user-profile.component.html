@@ -22,7 +22,7 @@
     </div>
 </div>
 
-<div  *ngIf="auth.fillingUpAccounts.active == true">
+<div  *ngIf="auth.fillingUpAccounts.active == 'true'">
     <div>Looks like it's your first time here - let's create you four accounts with free testnet AE. </div>
    
    <div id="loadingCircle"> 
@@ -40,6 +40,7 @@
 </div>
 
 </div>
+<br>
 <div *ngIf="auth.user$ | async">
     <button (click)="auth.signOut()" class="ui black button">
         Sign Out

@@ -217,6 +217,7 @@ async changeActiveAccount(newAccount: any) {
 }
 
 async changeSDKsetting(setting: string, params: any){
+  console.log("changesetting was clicked")
 
   switch (setting) {
     case "selectAccount":

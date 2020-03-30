@@ -4,17 +4,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
+import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
 
 
-import { Crypto } from '@aeternity/aepp-sdk/es/';
-
-import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
-import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { EventlogService } from './services/eventlog/eventlog.service'
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
@@ -88,7 +85,7 @@ public tellAci(): Observable < string > {
     });
 
     this.defaultSdkConfig = {
-      nodeUrl : "https://sdk-testnet.aepps.com",
+      nodeUrl : `${environment.publicTestnetURL}`,
       compilerUrl : `${environment.compilerURL}`,
       accounts : theAccounts
     }
@@ -97,7 +94,7 @@ public tellAci(): Observable < string > {
     //console.log("Compilerservice initialized!");  
    }
 
-  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, accounts? : MemoryAccount[], command? : string}){
+  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
 
     // if a config is provided, apply its values to the sdkConfigOverrides
    if (_config){
@@ -110,15 +107,13 @@ public tellAci(): Observable < string > {
      });
    }
 
-    // Use Flavor   
+    const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
     this.Chain = await Ae({
-      url: this.defaultOrCustomSDKsetting("nodeUrl"),
+      nodes: [{name: 'Testnet', instance: nodeInstance }],
       compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-      nativeMode: true,
       accounts: this.defaultOrCustomSDKsetting("accounts")
       
-    }).catch(e => { console.log("Shit, it didn't work:", e)})
-
+    }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
 
     // todo: wrap in try catch
     let height = await this.Chain.height();
