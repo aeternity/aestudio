@@ -9,7 +9,7 @@ export const environment = {
     testnetFaucetUrl: 'https://testnet.faucet.aepps.com/account/',
     compilerURL:'https://latest.compiler.aepps.com',
     debugCompilerURL : 'https://latest.compiler.aepps.com',
-    publicTestnetURL : 'https://sdk-testnet.aepps.com',
+    publicTestnetURL : 'https://testnet.aeternity.io',
     compilerRequestDelay : 400,
     firebase: {
       apiKey: "AIzaSyD2uvXdg_TBcXlvj_AxXUtwsSqfgk3sT7k",
