@@ -110,7 +110,7 @@ public tellAci(): Observable < string > {
     }).catch(e => { console.log("Shit, it didn't work:", e)})
 
 
-    // todo: wrap in try catch
+    // TODO: wrap in try catch
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
 

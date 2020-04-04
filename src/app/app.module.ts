@@ -28,6 +28,7 @@ import { EventlogService } from './services/eventlog/eventlog.service';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
+import { TxValuesComponent } from './tx-values/tx-values.component';
 
 // firebase start 
 /* import { AngularFireModule } from "@angular/fire";
@@ -48,7 +49,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent
   ],
   imports: [
     BrowserModule,
