@@ -29,6 +29,7 @@ import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
 import { TxValuesComponent } from './tx-values/tx-values.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
+import { DigitOnlyModule } from '@uiowa/digit-only';
 
 // firebase start 
 import { AngularFireModule } from '@angular/fire';
@@ -70,6 +71,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     AngularFireAuthModule,
     AngularFirestoreModule,
     AngularFireStorageModule,
+    DigitOnlyModule,
     // Specify ng-circle-progress as an import
     NgCircleProgressModule.forRoot({
       // set defaults here

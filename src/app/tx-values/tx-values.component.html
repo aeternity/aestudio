@@ -1,8 +1,31 @@
 <sui-tabset>
     <div class="ui pointing secondary menu">
-        <a class="item" suiTabHeader="1">Nested 1</a>
-        <a class="item" suiTabHeader="2">Nested 2</a>
+        <a class="item" suiTabHeader="1">Value</a>
+        <a class="item" suiTabHeader="2">Gas Amount</a>
+        <a class="item" suiTabHeader="3">Gas price</a>
     </div>
-    <div class="ui segment" suiTabContent="1">First nested tab!</div>
+
+    
+
+    <div class="ui" suiTabContent="1">
+        <div class="ui right labeled input">
+            <input type="text" placeholder="0" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="currentInput" (keyup)="valueChange($event)" (change)="valueChange($event)">
+    
+                <div class="ui primary dropdown button" suiDropdown [(isOpen)]="isOpen" [isDisabled]="isDisabled">
+                <div class="text">{{currentUnit}}</div>
+                <i class="dropdown icon"></i>
+                <div class="menu"  suiDropdownMenu>
+
+                    <div class="item" *ngFor="let key of objectKeys(units)" (click)="setUnit(key)"> {{key}} <span class="description"> 10<sup>{{units[key]}}</sup> </span> </div>
+                   
+                </div>
+            </div>
+          </div>
+        </div>
     <div class="ui segment" suiTabContent="2">Second nested tab!</div>
+    <div class="ui segment" suiTabContent="3">THird nested tab!</div>
+
+
+
+
 </sui-tabset>
