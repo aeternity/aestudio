@@ -1,5 +1,4 @@
 import { BrowserModule } from '@angular/platform-browser';
-
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -29,11 +28,14 @@ import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
 import { TxValuesComponent } from './tx-values/tx-values.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
 
 // firebase start 
-/* import { AngularFireModule } from "@angular/fire";
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFirestoreModule } from '@angular/fire/firestore'; */
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 // firebase end
 
 
@@ -49,10 +51,11 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent
   ],
   imports: [
     BrowserModule,
+    AppRoutingModule,
     LogMonitorModule,
     AppRoutingModule,
     FormsModule,
@@ -63,9 +66,20 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,
-    //AngularFireModule.initializeApp(environment.firebase),
-    /* AngularFireAuthModule,
-    AngularFirestoreModule, */
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireStorageModule,
+    // Specify ng-circle-progress as an import
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 500,
+    })
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]

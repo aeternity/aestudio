@@ -53,7 +53,7 @@ export class DeployedContractComponent implements OnInit {
     console.log("Called function: ", _theFunction);
     var callresult;
     try {
-      callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...params);
+      callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...params, { interval: 500, blocks: 3, allowUnsynced: true });
       console.log("The callresult object: ", callresult);
       console.log("Decoded result ", callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract.aci.name)
