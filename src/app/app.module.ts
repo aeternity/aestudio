@@ -6,8 +6,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 //import { FireEditorComponent } from './fire-editor/fire-editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
-import { DynamicFormComponent }         from './dynamic-form/dynamic-form.component';
-import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
@@ -44,8 +42,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 @NgModule({
   declarations: [
     AppComponent, 
-    DynamicFormComponent, 
-    DynamicFormQuestionComponent, 
     EditorComponent,
     ContractMenuSidebarComponent,
     ReplacePipe,

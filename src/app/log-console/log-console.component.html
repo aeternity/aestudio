@@ -11,7 +11,7 @@
             <div [suiCollapse]="collapse">
                 <div class="ui segment">
                     
-            <sui-accordion [transition]="fade" [transitionDuration]="300" [closeOthers]="false">
+            <sui-accordion [transition]="'fade'" [transitionDuration]="300" [closeOthers]="false">
 
                     
                     <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog"></app-one-log>

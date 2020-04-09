@@ -7,7 +7,7 @@ export class Contract<T> {
   public activeTab: boolean = false;
   public errorHighlights : any;
   public sharingHighlighters : any[] = [];
-  public latestACI : string;
+  public latestACI : any;
 
   constructor(params : {[key: string]: any} ){
     this.contractUID = String(Date.now());

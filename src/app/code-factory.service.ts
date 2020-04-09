@@ -8,7 +8,7 @@ import { Injectable, Input, EventEmitter, Output } from '@angular/core';
 
 export class CodeFactoryService {
 
-  constructor( private generator: CodeFactoryService) {}
+  constructor() {}
   
 @Input()
   public _generateCode = new BehaviorSubject<any>({});
@@ -23,9 +23,10 @@ export class CodeFactoryService {
     console.log("_thefunctionName: " , _theFunctionName);
     console.log("the params: ", _theParams);
     //console.log("contract code is: ", this.activeContracts[0].source);
-    let arrayOfInputData = [];
-    _theParams.arguments.forEach(oneArg => {
+    let arrayOfInputData : any = [];
+    _theParams.arguments.forEach(oneArg=> {
       //console.log("One input is: ", oneArg)
+      
       arrayOfInputData.push(oneArg.currentInputData);
     });
       _theParams = arrayOfInputData;

@@ -428,11 +428,12 @@ this.compiler._newACI.subscribe(item => {
   hash = function hashCode(o, l?) {
     o = this.sortObjectKeys(o);
     l = l || 2;
-    var i, c, r = [];
+    var i, c, r : any= [];
     for (i=0; i<l; i++)
         r.push(i*268803292);
     function stringify(o) {
-        var i,r;
+        var i : any;
+        var r : any = []
         if (o === null) return 'n';
         if (o === true) return 't';
         if (o === false) return 'f';

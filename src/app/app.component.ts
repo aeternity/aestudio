@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { QuestionControlService } from "./question-control.service";
-
 import { ContractControlService } from "./contract-control.service";
 import { Meta } from '@angular/platform-browser'; 
 
@@ -8,15 +6,14 @@ import { Meta } from '@angular/platform-browser';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [QuestionControlService, ContractControlService]
+  providers: [ContractControlService]
 })
 export class AppComponent {
   title = 'fire-editor';
   
   questions: any[];
 
-  constructor(service: QuestionControlService, private meta: Meta){
-    this.questions = service.getQuestions();
+  constructor(private meta: Meta){
 
     meta.addTag({name:"og:title",       content:"Sophia Fire Editor"})
     meta.addTag({name:"og:site_name",   content:"Nikita Fuchs"})

@@ -11,7 +11,7 @@
         <div class="ui right labeled input">
             <input type="text" placeholder="0" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="currentInput" (keyup)="valueChange($event)" (change)="valueChange($event)">
     
-                <div class="ui primary dropdown button" suiDropdown [(isOpen)]="isOpen" [isDisabled]="isDisabled">
+                <div class="ui primary dropdown button" suiDropdown [(isOpen)]="beOpen" [isDisabled]="isDisabled">
                 <div class="text">{{currentUnit}}</div>
                 <i class="dropdown icon"></i>
                 <div class="menu"  suiDropdownMenu>

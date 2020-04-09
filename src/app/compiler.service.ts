@@ -151,16 +151,30 @@ public tellAci(): Observable < string > {
   // a.k.a. it reads all data from the SDK
   async  getCurrentSDKsettings() : Promise<any> {   
     if (this.Chain != undefined) {
-    var returnObject = {};
- 
-    // execute all functions by their name, which have 0 params
-    for(var key in this.Chain) {
-      if(this.Chain[key].length == 0){ 
-      //console.log("Calling function:", key)
-      returnObject[key] = await this.Chain[key]()  } 
+      var returnObject = {};
+      var keyCount : number = 0;
+
+      // count the amount of keys with 0 arguments
+      for(var key in this.Chain) {
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          keyCount++ } 
+      }
+  
+      // execute all functions by their name which have 0 params.
+      // count the length of returns - if it equals the keycount, return.
+      for(var key in this.Chain) {
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          returnObject[key] = await this.Chain[key]() 
+          if (Object.keys(returnObject).length == keyCount ){
+            return returnObject;
+          }
+        
+        } 
     }}
   
-      return returnObject;
+      
    }
 
 

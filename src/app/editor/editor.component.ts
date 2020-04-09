@@ -7,7 +7,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ClipboardService } from 'ngx-clipboard';
-import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
+//import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { debounceTime } from 'rxjs/operators';
 import { CodeFactoryService } from '../code-factory.service';
 import { LocalStorageService } from '../local-storage.service';
@@ -22,8 +22,8 @@ export class EditorComponent implements OnInit {
   
   @Input() 
   // logger start //
-  logs: NgxLogMessage[] = [
-  ];
+  /* logs: NgxLogMessage[] = [
+  ]; */
   
   deleteme: any = 2;
 
@@ -144,8 +144,16 @@ export class EditorComponent implements OnInit {
       this.runTimes++;
       console.log("Run times: ", this.runTimes);
       // get the parameters for code highlighting
-      let codeToHighlight = parameter.get("highlight");
-      try{  this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {}
+      var codeToHighlight : string = ""
+
+      if(parameter.get("highlight") != undefined) {
+        codeToHighlight = parameter.get("highlight") || ""
+      try{  
+        this.highlightedRows = codeToHighlight.split('-', 4) } catch(e) {
+        }
+        
+
+    }
       console.log("highlight:", codeToHighlight);
       console.log("Highlighted rows:", this.highlightedRows);
       console.log("Parameters are: ", parameter)
@@ -524,11 +532,12 @@ export class EditorComponent implements OnInit {
   hash = function hashCode(o, l?) {
     o = this.sortObjectKeys(o);
     l = l || 2;
-    var i, c, r = [];
+    var i, c, r : any= [];
     for (i=0; i<l; i++)
         r.push(i*268803292);
     function stringify(o) {
-        var i,r;
+        var i : any;
+        var r : any = []
         if (o === null) return 'n';
         if (o === true) return 't';
         if (o === false) return 'f';

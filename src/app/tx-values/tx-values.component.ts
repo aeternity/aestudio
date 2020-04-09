@@ -20,6 +20,8 @@ export class TxValuesComponent implements OnInit {
 
   objectKeys = Object.keys;
 
+  beOpen: boolean = false;
+  isDisabled: boolean = false;
   currentInput: number;
   currentValue: number;
   currentUnit: string = "aetto";
