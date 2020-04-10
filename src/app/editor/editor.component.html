@@ -41,7 +41,6 @@
  <!-- Editor Start -->
                     <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
                         <div  *ngIf="oneContract.showInTabs" class="ui bottom attached segment" suiTabContent="{{i}}">
-                            "LOL"
                             <app-one-editor-tab  [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
                     <!--  <ngx-monaco-editor [(ngModel)]="contracts[i].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>-->                    
                         </div>
