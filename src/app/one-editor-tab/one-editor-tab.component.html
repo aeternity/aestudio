@@ -1,6 +1,6 @@
 <ngx-monaco-editor 
     [(ngModel)]="activeContract.code" 
-    (ngModelChange)="throttledChange($event)" 
+    (ngModelChange)="throttledChange()" 
     (onInit)="initializeEditorObject($event)" 
     class="editor" [options]="editorOptions"></ngx-monaco-editor>
 

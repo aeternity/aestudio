@@ -26,7 +26,7 @@ import { CompilerService } from '../../compiler.service'
   })
 export class AuthService {
 
-    user$: Observable<User>;
+    user$: Observable<User | null | undefined>;
 
     theUser: any;
 
@@ -102,7 +102,7 @@ export class AuthService {
            
              console.log("Login: writing to db was like: ", writeDB)
 
-             let memoryaccounts = [];
+             let memoryaccounts : MemoryAccount[] = [];
 
              keypairs.forEach(account => {
               memoryaccounts.push(MemoryAccount({keypair: account}))

@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 
-@Pipe({name: 'replace'})
+/* @Pipe({name: 'replace'})
 export class ReplacePipe implements PipeTransform {
   transform(value: string, strToReplace: string, replacementStr: string): string {
 
@@ -20,7 +20,7 @@ export class ReplacePipe implements PipeTransform {
 
  return value.replace(new RegExp(strToReplace, 'g'), replacementStr);
   }
-}
+} */
 
 @Component({
   selector: 'contract-menu-sidebar',
@@ -70,6 +70,9 @@ export class ContractMenuSidebarComponent implements OnInit {
 
   // mess around:
   temp: any;
+
+  // angular 9
+  hover: boolean;
 
   logTemp(input: any){
     console.log("current input:", input);
@@ -163,8 +166,8 @@ export class ContractMenuSidebarComponent implements OnInit {
           //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
         } else {
-          // if there was obviously not an ACI recieved, make deployment window disappear
-          this.initACI = null
+          // if there was obviously not an ACI received, make deployment window disappear
+          this.initACI = undefined
         }
 
     });
