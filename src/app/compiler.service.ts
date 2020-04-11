@@ -50,6 +50,8 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
+  // 'amount' for transactions, recieved from tx-values component
+  txAmountInAettos: number = 0;
 
   private aciObs: BehaviorSubject < any > = new BehaviorSubject < any > (null);
 

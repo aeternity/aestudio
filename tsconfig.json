@@ -22,7 +22,8 @@
     ]
   },
     "angularCompilerOptions": {
-      "fullTemplateTypeCheck": false
+      "fullTemplateTypeCheck": false,
+      "strictTemplates": false 
                 
     }
 }
