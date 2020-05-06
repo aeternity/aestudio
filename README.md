@@ -1,4 +1,4 @@
-# 🔥Fire Editor 🔥 for writing Smart Cpntracts for the Æternity Blockchain
+# 🔥 Fire Editor 🔥 for writing Smart Contracts for the Æternity Blockchain
 
 ## Install for Linux / Mac
 
