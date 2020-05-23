@@ -9,7 +9,7 @@
                 <ng-container class="ui segment container" *ngFor="let oneFunction of contract.aci.functions">
                     <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
                         <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
-    
+
                         <!-- TODO: Add form control -->
                         <form class="ui form">
                             <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
@@ -24,9 +24,26 @@
                         </form>
                         <br>
                         <app-loader *ngIf="contract.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
-    
-                        <button *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == true" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Send Transaction</button>
-                        <button *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == false" class="ui black button" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">Call Locally</button>
+                      
+                        <!-- Contract function call button -->
+
+                        <button 
+                            [class.ui]="true"
+                            [class.right]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            [class.labeled]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            [class.icon]="true"
+                            [class.black]="true"
+                            [class.button]="true"
+                            [class.collapsedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos == 0" 
+                            [class.expandedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            
+                            class="ui right labeled icon black button contractCallButton" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">
+                            
+                            <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == false">Call Locally</p>
+                            <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == true">Send Transaction</p>
+
+                            <i *ngIf="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" class="large yellow exclamation triangle icon"></i>
+                        </button>
                         
                         <!-- Experimental Code generator start -->
                         <div id="options-dropdownbutton" class="generator-menu-button ui basic button dropdown "  suiDropdown>

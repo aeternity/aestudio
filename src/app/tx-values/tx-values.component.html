@@ -1,4 +1,4 @@
-<sui-tabset>
+<sui-tabset >
     <div class="ui pointing secondary menu">
         <a class="item" suiTabHeader="1">Value</a>
         <a class="item" suiTabHeader="2">Gas Amount</a>
@@ -7,14 +7,22 @@
 
     
 
-    <div class="ui" suiTabContent="1">
-        <div class="ui right labeled input">
+    <div  class="ui" suiTabContent="1">
+        <div class="ui right labeled input"
+        [class.ui]="true"
+        [class.right]="true"
+        [class.labeled]="true"
+        [class.input]="true"
+        [class.disabled]="(this.auth.user$ | async) == undefined ? true : false"
+        >
             <input type="text" placeholder="0" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="currentInput" (keyup)="valueChange($event)" (change)="valueChange($event)">
     
-                <div class="ui primary dropdown button" suiDropdown [(isOpen)]="beOpen" [isDisabled]="isDisabled">
+                <div id="txvalueButton" class="ui primary dropdown button" suiDropdown [(isOpen)]="beOpen" [isDisabled]="(this.auth.user$ | async) == undefined ? true : false">
                 <div class="text">{{currentUnit}}</div>
                 <i class="dropdown icon"></i>
+                <!-- <span class="description"> 10<sup>{{units[key]}}</sup> </span> -->
                 <div class="menu"  suiDropdownMenu>
+                    
 
                     <div class="item" *ngFor="let key of objectKeys(units)" (click)="setUnit(key)"> {{key}} <span class="description"> 10<sup>{{units[key]}}</sup> </span> </div>
                    
@@ -22,8 +30,34 @@
             </div>
           </div>
         </div>
-    <div class="ui segment" suiTabContent="2">Second nested tab!</div>
-    <div class="ui segment" suiTabContent="3">THird nested tab!</div>
+    <div class="ui" suiTabContent="2">
+        <sui-checkbox class="slider"  [(ngModel)]="gasRadioButton" (click)="toggleGasRadioButton()">  </sui-checkbox>
+        <div [class.ui]="true" [class.input]="true" [class.disabled]="!gasRadioButton">
+            
+            <!--     <label>Checkbox Style Examples</label> -->
+                <div class="field">
+                    
+                    <!-- <input type="text" placeholder={{gasRadioButton ? "0" : "Auto (recommended)"}} inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasValue" (keyup)="manualGasChange($event)" (change)="manualGasChange($event)"> -->
+                    <input type="text" placeholder="{{ (gasRadioButton ? manualGasValue : 'Auto (recommended)' )}}" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasValue" (keyup)="manualGasChange($event)" (change)="manualGasChange($event)">
+                </div>
+            
+        </div>
+    </div>
+    <div [class.ui]="true" [class.input]="true" [class.disabled]="!gasPriceRadioButton"suiTabContent="3">
+
+        <sui-checkbox class="slider"  [(ngModel)]="gasPriceRadioButton" (click)="toggleGasPriceRadioButton()">  </sui-checkbox>
+        <div class="ui input">
+            
+            <!--     <label>Checkbox Style Examples</label> -->
+                <div class="field">
+                    
+                    <!-- <input type="text" placeholder={{gasRadioButton ? "0" : "Auto (recommended)"}} inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasValue" (keyup)="manualGasChange($event)" (change)="manualGasChange($event)"> -->
+                    <input type="text" placeholder="{{ (gasPriceRadioButton ? manualGasPriceValue : 'Auto (recommended)' )}}" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasPriceValue" (keyup)="manualGasPriceChange($event)" (change)="manualGasPriceChange($event)">
+                </div>
+            
+        </div>
+
+    </div>
 
 
 

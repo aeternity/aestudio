@@ -50,8 +50,11 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
-  // 'amount' for transactions, recieved from tx-values component
+  // 'amount' for transactions, recieved from tx-values component - set by tx-values-component, 
+  // read by one-contract-component when sending TXs
   txAmountInAettos: number = 0;
+  gasAmountInUnits: number = 0;
+  gasPriceInAettos: number = 0;
 
   private aciObs: BehaviorSubject < any > = new BehaviorSubject < any > (null);
 

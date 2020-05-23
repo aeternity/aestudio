@@ -15,6 +15,105 @@
 
 /* tweakings of the semantic UI START*/
 
+/*This one: Make buttons look correct when no warning sign */
+.collapsedForIcon {
+    padding-right: 1.5em!important;
+    padding-left: 1.5em!important;
+}
+
+.expandedForIcon{
+    padding-right: 4.07142857em!important
+}
+
+.expandedForIcon p{
+    margin-bottom: 0px;
+    margin-right: 20px;
+}
+
+.contractCallButton i{
+
+    background-color: #f6f6f6 !important;
+   
+    margin-bottom: 0 !important;
+    margin-right: 20px;
+}
+
+/* value, gas, gasPrice tabs start*/
+/* inactive  */
+overlay:after{
+position:absolute;
+height: 100%;
+width:100%;
+content:'';
+z-index:5; /* Make sure this value is higher than the z-index of the  .form class  */
+top:0;
+left:0;
+
+border: 1px solid #ccc!important;
+border-color: #000!important;
+    border-top-color: rgb(0, 0, 0) !important;
+    border-right-color: rgb(0, 0, 0) !important;
+    border-bottom-color: rgb(0, 0, 0) !important;
+    border-left-color: rgb(0, 0, 0) !important;
+}
+
+.ui.secondary.pointing.menu .active.item {
+    border-color: #ff6f10;
+}
+
+.ui.secondary.pointing.menu a.item:active {
+    border-color: #f9c90e;
+}
+
+.ui.secondary.pointing.menu .item:hover {
+    border-color: #ff9710;
+    color: rgba(0,0,0,1)
+}
+
+.ui.secondary.pointing.menu .active.item:hover {
+    border-color: #ff9710;
+}
+
+.ui.primary.button {
+    background-color: #f2711d;
+    color: #FFF;
+    text-shadow: none;
+    background-image: none;
+}
+
+.ui.primary.active.button {
+    background-color: #ff6f10;
+    color: #FFF;
+    text-shadow: none;
+    background-image: none;
+}
+.ui.primary.button:focus {
+    background-color: #ff9710;
+    color: #FFF;
+    text-shadow: none;
+    background-image: none;
+}
+
+.ui.primary.button:hover {
+    background-color: #ff9710;
+    color: #FFF;
+    text-shadow: none;
+    background-image: none;
+}
+#txvalueButton {
+    width: 130px !important
+}
+
+.ui.slider.checkbox input:checked~label {
+    background-color: #f2711d !important;
+}
+
+.ui.slider.checkbox input:checked~label {
+    color: #f2711d!important;
+}
+
+/* value, gas, gasPrice tabs end*/
+
 .noSideSpace {
     margin-left: 0px !important;
     padding-left: 0px !important;
@@ -242,7 +341,7 @@
 
 /* helpers start*/
 
-@-webkit-keyframes orange_blink {
+@-webkit-keyframes {
 	from { background-color: initial; }
 	to { background-color: #F2711C; }
 }

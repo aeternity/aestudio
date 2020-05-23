@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CompilerService } from '../compiler.service';
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-tx-values',
@@ -15,8 +16,7 @@ export class TxValuesComponent implements OnInit {
     "nanoae"  :   9,
     "microae" :   12,
     "milliae" :   15,
-    "ae"      :   18,
-    "testtesttesttest" : 10
+    "ae"      :   18
   }
 
   objectKeys = Object.keys;
@@ -27,8 +27,18 @@ export class TxValuesComponent implements OnInit {
   currentValue: number; // this is the essential value !  
   currentUnit: string = "aetto";
 
+  gasRadioButton: boolean = false;
+  manualGasValue: number;
+  lastManualGasValue: number = 1337
+  
+  gasPriceRadioButton: boolean = false;
+  manualGasPriceValue: number;
+  lastManualGasPriceValue: number = 1000000000
+  
 
-  constructor(private compiler: CompilerService) { }
+  constructor(private compiler: CompilerService,
+              private auth: AuthService
+      ) { }
 
   ngOnInit() {
   }
@@ -37,6 +47,60 @@ export class TxValuesComponent implements OnInit {
     //this.currentValue < 1 ? this.currentValue = 0 : true
     console.log(this.getCurrentInput())
     this.calculateFinalValue();
+  }
+
+  manualGasChange(e) {
+    //this.currentValue < 1 ? this.currentValue = 0 : true
+    this.compiler.gasAmountInUnits = this.manualGasValue;
+    console.log(this.manualGasValue);
+    console.log(this.compiler.gasAmountInUnits)
+    // set to compiler !
+  }
+
+  toggleGasRadioButton() {
+    console.log("Clicked, toggle: ", this.gasRadioButton)
+    let newValue = this.manualGasValue;
+    let oldValue = this.lastManualGasValue;
+    
+    if (this.gasRadioButton) {
+      this.lastManualGasValue = newValue;
+      this.manualGasValue = oldValue;
+      this.compiler.gasAmountInUnits = this.manualGasValue;
+    }
+    
+    if (!this.gasRadioButton) {
+      this.lastManualGasValue = newValue;
+      this.manualGasValue = null;
+      this.compiler.gasAmountInUnits = 0
+
+    }
+
+  }
+
+  manualGasPriceChange(e) {
+    //this.currentValue < 1 ? this.currentValue = 0 : true
+    this.compiler.gasPriceInAettos = this.manualGasPriceValue
+    console.log(this.manualGasPriceValue)
+
+    // set to compiler !
+  }
+
+  toggleGasPriceRadioButton() {
+    console.log("Price Clicked, toggle: ", this.gasPriceRadioButton)
+    let newValue = this.manualGasPriceValue;
+    let oldValue = this.lastManualGasPriceValue;
+    
+    if (this.gasPriceRadioButton) {
+      this.lastManualGasPriceValue = newValue;
+      this.manualGasPriceValue = oldValue;
+      this.compiler.gasPriceInAettos = this.manualGasPriceValue;
+    }
+    
+    if (!this.gasPriceRadioButton) {
+      this.lastManualGasPriceValue = newValue;
+      this.manualGasPriceValue = null;
+      this.compiler.gasPriceInAettos = 0
+    }
 
   }
  
@@ -55,6 +119,7 @@ export class TxValuesComponent implements OnInit {
 
    calculateFinalValue(){
     this.currentValue = this.currentInput * Math.pow(10, this.units[this.currentUnit])
+    this.compiler.txAmountInAettos = this.currentValue
     console.log("New currentValue: ", this.currentValue)
   }
 
