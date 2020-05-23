@@ -327,8 +327,27 @@ border-color: #000!important;
     float: left;
 }
 
-.onetab .item.active{
-    background: green !important
+.contracttab.item.active{
+    background: #1e1e1e !important;
+    border-top-color: #f2711d !important;
+    border-left-color: black !important;
+    border-right-color: black !important;
+    border-top-width: 2px !important;
+    border-radius: 0px !important;
+    color: #d1d0d0 !important;
+}
+
+.contracttab.item{
+    background: #1b1c1d !important;
+    border-top: 1px solid #121212 !important;
+    border-right: 1px solid #121212 !important;
+    border-left: 1px solid #121212 !important;
+    color: #999999 !important;
+}
+
+.theSideMenu .ui.tabular.menu {
+    border-bottom-color: #764322;
+    background-color: #1b1c1d;
 }
 
 /* tab menu end  */
@@ -393,3 +412,6 @@ border-color: #000!important;
 }
 
 /* Log monitor end */
+.pepperwhite {
+    color: #d1d0d0 !important;
+}

@@ -1,17 +1,18 @@
 <!-- Top menu bar start  -->
 <div class="ui top attached inverted demo menu">
-    <a class="item blinkOnLoad" (click)="sidebar.toggle()">
-        <i class="sidebar icon"></i> Menu
-    </a>
-    <a class="item">
-       <!--  <i class="sidebar icon"></i> --> AE Studio
-    </a>
+    
     
 </div>
 <!-- Top menu bar end -->
 
 <!-- left side menu start -->
+
+
 <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
+
+  
+
+
     <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
             <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
         <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
@@ -31,15 +32,21 @@
 
 <!-- Tab menu start -->
             <sui-tabset >
-                <div class="ui top attached tabular menu" style="height: 45px">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+                <div class="ui top attached tabular menu" style="height: 45px; border-radius: 0">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+                    
+                    <a class="item blinkOnLoad pepperwhite" style="border-radius: 0" (click)="sidebar.toggle()">
+                        <i style="margin-left: 0px; margin-right: 10px" class="sidebar icon"></i> Menu
+                    </a>
+                   
+                    
                     <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
-                        <div class="oneTab" *ngIf="oneContract.showInTabs" >  
-                            <a style="float: left"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="contracttab item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }}                             <a href="" > <i style="float: right" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'})" class="close icon"></i>  </a>
+                        
+                            <a style="float: left; border-radius: 0 !important;"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="contracttab item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }}  <a> <p class="tabclosingx" style="">&nbsp; &times; </p></a>
                         </a>
-                        </div>
+                        
                     </ng-container>
 
-                    <a class="item" (click)="addNewContract()" > <i class="plus icon"></i>  </a> 
+                    <a class="item pepperwhite" (click)="addNewContract()" > <i class="plus icon"></i>  </a> 
 
 <!--                         <a class="item" suiTabHeader="3">Third</a>
 -->                </div>

@@ -55,6 +55,13 @@
 .oneTab a {
     color: #1d1d1d;
 }
-.contracttab{
-    background: green !important
+
+.tabclosingx {
+    font-size: 13pt !important; 
+    color: #d1d0d0
+}
+
+.contracttab.item.active .tabclosingx{
+    font-size: 15pt !important; 
+
 }
