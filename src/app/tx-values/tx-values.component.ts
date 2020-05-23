@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { AuthService } from '../services/auth/auth.service';
+import {IPopup} from "ng2-semantic-ui";
+
 
 @Component({
   selector: 'app-tx-values',
@@ -37,7 +39,7 @@ export class TxValuesComponent implements OnInit {
   
 
   constructor(private compiler: CompilerService,
-              private auth: AuthService
+              public auth: AuthService
       ) { }
 
   ngOnInit() {
@@ -48,6 +50,18 @@ export class TxValuesComponent implements OnInit {
     console.log(this.getCurrentInput())
     this.calculateFinalValue();
   }
+
+  private showLoginNotification :boolean = true;
+
+  public openPopup(popup:IPopup) {
+      if (!this.auth.theUser) {
+          popup.open();
+      }
+  }
+
+  public closePopup(popup:IPopup) {
+        popup.close();
+}
 
   manualGasChange(e) {
     //this.currentValue < 1 ? this.currentValue = 0 : true

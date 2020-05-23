@@ -13,7 +13,9 @@
         [class.right]="true"
         [class.labeled]="true"
         [class.input]="true"
-        [class.disabled]="(this.auth.user$ | async) == undefined ? true : false"
+        [class.disabled]="(auth.user$ | async) == undefined ? true : false"
+        suiPopup popupHeader="Please Login" popupText="Login or Register for free to use this feature! :)" popupPlacement="top center" popupDelay="600" popupTrigger="manual" #popup="suiPopup"
+        (mouseover)="openPopup(popup)" (mouseout)="closePopup(popup)"
         >
             <input type="text" placeholder="0" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="currentInput" (keyup)="valueChange($event)" (change)="valueChange($event)">
     
@@ -40,7 +42,6 @@
                     <!-- <input type="text" placeholder={{gasRadioButton ? "0" : "Auto (recommended)"}} inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasValue" (keyup)="manualGasChange($event)" (change)="manualGasChange($event)"> -->
                     <input type="text" placeholder="{{ (gasRadioButton ? manualGasValue : 'Auto (recommended)' )}}" inputmode="numeric" pattern="[0-9]*" digitOnly [(ngModel)]="manualGasValue" (keyup)="manualGasChange($event)" (change)="manualGasChange($event)">
                 </div>
-            
         </div>
     </div>
     <div [class.ui]="true" [class.input]="true" [class.disabled]="!gasPriceRadioButton"suiTabContent="3">

@@ -3,6 +3,7 @@ import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
 import { EventlogService } from '../services/eventlog/eventlog.service'
+import {IPopup} from "ng2-semantic-ui";
 
 
 @Component({
@@ -28,6 +29,17 @@ export class DeployedContractComponent implements OnInit {
     //this.contract.aci = this.contract.aci.contract;
   }
 
+  public openPopup(popup:IPopup, _payable: any) {
+    /* console.log("Message triggered, function index:", functionIndex)
+    console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
+    console.log("Als doOpen kam: ", _payable)
+    if(_payable == false)
+        popup.open();
+}
+
+public closePopup(popup:IPopup) {
+      popup.close();
+}
 
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
     let theContract = this.contract;

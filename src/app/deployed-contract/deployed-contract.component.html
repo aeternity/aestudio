@@ -36,8 +36,14 @@
                             [class.button]="true"
                             [class.collapsedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos == 0" 
                             [class.expandedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            class="ui right labeled icon black button contractCallButton" 
+                            (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" 
+                            suiPopup popupHeader="Caution !" popupTrigger="manual" #popup="suiPopup" popupText="Calling a function that is not marked as payable in it's code when your 'Value' property is set to non-zero would result in a transaction error! " popupPlacement="top left" popupDelay="100"
+                            (mouseover)="openPopup(popup, contract.aci.functions[oneFunction.IDEindex].payable)" (mouseout)="closePopup(popup)"
+                            [disabled]=""
+
+                            >
                             
-                            class="ui right labeled icon black button contractCallButton" (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" [disabled]="">
                             
                             <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == false">Call Locally</p>
                             <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == true">Send Transaction</p>

@@ -32,8 +32,8 @@
 
 .contractCallButton i{
 
-    background-color: #f6f6f6 !important;
-   
+    background-color:#898b8b !important;
+    opacity: 1 !important;
     margin-bottom: 0 !important;
     margin-right: 20px;
 }
@@ -259,7 +259,8 @@ border-color: #000!important;
     width: 100%;
     transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
+ 
+/* tab menu start  */
 .oneTab {
     -webkit-box-direction: normal;
     font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
@@ -325,6 +326,13 @@ border-color: #000!important;
     border-radius: none !important;
     float: left;
 }
+
+.onetab .item.active{
+    background: green !important
+}
+
+/* tab menu end  */
+
 /* contracts sidemenu end */
 
 /* right menu start */
