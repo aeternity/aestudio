@@ -12,6 +12,7 @@
 ## Run with
 
 ```ng serve```
+
 ```-> visit localhost:4200 ```
 
 Note: Some env vars are hardcoded in angular's environment files and might need to be changed for a local use.
