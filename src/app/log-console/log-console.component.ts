@@ -9,7 +9,8 @@ import { EventlogService } from '../services/eventlog/eventlog.service'
 export class LogConsoleComponent implements OnInit {  
 
   logs: any[] = [];
-
+  collapse: boolean = false;
+  
   constructor(private eventlog: EventlogService) { 
 
   }

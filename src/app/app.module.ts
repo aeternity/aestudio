@@ -1,5 +1,4 @@
 import { BrowserModule } from '@angular/platform-browser';
-
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -7,12 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 //import { FireEditorComponent } from './fire-editor/fire-editor.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
-import { DynamicFormComponent }         from './dynamic-form/dynamic-form.component';
-import { DynamicFormQuestionComponent } from './dynamic-form-question/dynamic-form-question.component';
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import {SuiModule} from 'ng2-semantic-ui';
-import {LogMonitorModule} from 'ngx-log-monitor';
+
 //import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
@@ -28,11 +25,16 @@ import { EventlogService } from './services/eventlog/eventlog.service';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
+import { TxValuesComponent } from './tx-values/tx-values.component';
+import { NgCircleProgressModule } from 'ng-circle-progress';
+import { DigitOnlyModule } from '@uiowa/digit-only';
 
 // firebase start 
-/* import { AngularFireModule } from "@angular/fire";
-import { AngularFireAuthModule } from "@angular/fire/auth";
-import { AngularFirestoreModule } from '@angular/fire/firestore'; */
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { UserProfileComponent } from './user-profile/user-profile.component';
 // firebase end
 
 
@@ -40,19 +42,17 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
 @NgModule({
   declarations: [
     AppComponent, 
-    DynamicFormComponent, 
-    DynamicFormQuestionComponent, 
     EditorComponent,
     ContractMenuSidebarComponent,
     ReplacePipe,
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent
   ],
   imports: [
     BrowserModule,
-    LogMonitorModule,
+    AppRoutingModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
@@ -62,9 +62,21 @@ import { AngularFirestoreModule } from '@angular/fire/firestore'; */
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,
-    //AngularFireModule.initializeApp(environment.firebase),
-    /* AngularFireAuthModule,
-    AngularFirestoreModule, */
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule,
+    AngularFirestoreModule,
+    AngularFireStorageModule,
+    DigitOnlyModule,
+    // Specify ng-circle-progress as an import
+    NgCircleProgressModule.forRoot({
+      // set defaults here
+      radius: 100,
+      outerStrokeWidth: 16,
+      innerStrokeWidth: 8,
+      outerStrokeColor: "#78C000",
+      innerStrokeColor: "#C7E596",
+      animationDuration: 500,
+    })
   ],
   providers: [LocalStorageService],
   bootstrap: [AppComponent]

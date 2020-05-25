@@ -7,7 +7,7 @@ export class Contract<T> {
   public activeTab: boolean = false;
   public errorHighlights : any;
   public sharingHighlighters : any[] = [];
-  public latestACI : string;
+  public latestACI : any;
 
   constructor(params : {[key: string]: any} ){
     this.contractUID = String(Date.now());
@@ -47,8 +47,9 @@ contract CryptoHamster =
     public entrypoint locally_add_two(one: int, two: int) : int =
         one + two
     
-    public stateful entrypoint statefully_add_two(one: int, two: int) =
+    public stateful entrypoint statefully_add_two(one: int, two: int) : int=
         put(state{testvalue = one + two})
+        state.testvalue
     
     stateful entrypoint create_hamster(hamster_name: string) =
         require(!name_exists(hamster_name), \"Name is already taken\")

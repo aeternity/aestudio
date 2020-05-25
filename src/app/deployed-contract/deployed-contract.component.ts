@@ -3,6 +3,7 @@ import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
 import { EventlogService } from '../services/eventlog/eventlog.service'
+import {IPopup} from "ng2-semantic-ui";
 
 
 @Component({
@@ -28,32 +29,55 @@ export class DeployedContractComponent implements OnInit {
     //this.contract.aci = this.contract.aci.contract;
   }
 
+  public openPopup(popup:IPopup, _payable: any) {
+    /* console.log("Message triggered, function index:", functionIndex)
+    console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
+    console.log("Als doOpen kam: ", _payable)
+    if(this.compiler.txAmountInAettos > 0 && _payable == false)
+        popup.open();
+}
+
+public closePopup(popup:IPopup) {
+      popup.close();
+}
 
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
     let theContract = this.contract;
   
     console.log("theContract is: ", theContract.aci.functions[0]);
     // activate loader
-    this.contract.aci.functions[_theFunctionIndex].loading = true
+    theContract.aci.functions[_theFunctionIndex].loading = true
   
-    console.log("Loader ist: ", this.contract.aci.functions[_theFunctionIndex].loading )
+    console.log("Loader ist: ", theContract.aci.functions[_theFunctionIndex].loading )
     
     // fetch all entered params
     const jsonTypes = ["map", "list", "tuple", "record", "bytes"]
   
-    var params: any[] = this.contract.aci.functions[_theFunctionIndex].arguments.map(oneArg => {
+    var callParams: any[] = this.contract.aci.functions[_theFunctionIndex].arguments.map(oneArg => {
       console.log("One arg: ", oneArg.currentInputData)
       // try parsing input data as JSON to try handling complex input data cases - work in progess !
       if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
       return oneArg.currentInputData
     });
-    
+
+    // check if custom values are applied for tx value, gas and gas price, and if so, set them
+    var txParams:any = { interval: 500, blocks: 3, allowUnsynced: true }
+    console.log("Compiler: amount: ", this.compiler.txAmountInAettos )
+    console.log("Compiler: gasAmountInUnits: ", this.compiler.gasAmountInUnits )
+    console.log("Compiler: gasPriceInAettos: ", this.compiler.gasPriceInAettos )
+
+    this.compiler.txAmountInAettos > 0 ? txParams.amount = this.compiler.txAmountInAettos : true
+    this.compiler.gasAmountInUnits > 0 ? txParams.gas = this.compiler.gasAmountInUnits : true
+    this.compiler.gasPriceInAettos > 0 ? txParams.gasPrice = this.compiler.gasPriceInAettos : true
   
     // "Apply" parameters a.k.a call function
     console.log("Called function: ", _theFunction);
     var callresult;
     try {
-      callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...params);
+
+      console.log('Calling with tx params:', txParams)
+      /* callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, { interval: 500, blocks: 3, allowUnsynced: true, amount: "0", gasPrice:"2000000000", gas:80 }); */
+      callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, txParams);
       console.log("The callresult object: ", callresult);
       console.log("Decoded result ", callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract.aci.name)

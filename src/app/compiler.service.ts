@@ -4,17 +4,14 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
+import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
 
 
-import { Crypto } from '@aeternity/aepp-sdk/es/';
-
-import { Contract } from './contracts/hamster';
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
-import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { EventlogService } from './services/eventlog/eventlog.service'
 
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
@@ -26,12 +23,6 @@ var Ae = Universal;
   providedIn: 'root'
 })
 export class CompilerService {
-
-// to be displayed in logs
-  public logs: NgxLogMessage[] = [
-    {message: 'Initialized'},
-    
-  ];
 
   public code: string = ''
 
@@ -49,6 +40,9 @@ export class CompilerService {
 
   // the SDK initialization
   public Chain: any;
+
+  public defaultSdkConfig = {};
+  public sdkConfigOverrides = {};
  
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
@@ -56,6 +50,11 @@ export class CompilerService {
 
   public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
 
+  // 'amount' for transactions, recieved from tx-values component - set by tx-values-component, 
+  // read by one-contract-component when sending TXs
+  txAmountInAettos: number = 0;
+  gasAmountInUnits: number = 0;
+  gasPriceInAettos: number = 0;
 
   private aciObs: BehaviorSubject < any > = new BehaviorSubject < any > (null);
 
@@ -80,51 +79,58 @@ public tellAci(): Observable < string > {
 
   constructor(private http: HttpClient,
     private eventlog: EventlogService) {
+
+    // define the default SDK settings
+    var theAccounts : MemoryAccount[] = [];
+
+    publicAccounts().forEach(account => {
+      let oneAccount = MemoryAccount({keypair: account});
+      oneAccount.property = "public";
+      theAccounts.push(oneAccount);
+    });
+
+    this.defaultSdkConfig = {
+      nodeUrl : `${environment.publicTestnetURL}`,
+      compilerUrl : `${environment.compilerURL}`,
+      accounts : theAccounts
+    }
+
     this.setupClient();
     //console.log("Compilerservice initialized!");  
    }
 
-  async setupClient(){
-    console.log("The random accounts: ", publicAccounts());
+  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
 
-    let theAccounts = [];
-    publicAccounts().forEach(account => {
-      theAccounts.push(MemoryAccount({keypair: account}))
-    });
+    // if a config is provided, apply its values to the sdkConfigOverrides
+   if (_config){
+     console.log("Compiler: Received custom config for SDK: ", _config)
+     // first, clear old custom config values
+     this.sdkConfigOverrides = {};
 
-    // Use Flavor   
+      Object.keys(_config).forEach(setting => {
+       this.sdkConfigOverrides[setting] = _config[setting]
+     });
+   }
+
+    const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
     this.Chain = await Ae({
-      url: 'https://sdk-testnet.aepps.com',
-      //internalUrl: 'http://localhost:3001/internal/',
-      //compilerUrl: 'http://localhost:3080',
-      compilerUrl: `${environment.compilerURL}`,
-      nativeMode: true,
-      accounts: theAccounts
+      nodes: [{name: 'Testnet', instance: nodeInstance }],
+      compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
+      accounts: this.defaultOrCustomSDKsetting("accounts")
       
-      /* [
-          MemoryAccount({ keypair: { secretKey: 'bb9f0b01c8c9553cfbaf7ef81a50f977b1326801ebf7294d1c2cbccdedf27476e9bbf604e611b5460a3b3999e9771b6f60417d73ce7c5519e12f7e127a1225ca', publicKey: 'ak_2mwRmUeYmfuW93ti9HMSUJzCk1EYcQEfikVSzgo6k2VghsWhgU' } }),
-          MemoryAccount({ keypair: { secretKey: '7c6e602a94f30e4ea7edabe4376314f69ba7eaa2f355ecedb339df847b6f0d80575f81ffb0a297b7725dc671da0b1769b1fc5cbe45385c7b5ad1fc2eaf1d609d', publicKey: 'ak_fUq2NesPXcYZ1CcqBcGC3StpdnQw3iVxMA3YSeCNAwfN4myQk' } }),
-          MemoryAccount({ keypair: { secretKey: '7fa7934d142c8c1c944e1585ec700f671cbc71fb035dc9e54ee4fb880edfe8d974f58feba752ae0426ecbee3a31414d8e6b3335d64ec416f3e574e106c7e5412', publicKey: 'ak_tWZrf8ehmY7CyB1JAoBmWJEeThwWnDpU4NadUdzxVSbzDgKjP' } }),
-        ]  */ 
-      //networkId: 'ae_devnet' // or any other networkId your client should connect to
-    }).catch(e => { console.log("Shit, it didn't work:", e)})
+    }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
 
-
-    // todo: wrap in try catch
+    // TODO: wrap in try catch
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
-
-    let balanceTest = await this.Chain.getBalance("ak_2F5gdaeb75T5RscQ8UkpycGkEumrfPtB42A7nFkAU9gUFpBBh5");
-    console.log("Testing balance getting: ", balanceTest);
-
+     
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
   }
 
    fromCodeToACI(code) {
-    let compilerUrl = `${environment.compilerURL}/aci`;
-    //let compilerUrl = "https://compiler.aepps.com/aci";
+    let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type':  'application/json', 
@@ -150,16 +156,30 @@ public tellAci(): Observable < string > {
   // a.k.a. it reads all data from the SDK
   async  getCurrentSDKsettings() : Promise<any> {   
     if (this.Chain != undefined) {
-    var returnObject = {};
- 
-    // execute all functions by their name, which have 0 params
-    for(var key in this.Chain) {
-      if(this.Chain[key].length == 0){ 
-      //console.log("Calling function:", key)
-      returnObject[key] = await this.Chain[key]()  } 
+      var returnObject = {};
+      var keyCount : number = 0;
+
+      // count the amount of keys with 0 arguments
+      for(var key in this.Chain) {
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          keyCount++ } 
+      }
+  
+      // execute all functions by their name which have 0 params.
+      // count the length of returns - if it equals the keycount, return.
+      for(var key in this.Chain) {
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          returnObject[key] = await this.Chain[key]() 
+          if (Object.keys(returnObject).length == keyCount ){
+            return returnObject;
+          }
+        
+        } 
     }}
   
-      return returnObject;
+      
    }
 
 
@@ -190,7 +210,7 @@ public tellAci(): Observable < string > {
       
       try {
         console.log("Deployment params: ", _deploymentParams)
-        await myContract.deploy(... _deploymentParams);
+        await myContract.deploy( _deploymentParams, { interval: 500, blocks: 3, allowUnsynced: true });
         
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
@@ -239,7 +259,7 @@ public tellAci(): Observable < string > {
           //console.log(one);
           //console.log(i);
       })
-      //debugger
+      
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
 
@@ -272,6 +292,10 @@ public tellAci(): Observable < string > {
     console.log("fetching error from debug compiler..")
 
     
+    //TODO: check if the contract was successfully deployed by checking the contract object for deployed address
+    // TODO: Try working with resolve/reject instead of return true here, to handle deployment failure.
+    // TODO: Investigate where the contract in the sidemenu is created - maybe in fromCodeTOAci ? 
+
     return true;
   }
   async fetchErrorsFromDebugCompiler(sourceCode: string) : Promise<string> {
@@ -328,7 +352,7 @@ public tellAci(): Observable < string > {
       rawACI.contract.functions.forEach((one, i) => {
           rawACI.contract.functions[i].IDEindex = i;
       })
-      //debugger
+      
       // 3.  now that we have it, generate the formgroups for the function args
       rawACI = this.modifyAci(rawACI);
       
@@ -377,7 +401,7 @@ public tellAci(): Observable < string > {
  // generates a typescript-safe contract instance with a FormGroup in functions array
  modifyAci(aci: any): ContractBase<any> {
  
-  //debugger
+  
  // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
   let functions = aci.contract.functions;
@@ -463,7 +487,12 @@ public tellAci(): Observable < string > {
     //this.eventlog.log({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
     
     this.eventlog.log(_log)
-    //debugger
+    
+  }
+
+  private defaultOrCustomSDKsetting(_setting){
+    // if there is no override set, return the default.
+    return this.sdkConfigOverrides[_setting] == undefined ? this.defaultSdkConfig[_setting] : this.sdkConfigOverrides[_setting];
   }
 }
 

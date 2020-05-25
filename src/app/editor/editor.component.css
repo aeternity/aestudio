@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
 .editor 
 {      
     /*height: calc(100vh - 100px); */
@@ -54,4 +56,41 @@
 /* tabs start */
 .oneTab a {
     color: #1d1d1d;
+}
+
+.tabclosingx {
+    font-size: 13pt !important; 
+    color: #d1d0d0
+}
+
+.contracttab.item.active .tabclosingx{
+    font-size: 15pt !important; 
+
+}
+
+#logo{
+    height: 56px;
+    margin: 25px 20px 15px 25px;
+}
+
+#logoText1{
+    margin: 27px 0px 0px 0px;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+    font-size: 45px;
+    color: #f2711d;
+    background-color: rgba(84, 84, 84, 0);
+    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+    font-weight: 900;
+}
+
+#logoText2{
+    margin: 27px 0px 0px 0px;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+    font-size: 45px;
+    color: #f2711d;
+    background-color: rgba(84, 84, 84, 0);
+    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+    font-weight: 400;
 }

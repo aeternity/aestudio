@@ -31,36 +31,9 @@ export class EventlogService {
 
     // tell log console about new event
     this._newLog.next(log);
-    //debugger
   }
 
   public clear(){
     this.logs = [];
   }
 }
-
-/* 
-switch (_type) {
-  case "log" :
-    log = {timestamp: time , message: _contract + ':'  + _message , type: 'LOG'}
-    this.logs.push(log);
-    break;
-  case "warn" :
-    log = {timestamp: time , message: _contract + ':'  + _message , type: 'WARN'}
-    this.logs.push(log);  
-    break;
-  case "success" :
-    log = {timestamp: time , message: _contract + ':'  + _message , type: 'SUCCESS'}
-    this.logs.push(log); 
-    break;
-  case "error" :
-    log = {timestamp: time , message: _contract + ':'  + _message , type: 'ERR'}
-    this.logs.push(log); 
-    break;
-  case "info" :
-    log = {timestamp: time , message: _contract + ':'  + _message , type: 'INFO'}
-    this.logs.push(log); 
-    break;
-  default:
-    break; 
-} */

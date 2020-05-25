@@ -18,6 +18,13 @@ import { setInterval, clearInterval } from 'timers';
 })
 export class OneEditorTabComponent implements OnInit {
 
+  // angular 9 bullshit start
+  codeGeneratorVisible: boolean = false
+  closeCodeEditor() {}
+  generatedCode:any = false
+  // angular 9 bullshit end
+
+
   //the contract passed by the parent editor component
   @Input() activeContract: any = "";
   @Input() test: number;
