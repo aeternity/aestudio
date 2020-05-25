@@ -33,7 +33,7 @@ export class DeployedContractComponent implements OnInit {
     /* console.log("Message triggered, function index:", functionIndex)
     console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
     console.log("Als doOpen kam: ", _payable)
-    if(_payable == false)
+    if(this.compiler.txAmountInAettos > 0 && _payable == false)
         popup.open();
 }
 
