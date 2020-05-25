@@ -14,6 +14,6 @@
 ```ng serve```
 ```-> visit localhost:4200 ```
 
-Note: Some env vars are ardcoded in the environment files and might need to be changed for a local use.
+Note: Some env vars are hardcoded in angular's environment files and might need to be changed for a local use.
 
 Questions / Feature requests: https://forum.aeternity.com/t/update-no-2-october-fire-editor-release-the-easy-to-use-web-ide-for-sophia/4673
