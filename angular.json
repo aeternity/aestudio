@@ -1,5 +1,5 @@
 {
-  "$schema":  "./node_modules/@angular/cli/lib/config/schema.json",
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -22,7 +22,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              { "glob": "**/*", "input": "./node_modules/ngx-monaco-editor/assets/monaco", "output": "./assets/monaco/" }
+              {
+                "glob": "**/*",
+                "input": "./node_modules/ngx-monaco-editor/assets/monaco",
+                "output": "./assets/monaco/"
+              }
             ],
             "styles": [
               "src/styles.css"
@@ -57,11 +61,11 @@
                 }
               ]
             },
-            "locallima": {
+            "ae": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.locallimacompiler.ts"
+                  "with": "src/environments/environment.ae.ts"
                 }
               ],
               "optimization": true,
@@ -76,7 +80,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "2mb",
-                  "maximumError": "5mb"
+                  "maximumError": "20mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -144,8 +148,13 @@
               "devServerTarget": "fire-editor:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
-    }},
+    }
+  },
   "defaultProject": "fire-editor"
 }

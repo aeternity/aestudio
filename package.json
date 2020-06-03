@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "https://github.com/aeternity/aepp-sdk-js.git#feat/tx-polling-allow-unsynced",
+    "@aeternity/aepp-sdk": "^7.4.0",
     "@angular/animations": "^9.1.1",
     "@angular/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
@@ -56,6 +56,7 @@
     "@types/jasmine": "~3.3.8",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.11.1",
+    "angular-cli-ghpages": "^0.6.2",
     "codelyzer": "^5.1.2",
     "insert-line": "^1.1.0",
     "jasmine-core": "~3.4.0",
