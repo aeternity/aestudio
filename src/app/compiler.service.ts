@@ -292,7 +292,6 @@ this.Chain = await RpcAepp({
         //  
         
         this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
-        
         //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 
       } catch(_e){
@@ -301,7 +300,8 @@ this.Chain = await RpcAepp({
 
         //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
         this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: _e})
-
+        this._notifyDeployedContract.next({newContract: null, success: false});
+        return true
         //e.verifyTx();  - is this a thing ? 
          }
     } else {
@@ -362,7 +362,7 @@ this.Chain = await RpcAepp({
       // for function calls.
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it
-      this._notifyDeployedContract.next(myContract);
+      this._notifyDeployedContract.next({newContract: myContract, success: true});
     },
     error => this.fetchErrorsFromDebugCompiler(sourceCode));
     console.log("fetching error from debug compiler..")

@@ -174,7 +174,11 @@ export class ContractMenuSidebarComponent implements OnInit {
 
     // fires with a new contract when it got deployed
     this.contractDeploymentSubscription = this.compiler._notifyDeployedContract
-      .subscribe( async newContract => {
+      .subscribe( async ({newContract, success}) => {
+
+        if(!success){
+          this.deploymentLoading = false;
+        }
         
         // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
