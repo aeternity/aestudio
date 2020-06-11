@@ -5,7 +5,9 @@ import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
-
+import BrowserWindowMessageConnection from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
+import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
+import {RpcAepp} from "@aeternity/aepp-sdk";
 
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -13,7 +15,6 @@ import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
 import { EventlogService } from './services/eventlog/eventlog.service'
-
 //import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
 var Ae = Universal;
@@ -67,6 +68,84 @@ public tellAci(): Observable < string > {
   return this.aciObs;
 }
 
+public TESTNET_URL = 'https://testnet.aeternity.io';
+public MAINNET_URL = 'https://mainnet.aeternity.io';
+public COMPILER_URL = 'https://compiler.aepps.com';
+
+public aeternity : any = {
+  rpcClient: null,
+  client: null,
+  networkId: null,
+  static: true,
+  contractAddress: '',
+  initProvider : async (changedClient = false) => {
+    try {
+      const networkId = (await this.aeternity.client.getNodeInfo()).nodeNetworkId;
+      const changedNetwork = this.aeternity.networkId !== networkId;
+      this.aeternity.networkId = networkId
+      if (this.aeternity.contractAddress)
+        // this.aeternity.contract = await aeternity.client.getContractInstance(identity, {contractAddress: aeternity.contractAddress});
+  
+      if (changedClient || changedNetwork) {
+        console.log('Compiler: networkChange');
+        console.log('Compiler: dataChange');
+      }
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+};
+
+public scanForWallets = async (successCallback) => {
+  const scannerConnection = await BrowserWindowMessageConnection({
+    connectionInfo: { id: 'spy' },
+  });
+
+  const detector = await Detector({ connection: scannerConnection });
+
+  const handleWallets = async ({ wallets, newWallet }) => {
+    detector.stopScan();
+    const connected = await this.Chain.connectToWallet(await newWallet.getConnection());
+    this.Chain.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
+    await this.Chain.subscribeAddress('subscribe', 'current');
+    this.aeternity.client = this.Chain;
+    this.aeternity.static = false;
+    await this.aeternity.initProvider(true);
+    successCallback();
+  };
+
+  detector.scan(handleWallets);
+}
+ 
+public initWalletSearch = async (successCallback) => {
+  // Open iframe with Wallet if run in top window
+  // window !== window.parent || await aeternity.getReverseWindow();
+
+this.Chain = await RpcAepp({
+  name: 'AEPP',
+  nodes: [
+    {name: 'ae_mainnet', instance: await Node({url: this.MAINNET_URL})},
+    {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
+  ],
+  compilerUrl: this.COMPILER_URL,
+  onNetworkChange (params) {
+    this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
+    this.aeternity.initProvider();
+  },
+  onAddressChange(addresses) {
+    // if (!addresses.current[this.aeternity.address]) {
+      console.log('Compiler: addressChange 2');
+      console.log('Compiler: dataChange 2');
+    // }
+  }
+});
+
+  await this.scanForWallets(successCallback);
+  console.log("Wallet's SDK: ", this.Chain)
+}
+
 
 // ____ helpers end
   
@@ -95,11 +174,15 @@ public tellAci(): Observable < string > {
       accounts : theAccounts
     }
 
-    this.setupClient();
+    //this.setupWebClient();
+
+    this.initWalletSearch(() => {console.log("Compiler: Wallet scan ended.")});
+
+
     //console.log("Compilerservice initialized!");  
    }
 
-  async setupClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
 
     // if a config is provided, apply its values to the sdkConfigOverrides
    if (_config){
@@ -119,6 +202,8 @@ public tellAci(): Observable < string > {
       accounts: this.defaultOrCustomSDKsetting("accounts")
       
     }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
+    // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
+    this.Chain.currentWalletProvider = "web"
 
     // TODO: wrap in try catch
     let height = await this.Chain.height();
@@ -133,8 +218,7 @@ public tellAci(): Observable < string > {
     let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
-        'Content-Type':  'application/json', 
-        'Sophia-Compiler-Version': '4.0.0'
+        'Content-Type':  'application/json'
       })
     };
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
@@ -188,14 +272,6 @@ public tellAci(): Observable < string > {
     console.log("deploying...");
 
     let sourceCode = this.code
-    // this is seemingly being taken care of by the node now.
-   /*  // replace " => \"
-    sourceCode = sourceCode.replace(new RegExp('"', 'g'), '\"');
-
-    // remove comments
-    sourceCode = sourceCode.replace(new RegExp('\\/\\/.*', 'g'), '');
-    sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
- */
     // code to aci
     //console.log("Hier kommt der code: ", sourceCode);
 

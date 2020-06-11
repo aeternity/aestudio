@@ -14,14 +14,12 @@ import {SuiModule} from 'ng2-semantic-ui';
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
-import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ClipboardModule } from 'ngx-clipboard';
 import { DeployedContractComponent } from './deployed-contract/deployed-contract.component';
 import { StorageServiceModule } from 'ngx-webstorage-service';
 import { LocalStorageService } from './local-storage.service';
 import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in-left-menu.component';
 import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component';
-import { EventlogService } from './services/eventlog/eventlog.service';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component'
 import { environment } from '../environments/environment';
@@ -35,6 +33,7 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+import { MainloaderComponent } from './mainloader/mainloader.component';
 // firebase end
 
 
@@ -48,7 +47,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent
   ],
   imports: [
     BrowserModule,
@@ -79,6 +78,6 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
     })
   ],
   providers: [LocalStorageService],
-  bootstrap: [AppComponent]
+  bootstrap: [MainloaderComponent]
 })
 export class AppModule { }

@@ -1,6 +1,7 @@
 const insertLine = require('insert-line');
 const fs = require('fs');
-import { environment } from './environments/environment';
+require('typescript-require');
+const environment = require('./src/environments/environment.ts')
 
 const metaTags= `<meta property="og:title" content="AE Studio">
 <meta property="og:site_name" content="Nikita Fuchs">

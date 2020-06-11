@@ -108,7 +108,7 @@ export class AuthService {
               memoryaccounts.push(MemoryAccount({keypair: account}))
             });
 
-             this.compiler.setupClient({accounts: memoryaccounts}); 
+            this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({accounts: memoryaccounts}) : true
 
             } else {
               // else, restart the SDK with the accounts fetched from backend
@@ -118,7 +118,8 @@ export class AuthService {
               (theData as any).accounts.forEach(account => {
                 theAccounts.push(MemoryAccount({keypair: account}))
               });
-              this.compiler.setupClient({accounts: theAccounts, personalAccounts: true});
+
+              this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({accounts: theAccounts, personalAccounts: true}) : true
             }
           /* const keypair = Crypto.generateKeyPair()
           //console.log(`Secret key: ${keypair.secretKey}`)
@@ -149,7 +150,7 @@ export class AuthService {
         // put eventual router command here.. this,router.navigate(['/'])
 
         // make SDK restart with public testnet accounts
-        this.compiler.setupClient({command: "reset"});
+        this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({command: "reset"}) : true
     }
 
     // helpers
