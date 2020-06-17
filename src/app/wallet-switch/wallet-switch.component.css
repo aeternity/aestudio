@@ -1,0 +1,157 @@
+
+   span.switcher {
+    position: relative;
+    width: 400px;
+    height: 50px;
+    border-radius: 25px;
+    margin: 20px 0;
+  }
+   span.switcher input {
+    -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    position: relative;
+    width: 400px;
+    height: 50px;
+    border-radius: 25px;
+    background-color: #1E1E1E;
+    outline: none;
+    font-family: 'Oswald', sans-serif;
+  }
+   span.switcher input:before,  span.switcher input:after {
+    z-index: 2;
+    position: absolute;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+            transform: translateY(-50%);
+    color: #FFFFFF;
+  }
+   span.switcher input:before {
+    content: 'TESTNET';
+    left: 20px;
+  }
+   span.switcher input:after {
+    content: 'MAIN NET';
+    right: 20px;
+  }
+   span.switcher label {
+    z-index: 1;
+    position: absolute;
+    top: 10px;
+    bottom: 10px;
+    border-radius: 20px;
+  }
+   span.switcher.switcher-1 input {
+    -webkit-transition: .25s -.1s;
+    transition: .25s -.1s;
+  }
+   span.switcher.switcher-1 input:checked {
+    background-color: #FFFFFF;
+  }
+   span.switcher.switcher-1 input:checked:before {
+    color: #FFFFFF;
+    -webkit-transition: color .5s .2s;
+    transition: color .5s .2s;
+  }
+   span.switcher.switcher-1 input:checked:after {
+    color: #CCCCCC;
+    -webkit-transition: color .5s;
+    transition: color .5s;
+  }
+   span.switcher.switcher-1 input:checked + label {
+    left: 10px;
+    right: 100px;
+    background: #1E1E1E;
+    -webkit-transition: left .5s, right .4s .2s;
+    transition: left .5s, right .4s .2s;
+  }
+   span.switcher.switcher-1 input:not(:checked) {
+    background: #1E1E1E;
+    -webkit-transition: background .5s -.1s;
+    transition: background .5s -.1s;
+  }
+   span.switcher.switcher-1 input:not(:checked):before {
+    color: #CCCCCC;
+    -webkit-transition: color .5s;
+    transition: color .5s;
+  }
+   span.switcher.switcher-1 input:not(:checked):after {
+    color: #1E1E1E;
+    -webkit-transition: color .5s .2s;
+    transition: color .5s .2s;
+  }
+   span.switcher.switcher-1 input:not(:checked) + label {
+    left: 100px;
+    right: 10px;
+    background: #FFFFFF;
+    -webkit-transition: left .4s .2s, right .5s, background .35s -.1s;
+    transition: left .4s .2s, right .5s, background .35s -.1s;
+  }
+   span.switcher.switcher-2 {
+    overflow: hidden;
+  }
+   span.switcher.switcher-2 input {
+    -webkit-transition: background-color 0s .5s;
+    transition: background-color 0s .5s;
+  }
+   span.switcher.switcher-2 input:before {
+    color: #1E1E1E;
+  }
+  body span.switcher.switcher-2 input:after {
+    color: #FFFFFF;
+  }
+  body span.switcher.switcher-2 input:checked {
+    background-color: #FFFFFF;
+  }
+  body span.switcher.switcher-2 input:checked + label {
+    background: #FFFFFF;
+    -webkit-animation: turn-on .5s ease-out;
+            animation: turn-on .5s ease-out;
+  }
+  @-webkit-keyframes turn-on {
+    0% {
+      left: 100%;
+    }
+    100% {
+      left: 0%;
+    }
+  }
+  @keyframes turn-on {
+    0% {
+      left: 100%;
+    }
+    100% {
+      left: 0%;
+    }
+  }
+  body span.switcher.switcher-2 input:not(:checked) {
+    background: #1E1E1E;
+  }
+  body span.switcher.switcher-2 input:not(:checked) + label {
+    background: #1E1E1E;
+    -webkit-animation: turn-off .5s ease-out;
+            animation: turn-off .5s ease-out;
+  }
+  @-webkit-keyframes turn-off {
+    0% {
+      right: 100%;
+    }
+    100% {
+      right: 0%;
+    }
+  }
+  @keyframes turn-off {
+    0% {
+      right: 100%;
+    }
+    100% {
+      right: 0%;
+    }
+  }
+  body span.switcher.switcher-2 label {
+    top: 0px;
+    width: 200px;
+    height: 50px;
+    border-radius: 25px;
+  }
+  
