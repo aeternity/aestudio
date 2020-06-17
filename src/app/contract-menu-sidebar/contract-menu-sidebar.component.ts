@@ -116,24 +116,38 @@ export class ContractMenuSidebarComponent implements OnInit {
   } 
 
 
-  ngOnInit() {
+  async ngOnInit () {
     //this.buildAContract();
     
+    await this.compiler.awaitInitializedChainProvider(this.compiler.getThis())
+    this.changeDetectorRef.detectChanges()
+
      setInterval(async () => {
      
      // call with "false" to query faucet for balance if it's too low
-       this.currentSDKsettings != undefined ? await this.getAllBalances(true) : true}, 3000
+       this.currentSDKsettings != undefined ? await this.fetchAllBalances(true) : true}, 3000
     ) 
-    this.getAllBalances(true);
+      
+
+    this.fetchAllBalances(true);
 
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
         .subscribe(async settings => {
-        // wait for promise to resolve
-        await settings;
+        if(settings instanceof Promise) {
+          // case: Web SDK     
+          // wait for promise to resolve
+          await settings;
 
-        this.currentSDKsettings = settings.__zone_symbol__value;
-        //console.log("gingen die settings durch? ", this.currentSDKsettings); 
+          this.currentSDKsettings = settings["__zone_symbol__value"];
+        } else {
+          // case: wallet extension, where we put together the SDK settings object on our own
+          console.log("gingen die settings durch? ", this.currentSDKsettings ); 
+
+          this.currentSDKsettings = settings
+        }
+
+     
 
         // the following ternary operators here are to silence errors that come from angular firing events 
         // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
@@ -143,7 +157,7 @@ export class ContractMenuSidebarComponent implements OnInit {
         this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
         
         //  Get balances of all available addresses
-        this.currentSDKsettings != undefined ? await this.getAllBalances() : true
+        this.currentSDKsettings != undefined ? await this.fetchAllBalances() : true
 
         console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
 
@@ -153,6 +167,7 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.compiler._newACI
         .subscribe(item => {/* console.log("Neue ACI für init ist da !") */
         console.log("Sidebar recieved an ACI!", item)
+        this.changeDetectorRef.detectChanges()
         // if the new ACI is not {} (empty), reset the last reported error.
         if(Object.entries(item['aci']).length > 0) {
           this.initACI = item['aci'];
@@ -237,13 +252,13 @@ async changeSDKsetting(setting: string, params: any){
       break;
   }
 
-  this.getSDKsettings();
+  this.compiler.sendSDKsettings();
   //await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);
 }
 
 // get all balances from all addresses currently added to SDK
 // @param dontFillUp: boolean - if passed, do not top up accounts if one or some are low
-async getAllBalances(_dontFillUp? : boolean){
+async fetchAllBalances(_dontFillUp? : boolean){
   //console.log("verfügbare addresses: ", this.currentSDKsettings.addresses)
  
   /* for (let i = 0; i<this.currentSDKsettings.addresses.length; i++ ) {
@@ -285,9 +300,6 @@ async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _f
   return balance;
   }
 
-  getSDKsettings = () => { this.compiler.sendSDKsettings()}
-  
-  
   
 checkIfInitFunctionIsPresent() : boolean { 
   var found : boolean  = false

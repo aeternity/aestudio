@@ -118,32 +118,68 @@ public scanForWallets = async (successCallback) => {
 
   detector.scan(handleWallets);
 }
- 
-public initWalletSearch = async (successCallback) => {
-  // Open iframe with Wallet if run in top window
-  // window !== window.parent || await aeternity.getReverseWindow();
+public getThis = () => {
+  return this
+}
+public awaitInitializedChainProvider = async (that) => {
+  return new Promise((resolve, reject) => {
+    var scanCount = 0
+    var check = setInterval(function(){
+     
+      if(that.Chain && that.Chain.currentWalletProvider){
+        clearInterval(check);
+        resolve()
+      } else {
+        scanCount++
+      }
+ },300);
+  })
+}
 
-this.Chain = await RpcAepp({
-  name: 'AEPP',
-  nodes: [
-    {name: 'ae_mainnet', instance: await Node({url: this.MAINNET_URL})},
-    {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
-  ],
-  compilerUrl: this.COMPILER_URL,
-  onNetworkChange (params) {
-    this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
-    this.aeternity.initProvider();
-  },
-  onAddressChange(addresses) {
-    // if (!addresses.current[this.aeternity.address]) {
-      console.log('Compiler: addressChange 2');
-      console.log('Compiler: dataChange 2');
-    // }
-  }
-});
-
-  await this.scanForWallets(successCallback);
+public onWalletSearchSuccess = async () => {
+  console.log("Compiler: Wallet search complete!")
   console.log("Wallet's SDK: ", this.Chain)
+  this.Chain.currentWalletProvider = "extension"
+  
+  console.log("wallet's account?", Object.keys(this.Chain.rpcClient.accounts.current)[0].toString())
+
+  // put data where other components expect it to be
+  let sdkSettingsToReport : any= {}
+  
+  //wallets:
+
+  sdkSettingsToReport.addresses = new Array( Object.keys(this.Chain.rpcClient.accounts.current)[0].toString() )
+  sdkSettingsToReport.address = Object.keys(this.Chain.rpcClient.accounts.current)[0].toString()
+  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
+  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport)
+  this._notifyCurrentSDKsettings.next(sdkSettingsToReport);
+}
+
+public initWalletSearch = async (successCallback) => {
+    // Open iframe with Wallet if run in top window
+    // window !== window.parent || await aeternity.getReverseWindow();
+
+  this.Chain = await RpcAepp({
+    name: 'AEPP',
+    nodes: [
+      {name: 'ae_mainnet', instance: await Node({url: this.MAINNET_URL})},
+      {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
+    ],
+    compilerUrl: this.COMPILER_URL,
+    onNetworkChange: (params) => {
+      // TODO: Handle network change 
+      // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
+      // this.aeternity.initProvider();
+    },
+    onAddressChange: (addresses) => {
+      // if (!addresses.current[this.aeternity.address]) {
+        console.log('Compiler: addressChange 2');
+        console.log('Compiler: dataChange 2');
+      // }
+    }
+  });
+
+    await this.scanForWallets(successCallback);
 }
 
 
@@ -176,24 +212,23 @@ this.Chain = await RpcAepp({
 
     //this.setupWebClient();
 
-    this.initWalletSearch(() => {console.log("Compiler: Wallet scan ended.")});
+    this.initWalletSearch(this.onWalletSearchSuccess);
 
-
-    //console.log("Compilerservice initialized!");  
    }
 
-  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+
+   async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
 
     // if a config is provided, apply its values to the sdkConfigOverrides
-   if (_config){
-     console.log("Compiler: Received custom config for SDK: ", _config)
-     // first, clear old custom config values
-     this.sdkConfigOverrides = {};
+  if (_config){
+    console.log("Compiler: Received custom config for SDK: ", _config)
+    // first, clear old custom config values
+    this.sdkConfigOverrides = {};
 
       Object.keys(_config).forEach(setting => {
-       this.sdkConfigOverrides[setting] = _config[setting]
-     });
-   }
+      this.sdkConfigOverrides[setting] = _config[setting]
+    });
+  }
 
     const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
     this.Chain = await Ae({
@@ -208,11 +243,11 @@ this.Chain = await RpcAepp({
     // TODO: wrap in try catch
     let height = await this.Chain.height();
     console.log('Current Block Height: ', height)
-     
+    
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
     console.log("Das SDK: ", this.Chain);
-  }
+   }
 
    fromCodeToACI(code) {
     let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
@@ -241,25 +276,18 @@ this.Chain = await RpcAepp({
   async  getCurrentSDKsettings() : Promise<any> {   
     if (this.Chain != undefined) {
       var returnObject = {};
-      var keyCount : number = 0;
-
-      // count the amount of keys with 0 arguments
-      for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
-          keyCount++ } 
-      }
-  
+       
       // execute all functions by their name which have 0 params.
-      // count the length of returns - if it equals the keycount, return.
       for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
+        if(typeof(this.Chain[key]) === 'function'){ 
+          
+          if(this.Chain[key].length == 0){
+            console.log("Key function:", key)
+          //console.log("Calling function:", key)
           returnObject[key] = await this.Chain[key]() 
-          if (Object.keys(returnObject).length == keyCount ){
-            return returnObject;
+          return returnObject;
+
           }
-        
         } 
     }}
   

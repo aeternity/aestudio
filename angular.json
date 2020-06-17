@@ -156,5 +156,10 @@
       }
     }
   },
-  "defaultProject": "fire-editor"
+  "defaultProject": "fire-editor",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

@@ -118,7 +118,9 @@ export class AuthService {
               (theData as any).accounts.forEach(account => {
                 theAccounts.push(MemoryAccount({keypair: account}))
               });
-
+              // make sure a chainprovider is initialized alreay..
+              // using dirty workaround to provide the resolving function the right this-context
+              await this.compiler.awaitInitializedChainProvider(this.compiler.getThis());
               this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({accounts: theAccounts, personalAccounts: true}) : true
             }
           /* const keypair = Crypto.generateKeyPair()

@@ -26,12 +26,15 @@
                             <div class="menu" suiDropdownMenu>
                                 
                                 <ng-container *ngIf="currentSDKsettings" >
-                                            <div *ngFor="let address of currentSDKsettings.addresses" (click)="changeSDKsetting('selectAccount', address)" class="item" suiPopup popupHeader="{{!auth.theUser ? 'Public Demo Accounts!' : 'Personal     Testnet Account' }}" popupText=" {{!auth.theUser ? 'Click the user Tab and get your free personal testnet accounts' : 'Do NEVER use this account on the mainnet. It is for developing purposes only.' }} " popupPlacement="top right" popupDelay="{{auth.theUser ? 600 : 0}}" >
+                                            <div *ngFor="let address of currentSDKsettings.addresses" (click)="changeSDKsetting('selectAccount', address)" class="item" suiPopup popupHeader="{{ compiler.Chain.currentWalletProvider == 'extension' ? 'Private Wallet account' : !auth.theUser ? 'Public Demo Accounts!' : 'Personal     Testnet Account' }}" popupText=" {{compiler.Chain.currentWalletProvider == 'extension' ? 'This account is provided by your browser wallet and is to be considered safe.' : !auth.theUser ? 'Click the user Tab and get your free personal testnet accounts' : 'Do NEVER use this account on the mainnet. It is for developing purposes only.' }} " popupPlacement="top right" popupDelay="{{auth.theUser ? 600 : 0}}" >
                                         
                                         <span class="description" > 
-                                            <i style="color: #f2721d" *ngIf="compiler.sdkConfigOverrides.personalAccounts" class="user icon" ></i>
-                                            <!-- <i style="color: #C5283D" *ngIf="!auth.theUser" class="unlock icon tooltip"><span class="tooltiptext">Tooltip text</span></i> -->
-                                            <i style="color: #C5283D" *ngIf="!auth.theUser" class="unlock icon"></i>
+                                            <!-- logged-in user icon: -->
+                                            <i style="color: #f2721d" *ngIf="auth.theUser && compiler.sdkConfigOverrides.personalAccounts" class="user icon" ></i>
+                                            <!-- public testnet accounts icon -->
+                                            <i style="color: #C5283D" *ngIf="!auth.theUser && compiler.Chain.currentWalletProvider != 'extension' " class="unlock icon"></i>
+                                            <!-- wallet extension user icon -->
+                                            <i style="color: rgb(53, 184, 41)" *ngIf="compiler.Chain.currentWalletProvider == 'extension' " class="lock icon"></i>
                                            
                                             
                                                 {{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
@@ -93,7 +96,11 @@
                 </div>
                 <!-- account selection end -->
                 <!-- Node Auswahl -->
-                <div class="optionrow">
+                <app-wallet-switch>
+                    
+                </app-wallet-switch>
+
+               <!--  <div class="optionrow">
                     <div class="fluid ui labeled button optionrow" tabindex="1">
                         
                         <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
@@ -104,12 +111,9 @@
                                 <ng-container *ngIf="currentSDKsettings">
                                     <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
                                         <span class="description">{{node.nodeNetworkId}}</span>
-                <!--                         <p (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:33)+'...'}} </p>
-                -->                        <p class="address-item">{{node.url}} </p>
+                                         <p class="address-item">{{node.url}} </p>
                                     </div>
                                 </ng-container>
-                                
-                            
 
                                 <div class="divider"></div>
                                 <div class="item" suiDropdown>
@@ -134,7 +138,7 @@
 
                             <ng-container *ngIf="currentSDKsettings">
                                 <a *ngIf="currentSDKsettings" id="options-accountlabel" class="ui basic label truncated">
-                                    <p class="truncated">{{currentSDKsettings.getNodeInfo.url | slice:0:30}}</p>
+                                    <p class="truncated">{{currentSDKsettings.getNodeInfo != undefined ? (currentSDKsettings.getNodeInfo.url | slice:0:30) : 'Dummy'}}</p>
                                 </a> 
                             </ng-container>
                             <ng-container *ngIf="currentSDKsettings">
@@ -143,7 +147,9 @@
                             </a> 
                             </ng-container>
                         </div>
-                </div>
+                </div> -->
+
+
                 <!-- Setter for value, gas and gasprice --> 
                 <br>
                 <app-tx-values id="txValues"> </app-tx-values> 
