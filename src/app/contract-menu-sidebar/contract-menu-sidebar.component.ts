@@ -134,19 +134,32 @@ export class ContractMenuSidebarComponent implements OnInit {
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
         .subscribe(async settings => {
-        if(settings instanceof Promise) {
+          console.log("settings: ", settings)
+          if(settings.type == "extension") {
+           
+            //comming from the browser wallet
+            console.log("gingen die settings durch? ", this.currentSDKsettings ); 
+
+            this.currentSDKsettings = settings.settings
+          } else {
+            
+             //comming from the web wallet
+             await settings;
+             this.currentSDKsettings = settings["__zone_symbol__value"];
+             console.log("gingen die settings durch? ", this.currentSDKsettings ); 
+          }
+
+          
+/* 
+        if(settings instanceof ZoneAwarePromise) {
           // case: Web SDK     
           // wait for promise to resolve
-          await settings;
-
-          this.currentSDKsettings = settings["__zone_symbol__value"];
+          
         } else {
           // case: wallet extension, where we put together the SDK settings object on our own
-          console.log("gingen die settings durch? ", this.currentSDKsettings ); 
-
-          this.currentSDKsettings = settings
+         
         }
-
+ */
      
 
         // the following ternary operators here are to silence errors that come from angular firing events 

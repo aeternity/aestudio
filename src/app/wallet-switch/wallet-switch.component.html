@@ -1,9 +1,7 @@
-
-<span class="switcher switcher-1">
-    <input type="checkbox" id="switcher-1">
-    <label for="switcher-1"></label>
- </span>
- 
-
-
- <span id="mockup_SPAN_2"><input type="checkbox" id="mockup_INPUT_1" /></span>
+<div class="can-toggle">
+  <input id="a" type="checkbox">
+  <label for="a">
+    <div (click)="compiler.toggleProvider()" class="can-toggle__switch" data-checked="Mainnet" data-unchecked="Testnet"></div>
+    <!-- <div class="can-toggle__label-text">.can-toggle</div> -->
+  </label>
+</div>

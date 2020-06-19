@@ -44,6 +44,7 @@ export class CompilerService {
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
+  public providerToggleInProcess : boolean = false;
  
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
@@ -58,6 +59,8 @@ export class CompilerService {
   gasPriceInAettos: number = 0;
 
   private aciObs: BehaviorSubject < any > = new BehaviorSubject < any > (null);
+
+  private cachedWallet : any = {}
 
 // ____ helpers start 
 
@@ -107,7 +110,14 @@ public scanForWallets = async (successCallback) => {
 
   const handleWallets = async ({ wallets, newWallet }) => {
     detector.stopScan();
-    const connected = await this.Chain.connectToWallet(await newWallet.getConnection());
+    newWallet ? this.cachedWallet = newWallet : true;
+    console.log("new newwallet: ", newWallet);
+    console.log("new wallets: ", wallets);
+    console.log("new cachedWallet", this.cachedWallet);
+    console.log("new index0 wallets" , Object.values(wallets)[0])
+    const walletConnection = newWallet ? await newWallet.getConnection() : this.cachedWallet.getConnection()
+   
+    const connected = await this.Chain.connectToWallet(walletConnection);
     this.Chain.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
     await this.Chain.subscribeAddress('subscribe', 'current');
     this.aeternity.client = this.Chain;
@@ -118,9 +128,11 @@ public scanForWallets = async (successCallback) => {
 
   detector.scan(handleWallets);
 }
+
 public getThis = () => {
   return this
 }
+
 public awaitInitializedChainProvider = async (that) => {
   return new Promise((resolve, reject) => {
     var scanCount = 0
@@ -134,6 +146,17 @@ public awaitInitializedChainProvider = async (that) => {
       }
  },300);
   })
+}
+
+public toggleProvider = () => {
+  this.providerToggleInProcess = true
+
+  if(this.Chain){
+    this.Chain.currentWalletProvider == "extension" ? this.setupWebClient() : this.setupWalletClient();
+  }
+  
+  this.providerToggleInProcess = false
+  
 }
 
 public onWalletSearchSuccess = async () => {
@@ -152,7 +175,11 @@ public onWalletSearchSuccess = async () => {
   sdkSettingsToReport.address = Object.keys(this.Chain.rpcClient.accounts.current)[0].toString()
   sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
   console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport)
-  this._notifyCurrentSDKsettings.next(sdkSettingsToReport);
+  this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport});
+}
+
+public setupWalletClient = () => {
+  this.initWalletSearch(this.onWalletSearchSuccess);
 }
 
 public initWalletSearch = async (successCallback) => {
@@ -210,9 +237,9 @@ public initWalletSearch = async (successCallback) => {
       accounts : theAccounts
     }
 
-    //this.setupWebClient();
+    this.setupWebClient();
 
-    this.initWalletSearch(this.onWalletSearchSuccess);
+    //this.initWalletSearch(this.onWalletSearchSuccess);
 
    }
 
@@ -273,27 +300,34 @@ public initWalletSearch = async (successCallback) => {
 
   // emits an event passing data from all SDK functions that take 0 parameters,
   // a.k.a. it reads all data from the SDK
-  async  getCurrentSDKsettings() : Promise<any> {   
+  
+   async  getCurrentSDKsettings() : Promise<any> {   
     if (this.Chain != undefined) {
       var returnObject = {};
-       
-      // execute all functions by their name which have 0 params.
+      var keyCount : number = 0;
+      // count the amount of keys with 0 arguments
       for(var key in this.Chain) {
-        if(typeof(this.Chain[key]) === 'function'){ 
-          
-          if(this.Chain[key].length == 0){
-            console.log("Key function:", key)
-          //console.log("Calling function:", key)
-          returnObject[key] = await this.Chain[key]() 
-          return returnObject;
-
-          }
-        } 
-    }}
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          keyCount++ } 
+      }
   
-      
-   }
+      // execute all functions by their name which have 0 params.
+      // count the length of returns - if it equals the keycount, return.
+      for(var key in this.Chain) {
+        if(this.Chain[key].length == 0){ 
+        //console.log("Calling function:", key)
+          returnObject[key] = await this.Chain[key]() 
+          if (Object.keys(returnObject).length == keyCount ){
+            return returnObject;
+          }
+        
+        } 
+    }}}
 
+
+
+   
 
   // converts code to ACI and deploys.
   async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: string) : Promise<any> {

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { CompilerService } from '../compiler.service'
 
 @Component({
   selector: 'app-wallet-switch',
@@ -8,9 +9,10 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 })
 export class WalletSwitchComponent implements OnInit {
 
-  constructor() { }
+  constructor(public compiler: CompilerService) { }
 
   ngOnInit(): void {
   }
+  
 
 }
