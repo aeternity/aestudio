@@ -111,10 +111,10 @@ public scanForWallets = async (successCallback) => {
   const handleWallets = async ({ wallets, newWallet }) => {
     detector.stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
-    console.log("new newwallet: ", newWallet);
-    console.log("new wallets: ", wallets);
-    console.log("new cachedWallet", this.cachedWallet);
-    console.log("new index0 wallets" , Object.values(wallets)[0])
+    console.log("newwallet: ", newWallet);
+    console.log("wallets: ", wallets);
+    console.log("cachedWallet", this.cachedWallet);
+    console.log("one wallet" , Object.values(wallets)[0])
     const walletConnection = newWallet ? await newWallet.getConnection() : this.cachedWallet.getConnection()
    
     const connected = await this.Chain.connectToWallet(walletConnection);
