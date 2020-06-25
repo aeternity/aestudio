@@ -115,9 +115,17 @@ public scanForWallets = async (successCallback) => {
     console.log("wallets: ", wallets);
     console.log("cachedWallet", this.cachedWallet);
     console.log("one wallet" , Object.values(wallets)[0])
-    const walletConnection = newWallet ? await newWallet.getConnection() : this.cachedWallet.getConnection()
+
+    const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
+    this.aeternity.detectedWallet = wallet.id;
+
+    //let connected = await aeternity.rpcClient.connectToWallet(await wallet.getConnection());
+    
+
+    //const walletConnection = newWallet ? await newWallet.getConnection() : this.cachedWallet.getConnection()
    
-    const connected = await this.Chain.connectToWallet(walletConnection);
+    const connected = await this.Chain.connectToWallet(await wallet.getConnection());
+  
     this.Chain.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
     await this.Chain.subscribeAddress('subscribe', 'current');
     this.aeternity.client = this.Chain;
@@ -136,7 +144,7 @@ public getThis = () => {
 public awaitInitializedChainProvider = async (that) => {
   return new Promise((resolve, reject) => {
     var scanCount = 0
-    var check = setInterval(function(){
+    var check = setInterval(() => {
      
       if(that.Chain && that.Chain.currentWalletProvider){
         clearInterval(check);

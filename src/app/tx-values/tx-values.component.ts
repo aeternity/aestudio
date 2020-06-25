@@ -38,7 +38,7 @@ export class TxValuesComponent implements OnInit {
   lastManualGasPriceValue: number = 1000000000
   
 
-  constructor(private compiler: CompilerService,
+  constructor(public compiler: CompilerService,
               public auth: AuthService
       ) { }
 
@@ -54,7 +54,7 @@ export class TxValuesComponent implements OnInit {
   private showLoginNotification :boolean = true;
 
   public openPopup(popup:IPopup) {
-      if (!this.auth.theUser) {
+      if (!this.auth.theUser && this.compiler.Chain.currentWalletProvider == "web") {
           popup.open();
       }
   }
