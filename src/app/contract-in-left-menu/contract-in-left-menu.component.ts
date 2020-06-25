@@ -35,8 +35,6 @@ export class ContractInLeftMenuComponent implements OnInit {
   }
 
   public onHover(){
-    console.log("Hover triggered!");
-
     /* The main Contract menu label */
     this.styleLabel = {
       
@@ -59,7 +57,6 @@ export class ContractInLeftMenuComponent implements OnInit {
   }
 
   public unHover() {
-    console.log("unhover triggered!");
 
     /* The main Contract menu label */
 

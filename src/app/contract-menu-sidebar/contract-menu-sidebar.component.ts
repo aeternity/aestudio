@@ -119,7 +119,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   async ngOnInit () {
     //this.buildAContract();
     
-    await this.compiler.awaitInitializedChainProvider(this.compiler.getThis())
+    await this.compiler.awaitInitializedChainProvider()
     this.changeDetectorRef.detectChanges()
 
      setInterval(async () => {

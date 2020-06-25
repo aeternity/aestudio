@@ -45,6 +45,7 @@ export class CompilerService {
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
   public providerToggleInProcess : boolean = false;
+  public walletExtensionPresent : boolean = false;
  
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
@@ -102,6 +103,7 @@ public aeternity : any = {
 };
 
 public scanForWallets = async (successCallback) => {
+
   const scannerConnection = await BrowserWindowMessageConnection({
     connectionInfo: { id: 'spy' },
   });
@@ -137,16 +139,36 @@ public scanForWallets = async (successCallback) => {
   detector.scan(handleWallets);
 }
 
-public getThis = () => {
-  return this
+public justScanForWallets = async (successCallback) => {
+  
+  const scannerConnection = await BrowserWindowMessageConnection({
+    connectionInfo: { id: 'spy' },
+  });
+
+  const detector = await Detector({ connection: scannerConnection });
+
+  const handleWallets = async ({ wallets, newWallet }) => {
+    detector.stopScan();
+    newWallet ? this.cachedWallet = newWallet : true;
+    console.log("newwallet: ", newWallet);
+    console.log("wallets: ", wallets);
+    console.log("cachedWallet", this.cachedWallet);
+    console.log("one wallet" , Object.values(wallets)[0])
+
+    const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
+    this.aeternity.detectedWallet = wallet.id;
+    successCallback();
+  };
+
+  detector.scan(handleWallets);
 }
 
-public awaitInitializedChainProvider = async (that) => {
+public awaitInitializedChainProvider = async () => {
   return new Promise((resolve, reject) => {
     var scanCount = 0
     var check = setInterval(() => {
      
-      if(that.Chain && that.Chain.currentWalletProvider){
+      if(this.Chain && this.Chain.currentWalletProvider){
         clearInterval(check);
         resolve()
       } else {
@@ -202,14 +224,14 @@ public initWalletSearch = async (successCallback) => {
     ],
     compilerUrl: this.COMPILER_URL,
     onNetworkChange: (params) => {
+      console.log('Compiler: wallet network change');
       // TODO: Handle network change 
       // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
       // this.aeternity.initProvider();
     },
     onAddressChange: (addresses) => {
       // if (!addresses.current[this.aeternity.address]) {
-        console.log('Compiler: addressChange 2');
-        console.log('Compiler: dataChange 2');
+        console.log('Compiler: wallet addressChange 2');
       // }
     }
   });
@@ -245,8 +267,10 @@ public initWalletSearch = async (successCallback) => {
       accounts : theAccounts
     }
 
+    // on start, initialize the web-based SDK
     this.setupWebClient();
 
+    this.justScanForWallets(() => {this.walletExtensionPresent = true})
     //this.initWalletSearch(this.onWalletSearchSuccess);
 
    }
