@@ -1,0 +1,324 @@
+
+.ui.popup {
+    /* Autofit popup to the contents. */
+    right: auto;
+    margin: 0;
+}
+
+.ui.animating.popup {
+    /* When the popup is animating, it may not initially be in the correct position.
+       This fires a mouse event, causing the anchor's mouseleave to fire - making the popup flicker.
+       Setting pointer-events to none while animating fixes this bug. */
+    pointer-events: none;
+}
+
+.ui.popup::before {
+    /* Hide the Semantic UI CSS arrow. */
+    display: none;
+}
+
+/* Offset popup by 0.75em above and below when placed 'vertically'. */
+.ui.popup[direction="top"],
+.ui.popup[direction="bottom"] {
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
+}
+
+/* Offset popup by 0.75em either side when placed 'horizontally'. */
+.ui.popup[direction="left"],
+.ui.popup[direction="right"] {
+    margin-left: 0.75em;
+    margin-right: 0.75em;
+}
+
+#mockup_SUI-POPUP_7 {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 0px 0px;
+    transform-origin: 0px 0px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_SUI-POPUP_7*/
+  
+  #mockup_DIV_1 {
+    bottom: 231.688px;
+    box-shadow: rgba(34, 36, 38, 0.12) 0px 2px 4px 0px, rgba(34, 36, 38, 0.08) 0px 2px 10px 0px;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    height: 107.312px;
+    left: 1228px;
+    max-width: 250px;
+    min-width: min-content;
+    position: absolute;
+    right: 187px;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    top: 70px;
+    width: 250px;
+    will-change: top, left;
+    z-index: 1900;
+    backface-visibility: hidden;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 125px 53.6562px;
+    transform: matrix(1, 0, 0, 1, 0, 0);
+    transform-origin: 125px 107.312px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    animation: 0.3s ease 0s 1 normal both running none;
+    background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
+    border: 1px solid rgb(212, 212, 213);
+    border-radius: 4px 4px 4px 4px;
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 10.5px 0px;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+    padding: 11.662px 14px;
+  }/*#mockup_DIV_1*/
+  
+  #mockup_DIV_1:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_1:after*/
+  
+  #mockup_DIV_1:before {
+    bottom: -4.55px;
+    box-shadow: rgb(186, 186, 188) 1px 1px 0px 0px;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    content: '""';
+    display: none;
+    height: 10.5px;
+    left: 50%;
+    position: absolute;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    width: 10.5px;
+    z-index: 2;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    margin: 0px 0px 0px -4.55px;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_1:before*/
+  
+  #mockup_DIV_2 {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    height: 18px;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    width: 220px;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 110px 9px;
+    transform-origin: 110px 9px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 700 15.75px / 18.9px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_2*/
+  
+  #mockup_DIV_2:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 700 15.75px / 18.9px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_2:after*/
+  
+  #mockup_DIV_2:before {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 700 15.75px / 18.9px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_2:before*/
+  
+  #mockup_DIV_3 {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    height: 64px;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    width: 220px;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 110px 32px;
+    transform-origin: 110px 32px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+    padding: 7px 0px 0px;
+  }/*#mockup_DIV_3*/
+  
+  #mockup_DIV_3:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_3:after*/
+  
+  #mockup_DIV_3:before {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_3:before*/
+  
+  #mockup_DIV_4 {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    height: 0px;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    width: 220px;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 110px 0px;
+    transform-origin: 110px 0px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_4*/
+  
+  #mockup_DIV_4:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_4:after*/
+  
+  #mockup_DIV_4:before {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_4:before*/
+  
+  #mockup_SUI-POPUP-ARROW_5 {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 0px 0px;
+    transform-origin: 0px 0px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_SUI-POPUP-ARROW_5*/
+  
+  #mockup_SUI-POPUP-ARROW_5:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_SUI-POPUP-ARROW_5:after*/
+  
+  #mockup_SUI-POPUP-ARROW_5:before {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_SUI-POPUP-ARROW_5:before*/
+  
+  #mockup_DIV_6 {
+    bottom: -4.3px;
+    box-shadow: rgb(186, 186, 188) 1px 1px 0px 0px;
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    height: 10px;
+    left: 119px;
+    position: absolute;
+    right: 119px;
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    top: 99.6094px;
+    width: 10px;
+    z-index: 2;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    perspective-origin: 5px 5px;
+    transform: matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0);
+    transform-origin: 5px 5px;
+    caret-color: rgba(0, 0, 0, 0.87);
+    background: rgb(255, 255, 255) none repeat scroll 0% 0% / auto padding-box border-box;
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_6*/
+  
+  #mockup_DIV_6:after {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_6:after*/
+  
+  #mockup_DIV_6:before {
+    box-sizing: border-box;
+    color: rgba(0, 0, 0, 0.87);
+    text-decoration: none solid rgba(0, 0, 0, 0.87);
+    text-size-adjust: 100%;
+    column-rule-color: rgba(0, 0, 0, 0.87);
+    caret-color: rgba(0, 0, 0, 0.87);
+    border: 0px none rgba(0, 0, 0, 0.87);
+    font: 14px / 19.999px Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
+    outline: rgba(0, 0, 0, 0.87) none 0px;
+  }/*#mockup_DIV_6:before*/
+  
+  

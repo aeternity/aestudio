@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import {IPopup} from "ng2-semantic-ui";
+import {SuiPopupComponent} from "../sui-popup/sui-popup.component"
 
 @Component({
   selector: 'app-wallet-switch',
