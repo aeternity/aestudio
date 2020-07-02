@@ -101,6 +101,11 @@
                     
                 </app-wallet-switch>
 
+                <div *ngIf="!compiler.walletExtensionPresent" style="width: 100%" class="ui pointing orange basic label">
+                    <p>Install <a href="{{compiler.currentBrowser == 'firefox' ? 'https://addons.mozilla.org/en-US/firefox/addon/superhero-wallet/' : 'https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne?hl=en' }}"> Superhero Wallet</a> and use AE Studio with Aeternity mainnet !</p>
+                  </div>
+
+
                <!--  <div class="optionrow">
                     <div class="fluid ui labeled button optionrow" tabindex="1">
                         

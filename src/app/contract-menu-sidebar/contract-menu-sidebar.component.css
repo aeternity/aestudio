@@ -178,3 +178,8 @@ margin-left: 1em;
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  .pointing.basic.label a {
+    color: #F2711D;
+    text-decoration: underline;
+  }

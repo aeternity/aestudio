@@ -79,7 +79,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   }
 
   constructor(
-    private compiler: CompilerService, 
+    public compiler: CompilerService, 
     private changeDetectorRef: ChangeDetectorRef, 
     private http: HttpClient,
     private auth: AuthService
@@ -127,7 +127,7 @@ export class ContractMenuSidebarComponent implements OnInit {
      // call with "false" to query faucet for balance if it's too low
        this.currentSDKsettings != undefined ? await this.fetchAllBalances(true) : true}, 3000
     ) 
-      
+
 
     this.fetchAllBalances(true);
 
@@ -325,7 +325,6 @@ checkIfInitFunctionIsPresent() : boolean {
 
   return found
 }
-
 
 
 

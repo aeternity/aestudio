@@ -46,6 +46,7 @@ export class CompilerService {
   public sdkConfigOverrides = {};
   public providerToggleInProcess : boolean = false;
   public walletExtensionPresent : boolean = false;
+  public currentBrowser : string = '';
  
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
@@ -254,6 +255,7 @@ public initWalletSearch = async (successCallback) => {
 
     // define the default SDK settings
     var theAccounts : MemoryAccount[] = [];
+    this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach(account => {
       let oneAccount = MemoryAccount({keypair: account});
@@ -664,6 +666,28 @@ public initWalletSearch = async (successCallback) => {
     // if there is no override set, return the default.
     return this.sdkConfigOverrides[_setting] == undefined ? this.defaultSdkConfig[_setting] : this.sdkConfigOverrides[_setting];
   }
+
+
+  public getBrowserName() {
+    const agent = window.navigator.userAgent.toLowerCase()
+    switch (true) {
+      case agent.indexOf('edge') > -1:
+        return 'edge';
+      case agent.indexOf('opr') > -1 && !!(<any>window).opr:
+        return 'opera';
+      case agent.indexOf('chrome') > -1 && !!(<any>window).chrome:
+        return 'chrome';
+      case agent.indexOf('trident') > -1:
+        return 'ie';
+      case agent.indexOf('firefox') > -1:
+        return 'firefox';
+      case agent.indexOf('safari') > -1:
+        return 'safari';
+      default:
+        return 'other';
+    }
+  }
+
 }
 
 

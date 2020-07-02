@@ -210,6 +210,7 @@ border-color: #000!important;
 }
 
 #generatedCodeEditor{
+
     position: relative !important;
     resize: none !important;
     height:100vh;

@@ -1,13 +1,16 @@
-<div class="can-toggle"
-    suiPopup popupHeader="No Wallet detected" [popupTemplateContext]='this' popupTrigger="outsideClick" popupText=" <br> Install the Superhero Wallet and use AE Studio with the Aeternity Mainnet !" popupPlacement="top center" popupDelay="600" popupTrigger="manual" #popup="suiPopup"
-    (mouseover)="openPopup(popup)" (mouseout)="closePopup(popup)"
->
+
+<ng-template let-popup #popupTemplate>
+  {{ popup.context.test }}
+</ng-template>
+
+<div class="can-toggle">
   <input [attr.disabled]="!compiler.walletExtensionPresent ? '' : null" id="a" type="checkbox">
   <label for="a">
     <div (click)="compiler.walletExtensionPresent ? compiler.toggleProvider() : true" class="can-toggle__switch" data-checked="Mainnet" data-unchecked="Testnet"></div>
     <!-- <div class="can-toggle__label-text">.can-toggle</div> -->
   </label>
-</div>
+
+  
 
 <!-- <ng-template let-popup #popupTemplate>
   <div>Loading...</div>
@@ -22,7 +25,4 @@
 <button class="ui icon button" suiPopup [popupTemplate]="popupTemplate" popupTrigger="outsideClick">
   <i class="star icon"></i> Rate
 </button> -->
-<app-sui-popup></app-sui-popup>
-<ng-template let-popup #popupTemplate>
-  {{ popup.context.test }}
-</ng-template>
+
