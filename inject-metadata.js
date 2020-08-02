@@ -4,7 +4,7 @@ require('typescript-require');
 const environment = require('./src/environments/environment.ts')
 
 const metaTags= `<meta property="og:title" content="AE Studio">
-<meta property="og:site_name" content="Nikita Fuchs">
+<meta property="og:site_name" content="AE Studio">
 <meta property="og:url" content="${environment.appUrl}">
 <meta property="og:description" content="Contract editor that does the work for you, not the other way round.">
 <meta property="og:type" content="product">
