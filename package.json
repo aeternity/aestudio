@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "https://github.com/aeternity/aepp-sdk-js.git#feat/tx-polling-allow-unsynced",
+    "@aeternity/aepp-sdk": "github:aeternity/aepp-sdk-js#9c80ce0e4f1359f389585ea3df9f513ac1e82c04",
     "@angular/animations": "^9.1.1",
     "@angular/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
@@ -39,7 +39,7 @@
     "insert-line": "^1.1.0",
     "ng-circle-progress": "^1.5.1",
     "ng-inline-svg": "^10.0.0",
-    "ng2-semantic-ui": "./src/libs/ng2-semantic-ui-0.10.0-alpha.6.tgz",
+    "ng2-semantic-ui": "^0.10.0-alpha.6",
     "ngx-clipboard": "^12.2.0",
     "ngx-monaco-editor": "^9.0.0",
     "ngx-webstorage-service": "^4.1.0",
