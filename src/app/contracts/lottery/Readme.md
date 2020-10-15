@@ -51,7 +51,7 @@ contract Lottery=
         }
 ```
 So above, there is a contestant record that contains the details of each contestant, it contains the address, the number wagered on by a contestant and the amount he has decided to wager on that number. \
-Also, we have some other interesting variables in our state.\
+Also, we have some other interesting variables in our state.
 
 winning_number: it is the value of the winning number that determines which contestant wins the Lottery.\
 max_winning_number:It is a number that specifies the highest number a contestant can wager on.\
