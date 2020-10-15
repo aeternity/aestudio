@@ -86,6 +86,8 @@ export class EditorComponent implements OnInit {
   contracts: any[] = [];
   activeContract: any;
 
+  codeChanged: Subject<string> = new Subject<string>();
+
   constructor(private compiler: CompilerService, 
     private _router: Router, 
     private _route: ActivatedRoute, 
@@ -401,10 +403,13 @@ export class EditorComponent implements OnInit {
         }) */
   }
 
+  deleteContract($event){
+    console.log("Contract: delete emitted !", $event)
+  }
+
   throttledChange(){
     this.codeChanged.next();
   }
-  codeChanged: Subject<string> = new Subject<string>();
 
   // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
   setTabAsActive(_oneContract: any) {
