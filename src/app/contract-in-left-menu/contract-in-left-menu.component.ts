@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Contract } from '../contracts/hamster';
+//import { EventEmitter } from 'protractor';
 
 @Component({
   selector: 'app-contract-in-left-menu',
@@ -9,8 +10,11 @@ import { Contract } from '../contracts/hamster';
 export class ContractInLeftMenuComponent implements OnInit {
 
   @Input() public contract: Contract<any>;
+  @Output() public contractDeletion : any = new EventEmitter();
+  @Output() public showInTabsToggle = new EventEmitter();
+
   hover: boolean;
-  toggled: boolean = true;
+  toggled : boolean = false;
 
   // the label
   styleLabel: any = {
@@ -24,7 +28,6 @@ export class ContractInLeftMenuComponent implements OnInit {
     width: "0px",
     height: "100%",
     display: "inline-block"
- 
   }
 
 
@@ -36,6 +39,8 @@ export class ContractInLeftMenuComponent implements OnInit {
   }
 
   public onHover(){
+    //console.log("Hover triggered!");
+
     /* The main Contract menu label */
     this.styleLabel = {
       
@@ -75,5 +80,13 @@ export class ContractInLeftMenuComponent implements OnInit {
       display: "inline-block",
       height: "100%"
     }
+  }
+
+  public toggleDeleteDialog(){
+    this.toggled = !this.toggled;
+  }
+  
+  public deleteContract(){
+    this.contractDeletion.emit(this.contract)
   }
 }

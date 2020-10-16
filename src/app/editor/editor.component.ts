@@ -85,6 +85,8 @@ export class EditorComponent implements OnInit {
   contracts: any[] = [];
   activeContract: any;
 
+  codeChanged: Subject<string> = new Subject<string>();
+
   constructor(private compiler: CompilerService, 
     private _router: Router, 
     private _route: ActivatedRoute, 
@@ -404,14 +406,17 @@ export class EditorComponent implements OnInit {
     console.log("Contract: delete emitted !", $event)
     // remove the clicked contract from the array...
     this.contracts.forEach((contract, i) => {
-      contract == $event.UID ? this.contracts.splice(i,1) : true
+      console.log("event uid:", $event.contractUID)
+      if(contract.contractUID == $event.contractUID) { 
+        console.log("Editor: zum splicen gefunden")
+        this.contracts.splice(i,1)
+      }
     })
   }
 
   throttledChange(){
     this.codeChanged.next();
   }
-  codeChanged: Subject<string> = new Subject<string>();
 
   // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
   setTabAsActive(_oneContract: any) {
@@ -472,15 +477,21 @@ export class EditorComponent implements OnInit {
   // trigger whether the contract is displayed in the tabs or not
   toggleTabAppearance(_params: any){
     this.contracts.forEach((oneContract) => {
-      console.log("Comparing with contractUID: ", oneContract.contractUID)
+      //console.log("Editor: Comparing with contractUID: ", oneContract.contractUID)
       //console.log("save oneContract.shareId :" , oneContract.shareId);
-      console.log("Clicked on contract: ", _params.contract)
-      console.log("In this case, these are the contracts: ", this.contracts)
+      //console.log("Editor: Clicked on contract: ", _params.contract)
+      //console.log("Editor: In this case, these are the contracts: ", this.contracts)
       if (oneContract.contractUID == _params.contract.contractUID){
         
         switch (_params.triggerMode) {
           case "off":
-            oneContract.showInTabs = false;
+            // check if at least another tab is open
+            let tabsOpenCount = 0
+            this.contracts.forEach(contract => {
+              contract.showInTabs ? tabsOpenCount++ : true
+            });
+            // if at least 2 are open, close current tab
+            tabsOpenCount >=2 ? oneContract.showInTabs = false : true
             break;
           case "on":
             oneContract.showInTabs = true;

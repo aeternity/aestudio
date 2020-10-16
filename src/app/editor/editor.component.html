@@ -22,9 +22,12 @@
         <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
             *ngFor="let oneContract of contracts; let i = index"
             [contract] = "oneContract"
+            (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
             (mouseover) = "oneCon.onHover()"
             (mouseleave) = "oneCon.unHover()"
-            (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})">
+            (contractDeletion) = "deleteContract($event)"
+            (showInTabsToggle) = "toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
+            >
             </app-contract-in-left-menu>
 
         <!-- reserved for eventual extra stuff<a class="item">2</a> -->
