@@ -11,8 +11,8 @@ export class ContractInLeftMenuComponent implements OnInit {
 
   @Input() public contract: Contract<any>;
   @Output() public contractDeletion : any = new EventEmitter();
-  @Output() public showInTabsToggle = new EventEmitter();
-
+  @Output() public showInTabs = new EventEmitter();
+  
   hover: boolean;
   toggled : boolean = false;
 
@@ -89,4 +89,10 @@ export class ContractInLeftMenuComponent implements OnInit {
   public deleteContract(){
     this.contractDeletion.emit(this.contract)
   }
+
+  public displayInTabs(){
+    console.log("showintabs called")
+    this.showInTabs.emit(this.contract)
+  }
+
 }

@@ -14,15 +14,12 @@
 
 <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
 
-  
-
-
     <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
             <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
         <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
             *ngFor="let oneContract of contracts; let i = index"
             [contract] = "oneContract"
-            (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
+            (showInTabs)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
             (mouseover) = "oneCon.onHover()"
             (mouseleave) = "oneCon.unHover()"
             (contractDeletion) = "deleteContract($event)"
