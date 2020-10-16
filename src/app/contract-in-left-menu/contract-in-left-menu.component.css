@@ -24,6 +24,10 @@ i{
     margin-right: 0px;
 }
 
+.checkIcon{
+  padding-left: 6px !important;
+}
+
 .iconwrapper {
     width: 50%;
     margin: auto;

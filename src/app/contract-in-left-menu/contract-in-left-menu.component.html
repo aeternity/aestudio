@@ -4,7 +4,7 @@
       <div class="contractInLeftMenu" [ngStyle]="styleLabel" (click) = "displayInTabs()" ><a class="item labelFont" >{{contract.latestACI?.name == undefined ? 'Compiling..' : contract.latestACI.name }}</a> </div>
       <div class="ContractInLeftMenuRightButton" [ngStyle]="rightButtonLabel"> 
             <div class="iconwrapper"> 
-                  <i (click)="toggleDeleteDialog()" class="pointer trash icon"></i> 
+                  <i (click)="toggleDeleteDialog()" [ngClass]="{'pointer': true, 'trash': !toggled, 'close': toggled, 'icon': true}"  class="pointer trash icon"></i> 
                   <div class="svgwrapper"> 
 
                    <!-- <svg height="30" width="30">
@@ -15,6 +15,6 @@
             </div>  
       </div>
       <div [ngClass]="{'deleteDialogToggled': toggled, 'deleteDialogUnToggled': !toggled}" >
-            <p class="pointer item labelFont" style="color: #1B1C1D !important" >Are you sure ? <i *ngIf="toggled" (click)="deleteContract()" class="check icon"></i> </p>
+            <p class="pointer item labelFont" style="color: #1B1C1D !important" >Are you sure ? <i *ngIf="toggled" (click)="deleteContract()" style="padding-left: 7px;"  class="check icon"></i> </p>
       </div>
 </div>
