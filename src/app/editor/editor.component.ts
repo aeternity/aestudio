@@ -400,6 +400,14 @@ export class EditorComponent implements OnInit {
         }) */
   }
 
+  deleteContract($event){
+    console.log("Contract: delete emitted !", $event)
+    // remove the clicked contract from the array...
+    this.contracts.forEach((contract, i) => {
+      contract == $event.UID ? this.contracts.splice(i,1) : true
+    })
+  }
+
   throttledChange(){
     this.codeChanged.next();
   }
@@ -423,6 +431,7 @@ export class EditorComponent implements OnInit {
   saveActiveContractChangesToContractsArray() {
     this.contracts.forEach((oneContract, index, array) => {
       oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
+      //and save: 
       this.localStorage.storeAllContracts(this.contracts);
     })
   }

@@ -10,6 +10,7 @@ export class ContractInLeftMenuComponent implements OnInit {
 
   @Input() public contract: Contract<any>;
   hover: boolean;
+  toggled: boolean = true;
 
   // the label
   styleLabel: any = {

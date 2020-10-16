@@ -10,7 +10,10 @@
                         <circle cx="15" cy="15" r="15" />
                       </svg>
                        -->
-                  </div>
-            
-            </div>  </div>
-    </div>
+                  </div>  
+            </div>  
+      </div>
+      <div [ngClass]="{'deleteDialogToggled': toggled, 'deleteDialogUnToggled': !toggled}" >
+            <p class="pointer item labelFont" style="color: #1B1C1D !important" >Are you sure ? <i *ngIf="toggled" (click)="deleteContract()" class="check icon"></i> </p>
+      </div>
+</div>
