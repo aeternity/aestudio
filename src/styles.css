@@ -15,6 +15,57 @@
 
 /* tweakings of the semantic UI START*/
 
+/* screen size tweakings for editor and sidebar */
+
+@media only screen and (min-width: 1024px) {
+    #options-dropdownbutton{
+        padding: .78571429em 0.4em !important; 
+      }
+}
+
+@media only screen and (min-width: 2200px) {
+    .ui.column.grid>[class*="six wide"].column, .ui.grid>.column.row>[class*="six wide"].column, .ui.grid>.row>[class*="six wide"].column, .ui.grid>[class*="six wide"].column {
+        width: 25%!important;
+    } 
+
+    .ui.column.grid>[class*="ten wide"].column, .ui.grid>.column.row>[class*="ten wide"].column, .ui.grid>.row>[class*="ten wide"].column, .ui.grid>[class*="ten wide"].column {
+        width: 75%!important;
+    }
+
+}
+
+@media only screen and (min-width: 2000px) {
+    .ui.column.grid>[class*="six wide"].column, .ui.grid>.column.row>[class*="six wide"].column, .ui.grid>.row>[class*="six wide"].column, .ui.grid>[class*="six wide"].column {
+        width: 30%;
+    } 
+
+    #options-dropdownbutton{
+      padding: .78571429em 0.4em; 
+    }
+
+    .ui.column.grid>[class*="ten wide"].column, .ui.grid>.column.row>[class*="ten wide"].column, .ui.grid>.row>[class*="ten wide"].column, .ui.grid>[class*="ten wide"].column {
+        width: 70%;
+    }
+
+}
+
+@media only screen and (min-width: 1761px) {
+    #options-dropdownbutton{
+        padding: .78571429em 1.5em !important; 
+      }
+}
+
+@media only screen and (min-width: 768px) {
+    .ui.column.grid>[class*="six wide"].column, .ui.grid>.column.row>[class*="six wide"].column, .ui.grid>.row>[class*="six wide"].column, .ui.grid>[class*="six wide"].column {
+        width: 37.5%;
+    } 
+
+    .ui.column.grid>[class*="ten wide"].column, .ui.grid>.column.row>[class*="ten wide"].column, .ui.grid>.row>[class*="ten wide"].column, .ui.grid>[class*="ten wide"].column {
+        width: 62.5%;
+    }
+
+}
+
 /*This one: Make buttons look correct when no warning sign */
 .collapsedForIcon {
     padding-right: 1.5em!important;
