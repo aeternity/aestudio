@@ -17,11 +17,18 @@
 
 /* screen size tweakings for editor and sidebar */
 
-@media only screen and (min-width: 1024px) {
+@media only screen and (max-width: 1467px) {
     #options-dropdownbutton{
         padding: .78571429em 0.4em !important; 
       }
 }
+
+@media (max-width: 1467px) and (min-width: 1246px) {
+    #accountButtonText{
+        padding-left:10px
+    }
+}
+
 
 @media only screen and (min-width: 2200px) {
     .ui.column.grid>[class*="six wide"].column, .ui.grid>.column.row>[class*="six wide"].column, .ui.grid>.row>[class*="six wide"].column, .ui.grid>[class*="six wide"].column {

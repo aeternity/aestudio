@@ -19,7 +19,13 @@
     padding-right: 4vw;
 }
 
+.codeGenOption{
+    padding-bottom: 18px;
+}
 
+.codeGenOptionLabel{
+    padding-left: 13px;
+}
 
 /* outdated */
 .contractInLeftMenuWrapper{

@@ -78,7 +78,13 @@ export class EditorComponent implements OnInit {
 
   // var for the dimmer, whether the codegenerator is to be displayed or not
   codeGeneratorVisible = false;
+  codeGeneratorRawReturn : any = {} // store the raw codegenerator return for later restructuring
   generatedCode : any = ""
+  codeGeneratorSettings = {
+    sdk: true,
+    contract: true,
+    function: true
+  }
 
   //the currently available contracts - initialized either as default code, or code fetched from DB, later on set by editor content
   
@@ -292,18 +298,22 @@ export class EditorComponent implements OnInit {
       })
 
 
-
-    this.codeGenerator = this.generator._generateCode.subscribe(code => {
-      if (Object.entries(code).length > 0)// <-- marie, aufpassen !
+      // receives the raw result from code generator
+    this.codeGenerator = this.generator._generateCode.subscribe(codeObject => {
+      if (Object.entries(codeObject).length > 0)// <-- marie, aufpassen !
       this.codeGeneratorVisible = true;
 
-      console.log(">>>>>>>>>>>> Codegeneration parameters are:", code);
-      
-      this.generatedCode = `${code}`;
+      console.log(">>>>>>>>>>>> Generated code is:", codeObject);
+      this.codeGeneratorRawReturn = codeObject;
+
+      let finalCode = this.generator.generateFinalFormattedCode(codeObject, this.codeGeneratorSettings)
+
+      this.generatedCode = `${finalCode}`;
       // workaround for code window not showing:
       this.triggerWindowRefresh();           
      });
 
+     
     // remove when implementing fix for #8 - introduce means to dynamically controll which tab is active
     setTimeout(() => {
       this.setTabAsActive(this.contracts[0]);
@@ -311,6 +321,13 @@ export class EditorComponent implements OnInit {
     }, 1500);
 
     console.log("activeContract Contracts: ", this.contracts); 
+  }
+
+  refreshGeneratedCode = () => {
+    let finalCode = this.generator.generateFinalFormattedCode(this.codeGeneratorRawReturn , this.codeGeneratorSettings)
+    this.generatedCode = `${finalCode}`;
+    // workaround for code window not showing:
+    this.triggerWindowRefresh();    
   }
 
   // initializes editor object to interact with - called by the editor component
@@ -471,7 +488,7 @@ export class EditorComponent implements OnInit {
   }
 
   logSomeShit (_shit?: any) {
-    //console.log("Shit to log: ", _shit)
+    console.log("Shit to log: ", _shit)
   }
 
   // trigger whether the contract is displayed in the tabs or not

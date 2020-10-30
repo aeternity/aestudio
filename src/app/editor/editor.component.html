@@ -87,10 +87,44 @@
             
             <a href="#" id="codeEditorClosingIcon" (click)="closeCodeEditor()" > <i class="close icon"></i> </a> <br>
             <p style="font-size: 35px">🎉</p>
-            <h1 class="ui inverted header">Generated Code:</h1> 
+            <h1 class="ui inverted header">Generated Code</h1> 
+            <h3 class="ui inverted header">Pick components:</h3> 
+            <div id="codeGenDisplayOptions">
+                <div class="codeGenOption">
+                    <input
+                    type="checkbox"
+                    [(ngModel)]="codeGeneratorSettings.sdk"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="refreshGeneratedCode()"/> 
+                    <span class="codeGenOptionLabel">SDK initialization</span>
+                    <br>
+                </div>   
+                <div class="codeGenOption">
+                    <input
+                    type="checkbox"
+                    [(ngModel)]="codeGeneratorSettings.contract"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="refreshGeneratedCode()"/> 
+                    <span class="codeGenOptionLabel">Contract Deployment</span>
+                    <br>
+                </div>
+                <div class="codeGenOption">
+                    <input
+                    type="checkbox"
+                    [(ngModel)]="codeGeneratorSettings.function"
+                    [ngModelOptions]="{standalone: true}"
+                    (change)="refreshGeneratedCode()"/>  
+                    <span class="codeGenOptionLabel">Contract Call</span>
+                    <br>
+                </div>
+            </div>
             <br>
 
         </div>
+
+
+
+        
         <ngx-monaco-editor *ngIf="this.generatedCode" id="generatedCodeEditor" [(ngModel)]="this.generatedCode" id="generatedCodeEditor" [options]="generatedCodeEditorOptions" ></ngx-monaco-editor>
         <div class="ui form">
              <div class="field">
