@@ -7,12 +7,12 @@ contract AeForUsers =
     record state = {
         receiver: map(address, int),
         deployer: address,
-        total_balance: int
+        total_balance: int // sum of balance of every register user
       }  
     stateful entrypoint init() = {
         receiver = {},
         deployer = Call.caller,
-        total_balance = 0
+        total_balance = 0 
       }
 
     // Let user send money to this contract
@@ -21,17 +21,25 @@ contract AeForUsers =
 
     // Set receiver with the maximum amount it can withdraw
     stateful entrypoint set_receiver(raddress: address, can_withdraw: int) =
+       require(Call.caller == state.deployer, "Only owner can set receiver") 
        // Check if contract balance exsists before adding it for user.
        if(Contract.balance >= can_withdraw)
          put(state{total_balance = state.total_balance + can_withdraw})
+
        if(Contract.balance >= state.total_balance)
          put(state{receiver[raddress] = can_withdraw})
+        
+       // If total balance of all users is bigger than balance available in this contract
+       // then we can't add user and need to decreased total (which increased above)
+       else
+         put(state{total_balance = state.total_balance - can_withdraw})
     
     
     // Let user withdraw the amount they want to and subtract that from the amount they can withdraw
     stateful entrypoint withdraw(amount_to_withdraw: int) =
         if(state.receiver[Call.caller] >= amount_to_withdraw)
           put(state{receiver[Call.caller] = state.receiver[Call.caller] - amount_to_withdraw})
+          put(state{total_balance = state.total_balance - amount_to_withdraw})
           Chain.spend(Call.caller, amount_to_withdraw)
 
     // Check User(Caller) Balance
@@ -41,9 +49,13 @@ contract AeForUsers =
     // Check the total balance available in contract
     stateful entrypoint checkContractBalance(): int =
       Contract.balance
+    
+    stateful entrypoint getSumOfTotalBalanceOfUser(): int =
+      state.total_balance
 
     // Withdraw leftovers
     stateful entrypoint withdrawAll() =
       if(Call.caller == state.deployer)
-        Chain.spend(Call.caller, Contract.balance)
+        Chain.spend(Call.caller, Contract.balance-state.total_balance)
+
 
