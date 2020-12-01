@@ -1,19 +1,19 @@
-export class Contract<T> {
-    public contractUID: string = "";
-    public code: string;
-    public showInTabs: boolean = true;
-    public nameInTab: string = "FungibleToken";
-    public shareId: string = "";
-    public activeTab: boolean = false;
-    public errorHighlights: any;
-    public sharingHighlighters: any[] = [];
-    public latestACI: any;
+export class FungibleToken<T> {
+  public contractUID: string = "";
+  public code: string;
+  public showInTabs: boolean = true;
+  public nameInTab: string = "template";
+  public shareId: string = "";
+  public activeTab: boolean = false;
+  public errorHighlights: any;
+  public sharingHighlighters: any[] = [];
+  public latestACI: any;
 
-    constructor(params: { [key: string]: any }) {
-        this.contractUID = String(Date.now());
-        params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
-        params._shareId != undefined ? this.shareId = params._shareId : true;
-        params._code != undefined ? this.code = params._code : this.code = `
+  constructor(params: { [key: string]: any }) {
+    this.contractUID = String(Date.now() + 3);
+    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
+    params._shareId != undefined ? this.shareId = params._shareId : true;
+    params._code != undefined ? this.code = params._code : this.code = `
         // ISC License
 //
 // Copyright (c) 2017, aeternity developers
@@ -63,14 +63,14 @@ contract FungibleToken =
 
 
   // Create a fungible token with
-  // the following `name` `symbol` and `decimals`
+  // the following name symbol and decimals
   // and set the inital smart contract state
   entrypoint init(name: string, decimals : int, symbol : string, initial_owner_balance : option(int)) =
-    // If the `name` lenght is less than 1 symbol abort the execution
+    // If the name lenght is less than 1 symbol abort the execution
     require(String.length(name) >= 1, "STRING_TOO_SHORT_NAME")
-    // If the `symbol` length is less than 1 symbol abort the execution
+    // If the symbol length is less than 1 symbol abort the execution
     require(String.length(symbol) >= 1, "STRING_TOO_SHORT_SYMBOL")
-    // If the provided value for `decimals` is negative abort the execution
+    // If the provided value for decimals is negative abort the execution
     require_non_negative_value(decimals)
     // If negative initial owner balance is passed, abort the execution
     let initial_supply = Option.default(0, initial_owner_balance)
@@ -98,9 +98,9 @@ contract FungibleToken =
   entrypoint balances() : balances =
     state.balances
 
-  // Get balance for address of `owner`
+  // Get balance for address of owner
   // returns option(int)
-  // If the `owner` address haven't had any token balance
+  // If the owner address haven't had any token balance
   // in this smart contract the return value is None
   // Otherwise Some(int) is returned with the current balance
   entrypoint balance(account: address) : option(int) =
@@ -122,11 +122,11 @@ contract FungibleToken =
     put(state{ balances[from_account] @ b = b - value })
     put(state{ balances[to_account = 0] @ b = b + value })
     Chain.event(Transfer(from_account, to_account, value))`;
-    }
+  }
 
-    //experimental
-    public showInTabsOrNot (): boolean {
-        return this.showInTabs;
-    }
+  //experimental
+  public showInTabsOrNot (): boolean {
+    return this.showInTabs;
+  }
 
 }

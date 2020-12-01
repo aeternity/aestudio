@@ -1,19 +1,19 @@
-export class Contract<T> {
-    public contractUID: string = "";
-    public code: string;
-    public showInTabs: boolean = true;
-    public nameInTab: string = "AeUnlockOnTime";
-    public shareId: string = "";
-    public activeTab: boolean = false;
-    public errorHighlights: any;
-    public sharingHighlighters: any[] = [];
-    public latestACI: any;
+export class AeUnlockOnTime<T> {
+  public contractUID: string = "";
+  public code: string;
+  public showInTabs: boolean = true;
+  public nameInTab: string = "template";
+  public shareId: string = "";
+  public activeTab: boolean = false;
+  public errorHighlights: any;
+  public sharingHighlighters: any[] = [];
+  public latestACI: any;
 
-    constructor(params: { [key: string]: any }) {
-        this.contractUID = String(Date.now());
-        params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
-        params._shareId != undefined ? this.shareId = params._shareId : true;
-        params._code != undefined ? this.code = params._code : this.code = `
+  constructor(params: { [key: string]: any }) {
+    this.contractUID = String(Date.now() + 2);
+    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
+    params._shareId != undefined ? this.shareId = params._shareId : true;
+    params._code != undefined ? this.code = params._code : this.code = `
         // This demostrates sending and getting Ae Tokens from contracts and Only when they available to withdraw.
 // User sends money to this contract to further send it to the receivers he wants to add up with the time from when make withdraw available
 // Then it add the receivers with the amount they can withdraw but require enough amount in the contract itself to move further and also 2 mins from now lock on funds
@@ -91,11 +91,11 @@ contract AeUnlockOnTime =
     stateful entrypoint withdrawAll() =
       if(Call.caller == state.deployer)
         Chain.spend(Call.caller, Contract.balance-state.total_balance)`;
-    }
+  }
 
-    //experimental
-    public showInTabsOrNot (): boolean {
-        return this.showInTabs;
-    }
+  //experimental
+  public showInTabsOrNot (): boolean {
+    return this.showInTabs;
+  }
 
 }
