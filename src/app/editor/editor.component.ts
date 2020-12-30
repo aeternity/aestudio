@@ -4,6 +4,7 @@ import { Contract } from '../contracts/hamster';
 import { AeForUsers } from '../contracts/AeForUsers';
 import { AeUnlockOnTime } from '../contracts/AeUnlockOnTime';
 import { FungibleToken } from '../contracts/FungibleToken';
+import { BasicNFT } from '../contracts/BasicNFT';
 import { Subscription, Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -290,6 +291,7 @@ export class EditorComponent implements OnInit {
             this.contracts.push(new AeForUsers({}))
             this.contracts.push(new AeUnlockOnTime({}))
             this.contracts.push(new FungibleToken({}))
+            this.contracts.push(new BasicNFT({}))
 
             this.activeContract = this.contracts[0];
           }

@@ -14,7 +14,8 @@ export class FungibleToken<T> {
     params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
     params._shareId != undefined ? this.shareId = params._shareId : true;
     params._code != undefined ? this.code = params._code : this.code = `
-        // ISC License
+    
+// ISC License
 //
 // Copyright (c) 2017, aeternity developers
 //
@@ -46,7 +47,8 @@ contract FungibleToken =
     { owner        : address      // the smart contract's owner address
     , total_supply : int          // total token supply
     , balances     : balances     // balances for each account
-    , meta_info    : meta_info }  // token meta info (name, symbol, decimals)
+    , meta_info    : meta_info
+    , minted : bool }  // token meta info (name, symbol, decimals)
 
   // This is the meta-information record type
   record meta_info =
@@ -62,10 +64,8 @@ contract FungibleToken =
   datatype event = Transfer(address, address, int)
 
 
-  // Create a fungible token with
-  // the following name symbol and decimals
-  // and set the inital smart contract state
-  entrypoint init(name: string, decimals : int, symbol : string, initial_owner_balance : option(int)) =
+  stateful entrypoint mint_coin(name: string, decimals : int, symbol : string, initial_owner_balance : option(int)) =
+    require(state.minted == false, "The token is already minted")
     // If the name lenght is less than 1 symbol abort the execution
     require(String.length(name) >= 1, "STRING_TOO_SHORT_NAME")
     // If the symbol length is less than 1 symbol abort the execution
@@ -77,10 +77,22 @@ contract FungibleToken =
     require_non_negative_value(initial_supply)
 
     let owner = Call.caller
-    { owner        = owner,
+    put(state{ owner = owner,
       total_supply = initial_supply,
       balances     = Option.match({}, (balance) => { [owner] = balance }, initial_owner_balance),
-      meta_info    = { name = name, symbol = symbol, decimals = decimals } }
+      meta_info    = { name = name, symbol = symbol, decimals = decimals },
+      minted = true })
+  // Create a fungible token with
+  // the following name symbol and decimals
+  // and set the inital smart contract state
+
+  // For some reason Init don't initialize with mint values, But contract interface do so using seperate function to mint tokens...
+  entrypoint init() =
+    { owner        = Contract.address,
+      total_supply = 0,
+      balances     = {},
+      meta_info    = { name = "", symbol = "", decimals = 0 },
+      minted = false }
 
   // Get the token meta info
   entrypoint meta_info() : meta_info =
@@ -116,7 +128,7 @@ contract FungibleToken =
         require(balance >= value, "ACCOUNT_INSUFFICIENT_BALANCE")
       None => abort("BALANCE_ACCOUNT_NOT_EXISTENT")
 
-  stateful function internal_transfer(from_account: address, to_account: address, value: int) =
+  stateful entrypoint internal_transfer(from_account: address, to_account: address, value: int) =
     require_non_negative_value(value)
     require_balance(from_account, value)
     put(state{ balances[from_account] @ b = b - value })
