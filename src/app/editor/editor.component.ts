@@ -291,6 +291,7 @@ export class EditorComponent implements OnInit {
             this.activeContract = this.contracts[0];
  
 
+            }
           }
         
         }
