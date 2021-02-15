@@ -1,6 +1,10 @@
 import { Component, OnInit, Input, Compiler, HostBinding, OnChanges, SimpleChanges, ChangeDetectorRef  } from '@angular/core';
 import { CompilerService, EncodedACI } from '../compiler.service'
 import { Contract } from '../contracts/hamster';
+import { AeForUsers } from '../contracts/AeForUsers';
+import { AeUnlockOnTime } from '../contracts/AeUnlockOnTime';
+import { FungibleToken } from '../contracts/FungibleToken';
+import { BasicNFT } from '../contracts/BasicNFT';
 import { Subscription, Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
 import { distinctUntilChanged } from 'rxjs/operators';
@@ -10,6 +14,7 @@ import { ClipboardService } from 'ngx-clipboard';
 //import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { CodeFactoryService } from '../code-factory.service';
 import { LocalStorageService } from '../local-storage.service';
+
 
 
 @Component({
@@ -109,7 +114,6 @@ export class EditorComponent implements OnInit {
       debounceTime(environment.compilerRequestDelay) // wait 1 sec after the last event before emitting last event
       ). // only emit if value is different from previous value
       subscribe(something => {
-
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
        }); */
@@ -270,370 +274,376 @@ export class EditorComponent implements OnInit {
         })
       
       } else {
-        
+
         // if there is no contractID provided in the URL, initialize the default one
         // fix for stupid racing condition
         if (this.runTimes >= 2) {
           console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
           this.contracts = this.localStorage.getAllContracts();
           // if there is no contract in the storage initialize an empty one
-          this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
-          this.activeContract = this.contracts[0];
-          this.localStorage.storeAllContracts(this.contracts);
+          if (this.contracts.length == 0) {
+            this.contracts.push(new Contract({}))
+            this.contracts.push(new AeForUsers({}))
+            this.contracts.push(new AeUnlockOnTime({}))
+            this.contracts.push(new FungibleToken({}))
+            this.contracts.push(new BasicNFT({}))
 
+            this.activeContract = this.contracts[0];
+ 
 
-        }
-        
-      }
-    });
-
-    // If the compiler asks for code, give it to him and deploy the contract
-    this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
-      .subscribe(item => {console.log("Im editor angekommen !"); 
-      //console.log("Current code ist: ", this.contract.code)
-  
-      // try generating ACI for init-interface
-      this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
-    
-      })
-
-
-      // receives the raw result from code generator
-    this.codeGenerator = this.generator._generateCode.subscribe(codeObject => {
-      if (Object.entries(codeObject).length > 0)// <-- marie, aufpassen !
-      this.codeGeneratorVisible = true;
-
-      console.log(">>>>>>>>>>>> Generated code is:", codeObject);
-      this.codeGeneratorRawReturn = codeObject;
-
-      let finalCode = this.generator.generateFinalFormattedCode(codeObject, this.codeGeneratorSettings)
-
-      this.generatedCode = `${finalCode}`;
-      // workaround for code window not showing:
-      this.triggerWindowRefresh();           
-     });
-
-     
-    // remove when implementing fix for #8 - introduce means to dynamically controll which tab is active
-    setTimeout(() => {
-      this.setTabAsActive(this.contracts[0]);
-
-    }, 1500);
-
-    console.log("activeContract Contracts: ", this.contracts); 
-  }
-
-  refreshGeneratedCode = () => {
-    let finalCode = this.generator.generateFinalFormattedCode(this.codeGeneratorRawReturn , this.codeGeneratorSettings)
-    this.generatedCode = `${finalCode}`;
-    // workaround for code window not showing:
-    this.triggerWindowRefresh();    
-  }
-
-  // initializes editor object to interact with - called by the editor component
-  initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
-    //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
-    //console.log("The editor:", theEditor);    
-    this.editorInstance = theEditor;
-
-    this.triggerWindowRefresh(); 
-
-    // highlight background of shared code
-    // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
-   /*  if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
-      setTimeout(() => {
-        this.editorInstance.deltaDecorations([], [
-          { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
-        ])
-      }, 300);
-      ;} */
-
-
-    // custom context menu options
-    this.editorInstance.addAction ({
-        // ID of the group in which the new item will appear.
-        contextMenuGroupId: '1_modification',
-        // there are three of them: 1 - 'navigation', 2 - '1_modification', 3 - '9_cutcopypaste';
-        // you can create your own
-        contextMenuOrder: 3, // order of a menu item within a group
-        label: '<i class="share alternate icon"></i> Share contract and selection...',
-        id: 'showDiff',
-        keybindings: [], // Hotkeys
-        // function called when clicking
-        // press the specified keys
-        run: () => {console.log(this.compiler.activeCodeSelection)
-          let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
-          console.log("So sieht post data aus:", postData);
-
-          this.http.post(environment.contractSharingBackend, postData, {
-            headers: new HttpHeaders({
-                'Content-Type':  'application/json'
-              })
-          }).subscribe(data=>{
-            console.log("Post hat ergeben?", data)
-
-            var constructedUrl;
-            var s = this.compiler.activeCodeSelection || "";
-            
-            // share code with our without highlighter
-            if (s.endLineNumber != undefined){
-              constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
-            } else {
-              constructedUrl = `${environment.appUrl}?contract=${data['candidateId']}`
             }
-            
-            console.log("DIE URL: ", constructedUrl)
-            this._clipboardService.copyFromContent(constructedUrl);
-            // display success message ;)
-            this.isDimmed = true;
-            // tell angular to detect changes because we're in a event subscription here -.-
-            this.changeDetectorRef.detectChanges()
-              setTimeout(() => {
-                this.isDimmed = false;
-                this.changeDetectorRef.detectChanges()
-              }, 900);
-
-          });
-
+          }
+        
         }
       });
-
-    // when right-clicking
-    this.editorInstance.onContextMenu(function (e) {
-      console.log("Läuft?", e)
-    });
-
-    // when selecting code
-    this.editorInstance.onDidChangeCursorSelection( (result) => {
-      // log selection coordinates only if it's actually a selection, not just a click.
-      if (result.selection.endColumn != result.selection.startColumn && result.selection.startLineNumber != result.selection.endLineNumber) {
-          this.compiler.activeCodeSelection = result.selection;
-          console.log("selected: ", result.selection);
-          }
-    });
-
-    // when moving mouse lol
-    /* this.editorAction = theEditor.onDidChangeCursorPosition
-        .subscribe(async peng => {
-          console.log(peng);
-        }) */
-  }
-
-  deleteContract($event){
-    console.log("Contract: delete emitted !", $event)
-    // remove the clicked contract from the array...
-    this.contracts.forEach((contract, i) => {
-      console.log("event uid:", $event.contractUID)
-      if(contract.contractUID == $event.contractUID) { 
-        console.log("Editor: zum splicen gefunden")
-        this.contracts.splice(i,1)
-      }
-    })
-  }
-
-  throttledChange(){
-    this.codeChanged.next();
-  }
-
-  // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
-  setTabAsActive(_oneContract: any) {
-    this.activeContract = _oneContract;
-    // change all the other contracts to inactive - maybe ?
-
-    this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
-    
-    //this.compiler.code = this.activeContract.code;
-  }
-
-  // Tabs functionality end
-
-  // helpers:
-
-  // saves all contracts
-  saveActiveContractChangesToContractsArray() {
-    this.contracts.forEach((oneContract, index, array) => {
-      oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
-      //and save: 
-      this.localStorage.storeAllContracts(this.contracts);
-    })
-  }
-
-  // saves changes of any contract you pass to this function
-  saveContractChangesToContractsArray(_contract: any) {
-    
-    console.log("save zum saven übergeben wurde", _contract);
-    // console.log("suche contract zum aktualisieren...")
-    this.contracts.forEach((oneContract, index, array) => {
-      if (oneContract.contractUID == _contract.contractUID) {
-        array[index] = _contract;
-        //console.log("Changes of one contract saved!");
-        this.localStorage.storeAllContracts(this.contracts);
-        
-      } 
-    })
-    this.localStorage.storeAllContracts(this.contracts);
-
-    this.changeDetectorRef.detectChanges()
-  }
-
-  // clear highlighters (todo: by identifier)
-  clearAllHighlighters(){
-    try{        
-      this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
-      this.activeContract.errorHighlights = [];
-      this.saveActiveContractChangesToContractsArray();
-    } catch(e){
-    }
-    
-  }
-
-  logSomeShit (_shit?: any) {
-    console.log("Shit to log: ", _shit)
-  }
-
-  // trigger whether the contract is displayed in the tabs or not
-  toggleTabAppearance(_params: any){
-    this.contracts.forEach((oneContract) => {
-      //console.log("Editor: Comparing with contractUID: ", oneContract.contractUID)
-      //console.log("save oneContract.shareId :" , oneContract.shareId);
-      //console.log("Editor: Clicked on contract: ", _params.contract)
-      //console.log("Editor: In this case, these are the contracts: ", this.contracts)
-      if (oneContract.contractUID == _params.contract.contractUID){
-        
-        switch (_params.triggerMode) {
-          case "off":
-            // check if at least another tab is open
-            let tabsOpenCount = 0
-            this.contracts.forEach(contract => {
-              contract.showInTabs ? tabsOpenCount++ : true
-            });
-            // if at least 2 are open, close current tab
-            tabsOpenCount >=2 ? oneContract.showInTabs = false : true
-            break;
-          case "on":
-            oneContract.showInTabs = true;
-            break;
-          case "trigger":
-            oneContract.showInTabs == true ? oneContract.showInTabs = false : oneContract.showInTabs = true;
-            break;
-          default:
-            break;
-        }
-      }
-      // i thibnk this is not used anymore ? or maybe for setting the code in the compiler in order to talk to the right sidebar
-      //, to be deprecated soon ? 
-      return oneContract.contractUID == this.activeContract.contractUID;  
-    });
-    
-    this.localStorage.storeAllContracts(this.contracts);
-    this.changeDetectorRef.detectChanges()
-  }
-
-  addNewContract(){
-    console.log("comparing.. right now there are ", this.contracts.length)
-    let newContract = new Contract({})
-    console.log("new contract ist:", newContract);
-    this.contracts.push(newContract);
-    this.localStorage.storeAllContracts(this.contracts);
-    this.changeDetectorRef.detectChanges();
-    console.log("comparing.. now there are ", this.contracts.length)
-  }
-  sortObjectKeys(obj){
-        if(obj == null || obj == undefined){
-            return obj;
-        }
-        if(typeof obj != 'object'){ // it is a primitive: number/string (in an array)
-            return obj;
-        }
-        return Object.keys(obj).sort().reduce((acc,key)=>{
-            if (Array.isArray(obj[key])){
-                acc[key]=obj[key].map(this.sortObjectKeys);
-            }
-            else if (typeof obj[key] === 'object'){
-                acc[key]=this.sortObjectKeys(obj[key]);
-            }
-            else{
-                acc[key]=obj[key];
-            }
-            return acc;
-        },{});
-  }
-
-  toHex = function (_input) {
-      var ret = ((_input<0?0x8:0)+((_input >> 28) & 0x7)).toString(16) + (_input & 0xfffffff).toString(16);
-      while (ret.length < 8) ret = '0'+ret;
-      return ret;
-  };
-
-  hash = function hashCode(o, l?) {
-    o = this.sortObjectKeys(o);
-    l = l || 2;
-    var i, c, r : any= [];
-    for (i=0; i<l; i++)
-        r.push(i*268803292);
-    function stringify(o) {
-        var i : any;
-        var r : any = []
-        if (o === null) return 'n';
-        if (o === true) return 't';
-        if (o === false) return 'f';
-        //if (o instanceof Date) return 'd:'+(0+o);
-        i=typeof o;
-        if (i === 'string') return 's:'+o.replace(/([\\\\;])/g,'\\$1');
-        if (i === 'number') return 'n:'+o;
-        if (o instanceof Function) return 'm:'+o.toString().replace(/([\\\\;])/g,'\\$1');
-        if (o instanceof Array) {
-            r=[];
-            for (i=0; i<o.length; i++) 
-                r.push(stringify(o[i]));
-            return 'a:'+r.join(';');
-        }
-        r=[];
-        for (i in o) {
-            r.push(i+':'+stringify(o[i]))
-        }
-        return 'o:'+r.join(';');
-    }
-    o = stringify(o);
-    for (i=0; i<o.length; i++) {
-        for (c=0; c<r.length; c++) {
-            r[c] = (r[c] << 13)-(r[c] >> 19);
-            r[c] += o.charCodeAt(i) << (r[c] % 24);
-            r[c] = r[c] & r[c];
-        }
-    }
-    for (i=0; i<r.length; i++) {
-        r[i] = this.toHex(r[i]);
-    }
-    return r.join('');
-  }
-
-  closeCodeEditor = () => {
-    this.codeGeneratorVisible = false;
-  }
-
-  // if stupid-ass chrome won't render the editor but show it as a small square instead..
-  triggerWindowRefresh(millisecondsDelay?: number) {
-    setTimeout(() => {
-      var el = document; // This can be your element on which to trigger the event
-      var event = document.createEvent('HTMLEvents');
-      event.initEvent('resize', true, false);
-      el.dispatchEvent(event)
-    }, millisecondsDelay || 55)
-  }
-
-  ngAfterViewInit(){
-  /*   this.currentTabUID = this.activeContract.contractUID;
-    console.log("After view init fired")
-    this.changeDetectorRef.detectChanges()
- */
-  }
-
-  ngOnDestroy() {
-    // prevent memory leak when component is destroyed
-    this.fetchActiveCodeSubscription.unsubscribe();
-    this.newErrorSubscription.unsubscribe();
-  }
   
-
-}
+      // If the compiler asks for code, give it to him and deploy the contract
+      this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
+        .subscribe(item => {console.log("Im editor angekommen !"); 
+        //console.log("Current code ist: ", this.contract.code)
+    
+        // try generating ACI for init-interface
+        this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+      
+        })
+  
+  
+        // receives the raw result from code generator
+      this.codeGenerator = this.generator._generateCode.subscribe(codeObject => {
+        if (Object.entries(codeObject).length > 0)// <-- marie, aufpassen !
+        this.codeGeneratorVisible = true;
+  
+        console.log(">>>>>>>>>>>> Generated code is:", codeObject);
+        this.codeGeneratorRawReturn = codeObject;
+  
+        let finalCode = this.generator.generateFinalFormattedCode(codeObject, this.codeGeneratorSettings)
+  
+        this.generatedCode = `${finalCode}`;
+        // workaround for code window not showing:
+        this.triggerWindowRefresh();           
+       });
+  
+       
+      // remove when implementing fix for #8 - introduce means to dynamically controll which tab is active
+      setTimeout(() => {
+        this.setTabAsActive(this.contracts[0]);
+  
+      }, 1500);
+  
+      console.log("activeContract Contracts: ", this.contracts); 
+    }
+  
+    refreshGeneratedCode = () => {
+      let finalCode = this.generator.generateFinalFormattedCode(this.codeGeneratorRawReturn , this.codeGeneratorSettings)
+      this.generatedCode = `${finalCode}`;
+      // workaround for code window not showing:
+      this.triggerWindowRefresh();    
+    }
+  
+    // initializes editor object to interact with - called by the editor component
+    initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
+      //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
+      //console.log("The editor:", theEditor);    
+      this.editorInstance = theEditor;
+  
+      this.triggerWindowRefresh(); 
+  
+      // highlight background of shared code
+      // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
+     /*  if (this.highlightedRows.length > 3) {let rows = this.highlightedRows;
+        setTimeout(() => {
+          this.editorInstance.deltaDecorations([], [
+            { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
+          ])
+        }, 300);
+        ;} */
+  
+  
+      // custom context menu options
+      this.editorInstance.addAction ({
+          // ID of the group in which the new item will appear.
+          contextMenuGroupId: '1_modification',
+          // there are three of them: 1 - 'navigation', 2 - '1_modification', 3 - '9_cutcopypaste';
+          // you can create your own
+          contextMenuOrder: 3, // order of a menu item within a group
+          label: '<i class="share alternate icon"></i> Share contract and selection...',
+          id: 'showDiff',
+          keybindings: [], // Hotkeys
+          // function called when clicking
+          // press the specified keys
+          run: () => {console.log(this.compiler.activeCodeSelection)
+            let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
+            console.log("So sieht post data aus:", postData);
+  
+            this.http.post(environment.contractSharingBackend, postData, {
+              headers: new HttpHeaders({
+                  'Content-Type':  'application/json'
+                })
+            }).subscribe(data=>{
+              console.log("Post hat ergeben?", data)
+  
+              var constructedUrl;
+              var s = this.compiler.activeCodeSelection || "";
+              
+              // share code with our without highlighter
+              if (s.endLineNumber != undefined){
+                constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
+              } else {
+                constructedUrl = `${environment.appUrl}?contract=${data['candidateId']}`
+              }
+              
+              console.log("DIE URL: ", constructedUrl)
+              this._clipboardService.copyFromContent(constructedUrl);
+              // display success message ;)
+              this.isDimmed = true;
+              // tell angular to detect changes because we're in a event subscription here -.-
+              this.changeDetectorRef.detectChanges()
+                setTimeout(() => {
+                  this.isDimmed = false;
+                  this.changeDetectorRef.detectChanges()
+                }, 900);
+  
+            });
+  
+          }
+        });
+  
+      // when right-clicking
+      this.editorInstance.onContextMenu(function (e) {
+        console.log("Läuft?", e)
+      });
+  
+      // when selecting code
+      this.editorInstance.onDidChangeCursorSelection( (result) => {
+        // log selection coordinates only if it's actually a selection, not just a click.
+        if (result.selection.endColumn != result.selection.startColumn && result.selection.startLineNumber != result.selection.endLineNumber) {
+            this.compiler.activeCodeSelection = result.selection;
+            console.log("selected: ", result.selection);
+            }
+      });
+  
+      // when moving mouse lol
+      /* this.editorAction = theEditor.onDidChangeCursorPosition
+          .subscribe(async peng => {
+            console.log(peng);
+          }) */
+    }
+  
+    deleteContract($event){
+      console.log("Contract: delete emitted !", $event)
+      // remove the clicked contract from the array...
+      this.contracts.forEach((contract, i) => {
+        console.log("event uid:", $event.contractUID)
+        if(contract.contractUID == $event.contractUID) { 
+          console.log("Editor: zum splicen gefunden")
+          this.contracts.splice(i,1)
+        }
+      })
+    }
+  
+    throttledChange(){
+      this.codeChanged.next();
+    }
+  
+    // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
+    setTabAsActive(_oneContract: any) {
+      this.activeContract = _oneContract;
+      // change all the other contracts to inactive - maybe ?
+  
+      this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
+      
+      //this.compiler.code = this.activeContract.code;
+    }
+  
+    // Tabs functionality end
+  
+    // helpers:
+  
+    // saves all contracts
+    saveActiveContractChangesToContractsArray() {
+      this.contracts.forEach((oneContract, index, array) => {
+        oneContract.contractUID == this.activeContract.UID ? array[index] = this.activeContract : true
+        //and save: 
+        this.localStorage.storeAllContracts(this.contracts);
+      })
+    }
+  
+    // saves changes of any contract you pass to this function
+    saveContractChangesToContractsArray(_contract: any) {
+      
+      console.log("save zum saven übergeben wurde", _contract);
+      // console.log("suche contract zum aktualisieren...")
+      this.contracts.forEach((oneContract, index, array) => {
+        if (oneContract.contractUID == _contract.contractUID) {
+          array[index] = _contract;
+          //console.log("Changes of one contract saved!");
+          this.localStorage.storeAllContracts(this.contracts);
+          
+        } 
+      })
+      this.localStorage.storeAllContracts(this.contracts);
+  
+      this.changeDetectorRef.detectChanges()
+    }
+  
+    // clear highlighters (todo: by identifier)
+    clearAllHighlighters(){
+      try{        
+        this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, [])
+        this.activeContract.errorHighlights = [];
+        this.saveActiveContractChangesToContractsArray();
+      } catch(e){
+      }
+      
+    }
+  
+    logSomeShit (_shit?: any) {
+      console.log("Shit to log: ", _shit)
+    }
+  
+    // trigger whether the contract is displayed in the tabs or not
+    toggleTabAppearance(_params: any){
+      this.contracts.forEach((oneContract) => {
+        //console.log("Editor: Comparing with contractUID: ", oneContract.contractUID)
+        //console.log("save oneContract.shareId :" , oneContract.shareId);
+        //console.log("Editor: Clicked on contract: ", _params.contract)
+        //console.log("Editor: In this case, these are the contracts: ", this.contracts)
+        if (oneContract.contractUID == _params.contract.contractUID){
+          
+          switch (_params.triggerMode) {
+            case "off":
+              // check if at least another tab is open
+              let tabsOpenCount = 0
+              this.contracts.forEach(contract => {
+                contract.showInTabs ? tabsOpenCount++ : true
+              });
+              // if at least 2 are open, close current tab
+              tabsOpenCount >=2 ? oneContract.showInTabs = false : true
+              break;
+            case "on":
+              oneContract.showInTabs = true;
+              break;
+            case "trigger":
+              oneContract.showInTabs == true ? oneContract.showInTabs = false : oneContract.showInTabs = true;
+              break;
+            default:
+              break;
+          }
+        }
+        // i thibnk this is not used anymore ? or maybe for setting the code in the compiler in order to talk to the right sidebar
+        //, to be deprecated soon ? 
+        return oneContract.contractUID == this.activeContract.contractUID;  
+      });
+      
+      this.localStorage.storeAllContracts(this.contracts);
+      this.changeDetectorRef.detectChanges()
+    }
+  
+    addNewContract(){
+      console.log("comparing.. right now there are ", this.contracts.length)
+      let newContract = new Contract({})
+      console.log("new contract ist:", newContract);
+      this.contracts.push(newContract);
+      this.localStorage.storeAllContracts(this.contracts);
+      this.changeDetectorRef.detectChanges();
+      console.log("comparing.. now there are ", this.contracts.length)
+    }
+    sortObjectKeys(obj){
+          if(obj == null || obj == undefined){
+              return obj;
+          }
+          if(typeof obj != 'object'){ // it is a primitive: number/string (in an array)
+              return obj;
+          }
+          return Object.keys(obj).sort().reduce((acc,key)=>{
+              if (Array.isArray(obj[key])){
+                  acc[key]=obj[key].map(this.sortObjectKeys);
+              }
+              else if (typeof obj[key] === 'object'){
+                  acc[key]=this.sortObjectKeys(obj[key]);
+              }
+              else{
+                  acc[key]=obj[key];
+              }
+              return acc;
+          },{});
+    }
+  
+    toHex = function (_input) {
+        var ret = ((_input<0?0x8:0)+((_input >> 28) & 0x7)).toString(16) + (_input & 0xfffffff).toString(16);
+        while (ret.length < 8) ret = '0'+ret;
+        return ret;
+    };
+  
+    hash = function hashCode(o, l?) {
+      o = this.sortObjectKeys(o);
+      l = l || 2;
+      var i, c, r : any= [];
+      for (i=0; i<l; i++)
+          r.push(i*268803292);
+      function stringify(o) {
+          var i : any;
+          var r : any = []
+          if (o === null) return 'n';
+          if (o === true) return 't';
+          if (o === false) return 'f';
+          //if (o instanceof Date) return 'd:'+(0+o);
+          i=typeof o;
+          if (i === 'string') return 's:'+o.replace(/([\\\\;])/g,'\\$1');
+          if (i === 'number') return 'n:'+o;
+          if (o instanceof Function) return 'm:'+o.toString().replace(/([\\\\;])/g,'\\$1');
+          if (o instanceof Array) {
+              r=[];
+              for (i=0; i<o.length; i++) 
+                  r.push(stringify(o[i]));
+              return 'a:'+r.join(';');
+          }
+          r=[];
+          for (i in o) {
+              r.push(i+':'+stringify(o[i]))
+          }
+          return 'o:'+r.join(';');
+      }
+      o = stringify(o);
+      for (i=0; i<o.length; i++) {
+          for (c=0; c<r.length; c++) {
+              r[c] = (r[c] << 13)-(r[c] >> 19);
+              r[c] += o.charCodeAt(i) << (r[c] % 24);
+              r[c] = r[c] & r[c];
+          }
+      }
+      for (i=0; i<r.length; i++) {
+          r[i] = this.toHex(r[i]);
+      }
+      return r.join('');
+    }
+  
+    closeCodeEditor = () => {
+      this.codeGeneratorVisible = false;
+    }
+  
+    // if stupid-ass chrome won't render the editor but show it as a small square instead..
+    triggerWindowRefresh(millisecondsDelay?: number) {
+      setTimeout(() => {
+        var el = document; // This can be your element on which to trigger the event
+        var event = document.createEvent('HTMLEvents');
+        event.initEvent('resize', true, false);
+        el.dispatchEvent(event)
+      }, millisecondsDelay || 55)
+    }
+  
+    ngAfterViewInit(){
+    /*   this.currentTabUID = this.activeContract.contractUID;
+      console.log("After view init fired")
+      this.changeDetectorRef.detectChanges()
+   */
+    }
+  
+    ngOnDestroy() {
+      // prevent memory leak when component is destroyed
+      this.fetchActiveCodeSubscription.unsubscribe();
+      this.newErrorSubscription.unsubscribe();
+    }
+    
+  
+  }
