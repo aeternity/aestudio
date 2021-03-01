@@ -4,9 +4,9 @@
   "scripts": {
     "ng": "ng",
     "start": "npm run sophia && ng serve",
-    "start-win": "npm run sophia-win && ng serve",
+    "start-win": "npm run sophia && ng serve",
     "build": "npm run sophia && ng build && node inject-metadata.js",
-    "build-win": "npm run sophia-win && ng build && node inject-metadata.js",
+    "build-win": "npm run sophia && ng build && node inject-metadata.js",
     "buildprod-nf": "npm run sophia && ng build --configuration=production && node inject-metadata.js",
     "buildprod-ae": "npm run sophia && ng build --configuration=ae && node inject-metadata.js && cp ./custom-modules/CNAME ./dist/fire-editor/",
     "test": "ng test",
@@ -22,7 +22,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "github:aeternity/aepp-sdk-js#9c80ce0e4f1359f389585ea3df9f513ac1e82c04",
+    "@aeternity/aepp-sdk": "^7.7.0",
     "@angular/animations": "^9.1.1",
     "@angular/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
