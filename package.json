@@ -15,10 +15,10 @@
     "SuiInstallAndBuildAndMoveToEditorAndStart": "cd ng2-semantic-ui && npm install && npm run lib:compile && cd dist && npm pack && mv *.tgz ../../src/libs/ && cd ../../ && npm install && ng serve ",
     "SuiBuildAndMoveToEditorAndStart": "cd ng2-semantic-ui && npm run lib:compile && cd dist && npm pack && mv *.tgz ../../src/libs/ && cd ../../ && npm install && ng serve",
     "e2e": "ng e2e",
-    "init": "node patch.js && ./custom-modules/sophia-workaround.sh",
-    "init-win": "node patch.js && .\\custom-modules\\install-modified-logmonitor.sh && .\\custom-modules\\sophia-workaround.sh",
-    "sophia": "./custom-modules/sophia-workaround.sh",
-    "sophia-win": ".\\custom-modules\\sophia-workaround.sh"
+    "init-ubuntu": "node patch.js && ./custom-modules/sophia-workaround.sh",
+    "init": "node patch.js && .\\custom-modules\\install-modified-logmonitor.sh && .\\custom-modules\\sophia-workaround.sh",
+    "sophia-ubun": "./custom-modules/sophia-workaround.sh",
+    "sophia": ".\\custom-modules\\sophia-workaround.sh"
   },
   "private": true,
   "dependencies": {
@@ -46,8 +46,10 @@
     "ngx-loadable": "^2.1.1",
     "ngx-monaco-editor": "^9.0.0",
     "ngx-webstorage-service": "^4.1.0",
+    "path": "^0.12.7",
     "requestretry": "^4.1.0",
     "rxjs": "^6.5.5",
+    "stream": "0.0.2",
     "tslib": "^1.11.1",
     "uuid": "^3.3.2",
     "zone.js": "~0.10.2"
@@ -73,7 +75,7 @@
     "protractor": "~5.4.0",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "^3.8.3",
+    "typescript": "^3.7.5",
     "typescript-require": "^0.2.10"
   }
 }
