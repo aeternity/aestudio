@@ -53,6 +53,10 @@
                             
                 
                                 <div class="divider"></div>
+                                <div class="item" (click)="copyAddress()">
+                                        <span class="description"></span>
+                                        <i class="copy icon"></i>
+                                        Copy</div>
                                 <div class="item">
                                         <span class="description"><i>(coming soon)</i></span>
                                         <i class="file icon"></i>
@@ -91,7 +95,9 @@
                                     {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
                             </a> 
                         </ng-container>
-                        <button (click)="copyAddress()" class="ui black button"><i class="copy icon"></i></button>
+                        <button (click)="copyAddress()" class="ui basic button" style="margin-left: 10px; display: none; border-radius: 6px;" id="copy_btn"
+                        suiPopup popupHeader="" popupTrigger="click" popupPlacement="top right" popupTransitionDuration="1000" popupText="Copy Current Address!"
+                        ><i class="copy icon" style="color: black"></i></button>
                 
                     </div>
                 </div>

@@ -7,6 +7,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service'
 import { HttpClient } from '@angular/common/http';
 
+import {IPopup} from "ng2-semantic-ui";
+
 
 
 /* @Pipe({name: 'replace'})
@@ -121,9 +123,9 @@ export class ContractMenuSidebarComponent implements OnInit {
       e.preventDefault();
       document.removeEventListener('copy', null);
     });
+    window.alert(this.currentSDKsettings.address + " copied!")
     document.execCommand('copy');
   } 
-
 
   async ngOnInit () {
     //this.buildAContract();

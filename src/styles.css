@@ -21,6 +21,7 @@
     #options-dropdownbutton{
         padding: .78571429em 0.4em !important; 
       }
+
 }
 
 @media (max-width: 1467px) and (min-width: 1246px) {
@@ -34,6 +35,10 @@
     .ui.column.grid>[class*="six wide"].column, .ui.grid>.column.row>[class*="six wide"].column, .ui.grid>.row>[class*="six wide"].column, .ui.grid>[class*="six wide"].column {
         width: 25%!important;
     } 
+
+    #copy_btn {
+        display: inline-block !important;
+    }
 
     .ui.column.grid>[class*="ten wide"].column, .ui.grid>.column.row>[class*="ten wide"].column, .ui.grid>.row>[class*="ten wide"].column, .ui.grid>[class*="ten wide"].column {
         width: 75%!important;
