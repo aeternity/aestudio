@@ -18,7 +18,7 @@
                                 <!-- <p *ngIf="!log.data[key].__isObject__ || log.data[key].__isArray__"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p>  -->
 
                                 <!-- If it's an object by itself, make a new dropdown -->
-                                <p *ngIf="isAnObject[key]"> <b> {{key}} </b> : <app-one-log class="oneLog" [log]="{'data' : log.data[key]}" [open]="false" ></app-one-log>  </p> 
+                                <p *ngIf="isAnObject[key]"> <!-- <b> {{key}} </b> : --> <app-one-log-child  class="oneLogChild" [log]="{'data' : log.data[key], 'topic': key}" [open]="false" ></app-one-log-child>  </p> 
                                 
                             </div>
                                     

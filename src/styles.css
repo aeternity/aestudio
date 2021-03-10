@@ -197,6 +197,12 @@ border-color: #000!important;
     color: #d4d4d4 !important;
 } 
 
+/* line padding of nested foldable log entry */
+
+.oneLogChild .title {
+    padding: 0 !important;
+}
+
 /* don't apply usual titel hover effect on contract sidemenu on the left */
 
 .contractInLeftMenu :hover
