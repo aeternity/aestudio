@@ -1,20 +1,26 @@
-<sui-accordion-panel [isOpen]="true">
+<sui-accordion-panel [isOpen]="open">
         <div title>
             <i class="dropdown icon"></i>
             {{log.message}}
         </div>
         <div content>
                 <div class="errorbox"> 
-                        <div *ngIf="log.type" class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'success' ? 'check circle' : log.type == 'error' ? 'bug' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
+                        <div *ngIf="log.type" class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'error' ? 'bug' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
                         <div class="right">
                           <div class="div2" title> 
 
-                                <div *ngFor="let key of objectKeys(log.data)">  
-                                    <br *ngIf="objectKeys(log.data).length < 3">
-                                    <br *ngIf="objectKeys(log.data).length < 3">
-                                    
-                                    <!-- if it's just a string -->
-                                    <p> <b>{{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : objectKeys(log.data[key]).length > 0 ? (log.data[key] | json) : log.data[key]}}  </p> </div>
+                            <div *ngFor="let key of logEntries">  
+                                <br *ngIf="logEntries.length < 3">
+                                <br *ngIf="logEntries.length < 3">
+                                 
+                                <!-- if it's just a string and not an object, just display it.... -->
+                                <p *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
+                                <!-- <p *ngIf="!log.data[key].__isObject__ || log.data[key].__isArray__"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p>  -->
+
+                                <!-- If it's an object by itself, make a new dropdown -->
+                                <p *ngIf="isAnObject[key]"> <b> {{key}} </b> : <app-one-log class="oneLog" [log]="{'data' : log.data[key]}" [open]="false" ></app-one-log>  </p> 
+                                
+                            </div>
                                     
                                     
                           </div>
