@@ -486,6 +486,10 @@ border-color: #000!important;
 /* helpers end */
 
 /* Log monitor start  */
+.hoverHighlightWhite:hover {
+    color: white
+}
+
 .logMonitorPanel .title.active {
     background: #1d1d1d !important;
 }

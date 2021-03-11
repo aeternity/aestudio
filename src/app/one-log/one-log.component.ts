@@ -20,10 +20,11 @@ export class OneLogComponent implements OnInit {
   constructor() {}
   
   ngOnInit() {
-    //if (this.isObject(this.log.data)){
+
+    this.log.depth = 1; // to be passed for padding of later nested collapsible log content ("one-log-child")
     this.logEntries = Object.keys(this.log.data)
     console.log("Log: Entries are: "+ this.logEntries)
-    //}
+    
     this.logEntries.forEach(key => {
       /* if a child entry in the log data is an array or object, set a flag for that entry to true, else to false, respectively for being an array or an object.
       (or if it's some simple type)
@@ -50,6 +51,7 @@ export class OneLogComponent implements OnInit {
 }
 
 export interface Log {
+  depth : number,
   message : string,
   type : "success" | "log" | "error" | "warn",
   data : any 

@@ -1,5 +1,5 @@
 <sui-accordion-panel [isOpen]="open">
-        <div title>
+        <div title class="hoverHighlightWhite">
             <i class="dropdown icon"></i>
             {{log.message}}
         </div>
@@ -14,11 +14,11 @@
                                 <br *ngIf="logEntries.length < 3">
                                  
                                 <!-- if it's just a string and not an object, just display it.... -->
-                                <p *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
+                                <p class="hoverHighlightWhite" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
                                 <!-- <p *ngIf="!log.data[key].__isObject__ || log.data[key].__isArray__"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p>  -->
 
-                                <!-- If it's an object by itself, make a new dropdown -->
-                                <p *ngIf="isAnObject[key]"> <!-- <b> {{key}} </b> : --> <app-one-log-child  class="oneLogChild" [log]="{'data' : log.data[key], 'topic': key}" [open]="false" ></app-one-log-child>  </p> 
+                                <!-- If it's an object by itself, make a new dropdown. "depth" is passed for indentation-->
+                                <p *ngIf="isAnObject[key]"> <!-- <b> {{key}} </b> : --> <app-one-log-child  class="oneLogChild" [log]="{'data' : log.data[key], 'topic': key, 'depth': log.depth}" [open]="false" ></app-one-log-child>  </p> 
                                 
                             </div>
                                     

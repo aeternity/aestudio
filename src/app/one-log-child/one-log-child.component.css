@@ -6,6 +6,18 @@ p {
     padding: 0
 }
 
+.hoverHighlightWhite:hover {
+    color: white !important
+}
+
+.dropdownContent{
+    margin-left: 9px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-color: white;
+    padding-left: 21px
+}
+
 /* error box start */
 .errorbox {
     width: auto;

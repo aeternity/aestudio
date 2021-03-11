@@ -2,6 +2,10 @@ p {
     color: #d4d4d4 !important;
 }
 
+.hoverHighlightWhite:hover {
+    color: white !important
+}
+
 /* error box start */
 .errorbox {
     width: auto;

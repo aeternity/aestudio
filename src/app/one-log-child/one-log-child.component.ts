@@ -50,6 +50,7 @@ export class OneLogChildComponent implements OnInit {
 }
 
 export interface Log {
+  depth: number;
   topic : string,
   type : "success" | "log" | "error" | "warn",
   data : any 
