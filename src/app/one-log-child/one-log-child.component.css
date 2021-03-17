@@ -9,6 +9,9 @@ p {
 .hoverHighlightWhite:hover {
     color: white !important
 }
+.noMarginBottom{
+    margin-bottom: 0
+} 
 
 .dropdownContent{
     margin-left: 9px;

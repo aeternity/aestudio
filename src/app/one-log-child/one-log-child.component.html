@@ -1,7 +1,8 @@
 <sui-accordion-panel [isOpen]="open">
+    <!-- <div *ngIf="log.depth < 3" title> -->
     <div title>
         <i class="dropdown icon"></i>
-        <b class="hoverHighlightWhite">{{log.topic}}</b> :
+        <b class="hoverHighlightWhite">{{log.topic }} &#58; </b> 
     </div>
     <div content>
             <div class="errorbox"> 
@@ -12,11 +13,11 @@
                         <div *ngFor="let key of logEntries">  
                           
                             <!-- if it's just a string and not an object, just display it.... -->
-                            <p class="hoverHighlightWhite" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
+                            <p class="hoverHighlightWhite noMarginBottom" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
                             <!-- <p *ngIf="!log.data[key].__isObject__ || log.data[key].__isArray__"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p>  -->
 
                             <!-- If it's an object by itself, make a new dropdown -->
-                            <p *ngIf="isAnObject[key]"> <b> {{key}} </b> : <app-one-log-child class="oneLogChild" [log]="{'data' : log.data[key], 'topic' : key, 'depth': log.depth + 1}" [open]="false" ></app-one-log-child>  </p> 
+                            <p *ngIf="isAnObject[key]">  <app-one-log-child class="oneLogChild" [log]="{'data' : log.data[key], 'topic' : key, 'depth': log.depth + 1}" [open]="false" ></app-one-log-child>  </p> 
                             
                         </div>
                                 

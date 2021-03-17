@@ -22,17 +22,30 @@ export class OneLogChildComponent implements OnInit {
   ngOnInit() {
     //if (this.isObject(this.log.data)){
     this.logEntries = Object.keys(this.log.data)
-    console.log("Log: Entries are: "+ this.logEntries)
     //}
     this.logEntries.forEach(key => {
-      /* if a child entry in the log data is an array or object, set a flag for that entry to true, else to false, respectively for being an array or an object.
-      (or if it's some simple type)
+      /* if a child entry in the log data is an array or object or just pure data, set a flag for that entry in the respective object.
       this is to prevent having to run type-checking functions in ngIf and ngFor in the template, which is resource-costly!
       */
+     // if it's an array...
       if (Array.isArray(this.log.data[key])){
-        this.isArray[key] = true
+        // treat as pure data if the array has 0 elements.
+        if (this.log.data[key].length < 1){
+          this.log.data[key] = "[]"
+          this.pureData[key] = true
+        } else {
+          this.isArray[key] = true
+        }
+        
+        // if it's an object..
       } else if(this.isObject(this.log.data[key])) {
-        this.isAnObject[key] = true
+        // treat as pure data if object check passes but there are les than 1 object keys.
+        if (Object.keys(this.log.data[key]).length < 1){
+          this.log.data[key] = "{}"
+          this.pureData[key] = true
+        } else {
+          this.isAnObject[key] = true
+        }
       } else {
         this.pureData[key] = true
       }
@@ -40,9 +53,8 @@ export class OneLogChildComponent implements OnInit {
   }
   
   isObject = A => {
-    if( (typeof A === "object") && (A !== null) )
+    if( (typeof A === "object" && typeof A !== "function") && (A !== null) )
     {
-      console.log("Log: Isobject true for: " + A)
         return true
     } else {return false}
   }

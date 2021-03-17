@@ -6,6 +6,10 @@ p {
     color: white !important
 }
 
+.noMarginBottom{
+    margin-bottom: 0
+} 
+
 /* error box start */
 .errorbox {
     width: auto;

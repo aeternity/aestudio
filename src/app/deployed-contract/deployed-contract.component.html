@@ -2,7 +2,8 @@
 <sui-accordion-panel [isDisabled]="false" >
     <div title>
         <i class="dropdown icon" (click)="panelOpen = !panelOpen"></i>
-        {{contract.aci.name}}
+        {{contract.aci.name}} <span style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span>
+        <!-- {{contract.aci.name}} <span (click)="panelOpen = !panelOpen" *ngIf="!panelOpen" style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span> -->
     </div>
     <div content>
             <div>
