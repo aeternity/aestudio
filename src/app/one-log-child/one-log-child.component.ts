@@ -1,11 +1,11 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-one-log',
-  templateUrl: './one-log.component.html',
-  styleUrls: ['./one-log.component.css']
+  selector: 'app-one-log-child',
+  templateUrl: './one-log-child.component.html',
+  styleUrls: ['./one-log-child.component.css']
 })
-export class OneLogComponent implements OnInit {
+export class OneLogChildComponent implements OnInit {
   
   // example log: ({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
 
@@ -20,16 +20,10 @@ export class OneLogComponent implements OnInit {
   constructor() {}
   
   ngOnInit() {
-
-    this.log.depth = 1; // to be passed for padding of later nested collapsible log content ("one-log-child")
+    //if (this.isObject(this.log.data)){
     this.logEntries = Object.keys(this.log.data)
-
+    //}
     this.logEntries.forEach(key => {
-      
-
-      // dirty patch for "createdAt" not properly displaying:
-      key == "createdAt" ? this.log.data[key] = this.getTimeDate() : false
-
       /* if a child entry in the log data is an array or object or just pure data, set a flag for that entry in the respective object.
       this is to prevent having to run type-checking functions in ngIf and ngFor in the template, which is resource-costly!
       */
@@ -55,28 +49,21 @@ export class OneLogComponent implements OnInit {
       } else {
         this.pureData[key] = true
       }
-    })
+    });
   }
   
   isObject = A => {
-    if( (typeof A === "object") && (A !== null) )
+    if( (typeof A === "object" && typeof A !== "function") && (A !== null) )
     {
         return true
     } else {return false}
   }
 
-  getTimeDate = () => {
-    var today = new Date();
-    var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    return  time + ' ' + date
-  }
-
 }
 
 export interface Log {
-  depth : number,
-  message : string,
+  depth: number;
+  topic : string,
   type : "success" | "log" | "error" | "warn",
   data : any 
 }

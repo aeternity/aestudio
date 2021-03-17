@@ -23,7 +23,6 @@ export class LogConsoleComponent implements OnInit {
 
     //setup subscription for new logs
     this.eventlog._newLog.subscribe(log => {
-      console.log("Log console got:", log)
       this.logs.push(log);
       //debugger
     })

@@ -14,7 +14,7 @@
             <sui-accordion [transition]="'fade'" [transitionDuration]="300" [closeOthers]="false">
 
                     
-                    <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog"></app-one-log>
+                    <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog" [open]="true" ></app-one-log>
 
                     <!-- <sui-accordion-panel [isDisabled]="false" [isOpen]="false">
                         <div title>

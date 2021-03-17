@@ -211,15 +211,11 @@ export class ContractMenuSidebarComponent implements OnInit {
         
         // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
-           // push contract in an array, later, when calling a function, find it by is address
-        // in this array
-       /*  let theContractAddress = newContract.deployInfo.address;
-        this.activeContracts[theContractAddress] = newContract; */
-        //newContract.expanded = false;
+        console.log("New contract: ", newContract) // .deployInfo.address
         this.activeContracts.push(newContract);
             
         // temp test
-        console.log("Current array of contracts: ", this.activeContracts);
+        //console.log("Current array of contracts: ", this.activeContracts);
 
         // trigger this to generate the GUI for the contract
         this.deploymentLoading = false;
@@ -290,7 +286,7 @@ async fetchAllBalances(_dontFillUp? : boolean){
 // get balance of only one address
 // TODO: option parameter einbauen, Format ist 
 // async ƒ balance(address, { height, hash, format = false } = {})
-async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any, ){
+async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any){
   // if only the address is defined, don't call with options.
   var balance;
   //console.log("Fetching balan ce for..." + _address);

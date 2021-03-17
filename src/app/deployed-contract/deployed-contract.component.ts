@@ -24,9 +24,10 @@ export class DeployedContractComponent implements OnInit {
      }
   
   ngOnInit() {
-    console.log("Als contract wurde übergeben: ");
-    console.log(this.contract);
+    //console.log("Passed contract: ");
+    //console.log(this.contract);
     //this.contract.aci = this.contract.aci.contract;
+    this.contract.addressPreview = this.contract.deployInfo.address.substring(0,6) + ' . . . ' +  this.contract.deployInfo.address.slice(-3)
   }
 
   public openPopup(popup:IPopup, _payable: any) {

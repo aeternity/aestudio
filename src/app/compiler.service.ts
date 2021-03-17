@@ -408,8 +408,8 @@ public initWalletSearch = async (successCallback) => {
     }
 
     console.log("My contract: ", myContract);
-    console.log("My account: ", this.Chain.addresses());
-    console.log("Das ganze SDK: ", this.Chain);
+    //console.log("My account: ", this.Chain.addresses());
+    //console.log("Das ganze SDK: ", this.Chain);
 
     this.fromCodeToACI(sourceCode)
     .subscribe(
@@ -449,13 +449,13 @@ public initWalletSearch = async (successCallback) => {
       console.log(myContract);
 
       this.aci = aci;
-      // add an index to allow self-referencing its position in the array..
+      // add an index to allow self-referencing its position in the (contracts?) array..
       myContract.IDEindex = this.activeContracts.length;
 
       
-      // for now, (also) store in compiler. not decided yet where it's better.
-      // sidebar currently references the contracts stored in this compiler service
-      // for function calls.
+      // for now, (also) store the contract in compiler. not decided yet where it's better.
+      // sidebar currently receives its own contract data via following event subscription:
+
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it
       this._notifyDeployedContract.next({newContract: myContract, success: true});

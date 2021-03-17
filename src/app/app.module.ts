@@ -35,6 +35,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { MainloaderComponent } from './mainloader/mainloader.component';
 import { WalletSwitchComponent } from './wallet-switch/wallet-switch.component';
+import { OneLogChildComponent } from './one-log-child/one-log-child.component';
 // firebase end
 
 
@@ -48,7 +49,7 @@ import { WalletSwitchComponent } from './wallet-switch/wallet-switch.component';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent
   ],
   imports: [
     BrowserModule,

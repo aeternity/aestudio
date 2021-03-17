@@ -2,13 +2,24 @@ p {
     color: #d4d4d4 !important;
 }
 
+.title {
+    padding: 0
+}
+
 .hoverHighlightWhite:hover {
     color: white !important
 }
-
 .noMarginBottom{
     margin-bottom: 0
 } 
+
+.dropdownContent{
+    margin-left: 9px;
+    border-left-style: solid;
+    border-left-width: 1px;
+    border-color: white;
+    padding-left: 21px
+}
 
 /* error box start */
 .errorbox {
