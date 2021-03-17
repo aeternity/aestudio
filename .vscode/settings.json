@@ -1,4 +1,5 @@
 {
     "editor.renderWhitespace": "selection",
-    "editor.maxTokenizationLineLength": 40000
+    "editor.maxTokenizationLineLength": 40000,
+    "gitdoc.enabled": false
 }
