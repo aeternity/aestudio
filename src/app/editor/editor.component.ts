@@ -199,7 +199,7 @@ export class EditorComponent implements OnInit {
           
           if (contractCode != undefined) {
             
-            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            //console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             
             // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
@@ -213,9 +213,6 @@ export class EditorComponent implements OnInit {
                 data.encoded_aci.contract.name = namestring
                 this.activeContract.nameInTab = namestring;
                 this.activeContract = new Contract({ _code: contractCode, _nameInTab: namestring, _latestAcI : data.encoded_aci.contract })
-                
-
-                debugger
 
                 console.log("Editor new contract:", this.activeContract)
     
