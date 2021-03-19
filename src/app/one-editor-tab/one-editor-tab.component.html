@@ -5,8 +5,18 @@
     class="editor" [options]="editorOptions"></ngx-monaco-editor>
 
 
-    <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
-        <h1 class="ui inverted header">Link copied to clipboard!</h1>
-        <br>
-        <p style="font-size: 35px">🎉</p>
-    </sui-dimmer>
+<!-- Code sharing link generator  -->
+<sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
+    <ng-container *ngIf="contractID; then linkSuccess; else notLoggedIn">
+    </ng-container>
+</sui-dimmer>
+
+<ng-template #linkSuccess>
+    <h1 style="padding-top: 30%" class="ui inverted header">Link copied to clipboard! &nbsp; 🎉</h1>
+</ng-template>
+
+<ng-template #notLoggedIn>
+    <h1 style="padding-top: 15px" class="ui inverted header">Please log in to use this feature.</h1>
+
+    <p style="font-size: 35px">👉</p>
+</ng-template>

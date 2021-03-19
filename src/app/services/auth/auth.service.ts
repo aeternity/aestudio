@@ -202,7 +202,7 @@ export class AuthService {
     })}
 
     // for sharing contracts
-    async storeContractShare(contractCode) : Promise<string>{
+    async storeContractShare(contractCode) : Promise<string | boolean>{
       let data = {code: contractCode}
 
       try {
@@ -212,7 +212,7 @@ export class AuthService {
         return dbID
       } catch (error) {
         console.log("Auth: Write to DB failed!")
-        return "false"
+        return false
       }  
     }
 

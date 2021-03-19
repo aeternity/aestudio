@@ -32,6 +32,8 @@ export class OneEditorTabComponent implements OnInit {
 
   // dimming for sharing link displaying
   isDimmed: boolean = false;
+  contractID : string | boolean = false // necessary for the link copying dimming
+
   editorInstance: any; // the editor, initialized by the component
   
   // workaround for annoying angular bug firing events dozens of times: collect hashes of errors in this map and set new ones only if hash is unused 
@@ -235,7 +237,12 @@ this.compiler._newACI.subscribe(item => {
             }
             
             console.log("DIE URL: ", constructedUrl)
-            this._clipboardService.copyFromContent(constructedUrl);
+
+            if(contractID !== false) {
+              this._clipboardService.copyFromContent(constructedUrl);
+              this.contractID = String(contractID)
+            } 
+
             // display success message ;)
             this.isDimmed = true;
             // tell angular to detect changes because we're in a event subscription here -.-
@@ -243,46 +250,9 @@ this.compiler._newACI.subscribe(item => {
               setTimeout(() => {
                 this.isDimmed = false;
                 this.changeDetectorRef.detectChanges()
-              }, 900);
+                this.contractID = false
+              }, 1200);
           }
-        /* run: () => {
-          console.log(this.compiler.activeCodeSelection)
-          let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
-          console.log("So sieht post data aus:", postData);
-
-          this.http.post(environment.contractSharingBackend, postData, {
-            headers: new HttpHeaders({
-                'Content-Type':  'application/json'
-              })
-          }).subscribe(data=>{
-            console.log("Post hat ergeben?", data)
-
-            var constructedUrl;
-            var s = this.compiler.activeCodeSelection || "";
-            
-            // share code with our without highlighter
-            if (s.endLineNumber != undefined){
-              constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${data['candidateId']}`
-            } else {
-              constructedUrl = `${environment.appUrl}?contract=${data['candidateId']}`
-            }
-            
-            console.log("DIE URL: ", constructedUrl)
-            this._clipboardService.copyFromContent(constructedUrl);
-            // display success message ;)
-            this.isDimmed = true;
-            // tell angular to detect changes because we're in a event subscription here -.-
-            this.changeDetectorRef.detectChanges()
-              setTimeout(() => {
-                this.isDimmed = false;
-                this.changeDetectorRef.detectChanges()
-              }, 900);
-
-          });
-
-        } */
-
-
       });
 
     // when right-clicking
