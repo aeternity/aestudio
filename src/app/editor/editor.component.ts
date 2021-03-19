@@ -14,6 +14,7 @@ import { ClipboardService } from 'ngx-clipboard';
 //import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { CodeFactoryService } from '../code-factory.service';
 import { LocalStorageService } from '../local-storage.service';
+import { AuthService } from '../services/auth/auth.service'
 
 
 
@@ -105,7 +106,8 @@ export class EditorComponent implements OnInit {
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef,
     private generator: CodeFactoryService,
-    private localStorage: LocalStorageService
+    private localStorage: LocalStorageService,
+    private authService: AuthService
     ) { 
       
       // deprecation testing
@@ -152,7 +154,7 @@ export class EditorComponent implements OnInit {
     console.log("Die gesamt route: ", syncRoute)
     console.log(">>>>>>Durchlauf:  ", ++this.runTimes)
 
-    this._route.queryParamMap.subscribe(parameter => {
+    this._route.queryParamMap.subscribe(async parameter => {
 
       // quickfix for stupid racing condition
       this.runTimes++;
@@ -180,13 +182,13 @@ export class EditorComponent implements OnInit {
       if (parameter.get("contract") !== null) {
         var contractID = parameter.get("contract");
         console.log("contract ID: ", contractID);
-        // call backend
-        let requestURL = `${environment.contractSharingBackend}${contractID}`
-        console.log("Die request URL ist: ", requestURL);
+
 
         //let something = this.http.get(`https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/9702aa10-b`)
 
-        this.http.get(`${environment.contractSharingBackend}${contractID}`).subscribe(async (res) => {
+        let contractCode = await this.authService.getSharedContract(contractID) 
+
+
           // if the backend responds, load contracts from local storage and ...
           // ...initialize a new contract with the code from the backend and push it to the contracts array.
           // if there is no contract in the response, just load the contracts from storage.
@@ -194,19 +196,29 @@ export class EditorComponent implements OnInit {
           // TODO: Show a message if a contract was tried to be fetched that doesnt exist (anymore) 
 
           //console.log("is it there? ", res['contract'])
-          if (res['contract'] !== undefined) {
+          
+          if (contractCode != undefined) {
+            
             console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
-
+            
             // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
-            this.activeContract = new Contract({ _code: res['contract'] })
 
             // GET THE CONTRACT'S NAME...
-            this.compiler.fromCodeToACI(this.activeContract.code).subscribe(
+            
+            this.compiler.fromCodeToACI(contractCode).subscribe(
               (data: EncodedACI) => {
+                // set the contract to a fixed external name
                 let namestring = `${data.encoded_aci.contract.name} [External]`;
+                data.encoded_aci.contract.name = namestring
                 this.activeContract.nameInTab = namestring;
+                this.activeContract = new Contract({ _code: contractCode, _nameInTab: namestring, _latestAcI : data.encoded_aci.contract })
+                
 
+                debugger
+
+                console.log("Editor new contract:", this.activeContract)
+    
                 // TODO : make being the active tab a property to the contract object and tell tab shit to use it !
 
                 // set contract parameters
@@ -276,7 +288,7 @@ export class EditorComponent implements OnInit {
           this.compiler.code = this.activeContract.code;
 
 
-        })
+        
 
       } else {
 
@@ -363,7 +375,10 @@ export class EditorComponent implements OnInit {
         }, 300);
         ;} */
   
-  
+      /// WIP: Enable only if user is logged in. example: https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-a-command-to-an-editor-instance
+      // Step 1:
+      var myCondition = this.editorInstance.createContextKey('myCondition', false)
+
       // custom context menu options
       this.editorInstance.addAction ({
           // ID of the group in which the new item will appear.
@@ -373,10 +388,12 @@ export class EditorComponent implements OnInit {
           contextMenuOrder: 3, // order of a menu item within a group
           label: '<i class="share alternate icon"></i> Share contract and selection...',
           id: 'showDiff',
+          /* precondition: false, */
           keybindings: [], // Hotkeys
           // function called when clicking
           // press the specified keys
-          run: () => {console.log(this.compiler.activeCodeSelection)
+          run: () => {
+            console.log(this.compiler.activeCodeSelection)
             let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
             console.log("So sieht post data aus:", postData);
   

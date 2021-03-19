@@ -11,6 +11,7 @@ export class Contract<T> {
 
   constructor(params : {[key: string]: any} ){
     this.contractUID = String(Date.now());
+    params._latestAcI != undefined ? this.latestACI = params._latestAcI : true;
     params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
     params._shareId != undefined ? this.shareId = params._shareId : true;
     params._code != undefined ? this.code = params._code : this.code = `

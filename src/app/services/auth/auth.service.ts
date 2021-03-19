@@ -201,59 +201,43 @@ export class AuthService {
 
     })}
 
-    /* private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
-      return new Promise ((resolve, reject) => {
+    // for sharing contracts
+    async storeContractShare(contractCode) : Promise<string>{
+      let data = {code: contractCode}
 
-        console.log("Login: fillup triggered")
-        this.fillingUpAccounts.active = true;
-       var dummy: any[] = [];
-       // stupid quick workaround for rxJS requiring an array to iterate over - feed it one, create keys only if needed.
-       // this is a workaround to handle the fillup requests failing. 
-       for(let i=0; i<100; i++){
-         dummy.push("a");
-       }
-       
-       var memoryAccs: MemoryAccount[] = [];
-       //var that = this
+      try {
+        let writeDB =  await this.afs.collection('shared-contracts').add(data)
+        console.log("AUTH write ergab: ", writeDB)
+        let dbID = writeDB["_key"].path.segments[1]
+        return dbID
+      } catch (error) {
+        console.log("Auth: Write to DB failed!")
+        return "false"
+      }  
+    }
 
-  
-       observableFrom(dummy).pipe(
-        concatMap(someDummy => {if (memoryAccs.length < 4) {
-
-          let keypair = Crypto.generateKeyPair()
-          let oneAccount = new MemoryAccount({keypair: keypair})
-         // add custom property to memory account to later know it belongs to a logged-in user
-         oneAccount.property = "personal"
-
-          return this.http.post(`https://testnet.faucet.aepps.com/account/${oneAccount.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}})
-          } else {
-                    this.fillingUpAccounts.active = false;
-                    resolve(memoryAccs)
-                    return new Observable;
-
-          }})
-        ).subscribe(
-          response => {
-            //TODO: Evaluate if error !
-            this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
-            console.log("Login: fillup transaction response:", response)
-          }, //do something with responses
-          error => console.error("Login: fillup transaction error error" ,error), // so something on error
-          () => {
-            console.info("All requests done") // do something when all requests are done 
-            console.log(memoryAccs);
-            // MAKE MEMORY ACCOUNTS !
-            resolve(memoryAccs);
+    async getSharedContract(shareID : string) {
+      return new Promise((resolve, reject) => 
+        {
+          try {
+            let contract =  this.afs.collection('shared-contracts').doc(shareID).get().subscribe(something => {
+              //console.log("AUTH: Retrieved ", something)
+              console.log("AUTH: Retrieved ", something.data().code)
+              resolve(something.data().code)
+            })
+          } catch (error) {
+            console.log("AUTH: Couldn't query for contract, ", error)
+            resolve(undefined)
           }
-      );
-      })
-     
+        }
+      )
+       
 
-    } */
+
+    }
 
 }
 
-// TODO: accs in backend speichern
 // TODO: auto re-fill accounts when empty
 // https://fireship.io/lessons/angularfire-google-oauth/
 // https://www.techiediaries.com/angular-firestore-tutorial/

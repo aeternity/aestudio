@@ -9,7 +9,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard';
 import { Subscription, Subject } from 'rxjs';
 import { setInterval, clearInterval } from 'timers';
-
+import { AuthService } from '../services/auth/auth.service';
 
 @Component({
   selector: 'app-one-editor-tab',
@@ -87,8 +87,8 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     private compiler: CompilerService,
     private http: HttpClient,
     private _clipboardService: ClipboardService,
-    private changeDetectorRef: ChangeDetectorRef 
- 
+    private changeDetectorRef: ChangeDetectorRef,
+    private authService: AuthService 
   ) {
     console.log("activeContract", this.activeContract);
     
@@ -121,7 +121,7 @@ this.compiler._newACI.subscribe(item => {
     
     this.save();
     
-    //this.changeDetectorRef.detectChanges()
+    this.changeDetectorRef.detectChanges()
     //console.log("Aci im one editor", this.activeContract.latestACI)
     //console.log("Clearing error marker..");
     this.clearAllHighlighters();
@@ -155,8 +155,8 @@ this.compiler._newACI.subscribe(item => {
     
     console.log("Es kam ein neuer change rein für contract: ", item['contractUID']);
     
-    this.save();
     this.activeContract.latestACI;
+    this.save();
     
     //this.changeDetectorRef.detectChanges()
     console.log("Aci im one editor", this.activeContract.latestACI)
@@ -217,10 +217,35 @@ this.compiler._newACI.subscribe(item => {
         contextMenuOrder: 3, // order of a menu item within a group
         label: '<i class="share alternate icon"></i> Share contract and selection...',
         id: 'showDiff',
+        /* precondition: false, */
         keybindings: [], // Hotkeys
         // function called when clicking
         // press the specified keys
-        run: () => {
+          run: async () => {
+            let contractID = await this.authService.storeContractShare(this.activeContract.code);
+
+            var constructedUrl;
+            var s = this.compiler.activeCodeSelection || "";
+            
+            // share code with our without highlighter
+            if (s.endLineNumber != undefined){
+              constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${contractID}`
+            } else {
+              constructedUrl = `${environment.appUrl}?contract=${contractID}`
+            }
+            
+            console.log("DIE URL: ", constructedUrl)
+            this._clipboardService.copyFromContent(constructedUrl);
+            // display success message ;)
+            this.isDimmed = true;
+            // tell angular to detect changes because we're in a event subscription here -.-
+            this.changeDetectorRef.detectChanges()
+              setTimeout(() => {
+                this.isDimmed = false;
+                this.changeDetectorRef.detectChanges()
+              }, 900);
+          }
+        /* run: () => {
           console.log(this.compiler.activeCodeSelection)
           let postData = {"contract":this.activeContract.code ,"contractName": "some", "editorVersion":1}
           console.log("So sieht post data aus:", postData);
@@ -255,7 +280,9 @@ this.compiler._newACI.subscribe(item => {
 
           });
 
-        }
+        } */
+
+
       });
 
     // when right-clicking
