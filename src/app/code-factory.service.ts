@@ -92,7 +92,7 @@ export class CodeFactoryService {
     \`${_theContractCode}\`
 
     // create a contract instance
-    myContract = await Chain.getContractInstance(sourceCode);
+    myContract = await Chain.getContractInstance(code);
 
     // Deploy the contract
     try {
@@ -140,7 +140,7 @@ export class CodeFactoryService {
       ${cgs.contract ? codeObject.contractDeployment : ''}
       ${!cgs.sdk && !cgs.contract && cgs.function? "// don't forget to change the 'myContract' placeholder to yours " : ''}
       ${cgs.function ? codeObject.functionCall : ''}
-      ${cgs.sdk ? '}' : ''}
+      ${cgs.sdk ? '} \n main();' : ''}
       `
       return finalCode
     }
