@@ -35,19 +35,14 @@ i{
 
 
 a:hover{
-    color: #F2711C !important
+    color: #FF2D55 !important
 }
 
 .contractInLeftMenuWrapper{
     
-    background: rgba(125,60,20,1);
-    background: -moz-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
-    background: -webkit-gradient(left top, right top, color-stop(0%, rgba(125,60,20,1)), color-stop(5%, rgba(242,113,28,1)), color-stop(100%, rgba(242,113,28,1)));
-    background: -webkit-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
-    background: -o-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
-    background: -ms-linear-gradient(left, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
-    background: linear-gradient(to right, rgba(125,60,20,1) 0%, rgba(242,113,28,1) 5%, rgba(242,113,28,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d3c14', endColorstr='#f2711c', GradientType=1 );
+    background: rgb(131,58,180);
+    background: linear-gradient(315deg, rgba(131,58,180,1) 0%, rgba(255,45,85,1) 50%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7d3c14', endColorstr='#FF2D55', GradientType=1 );
 }
 
 /* loader start */

@@ -130,44 +130,44 @@ border-color: #000!important;
 }
 
 .ui.secondary.pointing.menu .active.item {
-    border-color: #ff6f10;
+    border-color: #FF2D55;
 }
 
 .ui.secondary.pointing.menu a.item:active {
-    border-color: #f9c90e;
+    border-color: #d22748;
 }
 
 .ui.secondary.pointing.menu .item:hover {
-    border-color: #ff9710;
+    border-color: #d22748;
     color: rgba(0,0,0,1)
 }
 
 .ui.secondary.pointing.menu .active.item:hover {
-    border-color: #ff9710;
+    border-color: #d22748;
 }
 
 .ui.primary.button {
-    background-color: #f2711d;
+    background-color: #D12754;
     color: #FFF;
     text-shadow: none;
     background-image: none;
 }
 
 .ui.primary.active.button {
-    background-color: #ff6f10;
+    background-color: #FF2D55;
     color: #FFF;
     text-shadow: none;
     background-image: none;
 }
 .ui.primary.button:focus {
-    background-color: #ff9710;
+    background-color: #d22748;
     color: #FFF;
     text-shadow: none;
     background-image: none;
 }
 
 .ui.primary.button:hover {
-    background-color: #ff9710;
+    background-color: #d22748;
     color: #FFF;
     text-shadow: none;
     background-image: none;
@@ -177,11 +177,11 @@ border-color: #000!important;
 }
 
 .ui.slider.checkbox input:checked~label {
-    background-color: #f2711d !important;
+    background-color: #D12754 !important;
 }
 
 .ui.slider.checkbox input:checked~label {
-    color: #f2711d!important;
+    color: #D12754!important;
 }
 
 /* value, gas, gasPrice tabs end*/
@@ -260,7 +260,7 @@ border-color: #000!important;
 
 /* Color for units */
 .mtk8{
-    color:#f2701d !important
+    color:#FF2D55 !important
 }
 
 /* Color for brackets and signs */
@@ -321,7 +321,7 @@ border-color: #000!important;
 }
 
 .ui.input input:focus, .ui.input.focus input {
-    border-color: #F2711C;
+    border-color: #FF2D55;
 }
 
 /* sidebar end */ 
@@ -430,7 +430,7 @@ border-color: #000!important;
 
 .contracttab.item.active{
     background: #1e1e1e !important;
-    border-top-color: #f2711d !important;
+    border-top-color: #FF2D55 !important;
     border-left-color: black !important;
     border-right-color: black !important;
     border-top-width: 2px !important;
@@ -439,7 +439,7 @@ border-color: #000!important;
 }
 
 .contracttab.item{
-    background: #1b1c1d !important;
+    background: #121213 !important;
     border-top: 1px solid #121212 !important;
     border-right: 1px solid #121212 !important;
     border-left: 1px solid #121212 !important;
@@ -447,8 +447,8 @@ border-color: #000!important;
 }
 
 .theSideMenu .ui.tabular.menu {
-    border-bottom-color: #764322;
-    background-color: #1b1c1d;
+    border-bottom-color: #FF2D55;
+    background-color: #121213;
 }
 
 /* tab menu end  */
@@ -471,23 +471,23 @@ border-color: #000!important;
 
 @-webkit-keyframes {
 	from { background-color: initial; }
-	to { background-color: #F2711C; }
+	to { background-color: #FF2D55; }
 }
 @-moz-keyframes orange_blink {
 	from { background-color: initial; }
-	to { background-color: #F2711C; }
+	to { background-color: #FF2D55; }
 }
 @-ms-keyframes orange_blink {
 	from { background-color: initial; }
-	to { background-color: #F2711C; }
+	to { background-color: #FF2D55; }
 }
 @-o-keyframes orange_blink {
 	from { background-color: initial; }
-	to { background-color: #F2711C; }
+	to { background-color: #FF2D55; }
 }
 @keyframes orange_blink {
 	from { background-color: initial; }
-	to { background-color: #F2711C; }
+	to { background-color: #FF2D55; }
 }
 
 .blinkOnLoad{

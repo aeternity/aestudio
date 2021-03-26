@@ -79,16 +79,16 @@ body {
   color: #55bc49;
 }
 .can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch {
-  background-color: #f3701d ;
+  background-color: #D12754 ;
 }
 .can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
-  color: #f3701d;
+  color: #D12754;
 }
 .can-toggle input[type="checkbox"]:checked:focus ~ label .can-toggle__switch, .can-toggle input[type="checkbox"]:checked:hover ~ label .can-toggle__switch {
   background-color: #ff741e;
 }
 .can-toggle input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
-  color: #f3701d;
+  color: #D12754;
 }
 .can-toggle label .can-toggle__label-text {
   -webkit-box-flex: 1;

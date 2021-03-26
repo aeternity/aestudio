@@ -53,7 +53,7 @@ export class ContractInLeftMenuComponent implements OnInit {
     /* The right button */
     this.rightButtonLabel = { 
       width: "40px",
-      color: "orange",
+      color: "#D12754",
      
       height: "100%",
       display: "inline-block"
@@ -76,7 +76,7 @@ export class ContractInLeftMenuComponent implements OnInit {
     /* The right button */
     this.rightButtonLabel = { 
       width: "0px",
-      color: "orange",
+      color: "#D1275",
       display: "inline-block",
       height: "100%"
     }

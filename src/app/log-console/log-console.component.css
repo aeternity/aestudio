@@ -3,33 +3,33 @@
 }
 
 .logMonitorPanel p {
-    color: #cf590c;
+    color: #d22748;
     display: inline;
 
 }
 
 .logMonitorPanel i {
-    color: #cf590c;
+    color: #d22748;
     display: inline;
 }
 
 .eventlog{
     margin: 0px;
-    background-color: #1e1e1e;
+    background-color: #131414;
     border-radius: 0px;
     
 }
 
 .innereventlog{
-    background-color: #1e1e1e;
+    background-color: #131414;
     padding:0px;
 }
 
 .expanded .ui.segment{
-    background-color: #1e1e1e;
-    -webkit-box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
-    -moz-box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
-    box-shadow: inset 5px 5px 20px 1px rgba(242,113,28,0.3);
+    background-color: #131414;
+    -webkit-box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
+    -moz-box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
+    box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
 }
 
 .expanded .ui.segment{
