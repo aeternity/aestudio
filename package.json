@@ -22,7 +22,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "github:aeternity/aepp-sdk-js#9c80ce0e4f1359f389585ea3df9f513ac1e82c04",
+    "@aeternity/aepp-sdk": "^7.7.0",
     "@angular/animations": "^9.1.1",
     "@angular/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
@@ -46,8 +46,10 @@
     "ngx-loadable": "^2.1.1",
     "ngx-monaco-editor": "^9.0.0",
     "ngx-webstorage-service": "^4.1.0",
+    "path": "^0.12.7",
     "requestretry": "^4.1.0",
     "rxjs": "^6.5.5",
+    "stream": "0.0.2",
     "tslib": "^1.11.1",
     "uuid": "^3.3.2",
     "zone.js": "~0.10.2"
