@@ -118,14 +118,15 @@ export class ContractMenuSidebarComponent implements OnInit {
     _existingContract && this.addressOfExistingContract.length > 50 ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
   }
   copyAddress() {
-    document.addEventListener('copy', (e: ClipboardEvent) => {
-      e.clipboardData.setData('text/plain', (this.currentSDKsettings.address));
-      e.preventDefault();
-      document.removeEventListener('copy', null);
+    navigator.clipboard.writeText(this.currentSDKsettings.address)
+    .then(() => {
+      console.log('Text copied to clipboard');
+    })
+    .catch(err => {
+      // This can happen if the user denies clipboard permissions:
+      console.error('Could not copy text: ', err);
     });
-    //window.alert(this.currentSDKsettings.address + " copied!")
-    document.execCommand('copy');
-  } 
+  }
 
   async ngOnInit () {
     //this.buildAContract();
