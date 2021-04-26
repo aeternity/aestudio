@@ -111,7 +111,7 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
 
 this.compiler._newACI.subscribe(item => {
   
-  console.log(">>> ACI subscription gab: ", item);
+  console.log(">>> ACI subscription returned: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
     
@@ -147,7 +147,7 @@ this.compiler._newACI.subscribe(item => {
     this.rawACIsubscription = this.compiler._notifyCompiledAndACI
     .subscribe(item => { console.log("Neue ACI für init ist da !", item) 
 
-    console.log(">>> ACI subscription gab: ", item);
+    console.log(">>> ACI subscription returned: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
     
@@ -265,7 +265,7 @@ this.compiler._newACI.subscribe(item => {
       // log selection coordinates only if it's actually a selection, not just a click.
       if (result.selection.endColumn != result.selection.startColumn && result.selection.startLineNumber != result.selection.endLineNumber) {
           this.compiler.activeCodeSelection = result.selection;
-          console.log("selected: ", result.selection);
+          //console.log("selected: ", result.selection);
           }
     });
 
@@ -366,7 +366,7 @@ this.compiler._newACI.subscribe(item => {
   this.rawACIsubscription = this.compiler._notifyCompiledAndACI
   .subscribe(item => { 
 
-    console.log(">>> ACI subscription gab: ", item);
+    console.log(">>> ACI subscription returned: ", item);
  
   if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
     

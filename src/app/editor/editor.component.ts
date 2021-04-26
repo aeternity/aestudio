@@ -437,7 +437,7 @@ export class EditorComponent implements OnInit {
         // log selection coordinates only if it's actually a selection, not just a click.
         if (result.selection.endColumn != result.selection.startColumn && result.selection.startLineNumber != result.selection.endLineNumber) {
             this.compiler.activeCodeSelection = result.selection;
-            console.log("selected: ", result.selection);
+            //console.log("selected: ", result.selection);
             }
       });
   

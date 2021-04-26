@@ -231,8 +231,8 @@
                 <i class="search icon"></i>
             </div>
 
-            <!-- Todo: instead of relying the init function always coming first, find a way to directly pic the init function !  -->
-                <div *ngIf="initACI.functions[0].name == 'init' && initACI.functions[0].arguments.length > 0">
+            <!-- TODO: instead of relying the init function always coming first, find a way to directly pick the init function !  -->
+                <div *ngIf="initACI.functions[0] != undefined && initACI.functions[0].name == 'init' && initACI.functions[0].arguments.length > 0">
                     <form class="ui form">
                         <!-- todo: Also here, get the init function directly from somewhere -->
                         <div class="field" *ngFor="let arg of initACI.functions[0].arguments">

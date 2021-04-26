@@ -12,7 +12,7 @@
     "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2015",
+    "target": "es5",
     "strictNullChecks": false,
     "typeRoots": [
       "node_modules/@types", "src/app/editor/typings.d.ts"

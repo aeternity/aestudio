@@ -43,7 +43,6 @@
     "ng-inline-svg": "^10.0.0",
     "ng2-semantic-ui": "^0.10.0-alpha.6",
     "ngx-clipboard": "^12.2.0",
-    "ngx-loadable": "^2.1.1",
     "ngx-monaco-editor": "^9.0.0",
     "ngx-webstorage-service": "^4.1.0",
     "path": "^0.12.7",
