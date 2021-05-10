@@ -1,7 +1,8 @@
 
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
+import { Universal } from '@aeternity/aepp-sdk'
+
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
@@ -11,7 +12,7 @@ import {RpcAepp} from "@aeternity/aepp-sdk";
 
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
+
 import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 import publicAccounts from './helpers/prefilled-accounts'
 import { EventlogService } from './services/eventlog/eventlog.service'
@@ -73,7 +74,7 @@ public tellAci(): Observable < string > {
   return this.aciObs;
 }
 
-public TESTNET_URL = 'https://testnet.aeternity.io';
+public TESTNET_URL = 'https://iris.testnet.aeternity.art/v2/status';
 public MAINNET_URL = 'https://mainnet.aeternity.io';
 public COMPILER_URL = 'https://compiler.aepps.com';
 
@@ -171,7 +172,7 @@ public awaitInitializedChainProvider = async () => {
      
       if(this.Chain && this.Chain.currentWalletProvider){
         clearInterval(check);
-        resolve()
+        resolve(true)
       } else {
         scanCount++
       }
