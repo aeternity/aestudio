@@ -102,7 +102,7 @@ export class AuthService {
            
              console.log("Login: writing to db was like: ", writeDB)
 
-             let memoryaccounts : MemoryAccount[] = [];
+             let memoryaccounts : typeof MemoryAccount[] = [];
 
              keypairs.forEach(account => {
               memoryaccounts.push(MemoryAccount({keypair: account}))
@@ -157,7 +157,7 @@ export class AuthService {
 
     // helpers
 
-    private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
+    private async generateAndFillAccounts() : Promise<typeof MemoryAccount[]> {
       return new Promise ((resolve, reject) => {
 
         console.log("Login: fillup triggered")
@@ -183,7 +183,7 @@ export class AuthService {
               //console.log("Login: oneAccount: ", oneAccount)
 
               //debugger
-
+              // @ts-ignore
               this.http.post(`https://testnet.faucet.aepps.com/account/${keypair.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).subscribe({
                 next: data => {
                   keypairs.push(keypair);

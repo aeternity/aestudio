@@ -255,7 +255,7 @@ public initWalletSearch = async (successCallback) => {
     private eventlog: EventlogService) {
 
     // define the default SDK settings
-    var theAccounts : MemoryAccount[] = [];
+    var theAccounts : typeof MemoryAccount[] = [];
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach(account => {
@@ -279,7 +279,7 @@ public initWalletSearch = async (successCallback) => {
    }
 
 
-   async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+   async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : typeof MemoryAccount[], command? : string}){
 
     // if a config is provided, apply its values to the sdkConfigOverrides
   if (_config){
