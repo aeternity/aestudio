@@ -315,10 +315,12 @@ export class EditorComponent implements OnInit {
       this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode
         .subscribe(item => {console.log("Im editor angekommen !"); 
         //console.log("Current code ist: ", this.contract.code)
-    
+
+        try{
         // try generating ACI for init-interface
         this.compiler.generateACIonly({sourceCode: this.activeContract.code, contractUID: this.activeContract.contractUID});
-      
+        } catch(e)
+          {console.log("Editor.component Error (no code yet): ", e)}
         })
   
   

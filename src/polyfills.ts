@@ -67,6 +67,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 // 2. Uncaught ReferenceError: process is not defined at Object../node_modules/pbkdf2/lib/default-encoding.js (default-encoding.js:3)
 (window as any).process = {
     env: { DEBUG: undefined },
+    version: '12.1337'
   };
   
 // 3. Uncaught ReferenceError: Buffer is not defined
@@ -74,6 +75,13 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 
  global.Buffer = global.Buffer || require('buffer').Buffer;
 
+
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+
+
+ (window as any).process = {
+  env: { DEBUG: undefined },
+  version: '12.1337'
+};

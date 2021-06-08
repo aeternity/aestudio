@@ -4,7 +4,7 @@
 </ng-template>
 
 <div class="can-toggle">
-  <input [attr.disabled]="!compiler.walletExtensionPresent ? '' : null" id="a" type="checkbox">
+  <input [attr.disabled]="true" id="a" type="checkbox">
   <label for="a">
     <div (click)="compiler.walletExtensionPresent ? compiler.toggleProvider() : true" class="can-toggle__switch" data-checked="Mainnet" data-unchecked="Testnet"></div>
     <!-- <div class="can-toggle__label-text">.can-toggle</div> -->

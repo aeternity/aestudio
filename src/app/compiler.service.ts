@@ -1,7 +1,7 @@
 
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Universal } from '@aeternity/aepp-sdk/es/ae/universal'
+import { Universal } from '@aeternity/aepp-sdk/'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
