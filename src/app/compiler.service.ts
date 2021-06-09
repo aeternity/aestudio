@@ -151,10 +151,10 @@ public justScanForWallets = async (successCallback) => {
   const handleWallets = async ({ wallets, newWallet }) => {
     detector.stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
-    console.log("newwallet: ", newWallet);
-    console.log("wallets: ", wallets);
-    console.log("cachedWallet", this.cachedWallet);
-    console.log("one wallet" , Object.values(wallets)[0])
+    console.log("superhero: newwallet: ", newWallet);
+    console.log("superhero: wallets: ", wallets);
+    console.log("superhero: cachedWallet", this.cachedWallet);
+    console.log("superhero: one wallet" , Object.values(wallets)[0])
 
     const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
     this.aeternity.detectedWallet = wallet.id;

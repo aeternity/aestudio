@@ -98,8 +98,8 @@ public closePopup(popup:IPopup) {
         this.eventlog.log({type:"error", message:"Call failure", data: e})
 
       } else {
-        //this.logMessage(_theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again.",  this.contract.aci.name)
-  
+        this.contract.aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
+        this.eventlog.log({type:"error", message: _theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again. " , data: e})
       }
     }
     //deactivate loader
