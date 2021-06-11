@@ -1,3 +1,7 @@
+@compiler >= 6
+
+include "String.aes"
+
 contract CryptoHamster =
 
     record state = {

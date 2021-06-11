@@ -35,9 +35,10 @@ export class FungibleToken<T> {
 // THIS IS NOT SECURITY AUDITED
 // DO NEVER USE THIS WITHOUT SECURITY AUDIT FIRST
 
-@compiler >= 4
+@compiler >= 6
 
 include "Option.aes"
+include "String.aes"
 
 /// @title - Fungible token basic
 contract FungibleToken =

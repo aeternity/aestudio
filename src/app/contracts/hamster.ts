@@ -15,6 +15,10 @@ export class Contract<T> {
     params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
     params._shareId != undefined ? this.shareId = params._shareId : true;
     params._code != undefined ? this.code = params._code : this.code = `
+@compiler >= 6
+
+include "String.aes"
+
 contract CryptoHamster =
 
     record state = {

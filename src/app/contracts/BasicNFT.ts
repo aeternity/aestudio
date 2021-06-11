@@ -18,6 +18,10 @@ export class BasicNFT<T> {
 // - Which means token sent to someone who don't know how to handle Erc721 may result in token lost
 // However the method of receiver verification (base of safe transfer) is not hard to implement...
 
+@compiler >= 6
+
+include "String.aes"
+
 contract BasicNFT =
 
     record state = {
