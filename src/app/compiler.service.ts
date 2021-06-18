@@ -64,6 +64,8 @@ export class CompilerService {
 
   private cachedWallet : any = {}
 
+  private SDKoptionsToIgnore = ["mempool"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
+
 // ____ helpers start 
 
 public nextAci(value: any): void {
@@ -351,11 +353,18 @@ public initWalletSearch = async (successCallback) => {
       for(var key in this.Chain) {
         if(this.Chain[key].length == 0){ 
         //console.log("Calling function:", key)
-          returnObject[key] = await this.Chain[key]() 
-          if (Object.keys(returnObject).length == keyCount ){
+          if (!this.SDKoptionsToIgnore.includes(key)){
+            
+            returnObject[key] = await this.Chain[key]() 
+          } else {
+            console.log("compiler: ignoring key: ", key  )
+          }
+
+          if (Object.keys(returnObject).length == keyCount - this.SDKoptionsToIgnore.length ){
             return returnObject;
           }
-        
+          //return returnObject;
+
         } 
     }}}
 
