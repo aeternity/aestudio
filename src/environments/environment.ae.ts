@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   contractSharingBackend: 'https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/',
   appUrl: 'https://studio.aepps.com',
   testnetFaucetUrl: 'https://testnet.faucet.aepps.com/account/',
