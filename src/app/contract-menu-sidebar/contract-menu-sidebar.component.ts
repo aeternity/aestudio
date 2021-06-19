@@ -104,11 +104,18 @@ export class ContractMenuSidebarComponent implements OnInit {
     // fetch all entered params
     let params: any[] = [];
 
+    console.log("Function 0 ist: ", this.initACI.functions[0])
+    
     this.initACI.functions[0].arguments.forEach(oneArg => {
       //debugger
       console.log("Ein arg: ", oneArg.currentInput)
       params.push(oneArg.currentInput)
     });
+
+    // take care of the case when init function is not present: 
+    if (this.initACI.functions[0].name !== "init") {
+      params = null
+    }
 
     console.log("_existingContract ist ", _existingContract);
     console.log("addressOfExistingContract ist ", this.addressOfExistingContract);

@@ -391,7 +391,7 @@ public initWalletSearch = async (successCallback) => {
       
       try {
         console.log("Deployment params: ", _deploymentParams)
-        await myContract.deploy( _deploymentParams, { interval: 500, blocks: 3, allowUnsynced: true });
+        await myContract.deploy( _deploymentParams ? _deploymentParams : [], { interval: 500, blocks: 3, allowUnsynced: true });
         
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
