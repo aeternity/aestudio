@@ -77,7 +77,7 @@ public tellAci(): Observable < string > {
 
 public TESTNET_URL = 'https://testnet.aeternity.io';
 public MAINNET_URL = 'https://mainnet.aeternity.io';
-public COMPILER_URL = 'https://compiler.aepps.com';
+public COMPILER_URL = 'https://latest.compiler.aepps.com';
 
 public aeternity : any = {
   rpcClient: null,
@@ -279,37 +279,37 @@ public initWalletSearch = async (successCallback) => {
 
    }
 
+   // is ran, when the browser addon wallet is not to be used ("testnet")
+  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
 
-   async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+      // if a config is provided, apply its values to the sdkConfigOverrides
+    if (_config){
+      console.log("Compiler: Received custom config for SDK: ", _config)
+      // first, clear old custom config values
+      this.sdkConfigOverrides = {};
 
-    // if a config is provided, apply its values to the sdkConfigOverrides
-  if (_config){
-    console.log("Compiler: Received custom config for SDK: ", _config)
-    // first, clear old custom config values
-    this.sdkConfigOverrides = {};
+        Object.keys(_config).forEach(setting => {
+        this.sdkConfigOverrides[setting] = _config[setting]
+      });
+    }
 
-      Object.keys(_config).forEach(setting => {
-      this.sdkConfigOverrides[setting] = _config[setting]
-    });
-  }
+      const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
+      this.Chain = await Ae({
+        nodes: [{name: 'Testnet', instance: nodeInstance }],
+        compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
+        accounts: this.defaultOrCustomSDKsetting("accounts")
+        
+      }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
+      // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
+      this.Chain.currentWalletProvider = "web"
 
-    const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
-    this.Chain = await Ae({
-      nodes: [{name: 'Testnet', instance: nodeInstance }],
-      compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-      accounts: this.defaultOrCustomSDKsetting("accounts")
+      // TODO: wrap in try catch
+      let height = await this.Chain.height();
+      console.log('Current Block Height: ', height)
       
-    }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
-    // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
-    this.Chain.currentWalletProvider = "web"
-
-    // TODO: wrap in try catch
-    let height = await this.Chain.height();
-    console.log('Current Block Height: ', height)
-    
-    // notify sidebar about new SDK settings
-    this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
-    console.log("Das SDK: ", this.Chain);
+      // notify sidebar about new SDK settings
+      this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
+      console.log("Das SDK: ", this.Chain);
    }
 
    fromCodeToACI(code) {
