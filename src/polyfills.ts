@@ -85,3 +85,30 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
   env: { DEBUG: undefined },
   version: '12.1337'
 };
+
+ 
+(window as any).GlobalDebug = (function () {
+  var savedConsole = console;
+  return function(debugOn,suppressAll){
+      var suppress = suppressAll || false;
+      if (debugOn === false) {
+          (console as any) = {};
+          console.log = function () { };
+          if(suppress) {
+              console.info = function () { };
+              console.warn = function () { };
+              console.error = function () { };
+          } else {
+              console.info = savedConsole.info;
+              console.warn = savedConsole.warn;
+              console.error = savedConsole.error;              
+          }
+      } else {
+          console = savedConsole;
+      }
+  }
+  //@ts-ignore
+})();
+  //@ts-ignore
+
+window.GlobalDebug(false,false)

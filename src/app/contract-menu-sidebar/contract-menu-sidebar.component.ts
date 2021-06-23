@@ -27,8 +27,7 @@ export class ReplacePipe implements PipeTransform {
 @Component({
   selector: 'contract-menu-sidebar',
   templateUrl: './contract-menu-sidebar.component.html',
-  styleUrls: ['./contract-menu-sidebar.component.css']/* ,
-  providers: [ CompilerService ] */
+  styleUrls: ['./contract-menu-sidebar.component.css']
 })
 
 

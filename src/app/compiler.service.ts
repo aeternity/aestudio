@@ -697,6 +697,14 @@ public initWalletSearch = async (successCallback) => {
     }
   }
 
+  public setGlobalEditorSetting(key, value){
+    if(key == "debugMode"){
+      //@ts-ignore
+      window.GlobalDebug(value, false)
+    }
+  }
+
+
 }
 
 

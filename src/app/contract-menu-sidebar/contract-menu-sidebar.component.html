@@ -8,8 +8,9 @@
             <div class="ui orange top attached tabular menu settingsTabsRow">
                 <a class="item" suiTabHeader="1"><i class="bars icon"></i></a>
                 <a class="item" suiTabHeader="2"><i class="user icon"></i></a>
-                <a class="item" suiTabHeader="3"><i class="info circle icon"></i></a>
-                <!-- <a class="item" suiTabHeader="3">Third</a> -->
+                <a class="item" suiTabHeader="3"><i class="cogs icon"></i></a>
+                <a class="item" suiTabHeader="4"><i class="info circle icon"></i></a>
+
             </div>
 
             <!-- tab content -->
@@ -109,7 +110,7 @@
                 </div>
                 <!-- account selection end -->
                 <br>
-                <!-- Node Auswahl -->
+                <!-- Wallet Switch-->
                 <app-wallet-switch>
                     
                 </app-wallet-switch>
@@ -119,62 +120,13 @@
                   </div>
 
 
-               <!--  <div class="optionrow">
-                    <div class="fluid ui labeled button optionrow" tabindex="1">
-                        
-                        <div id="options-dropdownbutton" class=" ui basic button dropdown" suiDropdown>
-                            <div class="text">Provider:</div>
-                            <i class="dropdown icon"></i>
-                            <div class="menu" suiDropdownMenu>
-                                
-                                <ng-container *ngIf="currentSDKsettings">
-                                    <div *ngFor="let node of currentSDKsettings.getNodesInPool" class="item">
-                                        <span class="description">{{node.nodeNetworkId}}</span>
-                                         <p class="address-item">{{node.url}} </p>
-                                    </div>
-                                </ng-container>
-
-                                <div class="divider"></div>
-                                <div class="item" suiDropdown>
-                                    <i class="folder open icon"></i>
-                                    <i class="dropdown icon"></i>
-                                    Add...
-                                    <span class="description"><i>(coming soon)</i></span>
-                                    <div class="menu" suiDropdownMenu>
-                                        <div class="item">Google Docs</div>
-                                        <div class="item">Google Drive</div>
-                                        <div class="item">Dropbox</div>
-                                        <div class="item">Another Service...</div>
-                                    </div>
-                                </div>
-                                <div class="item">
-                                        <span class="description"><i>(coming soon)</i></span>
-                                        <i class="trash icon"></i>
-                                        Delete
-                                </div>
-                            </div>
-                        </div>
-
-                            <ng-container *ngIf="currentSDKsettings">
-                                <a *ngIf="currentSDKsettings" id="options-accountlabel" class="ui basic label truncated">
-                                    <p class="truncated">{{currentSDKsettings.getNodeInfo != undefined ? (currentSDKsettings.getNodeInfo.url | slice:0:30) : 'Dummy'}}</p>
-                                </a> 
-                            </ng-container>
-                            <ng-container *ngIf="currentSDKsettings">
-                            <a id="options-balancelabel" class=" ui basic label ">
-                                {{currentSDKsettings.getNodeInfo.nodeNetworkId}}
-                            </a> 
-                            </ng-container>
-                        </div>
-                </div> -->
-
-
                 <!-- Setter for value, gas and gasprice --> 
                 <br>
                 <app-tx-values id="txValues"> </app-tx-values> 
             </div>
             <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2"><app-user-profile></app-user-profile></div>
-            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="3">Created by Nikita Fuchs and the Aeternity Team <br> Contribute on <a href="https://github.com/aeternity/fire-editor"><i class="github icon"></i>Github</a>
+            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="3"><app-global-options></app-global-options></div>
+            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="4">Created by Nikita Fuchs and the Aeternity Team <br> Contribute on <a href="https://github.com/aeternity/fire-editor"><i class="github icon"></i>Github</a>
 </div>
         </sui-tabset>
 

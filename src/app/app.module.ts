@@ -36,6 +36,7 @@ import { UserProfileComponent } from './user-profile/user-profile.component';
 import { MainloaderComponent } from './mainloader/mainloader.component';
 import { WalletSwitchComponent } from './wallet-switch/wallet-switch.component';
 import { OneLogChildComponent } from './one-log-child/one-log-child.component';
+import { GlobalOptionsComponent } from './global-options/global-options.component';
 // firebase end
 
 
@@ -49,7 +50,7 @@ import { OneLogChildComponent } from './one-log-child/one-log-child.component';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent
   ],
   imports: [
     BrowserModule,
