@@ -347,6 +347,7 @@ export class EditorComponent implements OnInit {
       }, 1500);
   
       console.log("activeContract Contracts: ", this.contracts); 
+      this.setTabAsActive(this.contracts[0])
     }
   
     refreshGeneratedCode = () => {
@@ -468,6 +469,7 @@ export class EditorComponent implements OnInit {
   
     // DEPRECATION TEST (dactivated for testing!) Tabs functionality start
     setTabAsActive(_oneContract: any) {
+      this.compiler.activeContract = _oneContract; // tell the compiler which tab is active, too
       this.activeContract = _oneContract;
       // change all the other contracts to inactive - maybe ?
   

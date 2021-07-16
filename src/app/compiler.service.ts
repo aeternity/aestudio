@@ -48,6 +48,9 @@ export class CompilerService {
   public walletExtensionPresent : boolean = false;
   public currentBrowser : string = '';
  
+  // let compiler know which tab is currently active 
+  public activeContract;
+
   public getAvailableAccounts = () => {
     return this.Chain.addresses();
   }
@@ -511,7 +514,7 @@ public initWalletSearch = async (successCallback) => {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[\s\S]*\\*\\/', 'g'), '');
 
     // code to aci
-    //console.log("Hier kommt der code: ", sourceCode);
+    //console.log("Here comes the code: ", sourceCode);
     
     // this source code will be used when user clicks deployContract()
     this.code = sourceCode;
@@ -550,19 +553,17 @@ public initWalletSearch = async (successCallback) => {
     async (error) =>  {
       //console.log("oooops fehler ", error.error)
       var theError = await this.fetchErrorsFromDebugCompiler(sourceCode); 
-      
 
-      // diese error subscription in den one-editor übertragen, stattdessen errors als Teil der ACI returnen
-      // HIER TEST !!
-    this._notifyCodeError.next(theError);
- 
-    this._newACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
-    
+       // prevent showing errors for contracts in non-visible tabs:
+      if(this.activeContract.contractUID == params.contractUID ) {
+        this._notifyCodeError.next(theError);     
+        this._newACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
 
-    //Deprecate
-    this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
-      
-    return true;
+        //Deprecate
+        //this._notifyCompiledAndACI.next({"aci": {}, "contractUID": params.contractUID, "error": theError});
+        return true;
+      }
+      return true;
   } );
     
     /* 

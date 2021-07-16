@@ -45,22 +45,18 @@
                     
                     <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
                             <a style="float: left; border-radius: 0 !important;"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="contracttab item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name}}  
-                            <!-- <a style="float: left; border-radius: 0 !important;"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract); logSomeShit();"  class="contracttab item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name == undefined ? 'Compiling..' : oneContract.latestACI.name }}   -->
                                 <a> <p class="tabclosingx" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'}); triggerWindowRefresh(200); " >&nbsp; &times; </p></a>
                             </a>
                     </ng-container>
 
                     <a class="item pepperwhite" (click)="addNewContract()" > <i class="plus icon"></i>  </a> 
-
-<!--                         <a class="item" suiTabHeader="3">Third</a>
--->                </div>
+                </div>
 <!-- Tab menu end -->
 
 <!-- Editor Start -->
                 <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
                     <div  *ngIf="oneContract.showInTabs" class="ui bottom attached segment" suiTabContent="{{i}}">
                         <app-one-editor-tab  [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
-                <!--  <ngx-monaco-editor [(ngModel)]="contracts[i].code" (ngModelChange)="throttledChange($event)" (onInit)="initializeEditorObject($event)" class="editor" [options]="editorOptions"></ngx-monaco-editor>-->                    
                     </div>
                 </ng-container>
 <!-- Editor End -->
