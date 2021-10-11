@@ -10,6 +10,12 @@ p {
     margin-bottom: 0
 } 
 
+
+.middlewareLink:hover {
+    text-decoration: underline;
+    color: white !important;
+}
+
 /* error box start */
 .errorbox {
     width: auto;

@@ -1,4 +1,5 @@
 
+import { utils } from './utils'
 import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import { Subscription, asapScheduler } from 'rxjs';
@@ -8,6 +9,7 @@ import { AuthService } from '../services/auth/auth.service'
 import { HttpClient } from '@angular/common/http';
 
 import {IPopup} from "ng2-semantic-ui";
+import { Console } from 'node:console';
 
 
 
@@ -32,6 +34,10 @@ export class ReplacePipe implements PipeTransform {
 
 
 export class ContractMenuSidebarComponent implements OnInit {
+
+  // deleteme: Testing the modal UI
+  testName: string = "FooBarContractLOL"
+  testAddress: string = "ak_1337Cafe....3A7FgK8Hg"
 
   //Fires when new SDK settings are available(Accounts, )
   sdkSettingsSubscription: Subscription;
@@ -83,7 +89,7 @@ export class ContractMenuSidebarComponent implements OnInit {
     public compiler: CompilerService, 
     private changeDetectorRef: ChangeDetectorRef, 
     private http: HttpClient,
-    private auth: AuthService
+    private auth: AuthService,
     ) { }
  
  /*  buildAContract() {
@@ -340,6 +346,21 @@ checkIfInitFunctionIsPresent() : boolean {
   return found
 }
 
+deleteFromActiveContracts = (contract) => { 
+  console.log("utils.deleteFromActiveContracts: delete event angekommen")
+  console.log("delete contract:", contract)
+  console.log("this.activeContracts:", this.activeContracts)
+
+  this.activeContracts.forEach((element, index) => {
+    if (element.IDEindex == contract.IDEindex) {
+      console.log("Found contract to delete, existing: ", element.IDEindex, "to delete: ", contract.IDEindex)
+      this.activeContracts.splice(index,1);
+    }
+  })
+  /* for (var i = this.activeContracts.length - 1; i >= 0; --i) {
+      
+  } */
+}
 
 
 }

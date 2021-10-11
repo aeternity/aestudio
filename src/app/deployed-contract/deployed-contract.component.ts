@@ -1,9 +1,9 @@
-import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
 import { EventlogService } from '../services/eventlog/eventlog.service'
-import {IPopup} from "ng2-semantic-ui";
+import {IPopup, SuiPopupConfig} from "ng2-semantic-ui";
 
 
 @Component({
@@ -15,7 +15,10 @@ import {IPopup} from "ng2-semantic-ui";
 export class DeployedContractComponent implements OnInit {
 
   @Input() contract: any;
+  @Output() deleteContract: EventEmitter<any> = new EventEmitter();
+
   panelOpen: boolean;
+  deleteDialogOpen: boolean = false;
 
   constructor(private compiler: CompilerService, 
               private codeFactory: CodeFactoryService,
@@ -36,11 +39,11 @@ export class DeployedContractComponent implements OnInit {
     console.log("Als doOpen kam: ", _payable)
     if(this.compiler.txAmountInAettos > 0 && _payable == false)
         popup.open();
-}
+  }
 
-public closePopup(popup:IPopup) {
-      popup.close();
-}
+  public closePopup(popup:IPopup) {
+        popup.close();
+  }
 
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
     let theContract = this.contract;
@@ -115,6 +118,22 @@ public closePopup(popup:IPopup) {
     this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams);
   }
   
+  deleteTheContract() {
+    this.deleteContract.emit(this.contract);
+    console.log("Deployed-Contract.component: Emitting delete event")
+  }
+
+  copyAddress() {
+    navigator.clipboard.writeText(this.contract.deployInfo.address)
+    .then(() => {
+      console.log('Text copied to clipboard');
+    })
+    .catch(err => {
+      // This can happen if the user denies clipboard permissions:
+      console.error('Could not copy text: ', err);
+    });
+  }
+
   logTemp(something: any){
     true
   }

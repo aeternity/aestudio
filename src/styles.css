@@ -206,6 +206,27 @@ border-color: #000!important;
     }
 }
 
+/* Give logs the right colouring */
+.greyHoverWhite{
+    display: inline; 
+    color: #d4d4d4 !important
+}
+
+.greyHoverWhite:hover{
+    display: inline; 
+    color: white !important
+}
+
+.greyHoverWhite a{
+    display: inline; 
+    color: #d4d4d4 !important
+}
+
+.greyHoverWhite:hover a{
+    display: inline; 
+    color: white;
+}
+
 /* font color of a title in the event log*/
 .theLogs .title{
     color: #d4d4d4 !important;
@@ -684,5 +705,16 @@ border-color: #000!important;
 
 /* provider switch end */
 body {
-    background: #1f1f1f
+    background: #1f1f1f    
 }
+
+/* confirmation modal for contract removing */
+
+.page.transition.ui.dimmer.active.visible > .content {
+    padding-top: 10%;
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.deletionModal .button{
+    margin: 10px 20px 10px 20px;
+  }

@@ -21,6 +21,13 @@ p {
     padding-left: 21px
 }
 
+
+.middlewareLink:hover {
+    text-decoration: underline;
+    color: white !important;
+}
+
+
 /* error box start */
 .errorbox {
     width: auto;

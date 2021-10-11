@@ -13,8 +13,7 @@
                         <div *ngFor="let key of logEntries">  
                           
                             <!-- if it's just a string and not an object, just display it.... -->
-                            <p class="hoverHighlightWhite noMarginBottom" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p> 
-                            <!-- <p *ngIf="!log.data[key].__isObject__ || log.data[key].__isArray__"> <b> {{key}} </b> : {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </p>  -->
+                            <div class="hoverHighlightWhite noMarginBottom greyHoverWhite" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : <div mdwUrl class ="greyHoverWhite" style="display: inline;"> {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}}  </div> </div> 
 
                             <!-- If it's an object by itself, make a new dropdown -->
                             <p *ngIf="isAnObject[key]">  <app-one-log-child class="oneLogChild" [log]="{'data' : log.data[key], 'topic' : key, 'depth': log.depth + 1}" [open]="false" ></app-one-log-child>  </p> 
@@ -30,11 +29,3 @@
                   </div> 
     </div>
 </sui-accordion-panel>
-
-
-<!-- differentiate between one-liner and object logs  -->
-<!--  <p *ngIf="objectKeys(log.data[key]).length < 2"> <b>{{key}} </b> : {{objectKeys(log.data[key]).length > 0 ? (log.data[key] | json) : log.data[key]}}  </p> </div>
-                                
-<app-one-log *ngIf="objectKeys(log.data[key]).length < 2"
-[log]="{{ '{' message:"here", data:log.data[key]'}' }}"
-></app-one-log> -->

@@ -1,9 +1,31 @@
 
+
 <sui-accordion-panel [isDisabled]="false" >
     <div title>
         <i class="dropdown icon" (click)="panelOpen = !panelOpen"></i>
-        {{contract.aci.name}} <span style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span>
-        <!-- {{contract.aci.name}} <span (click)="panelOpen = !panelOpen" *ngIf="!panelOpen" style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span> -->
+        {{contract.aci.name}} <span style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span> 
+        
+        <i prevent-click-propagation style="float: right" class="copy icon"
+            suiPopup popupHeader="" popupTrigger="manual" popupPlacement="top right" popupDelay="600" popupText="Copied current Address!" #popup="suiPopup"
+            (click)="copyAddress(); popup.open()" 
+            (mouseout)="popup.close()" ></i>
+        <i prevent-click-propagation style="float: right" class="trash icon" (click)="deleteDialogOpen = !deleteDialogOpen"></i> 
+        <sui-dimmer class="page" [(isDimmed)]="deleteDialogOpen">
+            
+            <div style= "display: table; margin: auto;" class="ui compact segment deletionModal">
+                <span class="ui inverted icon header">
+                    <i style="color: #1b1c1d" class="info circle icon"></i>
+                    <span class="regularInfoText">Do you want to remove</span> <br>
+                    <span style="color: #1b1c1d; margin-left: 30px;" class="black text">{{contract.aci.name}} &nbsp;</span>
+                    <span style="color: #1b1c1d; margin-right: 30px;" class="black text">({{this.contract.addressPreview}})</span> <br>
+                    <span class="regularInfoText">from the active contract list ?</span>
+                </span> <br>
+                <button (click)="deleteDialogOpen = !deleteDialogOpen" class="ui black button">Cancel</button>
+                <button (click)="deleteTheContract()" class="ui orange button" > Remove </button>
+            </div>
+        </sui-dimmer>
+        
+        
     </div>
     <div content>
             <div>

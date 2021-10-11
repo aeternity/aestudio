@@ -1,4 +1,3 @@
-
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Universal } from '@aeternity/aepp-sdk/'
@@ -55,7 +54,16 @@ export class CompilerService {
     return this.Chain.addresses();
   }
 
-  public sendSDKsettings = () => { this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());}
+  public currentSdkSettings : any;
+
+  // store and share current SDK settings
+  public sendSDKsettings = (settings?) => {
+     if(!settings) { 
+       settings = this.getCurrentSDKsettings()
+      }
+      this.currentSdkSettings = settings
+     this._notifyCurrentSDKsettings.next(settings);
+  }
 
   // 'amount' for transactions, recieved from tx-values component - set by tx-values-component, 
   // read by one-contract-component when sending TXs
@@ -229,6 +237,7 @@ public initWalletSearch = async (successCallback) => {
       {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
     ],
     compilerUrl: this.COMPILER_URL,
+    
     onNetworkChange: (params) => {
       console.log('Compiler: wallet network change');
       // TODO: Handle network change 

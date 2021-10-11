@@ -7,6 +7,8 @@ export const environment = {
   debugCompilerURL : 'https://latest.compiler.aepps.com',
   publicTestnetURL : 'https://testnet.aeternity.io',
   compilerRequestDelay : 400,
+  mainNetExplorer: 'https://explorer.aeternity.io',
+  testNetExplorer: 'https://explorer.testnet.aeternity.io',
   firebase: {
     apiKey: "AIzaSyD2uvXdg_TBcXlvj_AxXUtwsSqfgk3sT7k",
     authDomain: "fire-editor-f1e92.firebaseapp.com",

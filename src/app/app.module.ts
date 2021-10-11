@@ -37,6 +37,8 @@ import { MainloaderComponent } from './mainloader/mainloader.component';
 import { WalletSwitchComponent } from './wallet-switch/wallet-switch.component';
 import { OneLogChildComponent } from './one-log-child/one-log-child.component';
 import { GlobalOptionsComponent } from './global-options/global-options.component';
+import { PreventClickPropagationDirective } from './prevent-click-propagation.directive';
+import { MdwUrlDirective } from './mdw-url.directive';
 // firebase end
 
 
@@ -50,7 +52,7 @@ import { GlobalOptionsComponent } from './global-options/global-options.componen
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective
   ],
   imports: [
     BrowserModule,

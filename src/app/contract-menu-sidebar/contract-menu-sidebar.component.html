@@ -13,8 +13,7 @@
 
             </div>
 
-            <!-- tab content -->
-
+            <!-- tab content -->            
             <!-- First tab: Account and Provider ! -->
             <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
                 
@@ -218,7 +217,7 @@
             <a class="ui orange ribbon label">Deployed Contracts</a>
         </div>
         <sui-accordion [transitionDuration]="500" [closeOthers] = "true" id="deployedContractsDropdown" class="styled fluid">
-            <app-deployed-contract *ngFor="let contract of activeContracts" [contract]="contract"></app-deployed-contract>
+            <app-deployed-contract *ngFor="let contract of activeContracts" (deleteContract)="deleteFromActiveContracts(contract)" [contract]="contract"></app-deployed-contract>
         </sui-accordion>
     </span>
 </div>

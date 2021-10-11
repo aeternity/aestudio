@@ -2732,10 +2732,10 @@
     "lodash.memoize" "^4.1.2"
     "lodash.uniq" "^4.5.0"
 
-"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30001020", "caniuse-lite@^1.0.30001032", "caniuse-lite@^1.0.30001181":
-  "integrity" "sha512-w7/EP1JRZ9552CyrThUnay2RkZ1DXxKe/Q2swTC4+LElLh9RRYrL1Z+27LlakB8kzY0fSmHw9mc7XYDUKAKWMA=="
-  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001187.tgz"
-  "version" "1.0.30001187"
+"caniuse-lite@^1.0.0", "caniuse-lite@^1.0.30001020", "caniuse-lite@^1.0.30001032", "caniuse-lite@^1.0.30001181", "caniuse-lite@^1.0.30001247":
+  "integrity" "sha512-4rS7co+7+AoOSPRPOPUt5/GdaqZc0EsUpWk66ofE3HJTAajUK2Ss2VwoNzVN69ghg8lYYlh0an0Iy4LIHHo9UQ=="
+  "resolved" "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001247.tgz"
+  "version" "1.0.30001247"
 
 "canonical-path@1.0.0":
   "integrity" "sha512-feylzsbDxi1gPZ1IjystzIQZagYYLvfKrSuygUCgf7z6x790VEzze5QEkdSV1U58RA7Hi0+v6fv4K54atOzATg=="
