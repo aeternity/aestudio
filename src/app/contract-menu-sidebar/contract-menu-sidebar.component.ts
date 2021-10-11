@@ -1,5 +1,4 @@
 
-import { utils } from './utils'
 import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service'
 import { Subscription, asapScheduler } from 'rxjs';

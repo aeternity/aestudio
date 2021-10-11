@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@aeternity/aepp-sdk@^8.2.1":
-  "integrity" "sha512-6rh9t3Esfpp9F9l5snyjKoJH0we/PtfsB8PafCeofapEgvBfIJAnrnwQ+KPNTHWBETURe8Ewfvgvgt9bhmiTxg=="
-  "resolved" "https://registry.npmjs.org/@aeternity/aepp-sdk/-/aepp-sdk-8.2.1.tgz"
-  "version" "8.2.1"
+"@aeternity/aepp-sdk@^9.0.1":
+  "integrity" "sha512-LfLH25/5S23aSV35qRJGoFMAuHO/Ti7q/bOKxcx+ItflZeui9ow3/bnRkQjmvJopf8T82kP/C+F1sT7LKL1Fzg=="
+  "resolved" "https://registry.npmjs.org/@aeternity/aepp-sdk/-/aepp-sdk-9.0.1.tgz"
+  "version" "9.0.1"
   dependencies:
     "@aeternity/bip39" "^0.1.0"
     "@aeternity/json-bigint" "^0.3.1"
@@ -21,6 +21,7 @@
     "cross-fetch" "^3.1.4"
     "crypto-browserify" "^3.12.0"
     "ed2curve" "^0.3.0"
+    "events" "^3.3.0"
     "joi-browser" "^13.4.0"
     "libsodium-wrappers-sumo" "0.7.9"
     "path-browserify" "^1.0.1"
@@ -4280,10 +4281,10 @@
   "resolved" "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
   "version" "4.0.7"
 
-"events@^3.0.0":
-  "integrity" "sha512-Dc381HFWJzEOhQ+d8pkNon++bk9h6cdAoAj4iE6Q4y6xgTzySWXlKn05/TVNpjnfRqi/X0EpJEJohPjNI3zpVA=="
-  "resolved" "https://registry.npmjs.org/events/-/events-3.0.0.tgz"
-  "version" "3.0.0"
+"events@^3.0.0", "events@^3.3.0":
+  "integrity" "sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q=="
+  "resolved" "https://registry.npmjs.org/events/-/events-3.3.0.tgz"
+  "version" "3.3.0"
 
 "eventsource@^1.0.7":
   "integrity" "sha512-VSJjT5oCNrFvCS6igjzPAt5hBzQ2qPBFIbJ03zLI9SE0mxwZpMw6BfJrbFHm1a141AavMEB8JHmBhWAd66PfCg=="
