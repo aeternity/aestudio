@@ -213,7 +213,7 @@ export class ContractMenuSidebarComponent implements OnInit {
           // check if there is an init function present for the current generated ACI Trainee TODO task: do this in template !
           this.initACI.name != undefined ? this.initFunctionIsPresent = this.checkIfInitFunctionIsPresent() : true
 
-          console.log("Current error ist nun: ", this.currentError);
+          console.log("Current error is: ", this.currentError);
           //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
           this.changeDetectorRef.detectChanges()
         } else {

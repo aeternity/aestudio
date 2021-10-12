@@ -494,7 +494,7 @@ export class EditorComponent implements OnInit {
     // saves changes of any contract you pass to this function
     saveContractChangesToContractsArray(_contract: any) {
       
-      console.log("save zum saven übergeben wurde", _contract);
+      console.log("Received contract for saving :", _contract);
       // console.log("suche contract zum aktualisieren...")
       this.contracts.forEach((oneContract, index, array) => {
         if (oneContract.contractUID == _contract.contractUID) {
@@ -519,10 +519,7 @@ export class EditorComponent implements OnInit {
       }
       
     }
-  
-    logSomeShit (_shit?: any) {
-      console.log("Shit to log: ", _shit)
-    }
+
   
     // trigger whether the contract is displayed in the tabs or not
     toggleTabAppearance(_params: any){

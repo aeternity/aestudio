@@ -119,7 +119,7 @@ this.compiler._newACI.subscribe(item => {
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'];
     
-    console.log("Es kam ein neuer change rein für contract: ", item['contractUID']);
+    console.log("[one-editor-tab] New change received for contract: ", item['contractUID']);
     
     this.save();
     
@@ -155,7 +155,7 @@ this.compiler._newACI.subscribe(item => {
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'].contract;
     
-    console.log("Es kam ein neuer change rein für contract: ", item['contractUID']);
+    console.log("[one-editor-tab] New change received for contract: ", item['contractUID']);
     
     this.activeContract.latestACI;
     this.save();
@@ -284,7 +284,7 @@ this.compiler._newACI.subscribe(item => {
       debounceTime(environment.compilerRequestDelay) // wait 1 sec after the last event before emitting last event
       ). // only emit if value is different from previous value
       subscribe(something => {
-        console.log(">>> CHANGE im throttler angekommen!")
+        console.log(">>> Compiler call throttler let code 'change' pass")
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
        });
@@ -374,7 +374,7 @@ this.compiler._newACI.subscribe(item => {
     // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
     this.activeContract.latestACI = item['aci'].contract;
     
-    console.log("Es kam ein neuer change rein für contract: ", item['contractUID']);
+    console.log("[one-editor-tab] New change received for contract: ", item['contractUID']);
     
     this.save();
     this.activeContract.latestACI;
