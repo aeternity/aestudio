@@ -403,8 +403,19 @@ public initWalletSearch = async (successCallback) => {
       
       try {
         console.log("Deployment params: ", _deploymentParams)
-        await myContract.deploy( _deploymentParams ? _deploymentParams : [], { interval: 500, blocks: 3, allowUnsynced: true });
-        
+        let txParams = {
+          interval: 500,
+          blocks: 3,
+          allowUnsynced: true,
+        }
+
+        // add manualtx params if defined
+        this.txAmountInAettos > 0 ? txParams["amount"] = this.txAmountInAettos : true
+        this.gasAmountInUnits > 0 ? txParams["gas"] = this.gasAmountInUnits : true
+        this.gasPriceInAettos > 0 ? txParams["gasPrice"] = this.gasPriceInAettos : true
+
+        let deployResult = await myContract.deploy( _deploymentParams ? _deploymentParams : [], txParams);
+        console.log("Deploy result:", deployResult)
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
         
@@ -416,7 +427,12 @@ public initWalletSearch = async (successCallback) => {
         console.log(_e);
 
         //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
-        this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: _e})
+        if (typeof _e === 'object'){
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: {message: _e.message}})
+        } else {
+          let error = _e.toString()
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name + " Error:" + error})
+        }
         this._notifyDeployedContract.next({newContract: null, success: false});
         return true
         //e.verifyTx();  - is this a thing ? 
@@ -458,16 +474,13 @@ public initWalletSearch = async (successCallback) => {
 
       /* // actually, short-circuit problematic formgroup generation
       let aci = rawACI; */
-      console.log("Formatted aci now looks like: ", aci)
       // 4. put the ammended ACi into the aci of the contract object
       myContract.aci = aci;
 
       
-      console.log("Hier final aci object:", aci)
-      console.log(aci);
+      console.log("Fiinal aci object:", aci)
       
-      console.log("Hier final contract object:", myContract);
-      console.log(myContract);
+      console.log("Final contract object:", myContract);
 
       this.aci = aci;
       // add an index to allow self-referencing its position in the (contracts?) array..

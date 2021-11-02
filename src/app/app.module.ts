@@ -39,6 +39,7 @@ import { OneLogChildComponent } from './one-log-child/one-log-child.component';
 import { GlobalOptionsComponent } from './global-options/global-options.component';
 import { PreventClickPropagationDirective } from './prevent-click-propagation.directive';
 import { MdwUrlDirective } from './mdw-url.directive';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 // firebase end
 
 
@@ -80,7 +81,8 @@ import { MdwUrlDirective } from './mdw-url.directive';
       outerStrokeColor: "#78C000",
       innerStrokeColor: "#C7E596",
       animationDuration: 500,
-    })
+    }),
+    FontAwesomeModule
   ],
   providers: [LocalStorageService],
   bootstrap: [MainloaderComponent]

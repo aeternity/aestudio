@@ -53,10 +53,10 @@ export class MdwUrlDirective {
 
       let currentContent: string = this.el.nativeElement.innerText
   
-      console.log("directive network id: ", currentNetwork)
+      /* console.log("directive network id: ", currentNetwork)
       console.log("directive network id direct: ", this.compiler.Chain?.selectedNode.networkId)
       console.log("current content: ", currentContent)
-      console.log("nur el: ", this.el.nativeElement)
+      console.log("nur el: ", this.el.nativeElement) */
   
       var baseUrl: string;
       if(currentNetwork == "ae_uat"){
@@ -82,19 +82,19 @@ export class MdwUrlDirective {
            
         } else if (currentContent.match(transactionHashRegex)) {
           middlewareLink = `${baseUrl}/transactions/${currentContent}`
-          console.log("Found th !")
+          //console.log("Found th !")
            
         } else if (currentContent.match(oracleQueryRegex)) {
           middlewareLink = `${baseUrl}/oracles/queries/${currentContent}`
-          console.log("Found ok")
+          //console.log("Found ok")
   
         } else if (currentContent.match(contractTransactionRegex)) {
           middlewareLink = `${baseUrl}/contracts/transactions/${currentContent}`
-          console.log("Found ct")
+          //console.log("Found ct")
   
         } else if (currentContent.match(accountTransactionRegex)) {
           middlewareLink = `${baseUrl}/account/transactions/${currentContent}`
-          console.log("Found ak")
+          //console.log("Found ak")
   
         } 
         

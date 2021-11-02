@@ -47,7 +47,7 @@ export class TxValuesComponent implements OnInit {
 
   valueChange(e) {
     //this.currentValue < 1 ? this.currentValue = 0 : true
-    console.log(this.getCurrentInput())
+    //console.log(this.getCurrentInput())
     this.calculateFinalValue();
   }
 

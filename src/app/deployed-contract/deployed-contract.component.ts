@@ -36,7 +36,7 @@ export class DeployedContractComponent implements OnInit {
   public openPopup(popup:IPopup, _payable: any) {
     /* console.log("Message triggered, function index:", functionIndex)
     console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
-    console.log("Als doOpen kam: ", _payable)
+    console.log("doOpen is ", _payable)
     if(this.compiler.txAmountInAettos > 0 && _payable == false)
         popup.open();
   }
@@ -90,7 +90,6 @@ export class DeployedContractComponent implements OnInit {
       this.contract.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
 
       this.eventlog.log({type:"success", message: _theFunction + ": Call successfull", data: callresult})
-
 
     } catch(e) {
       console.log("Error was: ", e);

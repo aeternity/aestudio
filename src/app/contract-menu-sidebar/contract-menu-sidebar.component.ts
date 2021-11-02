@@ -285,21 +285,13 @@ async changeSDKsetting(setting: string, params: any){
   }
 
   this.compiler.sendSDKsettings();
-  //await this.compiler.activeContracts[0].methods[_theFunction].apply(null, params);
 }
 
 // get all balances from all addresses currently added to SDK
 // @param dontFillUp: boolean - if passed, do not top up accounts if one or some are low
 async fetchAllBalances(_dontFillUp? : boolean){
-  //console.log("verfügbare addresses: ", this.currentSDKsettings.addresses)
- 
-  /* for (let i = 0; i<this.currentSDKsettings.addresses.length; i++ ) {
-    console.log("having that many accounts: ", i);
-    console.log("fetching for account: ", this.currentSDKsettings.addresses[i])
-    this.currentSDKsettings.balances[i] = await this.getOneBalance(this.currentSDKsettings.addresses[i], false);
-    console.log("Die balances sind: ", this.currentSDKsettings.balances);
-  } */
- 
+  //console.log("available addresses: ", this.currentSDKsettings.addresses)
+
   this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
     this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress, _dontFillUp != true ? false : true);
   }) 
