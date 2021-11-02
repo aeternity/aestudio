@@ -89,7 +89,7 @@ export class DeployedContractComponent implements OnInit {
       callresult.decodedResult == false ? callresult.decodedResult = "false" : true
       this.contract.aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
 
-      this.eventlog.log({type:"success", message:"Call successfull", data: callresult})
+      this.eventlog.log({type:"success", message: _theFunction + ": Call successfull", data: callresult})
 
 
     } catch(e) {
@@ -102,7 +102,7 @@ export class DeployedContractComponent implements OnInit {
 
       } else {
         this.contract.aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
-        this.eventlog.log({type:"error", message: _theFunction + " - call errored: " + e + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again. " , data: e})
+        this.eventlog.log({type:"error", message: _theFunction + " - call errored: " + e /* + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again. "  */, data: e})
       }
     }
     //deactivate loader
