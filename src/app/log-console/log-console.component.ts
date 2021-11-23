@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EventlogService } from '../services/eventlog/eventlog.service'
 
 @Component({
@@ -6,14 +6,18 @@ import { EventlogService } from '../services/eventlog/eventlog.service'
   templateUrl: './log-console.component.html',
   styleUrls: ['./log-console.component.css']
 })
+
 export class LogConsoleComponent implements OnInit {  
 
+  @Output() open: EventEmitter<boolean> = new EventEmitter();
+
   logs: any[] = [];
-  collapse: boolean = false;
+  isOpen: boolean = true;
   
   constructor(private eventlog: EventlogService) { 
 
   }
+
 
   ngOnInit() {
     // setup a default first log:
@@ -27,5 +31,11 @@ export class LogConsoleComponent implements OnInit {
       //debugger
     })
   }
+
+  toggle() {
+    this.isOpen = !this.isOpen;
+    console.log("emitting console open: ", this.isOpen)
+  	this.open.emit(this.isOpen);
+  }	
 
 }

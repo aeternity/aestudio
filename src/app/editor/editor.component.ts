@@ -15,6 +15,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { CodeFactoryService } from '../code-factory.service';
 import { LocalStorageService } from '../local-storage.service';
 import { AuthService } from '../services/auth/auth.service'
+import { StateService } from '../services/state.service';
 
 
 
@@ -99,6 +100,11 @@ export class EditorComponent implements OnInit {
 
   codeChanged: Subject<string> = new Subject<string>();
 
+  // used to change the sizes of editor and console log, open / close.
+  public handleConsoleOpen(event){
+    this.state.consoleOpen = event
+  }
+
   constructor(private compiler: CompilerService,
     private _router: Router,
     private _route: ActivatedRoute,
@@ -107,7 +113,8 @@ export class EditorComponent implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private generator: CodeFactoryService,
     private localStorage: LocalStorageService,
-    private authService: AuthService
+    private authService: AuthService,
+    private state: StateService
     ) { 
       
       // deprecation testing

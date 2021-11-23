@@ -718,3 +718,12 @@ body {
 .deletionModal .button{
     margin: 10px 20px 10px 20px;
   }
+  
+  /* closing and opening the console */
+.consoleOpen{
+    height: 30vh !important
+}
+
+.consoleClosed{
+    height: 80vh !important
+}

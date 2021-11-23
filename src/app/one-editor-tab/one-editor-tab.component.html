@@ -2,7 +2,9 @@
     [(ngModel)]="activeContract.code" 
     (ngModelChange)="throttledChange()" 
     (onInit)="initializeEditorObject($event)" 
-    class="editor" [options]="editorOptions"></ngx-monaco-editor>
+    class="editor" 
+    [className]="this.state.consoleOpen ? 'consoleOpen' : 'consoleClosed'" 
+    [options]="editorOptions"></ngx-monaco-editor>
 
 
 <!-- Code sharing link generator  -->

@@ -10,6 +10,7 @@ import { ClipboardService } from 'ngx-clipboard';
 import { Subscription, Subject } from 'rxjs';
 import { setInterval, clearInterval } from 'timers';
 import { AuthService } from '../services/auth/auth.service';
+import { StateService } from '../services/state.service';
 
 @Component({
   selector: 'app-one-editor-tab',
@@ -90,7 +91,8 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     private http: HttpClient,
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef,
-    private authService: AuthService 
+    private authService: AuthService,
+    public state: StateService 
   ) {
     console.log("activeContract", this.activeContract);
     

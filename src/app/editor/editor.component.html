@@ -15,7 +15,7 @@
 <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
 
     <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
-            <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
+        <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
         <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
             *ngFor="let oneContract of contracts; let i = index"
             [contract] = "oneContract"
@@ -56,7 +56,7 @@
 <!-- Editor Start -->
                 <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
                     <div  *ngIf="oneContract.showInTabs" class="ui bottom attached segment" suiTabContent="{{i}}">
-                        <app-one-editor-tab  [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
+                        <app-one-editor-tab [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
                     </div>
                 </ng-container>
 <!-- Editor End -->
@@ -66,7 +66,7 @@
 </sui-sidebar-container>
 
 <!-- The log console -->
-<app-log-console style="padding: 0px"> </app-log-console>
+<app-log-console style="padding: 0px" (open)="handleConsoleOpen($event)"> </app-log-console>
 
 <!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
