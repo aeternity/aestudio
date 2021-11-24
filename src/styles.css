@@ -260,7 +260,7 @@ border-color: #000!important;
 }
 .editor {
     display: flex !important;
-    height: 80vh !important;
+    /* height: 80vh !important; */
     margin-bottom: -1px;
 }
 .editor-container{
@@ -721,9 +721,10 @@ body {
   
   /* closing and opening the console */
 .consoleOpen{
-    height: 30vh !important
+    height: 50vh !important
 }
 
 .consoleClosed{
-    height: 80vh !important
+    height:100vh
 }
+

@@ -1,18 +1,46 @@
+:host {
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+
+.triggerbar{
+    border-top: 1px solid #D2D2D3;
+    border-bottom: 1px solid #D2D2D3;
+}
+
+
+
 .active, .collapsible:hover {
     background-color: #555;
   }
 
   .content {
     padding: 0 18px;
-    max-height: 0;
+    max-height: fit-content;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
-    background-color: #f1f1f1;
+    overflow-y: auto;
+    min-height:270px;
+    max-height:270px;
+    transition: all 0.5s linear, width 0.5s linear;
   }
 
+  .content-wrapper {
+    padding: 0;
+    max-height: unset;
+    overflow: hidden;
+    background:red
+    
+    
+  }
 
-
-
+.consoleMaxSize{
+    /* max-height: 50vh; */
+    overflow: hidden;
+    background: #1e1e1e;
+    box-shadow: inset 5px 5px 20px 1px rgb(255 45 85 / 30%);
+}
 
 
 
@@ -70,3 +98,4 @@
 .theLogs {
     padding: 0px;
 }
+

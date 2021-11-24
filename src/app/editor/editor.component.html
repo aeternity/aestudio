@@ -1,5 +1,5 @@
 <!-- Top menu bar start  -->
-<div class="ui top attached inverted demo menu">
+<div id="logoHeader" class="ui top attached inverted demo menu">
     <img id="logo" src="/assets/aestudio.svg">
     <!-- <p id="logoText1">Æ&nbsp;</p>
     <p id="logoText2">Studio</p>
@@ -36,7 +36,7 @@
 
 <!-- Tab menu start -->
             <sui-tabset >
-                <div class="ui top attached tabular menu" style="height: 45px; border-radius: 0">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+                <div id="tabMenu" class="ui top attached tabular menu" style="height: 45px; border-radius: 0">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
                     
                     <a class="item blinkOnLoad pepperwhite" style="border-radius: 0" (click)="sidebar.toggle()">
                         <i style="margin-left: 0px; margin-right: 10px" class="sidebar icon"></i> Menu
@@ -63,10 +63,20 @@
             </sui-tabset>
 
     </sui-sidebar-sibling>
+
+   <!--  <div class="placeholder">
+        placeholder
+    </div> -->
+
+    <!-- The log console -->
+<app-log-console style="padding: 0px; background:green" console-opener> </app-log-console>
+<!-- <app-log-console style="padding: 0px; background:green" console-opener [style.max-height]="this.state.consoleOpen ? '25%' : '0px'"> </app-log-console> -->
+
 </sui-sidebar-container>
 
-<!-- The log console -->
-<app-log-console style="padding: 0px" (open)="handleConsoleOpen($event)"> </app-log-console>
+
+
+
 
 <!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">

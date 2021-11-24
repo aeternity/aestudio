@@ -1,42 +1,16 @@
-<!-- <button class="collapsible" (click)="toggle()">Open Collapsible</button> -->
-
-<div class="ui segment innereventlog" style="cursor: pointer" (click)="toggle()">
-    <i class="chevron circle right icon" style="margin-left: 5px"></i>
-    <p style="display: inline">Event Logs</p>
-    <button style="visibility: hidden; display: inline" class="ui primary button" >
-        Toggle Collapse
-    </button>
-</div>
-
-<div class="content" [style.max-height]="isOpen ? '200px' : '0px'">
-    qwerty
-    <sui-accordion [transition]="'fade'" [transitionDuration]="300" [closeOthers]="false">
-        <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog" [open]="true" ></app-one-log>
-    </sui-accordion>
-    <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog" [open]="true" ></app-one-log>
-    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-  </div>
-
-
-<!-- <div class="ui segments eventlog">
-        <div class="ui segment innereventlog" style="cursor: pointer" (click)="toggle()">
-                <i class="chevron circle right icon" style="margin-left: 5px"></i>
-                <p style="display: inline">Event Logs</p>
-                <button style="visibility: hidden; display: inline" class="ui primary button" >
-                    Toggle Collapse
-                </button>
-            
-        </div>
-        <div class="ui segment theLogs">
-            <div [suiCollapse]="isOpen">
-                <div class="ui segment">
-                    
-            <sui-accordion [transition]="'fade'" [transitionDuration]="300" [closeOthers]="false">
-                    <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog" [open]="true" ></app-one-log>
-                </sui-accordion>
-            
-                </div>
-            </div>
-        </div>
+<div id="logConsole" class="consoleMaxSize">
+    <div class="ui segment innereventlog triggerbar" style="cursor: pointer; margin: 0" (click)="toggle()">
+        <i class="chevron circle right icon" style="margin-left: 5px"></i>
+        <p style="display: inline">Event Logs</p>
+        <button style="visibility: hidden; display: inline" class="ui primary button" >
+            Toggle Collapse
+        </button>
     </div>
- -->
+
+        <div class="content scrollbar scrollbar--dark" [style.display]="this.state.consoleOpen ? 'block' : 'none'" >
+            <sui-accordion [transition]="'fade'" [transitionDuration]="300" [closeOthers]="false">
+                <app-one-log *ngFor="let oneLog of logs; let i = index" class="oneLog" [log]="oneLog" [open]="true" ></app-one-log>
+            </sui-accordion>
+           
+        </div>
+</div>

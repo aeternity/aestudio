@@ -31,8 +31,6 @@ export class EditorComponent implements OnInit {
   /* logs: NgxLogMessage[] = [
   ]; */
 
-  deleteme: any = 2;
-
   logStream$: any;
 
   // logger end // 
@@ -114,7 +112,7 @@ export class EditorComponent implements OnInit {
     private generator: CodeFactoryService,
     private localStorage: LocalStorageService,
     private authService: AuthService,
-    private state: StateService
+    public state: StateService
     ) { 
       
       // deprecation testing
@@ -149,6 +147,21 @@ export class EditorComponent implements OnInit {
   };
 
   ngOnInit () {
+
+    /* 
+    this.state.editor.tabHeight = document.getElementById('tabMenu').offsetHeight;
+    this.state.editor.menuHeight = document.getElementById('logoHeader').offsetHeight;
+    this.state.editor.viewportHeight = window.innerHeight
+    this.state.editor.logConsoleHeight = document.getElementById('logConsole').offsetHeight; */
+
+    this.state.editor.recalculateEditorHeight()
+    
+    setInterval(() => {
+      this.state.editor.recalculateEditorHeight()
+      console.log("oneEditorHeight", this.state.editor.finalHeight)
+      
+    }, 5000);
+
     /* setInterval(() => {
       // fetching logs from compiler...
       this.logs = this.compiler.logs;

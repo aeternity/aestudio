@@ -40,6 +40,8 @@ import { GlobalOptionsComponent } from './global-options/global-options.componen
 import { PreventClickPropagationDirective } from './prevent-click-propagation.directive';
 import { MdwUrlDirective } from './mdw-url.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.directive';
+import { ConsoleOpenerDirective } from './directives/console-opener.directive';
 // firebase end
 
 
@@ -53,7 +55,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective, EditorAutoResizerDirective, ConsoleOpenerDirective
   ],
   imports: [
     BrowserModule,

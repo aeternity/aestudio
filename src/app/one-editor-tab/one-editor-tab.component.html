@@ -1,11 +1,27 @@
-<ngx-monaco-editor 
+<ngx-monaco-editor appEditorAutoResizer
+    [(ngModel)]="activeContract.code" 
+    (ngModelChange)="throttledChange()" 
+    (onInit)="initializeEditorObject($event)" 
+    class="editor" 
+    
+    
+    [options]="editorOptions"></ngx-monaco-editor>
+ 
+    <!-- old size settings his.state.editor.finalHeight
+
+     [style.height.px]="this.state.editor.finalHeight"
+    [className]="this.state.consoleOpen ? 'consoleOpen' : 'consoleClosed'" 
+    
+    -->
+<!-- 
+    <ngx-monaco-editor 
     [(ngModel)]="activeContract.code" 
     (ngModelChange)="throttledChange()" 
     (onInit)="initializeEditorObject($event)" 
     class="editor" 
     [className]="this.state.consoleOpen ? 'consoleOpen' : 'consoleClosed'" 
-    [options]="editorOptions"></ngx-monaco-editor>
-
+    [style.max-height]="this.state.consoleOpen ? '25%' : '0px'"></ngx-monaco-editor>
+    [options]="editorOptions"></ngx-monaco-editor> -->
 
 <!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">

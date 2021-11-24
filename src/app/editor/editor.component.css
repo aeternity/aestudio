@@ -100,3 +100,7 @@
     font-weight: 400;
 }
 
+.placeholder{
+    height:auto;
+    background: red;
+}

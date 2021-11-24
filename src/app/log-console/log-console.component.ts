@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { EventlogService } from '../services/eventlog/eventlog.service'
+import { StateService } from '../services/state.service';
 
 @Component({
   selector: 'app-log-console',
@@ -9,12 +10,9 @@ import { EventlogService } from '../services/eventlog/eventlog.service'
 
 export class LogConsoleComponent implements OnInit {  
 
-  @Output() open: EventEmitter<boolean> = new EventEmitter();
-
   logs: any[] = [];
-  isOpen: boolean = true;
   
-  constructor(private eventlog: EventlogService) { 
+  constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef) { 
 
   }
 
@@ -33,9 +31,14 @@ export class LogConsoleComponent implements OnInit {
   }
 
   toggle() {
-    this.isOpen = !this.isOpen;
-    console.log("emitting console open: ", this.isOpen)
-  	this.open.emit(this.isOpen);
+    console.log("Resize: click initiated")
+    this.state.consoleOpen = !this.state.consoleOpen
+    this.detector.detectChanges()
+    //setTimeout(() => {
+      this.state.consoleTrigger.emit()
+    //}, 1000);
+    
+    console.log("state console open: ", this.state.consoleOpen)
   }	
 
 }
