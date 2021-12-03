@@ -25,6 +25,7 @@ include "String.aes"
 contract BasicNFT =
 
     record state = {
+        name : string,
         token_owner : map(string, address), 
         token_owns : map(address, int), 
         token_approvals: map(string, address),
@@ -32,20 +33,24 @@ contract BasicNFT =
         }
 
 
-    stateful entrypoint init() = 
-        { token_owner = {},
+    stateful entrypoint init(name : string) = 
+        { name = name,
+            token_owner = {},
             token_owns = {},
             token_approvals = {},
             token_own_names = {}}
 
+    entrypoint getName() =
+        state.name
+
     // get owner
-    public stateful entrypoint ownerOfToken(_token_id: string) : option(address) =
+    public entrypoint ownerOfToken(_token_id: string) : option(address) =
         Map.lookup(_token_id, state.token_owner)
     
     // get approved for token
-    public stateful entrypoint approvedForToken(_token_id: string) : option(address) =
+    public entrypoint approvedForToken(_token_id: string) : option(address) =
         Map.lookup(_token_id, state.token_approvals)
-        
+            
     // transfer token
     public stateful entrypoint transfer (_to: address, _token_id: string) =
         require(String.length(_token_id) >= 1, "Token Id required")
