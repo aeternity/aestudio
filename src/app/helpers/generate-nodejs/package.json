@@ -10,6 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "@aeternity/aepp-sdk": "^9.0.1",
-    "axios": "^0.21.1"
+    "axios": "^0.21.2"
   }
 }
