@@ -1,14 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 @import "vendor/semantic.min.css";
 
-.segment {
-    
+body{
+    overflow:hidden
+}
+
+.segment {    
     transition: all 2.6s cubic-bezier(0.075, 0.82, 0.165, 1);
-    
 }
 
 .segment:hover {
-    
     box-shadow: 0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)
 }
 
@@ -322,7 +323,7 @@ border-color: #000!important;
 }
 
 #header{
-    margin-top: 10% !important;
+    margin-top: 40px !important;
 }
 
 /* generated-Code end */
@@ -727,4 +728,3 @@ body {
 .consoleClosed{
     height:100vh
 }
-
