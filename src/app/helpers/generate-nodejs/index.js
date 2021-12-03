@@ -43,81 +43,113 @@
     // the code of your contract - watch out for correct indentations !
     var code = 
     `
+
+
+
 @compiler >= 6
 
 include "String.aes"
 
-contract InputHamster =
+contract BasicNFT =
 
     record state = {
-        index : int, 
-        map_hamsters : map(string, hamster), 
-        testvalue: int}
-
-    record hamster = {
-        id : int,
         name : string,
-        dna : int}
+        token_owner : map(string, address), 
+        token_owns : map(address, int), 
+        token_approvals: map(string, address),
+        token_own_names: map(address, list(map(string, bool))) 
+        }
 
-    stateful entrypoint init(input: int) = 
-        { index = input,
-            map_hamsters = {},
-            testvalue = 42}
+
+    stateful entrypoint init(name: string) = 
+        { name = name,
+            token_owner = {},
+            token_owns = {},
+            token_approvals = {},
+            token_own_names = {}}
+
+    public entrypoint getName() = 
+        state.name
     
-    public entrypoint read_test_value() : int =
-        state.testvalue
+    public entrypoint ownerOfToken(_token_id: string) : option(address) =
+        Map.lookup(_token_id, state.token_owner)
     
-    public entrypoint return_caller() : address =
-        Call.caller
-
-    public entrypoint cause_error() : unit =
-        require(2 == 1, "require failed") 
-
-    public stateful entrypoint add_test_value(one: int, two: int) : int =
-        put(state{testvalue = one + two})
-        one + two
     
-    public entrypoint locally_add_two(one: int, two: int) : int =
-        one + two
+    public entrypoint approvedForToken(_token_id: string) : option(address) =
+        Map.lookup(_token_id, state.token_approvals)
+        
     
-    public stateful entrypoint statefully_add_two(one: int, two: int) : int=
-        put(state{testvalue = one + two})
-        state.testvalue
+    public stateful entrypoint transfer (_to: address, _token_id: string) =
+        require(String.length(_token_id) >= 1, "Token Id required")
+      
+        clearApproval(Some(Call.caller), _token_id)
+        removeTokenFrom(Call.caller, _token_id)
+        addTokenTo(_to, _token_id) 
+        
+        
+        
     
-    stateful entrypoint create_hamster(hamster_name: string) =
-        require(!name_exists(hamster_name), "Name is already taken")
-        let dna : int = generate_random_dna(hamster_name)
-        create_hamster_by_name_dna(hamster_name, dna)
+    private stateful function clearApproval(_user: option(address), _token_id: string): bool =
+        require(ownerOfToken(_token_id) == _user, "For clearApproval Owner of token is not you!")
+        if(Map.member(_token_id, state.token_approvals))
+          Map.delete(_token_id, state.token_approvals)
+          true
+        else
+          false
+          
+    
+    private stateful function addTokenTo(_to: address, _token_id: string) =
+        require(String.length(_token_id) >= 1, "Token Id required")
 
-    entrypoint name_exists(name: string) : bool =
-        Map.member(name, state.map_hamsters)
+        put(state{token_owner[_token_id] = _to})
+        
+        let old_token_owns_value = Map.lookup(_to, state.token_owns)
+        if(old_token_owns_value == None)
+            put(state{token_owns[_to] = 1 })
+        else
+            put(state{token_owns[_to] = state.token_owns[_to] + 1})
+        put(state{token_own_names[_to] = [{[_token_id] = true}] })
+        
+    
+    private stateful function removeTokenFrom(_from: address, _token_id: string): string =
+        require(String.length(_token_id) >= 1, "Token Id required")
+        if((ownerOfToken(_token_id) == Some(_from)) || (approvedForToken(_token_id) == Some(_from)))
+          Map.delete(_token_id, state.token_owner)
+          put(state{token_owns[_from] = state.token_owns[_from] - 1 })
+          put(state{token_own_names[Call.caller] = [{[_token_id] = false}] })
+          "Done"
+          
+        else  
+          "cannot done"
+            
+    
+    public stateful entrypoint mint(_token_id: string) =
+        require(String.length(_token_id) >= 1, "Token Id required")
+        require(ownerOfToken(_token_id) == None, "Token id already exist")
 
-    entrypoint get_hamster_dna(name: string, test: option(int)) : int =
-        require(name_exists(name), "There is no hamster with that name!")
+        addTokenTo(Call.caller, _token_id)
 
-        let needed_hamster : hamster = state.map_hamsters[name]
+    
+    public stateful entrypoint burn(_token_id: string) =
+        require(String.length(_token_id) >= 1, "Token Id required")
 
-        needed_hamster.dna
+        clearApproval(Some(Call.caller), _token_id)
+        removeTokenFrom(Call.caller, _token_id)
+    
+    
+    public stateful entrypoint approve(_to: address, _token_id: string) =
+        require(String.length(_token_id) >= 1, "Token Id required")
+        require(ownerOfToken(_token_id) == Some(Call.caller), "The owner is not you for this token id yet!.")
 
-    private stateful function create_hamster_by_name_dna(name: string, dna: int) =
-        let new_hamster : hamster = {
-            id = state.index,
-            name = name,
-            dna = dna}
-
-        put(state{map_hamsters[name] = new_hamster})
-        put(state{index = (state.index + 1)})
-
-    private function generate_random_dna(name: string) : int =
-        get_block_hash_bytes_as_int() - Chain.timestamp + state.index
-
-    private function get_block_hash_bytes_as_int() : int =
-        switch(Chain.block_hash(Chain.block_height - 1))
-            None => abort("blockhash not found")
-            Some(bytes) => Bytes.to_int(bytes)
-
-    entrypoint test(name: string) : hash =
-        String.sha3(name)`
+        put(state{token_approvals[_token_id] = _to})
+    
+    
+    public entrypoint sumOfTokenOwns (): option(int) =
+        Map.lookup(Call.caller, state.token_owns)
+    
+    
+    public entrypoint allTokensOwnedOrNotNow () : option(list(map(string, bool))) = 
+        Map.lookup(Call.caller, state.token_own_names)`
 
     // create a contract instance
     myContract = await Chain.getContractInstance(code);
@@ -126,7 +158,7 @@ contract InputHamster =
     try {
       console.log("Deploying contract....")
       console.log("Using account for deployment: ", Chain.addresses());
-      await myContract.methods.init("1335");
+      await myContract.methods.init("1337");
     } catch(e){
       console.log("Something went wrong, did you set up the SDK properly?");
       console.log("Deployment failed: ", e)
@@ -141,7 +173,7 @@ contract InputHamster =
     // CONTRACT FUNCTION CALL
 
     // the name of the function you want to call
-    var yourFunction = "read_test_value";
+    var yourFunction = "getName";
     
     // the parameters of your function
     yourParams = [];
