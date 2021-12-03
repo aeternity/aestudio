@@ -463,20 +463,17 @@ public initWalletSearch = async (successCallback) => {
 
       // 2. enumerate functions explicitly with index
       rawACI.contract.functions.forEach((one, i) => {
-
           rawACI.contract.functions[i].IDEindex = i;
-          //console.log(one);
-          //console.log(i);
       })
       
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
-
-      /* // actually, short-circuit problematic formgroup generation
-      let aci = rawACI; */
+    
       // 4. put the ammended ACi into the aci of the contract object
       myContract.aci = aci;
 
+      // also, add the deployment params
+      myContract.deployInfo.params = _deploymentParams 
       
       console.log("Fiinal aci object:", aci)
       

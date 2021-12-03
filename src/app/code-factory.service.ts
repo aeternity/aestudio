@@ -17,11 +17,17 @@ export class CodeFactoryService {
   public test: string;
   
 @Output() codeGeneratorEvent = new EventEmitter<string>()
-  generateCode(_theContractCode: string, _theFunctionName: string, _theParams: any,/*  _initParams: any */){
+  generateCode(_theContractCode: string, _theFunctionName: string, _theParams: any, _initParams: any){
     console.log("Generate in sidebar getriggert");
     console.log("Als parameter wurden übergeben:");
     console.log("_thefunctionName: " , _theFunctionName);
     console.log("the params: ", _theParams);
+    console.log("the init params: ", _initParams);
+
+    // generate the input for init()
+    const finalDeploymentParamString = JSON.stringify(_initParams).slice(1, -1)
+
+
     //console.log("contract code is: ", this.activeContracts[0].source);
     let arrayOfInputData : any = [];
     _theParams.arguments.forEach(oneArg=> {
@@ -43,24 +49,21 @@ export class CodeFactoryService {
     `// SDK & Node setup
     const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
 
-    const yourPrivateKey = 'Your private key'
-    const yourPublicKey = 'Your public key'
-
     // account that will be used for the transactions
-    const acc1 = MemoryAccount({ keypair: { secretKey: yourPrivateKey, publicKey: yourPublicKey } });
-    
+    const acc1 = MemoryAccount({ keypair: { secretKey: '2fcd1b5b3434ca8b465e030aa9db42b30c71b37eab2bcd527039bd89f650db68d844c73b26e3b35cc46aacfddec678298718a9ee1e5872f28febfe92908bd5c9', publicKey: 'ak_2eFHyvq8CWEndzoidC4aEMEhHZjoYvc23fFVM2u7QV9myPuMwc' } });
+  
     // a reference to the aeternity blockchain
     var Chain;
     
     // instantiate a connection to the aeternity blockchain
     const main = async () => {
-      const node1 = await Node({ url: 'https://sdk-testnet.aepps.com', internalUrl: 'https://sdk-testnet.aepps.com' })
+      const node1 = await Node({ url: 'https://testnet.aeternity.io', internalUrl: 'https://testnet.aeternity.io' })
       // const node2 = ...
     
         Chain = await Ae({
          // This two params deprecated and will be remove in next major release
-          url: 'https://sdk-testnet.aepps.com',
-          internalUrl: 'https://sdk-testnet.aepps.com',
+          url: 'https://testnet.aeternity.io',
+          internalUrl: 'https://testnet.aeternity.io',
           // instead use
           nodes: [
             { name: 'someNode', instance: node1 },
@@ -73,7 +76,7 @@ export class CodeFactoryService {
             acc1,
             // acc2
           ],
-          address: yourPublicKey
+          address: acc1.publicKey
 
         })
         const height = await Chain.height()
@@ -98,7 +101,7 @@ export class CodeFactoryService {
     try {
       console.log("Deploying contract....")
       console.log("Using account for deployment: ", Chain.addresses());
-      await myContract.methods.init();
+      await myContract.methods.init(${finalDeploymentParamString});
     } catch(e){
       console.log("Something went wrong, did you set up the SDK properly?");
       console.log("Deployment failed: ", e)

@@ -113,8 +113,9 @@ export class DeployedContractComponent implements OnInit {
     console.log("Das wurde als callresult geschrieben: ", this.contract.aci.functions[_theFunctionIndex].lastReturnData);
   }
   
-  callCodeFactory(_theContractCode: string, _theFunctionName: string, _theParams: any) {
-    this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams);
+  callCodeFactory(_theContractCode: string, _theFunctionName: string, _theParams: any, _initParams) {
+    console.log("Contract:", this.contract)
+    this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams, _initParams);
   }
   
   deleteTheContract() {

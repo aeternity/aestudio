@@ -9,7 +9,7 @@
   "author": "nikita fuchs",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^6.0.0",
+    "@aeternity/aepp-sdk": "^9.0.1",
     "axios": "^0.21.1"
   }
 }
