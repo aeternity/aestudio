@@ -1,4 +1,4 @@
-export class Contract<T> {
+export class Contract {
   public contractUID: string = "";
   public code: string;
   public showInTabs: boolean = true;

@@ -199,14 +199,26 @@ export class EditorComponent implements OnInit {
       console.log("contract ID: ", contractID);
  */
       // get contract ID from URl parameter for fetching code from DB
-      if (parameter.get("contract") !== null) {
-        var contractID = parameter.get("contract");
-        console.log("contract ID: ", contractID);
+      if (parameter.get("contract") !== null || parameter.get("contractCode") !== null ) {
 
-
+        var contractCode : any
+        if (parameter.get("contract") !== null) {
+          var contractID = parameter.get("contract");
+          contractCode = await this.authService.getSharedContract(contractID) 
+          console.log("fetched contract ID: ", contractID);
+        } else {
+          var codeURL = parameter.get("contract")
+          try {
+            let response = await fetch(codeURL);
+            contractCode = await response.json()
+          } catch(e) {
+            console.log("Error loading external code: ", e)
+          }
+        }
+       
         //let something = this.http.get(`https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/9702aa10-b`)
 
-        let contractCode = await this.authService.getSharedContract(contractID) 
+        //let contractCode = await this.authService.getSharedContract(contractID) 
 
 
           // if the backend responds, load contracts from local storage and ...
@@ -222,7 +234,7 @@ export class EditorComponent implements OnInit {
             //console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             
-            // we set the contract fetched from the backend as the new active contract, get its name, assign it to the contract object, and push it to the contracts.
+            // we set the contract fetched from the backend as the new active contract, get its name, create a new contract object, and push it to the contracts.
 
             // GET THE CONTRACT'S NAME...
             

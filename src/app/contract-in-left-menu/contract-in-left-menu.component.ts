@@ -9,7 +9,7 @@ import { Contract } from '../contracts/hamster';
 })
 export class ContractInLeftMenuComponent implements OnInit {
 
-  @Input() public contract: Contract<any>;
+  @Input() public contract: Contract;
   @Output() public contractDeletion : any = new EventEmitter();
   @Output() public showInTabs = new EventEmitter();
   
