@@ -1,22 +1,22 @@
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Universal } from '@aeternity/aepp-sdk/'
+import { AeSdk, Node, MemoryAccount } from '@aeternity/aepp-sdk';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
-import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
+
 import BrowserWindowMessageConnection from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
 import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
 import {RpcAepp} from "@aeternity/aepp-sdk";
 
 import { ContractBase } from './question/contract-base'
-// import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
-import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
-import publicAccounts from './helpers/prefilled-accounts'
-import { EventlogService } from './services/eventlog/eventlog.service'
-//import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
-var Ae = Universal;
+import { ContractInstance } from '@aeternity/aepp-sdk/es/contract/aci'
+
+import publicAccounts from './helpers/prefilled-accounts'
+import { AeSdkEnhanced } from './helpers/sdkTypeEnhancement'
+import { EventlogService } from './services/eventlog/eventlog.service'
+
+
 
 
 @Injectable({
@@ -39,7 +39,7 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  public Chain: any;
+  public Chain: AeSdkEnhanced;
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
@@ -266,16 +266,22 @@ public initWalletSearch = async (successCallback) => {
 
   constructor(private http: HttpClient,
     private eventlog: EventlogService) {
+      
+    this.currentBrowser = this.getBrowserName();
 
     // define the default SDK settings
-    var theAccounts : MemoryAccount[] = [];
-    this.currentBrowser = this.getBrowserName();
+    let theAccounts : MemoryAccount[] = publicAccounts().map(account => {
+      let oneAccount = new MemoryAccount({keypair: account});
+      oneAccount["property"] = "public";
+    })
+
+  /*   var theAccounts : MemoryAccount[] = [];
 
     publicAccounts().forEach(account => {
       let oneAccount = MemoryAccount({keypair: account});
       oneAccount.property = "public";
       theAccounts.push(oneAccount);
-    });
+    }); */
 
     this.defaultSdkConfig = {
       nodeUrl : `${environment.publicTestnetURL}`,
@@ -305,16 +311,23 @@ public initWalletSearch = async (successCallback) => {
       });
     }
 
-      const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
-      this.Chain = await Ae({
+    const nodeInstance = new Node(this.defaultOrCustomSDKsetting("nodeUrl"))
+      this.Chain = new AeSdk({
         nodes: [{name: 'Testnet', instance: nodeInstance }],
         compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-        accounts: this.defaultOrCustomSDKsetting("accounts")
+        // accounts: this.defaultOrCustomSDKsetting("accounts") - leaving this here for when `address`/accounts become sync in future sdk versions again
+      })
+      
+      // sdk v12: add accounts manually, automatically "select"ing the last one of the bunch.
+      this.defaultOrCustomSDKsetting("accounts").forEach(async (account) => {
+        await this.Chain.addAccount(account, { select: true })
         
-      }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
+      });
+
       // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
       this.Chain.currentWalletProvider = "web"
 
+      
       // TODO: wrap in try catch
       let height = await this.Chain.height();
       console.log('Current Block Height: ', height)
@@ -393,12 +406,12 @@ public initWalletSearch = async (successCallback) => {
     //console.log("Hier kommt der code: ", sourceCode);
 
     // create a contract instance
-    var myContract;
+    var myContract : ContractInstance ;
 
     if (!_existingContractAddress) {
       // Here we deploy the contract
       
-      myContract = await this.Chain.getContractInstance(this.code);
+      myContract = await this.Chain.getContractInstance({source: this.code});
       //console.log(">>>> compilation result (mycontract): ", myContract);
       
       try {
@@ -691,7 +704,8 @@ public initWalletSearch = async (successCallback) => {
     
   }
 
-  private defaultOrCustomSDKsetting(_setting){
+
+  private defaultOrCustomSDKsetting(_setting : sdkOption){
     // if there is no override set, return the default.
     return this.sdkConfigOverrides[_setting] == undefined ? this.defaultSdkConfig[_setting] : this.sdkConfigOverrides[_setting];
   }
@@ -727,6 +741,7 @@ public initWalletSearch = async (successCallback) => {
 
 }
 
+type sdkOption = 'accounts' | 'nodeUrl' | 'compilerUrl' ;
 
 export class EncodedACI {
   encoded_aci: any;
