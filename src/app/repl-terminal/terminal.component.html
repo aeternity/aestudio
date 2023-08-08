@@ -1,0 +1,25 @@
+<div class="ngx-terminal" #terminalContainer>
+    <div class="ngx-terminal-output" spellcheck="false">
+  
+      <pre [innerHTML]="intro"></pre>
+  
+      <div *ngFor="let prompt of stack">
+  
+        <!-- prompt -->
+        <div *ngIf="!prompt.isEmpty()" fxLayout="row" fxLayoutAlign=" start">
+          <span class="ngx-terminal-prompt">{{prompt.login}}@{{prompt.server}} $</span>
+          <textarea fxFlex class="ngx-terminal-input" [(ngModel)]="prompt.text" #terminalInput
+                    [disabled]="prompt.locked"></textarea>
+        </div>
+        <!-- end prompt -->
+  
+        <!-- response -->
+        <div *ngIf="prompt.response">
+          <pre [innerHTML]="prompt.response"></pre>
+        </div>
+        <!-- end response -->
+      </div>
+  
+    </div>
+  </div>
+  

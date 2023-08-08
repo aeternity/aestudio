@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { EventlogService } from '../services/eventlog/eventlog.service'
 import { StateService } from '../services/state.service';
+import { TerminalPrompt } from '../repl-terminal/TerminalPrompt';
 
 @Component({
   selector: 'app-log-console',
@@ -11,11 +12,32 @@ import { StateService } from '../services/state.service';
 export class LogConsoleComponent implements OnInit {  
 
   logs: any[] = [];
-  
-  constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef) { 
+  activeTab : string = 'logs'
 
+  public server = 'aerepl';
+  public login = 'you';
+
+  constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef) { 
+    
   }
 
+  onCommand(prompt: TerminalPrompt) {
+    switch (prompt.getCommand()) {
+
+      case 'whoami':
+        prompt.response = prompt.login;
+        prompt.responseComplete();
+        break;
+
+      default:
+        prompt.response = 'unknown command';
+        prompt.responseComplete();
+    }
+  }
+
+  logActiovated($event){
+    console.log("damn")
+  }
 
   ngOnInit() {
     // setup a default first log:
@@ -30,7 +52,16 @@ export class LogConsoleComponent implements OnInit {
     })
   }
 
-  toggle() {
+  stopClickPropagation($event) {
+    $event.stopPropagation()
+  }
+
+  showTabContent(tab: "logs" | "repl"){
+    this.activeTab = tab
+  }
+
+
+  toggle($event) {
     console.log("Resize: click initiated")
     this.state.consoleOpen = !this.state.consoleOpen
     this.detector.detectChanges()

@@ -10,13 +10,15 @@
 }
 
 
-
+.stylefix {
+    margin-bottom: 0;
+}
 .active, .collapsible:hover {
     background-color: #555;
   }
 
   .content {
-    padding: 0 18px;
+    
     max-height: fit-content;
     overflow: hidden;
     transition: max-height 0.2s ease-out;
@@ -99,3 +101,29 @@
     padding: 0px;
 }
 
+.secondary.menu{
+    margin-bottom: 0px;
+}
+
+.ui.segment.tab {
+    margin-top: 0px;
+}
+.scrollbar-dark {
+    scrollbar-width: auto;
+    scrollbar-color: #424242 #1e1e1e;
+}
+
+/* Chrome, Edge, and Safari */
+.scrollbar-dark::-webkit-scrollbar {
+    width: 13px;
+}
+
+.scrollbar-dark::-webkit-scrollbar-track {
+    background: #1e1e1e;
+}
+
+.scrollbar-dark::-webkit-scrollbar-thumb {
+    background-color: #424242;
+    border-radius: 0px;
+    border: 0px solid #4a4a4a;
+}
