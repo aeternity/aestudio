@@ -1,7 +1,9 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, Inject } from '@angular/core';
 import { EventlogService } from '../services/eventlog/eventlog.service'
 import { StateService } from '../services/state.service';
 import { TerminalPrompt } from '../repl-terminal/TerminalPrompt';
+import { StorageService } from 'ngx-webstorage-service';
+import { LocalStorageService } from '../local-storage.service';
 
 @Component({
   selector: 'app-log-console',
@@ -17,8 +19,8 @@ export class LogConsoleComponent implements OnInit {
   public server = 'aerepl';
   public login = 'you';
 
-  constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef) { 
-    
+  constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef,  private localStorage: LocalStorageService) { 
+    // use this to get all contracts in their latest state: this.localStorage.getAllContracts();
   }
 
   onCommand(prompt: TerminalPrompt) {
