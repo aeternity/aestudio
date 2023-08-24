@@ -69,7 +69,7 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
     env: { DEBUG: undefined },
     version: '12.1337'
   };
-  
+
 // 3. Uncaught ReferenceError: Buffer is not defined
 //    at Module../node_modules/@aeternity/aepp-sdk/es/utils/hd-wallet.js
 
@@ -86,26 +86,26 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
   version: '12.1337'
 };
 
- 
+
 (window as any).GlobalDebug = (function () {
   var savedConsole = console;
   return function(debugOn,suppressAll){
-      var suppress = suppressAll || false;
-      if (debugOn === false) {
-          (console as any) = {};
-          console.log = function () { };
-          if(suppress) {
-              console.info = function () { };
-              console.warn = function () { };
-              console.error = function () { };
-          } else {
-              console.info = savedConsole.info;
-              console.warn = savedConsole.warn;
-              console.error = savedConsole.error;              
-          }
-      } else {
-          console = savedConsole;
-      }
+      // var suppress = suppressAll && false;
+      // if (debugOn === false ) {
+      //     (console as any) = {};
+      //     console.log = function () { };
+      //     if(suppress) {
+      //         console.info = function () { };
+      //         console.warn = function () { };
+      //         console.error = function () { };
+      //     } else {
+      //         console.info = savedConsole.info;
+      //         console.warn = savedConsole.warn;
+      //         console.error = savedConsole.error;
+      //     }
+      // } else {
+      //     console = savedConsole;
+      // }
   }
   //@ts-ignore
 })();
