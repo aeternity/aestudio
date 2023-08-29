@@ -73,13 +73,14 @@ export class LogConsoleComponent implements OnInit {
       case ':r':
         let contracts_raw = this.localStorage.getAllContracts();
         let contracts = contracts_raw.map(
-          function(c) {
-            let filename = c.nameInTab + ".aes";
-            let content = c.code;
-            return {
-              filename: filename,
-              content: content
-            }
+            function(c) {
+
+                let filename = (c as any).nameInTab + ".aes";
+                let content = (c as any).code;
+                return {
+                    filename: filename,
+                    content: content
+                }
           }
         );
 
