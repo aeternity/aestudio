@@ -8,11 +8,11 @@
             Just giving height to the element.
         </button>
         <sui-tabset [style.display]="this.state.consoleOpen ? 'unset' : 'none'" (click)="stopClickPropagation($event)">
-            <div class="ui pink pointing secondary menu">
+            <div class="ui pointing secondary menu">
                 <!-- note: programatically add "active" class to activate tabs -->
                 <!-- BS tab library doesn't hide contents for whatever reason, need to show/hide manually with (click) handler -->
-                <a class="item" suiTabHeader="1" (click)="showTabContent('logs')">Console</a>
-                <a class="item" suiTabHeader="2" (click)="showTabContent('repl')">REPL</a>
+                <a class="contracttab item" suiTabHeader="1" (click)="showTabContent('logs')">Console</a>
+                <a class="contracttab item" suiTabHeader="2" (click)="showTabContent('repl')">REPL</a>
             </div>
             
             <div class="ui inverted segment content scrollbar scrollbar-dark stylefix" suiTabContent="1" [style.display]="this.state.consoleOpen && this.activeTab == 'logs' ? 'block' : 'none'">

@@ -19,7 +19,7 @@ export class LogConsoleComponent implements OnInit {
   activeTab : string = 'logs'
 
   public login = 'you';
-    public server = 'ws://localhost:4000';
+    public server = 'ws://repl.aeternity.io';
     public session = '';
 
     private channel;

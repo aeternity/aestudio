@@ -127,3 +127,7 @@
     border-radius: 0px;
     border: 0px solid #4a4a4a;
 }
+
+.contracttab.item.active{
+    border-bottom-color: #121212 !important;
+}
