@@ -731,9 +731,6 @@ body {
 
 /* REPL start */
 .ngx-terminal-prompt {
-    color: #ff2c55;
-    line-height: 20px;
-    margin-right: 10px;
-    white-space: nowrap;
+    color: #ff2c55 !important
 }
 /* REPL end  */

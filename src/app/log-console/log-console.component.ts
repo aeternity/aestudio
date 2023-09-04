@@ -19,7 +19,8 @@ export class LogConsoleComponent implements OnInit {
   activeTab : string = 'logs'
 
   public login = 'you';
-    public server = 'ws://repl.aeternity.io';
+    public server = 'REPL';
+    public serverUrl = 'wss://repl.aeternity.io/';
     public session = '';
 
     private channel;
@@ -30,7 +31,7 @@ export class LogConsoleComponent implements OnInit {
   constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef,  private localStorage: LocalStorageService) {
     // use this to get all contracts in their latest state:
 
-    let socket = new Socket(this.server + "/socket");
+    let socket = new Socket(this.serverUrl + "/socket");
     socket.connect();
     console.log("REPL: socket= " + socket);
     this.channel = socket.channel("repl_session:lobby", {});
