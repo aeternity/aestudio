@@ -31,9 +31,6 @@
     padding: 0;
     max-height: unset;
     overflow: hidden;
-    background:red
-    
-    
   }
 
 .consoleMaxSize{
@@ -127,6 +124,46 @@
     border: 0px solid #4a4a4a;
 }
 
-.contracttab.item.active{
-    border-bottom-color: #121212 !important;
+
+.consoleTab.item{
+    background: #121213 !important;
+    border-top: 1px solid #121212 !important;
+    border-right: 1px solid #121212 !important;
+    border-left: 1px solid #121212 !important;
+    color: #999999 !important;
+    
+    &:hover {
+        border-width: 1px !important;
+    }
+
+    &.active {
+        background: #1e1e1e !important;
+        border-top-color: none !important;
+        border-left-color: none !important;
+        border-right-color: none !important;
+        border-top-width: 2px !important;
+        border-radius: 0px !important;
+        color: #d1d0d0 !important;
+        border-width: 2px !important;
+    }
 }
+
+div.ui.segment{
+    border: none
+}
+
+.box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+  }
+
+  .box .row.content {
+    flex: 1 1 auto;
+    background-color: #000000;
+  }
+
+
+  .box-container {
+    display: contents;
+  }

@@ -52,7 +52,7 @@ export class EditorComponent implements OnInit {
   // set the editor's style:
   //@HostBinding('attr.class') css = 'ui segment container';
 
-  @HostBinding('style.border') value = 'red';
+  //@HostBinding('style.border') value = 'red';
 
   //Fires when the SDK does something
   editorAction: Subscription;
