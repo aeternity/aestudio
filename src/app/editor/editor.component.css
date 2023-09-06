@@ -104,3 +104,11 @@
     height:auto;
     background: red;
 }
+
+.ui.segment{
+    border-bottom: none
+}
+
+.ui.attached.segment{
+    border-bottom: none
+}

@@ -728,3 +728,9 @@ body {
 .consoleClosed{
     height:100vh
 }
+
+/* REPL start */
+.ngx-terminal-prompt {
+    color: #ff2c55 !important
+}
+/* REPL end  */

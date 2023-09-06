@@ -7,7 +7,11 @@ export class StateService {
 
   // used to change the sizes of editor and console log, open / close.
   consoleOpen : boolean = true
-
+  public console: {
+    isOpen : boolean,
+    logsActive: boolean,
+    replActive: boolean
+  }
   // used to calculate the correct height of the monaco editor
   consoleTrigger: EventEmitter<boolean> = new EventEmitter<boolean>();
   editor = {
@@ -26,5 +30,11 @@ export class StateService {
     }
   }
 
-  constructor() { }
+  constructor() {
+    this.console = {
+      isOpen : true,
+      logsActive: false,
+      replActive: true
+    }
+   }
 }

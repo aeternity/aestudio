@@ -26,6 +26,7 @@ import { environment } from '../environments/environment';
 import { TxValuesComponent } from './tx-values/tx-values.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { DigitOnlyModule } from '@uiowa/digit-only';
+import { TerminalModule } from './repl-terminal/terminal.module'
 
 // firebase start 
 import { AngularFireModule } from '@angular/fire';
@@ -84,7 +85,8 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
       innerStrokeColor: "#C7E596",
       animationDuration: 500,
     }),
-    FontAwesomeModule
+    FontAwesomeModule,
+    TerminalModule
   ],
   providers: [LocalStorageService],
   bootstrap: [MainloaderComponent]
