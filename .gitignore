@@ -57,3 +57,4 @@ dist/fire-editor
 dist/*
 !dist/assets/
 dist/assets/monaco/*
+ideas.md
