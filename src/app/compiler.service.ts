@@ -178,7 +178,7 @@ public justScanForWallets = async (successCallback) => {
 }
 
 public awaitInitializedChainProvider = async () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     var scanCount = 0
     var check = setInterval(() => {
      
