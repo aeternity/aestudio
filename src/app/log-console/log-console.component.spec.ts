@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { LogConsoleComponent } from './log-console.component';
 
@@ -6,7 +6,7 @@ describe('LogConsoleComponent', () => {
   let component: LogConsoleComponent;
   let fixture: ComponentFixture<LogConsoleComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ LogConsoleComponent ]
     })

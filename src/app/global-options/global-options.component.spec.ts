@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { GlobalOptionsComponent } from './global-options.component';
 
@@ -6,7 +6,7 @@ describe('GlobalOptionsComponent', () => {
   let component: GlobalOptionsComponent;
   let fixture: ComponentFixture<GlobalOptionsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ GlobalOptionsComponent ]
     })
