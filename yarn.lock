@@ -304,7 +304,7 @@
   "resolved" "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz"
   "version" "9.0.0"
 
-"@angular/core@^11.0.0 || ^12.0.0-0", "@angular/core@^11.2.14", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=11.0.0", "@angular/core@>=6.0.0", "@angular/core@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@>=9.1.0", "@angular/core@11.2.14":
+"@angular/core@^11.0.0", "@angular/core@^11.0.0 || ^12.0.0-0", "@angular/core@^11.2.14", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=11.0.0", "@angular/core@>=6.0.0", "@angular/core@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@>=9.1.0", "@angular/core@11.2.14":
   "integrity" "sha512-vpR4XqBGitk1Faph37CSpemwIYTmJ3pdIVNoHKP6jLonpWu+0azkchf0f7oD8/2ivj2F81opcIw0tcsy/D/5Vg=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-11.2.14.tgz"
   "version" "11.2.14"
@@ -1220,10 +1220,12 @@
   "resolved" "https://registry.npmjs.org/@discoveryjs/json-ext/-/json-ext-0.5.2.tgz"
   "version" "0.5.2"
 
-"@fortawesome/angular-fontawesome@^0.6.1":
-  "integrity" "sha512-ARQjtRuT+ZskzJDJKPwuiGO3+7nS0iyNLU/uHVJHfG4LwGJxwVIGldwg1SU957sra0Z0OtWEajHMhiS4vB9LwQ=="
-  "resolved" "https://registry.npmjs.org/@fortawesome/angular-fontawesome/-/angular-fontawesome-0.6.1.tgz"
-  "version" "0.6.1"
+"@fortawesome/angular-fontawesome@^0.8.2":
+  "integrity" "sha512-K/AiykA4YbHKE6XKEtZ0ZvVRQocUHyk+79HYWIfhGy3teHpzxsUqB/UjDaxivgBd6dF6ihlzgEbgrDMHlGNwGg=="
+  "resolved" "https://registry.npmjs.org/@fortawesome/angular-fontawesome/-/angular-fontawesome-0.8.2.tgz"
+  "version" "0.8.2"
+  dependencies:
+    "tslib" "^2.1.0"
 
 "@fortawesome/fontawesome-common-types@^0.2.36":
   "integrity" "sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg=="
@@ -5466,17 +5468,12 @@
   "resolved" "https://registry.npmjs.org/isstream/-/isstream-0.1.2.tgz"
   "version" "0.1.2"
 
-"istanbul-lib-coverage@^2.0.5":
-  "integrity" "sha512-8aXznuEPCJvGnMSRft4udDRDtb1V3pkQkMMI5LI+6HuQz5oQ4J2UFn1H82raA3qJtyOLkkwVqICBQkjnGtn5mA=="
-  "resolved" "https://registry.npmjs.org/istanbul-lib-coverage/-/istanbul-lib-coverage-2.0.5.tgz"
-  "version" "2.0.5"
-
 "istanbul-lib-coverage@^3.0.0":
   "integrity" "sha512-eOeJ5BHCmHYvQK7xt9GkdHuzuCGS1Y6g9Gvnx3Ym33fz/HpLRYxiS0wHNr+m/MBC8B647Xt608vCDEvhl9c6Mw=="
   "resolved" "https://registry.npmjs.org/istanbul-lib-coverage/-/istanbul-lib-coverage-3.2.0.tgz"
   "version" "3.2.0"
 
-"istanbul-lib-instrument@^4.0.3":
+"istanbul-lib-instrument@^4.0.1", "istanbul-lib-instrument@^4.0.3":
   "integrity" "sha512-BXgQl9kf4WTCPCCpmFGoJkz/+uhvm7h7PFKUYxh7qarQd3ER33vHG//qaE8eN25l07YqZPpHXU9I09l/RD5aGQ=="
   "resolved" "https://registry.npmjs.org/istanbul-lib-instrument/-/istanbul-lib-instrument-4.0.3.tgz"
   "version" "4.0.3"
@@ -5495,18 +5492,16 @@
     "make-dir" "^4.0.0"
     "supports-color" "^7.1.0"
 
-"istanbul-lib-source-maps@^3.0.6":
-  "integrity" "sha512-R47KzMtDJH6X4/YW9XTx+jrLnZnscW4VpNN+1PViSYTejLVPWv7oov+Duf8YQSPyVRUvueQqz1TcsC6mooZTXw=="
-  "resolved" "https://registry.npmjs.org/istanbul-lib-source-maps/-/istanbul-lib-source-maps-3.0.6.tgz"
-  "version" "3.0.6"
+"istanbul-lib-source-maps@^4.0.0":
+  "integrity" "sha512-n3s8EwkdFIJCG3BPKBYvskgXGoy88ARzvegkitk60NxRdwltLOTaH7CUiMRXvwYorl0Q712iEjcWB+fK/MrWVw=="
+  "resolved" "https://registry.npmjs.org/istanbul-lib-source-maps/-/istanbul-lib-source-maps-4.0.1.tgz"
+  "version" "4.0.1"
   dependencies:
     "debug" "^4.1.1"
-    "istanbul-lib-coverage" "^2.0.5"
-    "make-dir" "^2.1.0"
-    "rimraf" "^2.6.3"
+    "istanbul-lib-coverage" "^3.0.0"
     "source-map" "^0.6.1"
 
-"istanbul-reports@^3.0.2":
+"istanbul-reports@^3.0.0":
   "integrity" "sha512-TLgnMkKg3iTDsQ9PbPTdpfAK2DzjF9mqUG7RMgcQl8oFjad8ob4laGxv5XV5U9MAfx8D6tSJiUyuAwzLicaxlg=="
   "resolved" "https://registry.npmjs.org/istanbul-reports/-/istanbul-reports-3.1.6.tgz"
   "version" "3.1.6"
@@ -5519,10 +5514,10 @@
   "resolved" "https://registry.npmjs.org/jasmine-core/-/jasmine-core-3.99.1.tgz"
   "version" "3.99.1"
 
-"jasmine-core@>=3.8", "jasmine-core@~3.6.0":
-  "integrity" "sha512-8uQYa7zJN8hq9z+g8z1bqCfdC8eoDAeVnM5sfqs7KHv9/ifoJ500m018fpFc7RDaO6SWCLCXwo/wPSNcdYTgcw=="
-  "resolved" "https://registry.npmjs.org/jasmine-core/-/jasmine-core-3.6.0.tgz"
-  "version" "3.6.0"
+"jasmine-core@>=3.8", "jasmine-core@~3.8.0":
+  "integrity" "sha512-zl0nZWDrmbCiKns0NcjkFGYkVTGCPUgoHypTaj+G2AzaWus7QGoXARSlYsSle2VRpSdfJmM+hzmFKzQNhF2kHg=="
+  "resolved" "https://registry.npmjs.org/jasmine-core/-/jasmine-core-3.8.0.tgz"
+  "version" "3.8.0"
 
 "jasmine-core@~2.8.0":
   "integrity" "sha1-vMl5rh+f0FcB5F5S5l06XWPxok4="
@@ -5685,15 +5680,16 @@
   dependencies:
     "which" "^1.2.1"
 
-"karma-coverage-istanbul-reporter@~3.0.2":
-  "integrity" "sha512-wE4VFhG/QZv2Y4CdAYWDbMmcAHeS926ZIji4z+FkB2aF/EposRb6DP6G5ncT/wXhqUfAb/d7kZrNKPonbvsATw=="
-  "resolved" "https://registry.npmjs.org/karma-coverage-istanbul-reporter/-/karma-coverage-istanbul-reporter-3.0.3.tgz"
-  "version" "3.0.3"
+"karma-coverage@~2.0.3":
+  "integrity" "sha512-atDvLQqvPcLxhED0cmXYdsPMCQuh6Asa9FMZW1bhNqlVEhJoB9qyZ2BY1gu7D/rr5GLGb5QzYO4siQskxaWP/g=="
+  "resolved" "https://registry.npmjs.org/karma-coverage/-/karma-coverage-2.0.3.tgz"
+  "version" "2.0.3"
   dependencies:
     "istanbul-lib-coverage" "^3.0.0"
+    "istanbul-lib-instrument" "^4.0.1"
     "istanbul-lib-report" "^3.0.0"
-    "istanbul-lib-source-maps" "^3.0.6"
-    "istanbul-reports" "^3.0.2"
+    "istanbul-lib-source-maps" "^4.0.0"
+    "istanbul-reports" "^3.0.0"
     "minimatch" "^3.0.4"
 
 "karma-jasmine-html-reporter@^1.5.0":
@@ -5715,7 +5711,7 @@
   dependencies:
     "source-map-support" "^0.5.5"
 
-"karma@*", "karma@^5.2.0 || ^6.0.0", "karma@>=0.9", "karma@~6.4.2":
+"karma@*", "karma@^5.2.0 || ^6.0.0", "karma@^6.0.0", "karma@>=0.9":
   "integrity" "sha512-C6SU/53LB31BEgRg+omznBEMY4SjHU3ricV6zBcAe1EeILKkeScr+fZXtaI5WyDbkVowJxxAI6h73NcFPmXolQ=="
   "resolved" "https://registry.npmjs.org/karma/-/karma-6.4.2.tgz"
   "version" "6.4.2"
