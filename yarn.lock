@@ -200,10 +200,10 @@
   dependencies:
     "tslib" "^2.3.0"
 
-"@angular/cdk@^13.3.9", "@angular/cdk@^14.0.0":
-  "integrity" "sha512-XCuCbeuxWFyo3EYrgEYx7eHzwl76vaWcxtWXl00ka8d+WAOtMQ6Tf1D98ybYT5uwF9889fFpXAPw98mVnlo3MA=="
-  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-13.3.9.tgz"
-  "version" "13.3.9"
+"@angular/cdk@^14.0.0", "@angular/cdk@^14.2.7":
+  "integrity" "sha512-/tEsYaUbDSnfEmKVvAMramIptmhI67O+9STjOV0i+74XR2NospeK0fkbywIANu1n3w6AHGMotvRWJrjmbCElFg=="
+  "resolved" "https://registry.npmjs.org/@angular/cdk/-/cdk-14.2.7.tgz"
+  "version" "14.2.7"
   dependencies:
     "tslib" "^2.3.0"
   optionalDependencies:
@@ -235,7 +235,7 @@
     "uuid" "8.3.2"
     "yargs" "17.5.1"
 
-"@angular/common@^13.0.0 || ^14.0.0-0", "@angular/common@^14.0.0", "@angular/common@^14.3.0", "@angular/common@^9.0.0", "@angular/common@>= 6.0.0", "@angular/common@>=6.0.0", "@angular/common@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/common@>=9.0.0", "@angular/common@>=9.1.0", "@angular/common@14.3.0":
+"@angular/common@^14.0.0", "@angular/common@^14.0.0 || ^15.0.0", "@angular/common@^14.3.0", "@angular/common@^9.0.0", "@angular/common@>= 6.0.0", "@angular/common@>=6.0.0", "@angular/common@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/common@>=9.0.0", "@angular/common@>=9.1.0", "@angular/common@14.3.0":
   "integrity" "sha512-pV9oyG3JhGWeQ+TFB0Qub6a1VZWMNZ6/7zEopvYivdqa5yDLLDSBRWb6P80RuONXyGnM1pa7l5nYopX+r/23GQ=="
   "resolved" "https://registry.npmjs.org/@angular/common/-/common-14.3.0.tgz"
   "version" "14.3.0"
@@ -270,7 +270,7 @@
   "resolved" "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz"
   "version" "9.0.0"
 
-"@angular/core@^13.0.0 || ^14.0.0-0", "@angular/core@^14.0.0", "@angular/core@^14.3.0", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=6.0.0", "@angular/core@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@>=9.1.0", "@angular/core@14.3.0":
+"@angular/core@^14.0.0", "@angular/core@^14.0.0 || ^15.0.0", "@angular/core@^14.3.0", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=6.0.0", "@angular/core@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@>=9.1.0", "@angular/core@14.3.0":
   "integrity" "sha512-wYiwItc0Uyn4FWZ/OAx/Ubp2/WrD3EgUJ476y1XI7yATGPF8n9Ld5iCXT08HOvc4eBcYlDfh90kTXR6/MfhzdQ=="
   "resolved" "https://registry.npmjs.org/@angular/core/-/core-14.3.0.tgz"
   "version" "14.3.0"
