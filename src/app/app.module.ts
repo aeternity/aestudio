@@ -29,11 +29,16 @@ import { DigitOnlyModule } from '@uiowa/digit-only';
 import { TerminalModule } from './repl-terminal/terminal.module'
 
 // firebase start 
-import { AngularFireModule } from '@angular/fire';
+
+//contract sharing and user login disabled for now 
+
+/* import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { UserProfileComponent } from './user-profile/user-profile.component';
+ */
+// firebase end
 import { MainloaderComponent } from './mainloader/mainloader.component';
 import { WalletSwitchComponent } from './wallet-switch/wallet-switch.component';
 import { OneLogChildComponent } from './one-log-child/one-log-child.component';
@@ -43,7 +48,6 @@ import { MdwUrlDirective } from './mdw-url.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.directive';
 import { ConsoleOpenerDirective } from './directives/console-opener.directive';
-// firebase end
 
 
 
@@ -56,7 +60,7 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, UserProfileComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective, EditorAutoResizerDirective, ConsoleOpenerDirective
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective, EditorAutoResizerDirective, ConsoleOpenerDirective
   ],
   imports: [
     BrowserModule,
@@ -70,10 +74,10 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,
-    AngularFireModule.initializeApp(environment.firebase),
+  /*   AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     AngularFirestoreModule,
-    AngularFireStorageModule,
+    AngularFireStorageModule, */
     DigitOnlyModule,
     // Specify ng-circle-progress as an import
     NgCircleProgressModule.forRoot({

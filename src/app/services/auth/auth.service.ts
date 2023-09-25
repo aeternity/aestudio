@@ -14,10 +14,10 @@ import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 
 
 // Firebase
-import { auth } from 'firebase/app';
+/* import { auth } from 'firebase/app';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-
+ */
 // Fire Editor
 import { CompilerService } from '../../compiler.service'
 
@@ -39,14 +39,14 @@ export class AuthService {
     }
 
     constructor(
-        private afAuth: AngularFireAuth,
-        private afs: AngularFirestore,  // TODO: rename to afStore
+        /* private afAuth: AngularFireAuth,
+        private afs: AngularFirestore,  */ // TODO: rename to afStore
         private http: HttpClient,
         private compiler: CompilerService
         
     ) { 
           // Get the auth state, then fetch the Firestore user document or return null
-          this.user$ = this.afAuth.authState.pipe(
+          /* this.user$ = this.afAuth.authState.pipe(
             switchMap(user => {
                 // Logged in
 
@@ -67,18 +67,18 @@ export class AuthService {
                 return of(null);
               }
             })
-          )
+          ) */
         }
 
 
-    async googleSignin() {
+ /*    async googleSignin() {
         const provider = new auth.GithubAuthProvider();
         const credential = await this.afAuth.auth.signInWithPopup(provider);
         return this.updateUserData(credential.user);
-    }
+    } */
 
     // get the user's testnet keys
-    async checkForKeys(user) {
+   /*  async checkForKeys(user) {
       
       var userRef = this.afs.collection('users').doc(user.uid);
       
@@ -123,14 +123,11 @@ export class AuthService {
               await this.compiler.awaitInitializedChainProvider();
               this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({accounts: theAccounts, personalAccounts: true}) : true
             }
-          /* const keypair = Crypto.generateKeyPair()
-          //console.log(`Secret key: ${keypair.secretKey}`)
-          console.log(`Public key: ${keypair.publicKey}`) */
           }
         })
-    }
+    } */
 
-    private updateUserData(user) {
+ /*    private updateUserData(user) {
         // query for user information by user ID and create a reference to this data entry.
         const userRef: AngularFirestoreDocument<User> = this.afs.doc("users/" + user.uid);
 
@@ -143,9 +140,9 @@ export class AuthService {
 
         // update the data entry with fresh user information - not sure yet how necessary this is.
         return userRef.set(data, {merge: true})
-    }
+    } */
 
-    async signOut() {
+/*     async signOut() {
         await this.afAuth.auth.signOut();
         this.theUser = null;
         this.fillingUpAccounts.active = "false";
@@ -153,7 +150,7 @@ export class AuthService {
 
         // make SDK restart with public testnet accounts
         this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({command: "reset"}) : true
-    }
+    } */
 
     // helpers
 
@@ -202,7 +199,7 @@ export class AuthService {
     })}
 
     // for sharing contracts
-    async storeContractShare(contractCode) : Promise<string | boolean>{
+   /*  async storeContractShare(contractCode) : Promise<string | boolean>{
       let data = {code: contractCode}
 
       try {
@@ -214,9 +211,9 @@ export class AuthService {
         console.log("Auth: Write to DB failed!")
         return false
       }  
-    }
+    } */
 
-    async getSharedContract(shareID : string) {
+   /*  async getSharedContract(shareID : string) {
       return new Promise((resolve, reject) => 
         {
           try {
@@ -234,7 +231,7 @@ export class AuthService {
        
 
 
-    }
+    } */
 
 }
 

@@ -198,8 +198,14 @@ export class EditorComponent implements OnInit {
       /* var contractID = parameter.get("contract");
       console.log("contract ID: ", contractID);
  */
+          
+      // contract sharing feature - deactivated for now
+
       // get contract ID from URl parameter for fetching code from DB
-      if (parameter.get("contract") !== null || parameter.get("contractCode") !== null ) {
+ /*      if (parameter.get("contract") !== null || parameter.get("contractCode") !== null ) {
+
+
+    
 
         var contractCode : any
         if (parameter.get("contract") !== null) {
@@ -320,6 +326,7 @@ export class EditorComponent implements OnInit {
         
 
       } else {
+ */
 
         // if there is no contractID provided in the URL, initialize the default one
         // fix for stupid racing condition
@@ -340,7 +347,9 @@ export class EditorComponent implements OnInit {
             }
           }
         
-        }
+        // contract sharing feature - deactivated for now 
+       // }
+
       });
   
       // If the compiler asks for code, give it to him and deploy the contract

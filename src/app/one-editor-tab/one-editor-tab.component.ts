@@ -213,7 +213,10 @@ this.compiler._newACI.subscribe(item => {
 
 
     // custom context menu options
-    this.editorInstance.addAction ({
+
+    // contract sharing feature - deactivated for now
+    
+/*     this.editorInstance.addAction ({
         // ID of the group in which the new item will appear.
         contextMenuGroupId: '1_modification',
         // there are three of them: 1 - 'navigation', 2 - '1_modification', 3 - '9_cutcopypaste';
@@ -221,7 +224,7 @@ this.compiler._newACI.subscribe(item => {
         contextMenuOrder: 3, // order of a menu item within a group
         label: '<i class="share alternate icon"></i> Share contract and selection...',
         id: 'showDiff',
-        /* precondition: false, */
+        // precondition: false, 
         keybindings: [], // Hotkeys
         // function called when clicking
         // press the specified keys
@@ -256,11 +259,12 @@ this.compiler._newACI.subscribe(item => {
               }, 1200);
           }
       });
+ */
 
     // when right-clicking
-    this.editorInstance.onContextMenu(function (e) {
+    /* this.editorInstance.onContextMenu(function (e) {
       console.log("Läuft?", e)
-    });
+    }); */
 
     // when selecting code
     this.editorInstance.onDidChangeCursorSelection( (result) => {
