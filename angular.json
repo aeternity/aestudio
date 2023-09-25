@@ -143,7 +143,6 @@
       }
     }
   },
-  "defaultProject": "fire-editor",
   "schematics": {
     "@schematics/angular:component": {
       "style": "scss"

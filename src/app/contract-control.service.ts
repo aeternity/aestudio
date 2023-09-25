@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { ContractBase } from 'src/app/question/contract-base';
 
 
@@ -155,12 +155,12 @@ export class ContractControlService {
                 arg.type.option != null ? console.log("OPTION FOUND! ",arg) : true;
  */
                 
-                controlls[i] = arg.type.option != null ? new FormControl(arg.name || '')
-                    : new FormControl(arg.name || '', Validators.required);
+                controlls[i] = arg.type.option != null ? new UntypedFormControl(arg.name || '')
+                    : new UntypedFormControl(arg.name || '', Validators.required);
 
                 //console.log(`For ${arg.name} adding ${controlls.length} controlls`)
                     // generate FormGroup from object of form controls and put the FormGroup into functions[].formGroup in ACI structure
-                fun.formGroup = new FormGroup(controlls)
+                fun.formGroup = new UntypedFormGroup(controlls)
 
             })
         });

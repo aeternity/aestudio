@@ -50,7 +50,6 @@ import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.dir
 import { ConsoleOpenerDirective } from './directives/console-opener.directive';
 
 
-
 @NgModule({
   declarations: [
     AppComponent, 
