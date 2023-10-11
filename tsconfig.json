@@ -2,7 +2,9 @@
   "compileOnSave": false,
   
   "compilerOptions": {
-    "types": ["node"],
+    "types": [
+      "node"
+    ],
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
@@ -12,21 +14,31 @@
     "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
+    "target": "ES2022",
     "strictNullChecks": false,
     "typeRoots": [
-      "node_modules/@types", "src/app/editor/typings.d.ts"
+      "node_modules/@types",
+      "src/app/editor/typings.d.ts"
     ],
     "lib": [
       "es2018",
       "dom"
     ],
-    "paths" : {
-      "crypto": ["./node_modules/crypto-browserify"],
-      "stream": ["./node_modules/stream-browserify"],
-      "os": ["./node_modules/os-browserify"],
-      "vm": ["./node_modules/vm-browserify"],
-    }
+    "paths": {
+      "crypto": [
+        "./node_modules/crypto-browserify"
+      ],
+      "stream": [
+        "./node_modules/stream-browserify"
+      ],
+      "os": [
+        "./node_modules/os-browserify"
+      ],
+      "vm": [
+        "./node_modules/vm-browserify"
+      ],
+    },
+    "useDefineForClassFields": false
   },
     "angularCompilerOptions": {
       "fullTemplateTypeCheck": false,

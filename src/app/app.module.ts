@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
-import {SuiModule} from 'ng2-semantic-ui';
+import * as SuiModule from 'ng2-semantic-ui';
 
 //import { SuiSelectModule } from 'ng2-semantic-ui';
 import { ReplacePipe } from './helpers/replace-pipe';
@@ -49,6 +49,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.directive';
 import { ConsoleOpenerDirective } from './directives/console-opener.directive';
 
+import {NgxSemanticModule} from "ngx-semantic";
 
 @NgModule({
   declarations: [
