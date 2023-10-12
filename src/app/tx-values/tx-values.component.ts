@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { AuthService } from '../services/auth/auth.service';
-import {IPopup} from "ng2-semantic-ui-ngx";
+import {IPopup} from "ng2-semantic-ui";
 
 
 @Component({
