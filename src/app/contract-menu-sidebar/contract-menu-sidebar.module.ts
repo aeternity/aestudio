@@ -8,12 +8,12 @@ import { ContractBase } from '../question/contract-base';
 import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ReplacePipe } from './contract-menu-sidebar.component'
-import { SuiModule } from 'ng2-semantic-ui';
-import { SuiSelectModule } from 'ng2-semantic-ui';
+import { SuiModule } from 'ng2-semantic-ui-ngx';
+import { SuiSelectModule } from 'ng2-semantic-ui-ngx';
 
 
 
-//import { SuiDropdownModule } from 'ng2-semantic-ui';
+//import { SuiDropdownModule } from 'ng2-semantic-ui-ngx';
 
 @NgModule({ 
   declarations: [ReplacePipe

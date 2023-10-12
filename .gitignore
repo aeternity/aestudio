@@ -50,8 +50,8 @@ contract-storage-backend
 src/app/helpers/topUpAllAccounts
 src/app/helpers/generate-nodejs/node_modules
 node_modules backup 8.1
-ng2-semantic-ui/node_modules
-ng2-semantic-ui/
+ng2-semantic-ui-ngx/node_modules
+ng2-semantic-ui-ngx/
 scratchpad
 dist/fire-editor
 .vscode

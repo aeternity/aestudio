@@ -4634,9 +4634,9 @@ ng-circle-progress@^1.5.1:
 ng-inline-svg@^10.0.0:
   version "10.1.0"
 
-"ng2-semantic-ui@file:../ng2suiAngular14New/ng2-semantic-ui/dist/ng2-semantic-ui/ng2-semantic-ui-0.0.1.tgz":
+"ng2-semantic-ui-ngx@file:../ng2suiAngular14New/ng2-semantic-ui-ngx/dist/ng2-semantic-ui-ngx/ng2-semantic-ui-ngx-0.0.1.tgz":
   version "0.0.1"
-  resolved "file:../ng2suiAngular14New/ng2-semantic-ui/dist/ng2-semantic-ui/ng2-semantic-ui-0.0.1.tgz"
+  resolved "file:../ng2suiAngular14New/ng2-semantic-ui-ngx/dist/ng2-semantic-ui-ngx/ng2-semantic-ui-ngx-0.0.1.tgz"
   integrity sha512-Mu3q3JFLac8DZov/6faqlq7+jHkh4mY/tXep/IWMCLcBsCxk4z7Vq8ffno0Zr2MauF2gKtBIHezo1FeilgnuKw==
   dependencies:
     tslib "^2.3.0"
@@ -4650,9 +4650,9 @@ ngx-clipboard@^12.2.0:
 ngx-monaco-editor@^9.0.0:
   version "9.0.0"
 
-"ngx-ng2-semantic-ui@file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-modernisation/dist":
+"ngx-ng2-semantic-ui-ngx@file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-ngx-modernisation/dist":
   version "0.10.0-alpha.6"
-  resolved "file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-modernisation/dist"
+  resolved "file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-ngx-modernisation/dist"
   dependencies:
     bowser "^1.7.2"
     date-fns "2.0.0-alpha.1"

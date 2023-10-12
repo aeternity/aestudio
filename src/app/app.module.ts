@@ -8,9 +8,9 @@ import { AppComponent } from './app.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
-import * as SuiModule from 'ng2-semantic-ui';
+import * as SuiModule from 'ng2-semantic-ui-ngx';
 
-//import { SuiSelectModule } from 'ng2-semantic-ui';
+//import { SuiSelectModule } from 'ng2-semantic-ui-ngx';
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
