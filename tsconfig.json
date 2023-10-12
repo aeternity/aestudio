@@ -37,6 +37,9 @@
       "vm": [
         "./node_modules/vm-browserify"
       ],
+       "querystring": [
+        "./node_modules/querystring-es3"
+      ],
     },
     "useDefineForClassFields": false
   },

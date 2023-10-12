@@ -8,9 +8,8 @@ import { AppComponent } from './app.component';
 import { MonacoEditorModule } from 'ngx-monaco-editor';
 import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
-import * as SuiModule from 'ng2-semantic-ui-ngx';
+import * as SuiModule from 'ng2-semantic-ui';
 
-//import { SuiSelectModule } from 'ng2-semantic-ui-ngx';
 import { ReplacePipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg';
@@ -49,7 +48,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.directive';
 import { ConsoleOpenerDirective } from './directives/console-opener.directive';
 
-import {NgxSemanticModule} from "ngx-semantic";
 
 @NgModule({
   declarations: [
@@ -70,7 +68,24 @@ import {NgxSemanticModule} from "ngx-semantic";
     ReactiveFormsModule,
     HttpClientModule,
     MonacoEditorModule.forRoot(),
-    SuiModule,
+    SuiModule.SuiAccordionModule,
+    SuiModule.SuiSelectModule,
+    SuiModule.SuiSidebarModule,
+    SuiModule.SuiMessageModule,
+    SuiModule.SuiPaginationModule,
+    SuiModule.SuiCheckboxModule,
+    SuiModule.SuiCollapseModule,
+    SuiModule.SuiDatepickerModule,
+    SuiModule.SuiDimmerModule,
+    SuiModule.SuiDropdownModule,
+    SuiModule.SuiModalModule,
+    SuiModule.SuiPopupModule,
+    SuiModule.SuiProgressModule,
+    SuiModule.SuiRatingModule,
+    SuiModule.SuiSearchModule,
+    SuiModule.SuiAccordionModule,
+    SuiModule.SuiTransitionModule,
+    SuiModule.SuiTabsModule,
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,

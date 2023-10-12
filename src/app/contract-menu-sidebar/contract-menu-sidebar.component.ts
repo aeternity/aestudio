@@ -7,8 +7,9 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service'
 import { HttpClient } from '@angular/common/http';
 
-import {IPopup} from "ng2-semantic-ui-ngx";
-import { Console } from 'node:console';
+import {IPopup} from "ng2-semantic-ui";
+/* 
+import { Console } from 'node:console'; */
 
 
 
