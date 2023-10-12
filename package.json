@@ -56,7 +56,7 @@
     "ngx-monaco-editor-v2": "^16.0.1",
     "ngx-ng2-semantic-ui-ngx": "file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-ngx-modernisation/dist",
     "ngx-semantic": "^1.0.3",
-    "ngx-webstorage-service": "^4.1.0",
+    "ngx-webstorage-service": "~5.0.0",
     "os-browserify": "^0.3.0",
     "phoenix-channels": "^1.0.0",
     "popper.js": "^1.16.1",
