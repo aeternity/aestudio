@@ -51,7 +51,7 @@
     "ng-inline-svg": "^10.0.0",
     "ng-inline-svg-2": "^15.0.1",
     "ng2-semantic-ui": "file:../ng2-semantic-ui-modernisation/dist/ng2-semantic-ui-0.10.0-alpha.6.tgz",
-    "ngx-clipboard": "^12.2.0",
+    "ngx-clipboard": "^16.0.0",
     "ngx-monaco-editor": "^9.0.0",
     "ngx-monaco-editor-v2": "^16.0.1",
     "ngx-ng2-semantic-ui-ngx": "file:../../../../../../Volumes/SSDrive/Documents/DAPPS/ng2-semantic-ui-ngx-modernisation/dist",

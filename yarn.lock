@@ -212,7 +212,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^15.0.0 || ^16.0.0", "@angular/common@^16.2.9", "@angular/common@^9.0.0", "@angular/common@>= 6.0.0", "@angular/common@>=14.0.0", "@angular/common@>=15.0.2", "@angular/common@>=6.0.0", "@angular/common@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/common@>=9.0.0", "@angular/common@16.2.9":
+"@angular/common@^15.0.0 || ^16.0.0", "@angular/common@^16.0.4", "@angular/common@^16.2.9", "@angular/common@^9.0.0", "@angular/common@>= 6.0.0", "@angular/common@>=13.0.0", "@angular/common@>=14.0.0", "@angular/common@>=14.0.2", "@angular/common@>=15.0.2", "@angular/common@>=6.0.0", "@angular/common@>=9.0.0", "@angular/common@16.2.9":
   version "16.2.9"
   resolved "https://registry.npmjs.org/@angular/common/-/common-16.2.9.tgz"
   integrity sha512-5Lh5KsxCkaoBDeSAghKNF5lCi0083ug4X2X7wnafsSd6Z3xt/rDjH9hDOP5SF5IDLtCVjJgHfs3cCLSTjRuNwg==
@@ -245,7 +245,7 @@
   resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz"
   integrity sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ==
 
-"@angular/core@^15.0.0 || ^16.0.0", "@angular/core@^16.2.9", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=14.0.0", "@angular/core@>=15.0.2", "@angular/core@>=6.0.0", "@angular/core@>=6.0.0 || >=7.0.0 || >=8.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@16.2.9":
+"@angular/core@^15.0.0 || ^16.0.0", "@angular/core@^16.0.4", "@angular/core@^16.2.9", "@angular/core@^9.0.0", "@angular/core@>= 6.0.0", "@angular/core@>=13.0.0", "@angular/core@>=14.0.0", "@angular/core@>=14.0.2", "@angular/core@>=15.0.2", "@angular/core@>=6.0.0", "@angular/core@>=7.0.0", "@angular/core@>=9.0.0", "@angular/core@16.2.9":
   version "16.2.9"
   resolved "https://registry.npmjs.org/@angular/core/-/core-16.2.9.tgz"
   integrity sha512-chvPX29ZBcMDuh7rLIgb0Cru6oJ/0FaqRzfOI3wT4W2F9W1HOlCtipovzmPYaUAmXBWfVP4EBO9TOWnpog0S0w==
@@ -6155,6 +6155,11 @@ mkdirp@^1.0.3:
   resolved "https://registry.npmjs.org/mkdirp/-/mkdirp-1.0.4.tgz"
   integrity sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
 
+monaco-editor@^0.41.0:
+  version "0.41.0"
+  resolved "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.41.0.tgz"
+  integrity sha512-1o4olnZJsiLmv5pwLEAmzHTE/5geLKQ07BrGxlF4Ri/AXAc2yyDGZwHjiTqD8D/ROKUZmwMA28A+yEowLNOEcA==
+
 morgan@~1.10.0:
   version "1.10.0"
   resolved "https://registry.npmjs.org/morgan/-/morgan-1.10.0.tgz"
@@ -6245,6 +6250,11 @@ ng-circle-progress@^1.5.1:
   dependencies:
     tslib "^2.0.0"
 
+ng-inline-svg-2@^15.0.1:
+  version "15.0.1"
+  resolved "https://registry.npmjs.org/ng-inline-svg-2/-/ng-inline-svg-2-15.0.1.tgz"
+  integrity sha512-uljWzbXuPy1yWRfuNKBT3vvQeOLmsuI2D5K/EqsyGjCQTAjbTc88kIWM1JQjSGGnYW0gn1hgt0NUhpX5cTMmRg==
+
 ng-inline-svg@^10.0.0:
   version "10.1.0"
   resolved "https://registry.npmjs.org/ng-inline-svg/-/ng-inline-svg-10.1.0.tgz"
@@ -6263,13 +6273,20 @@ ng-inline-svg@^10.0.0:
     popper.js "^1.14.0"
     tslib "^2.3.0"
 
-ngx-clipboard@^12.2.0:
-  version "12.3.1"
-  resolved "https://registry.npmjs.org/ngx-clipboard/-/ngx-clipboard-12.3.1.tgz"
-  integrity sha512-qrUmkfYXEBQZQ4wNKno8yw5eOSxtdkzCPFFPil/XVVc93MNIKUme8aLbS3TEMB4PGsxopjbuTAzV7fptiSOIww==
+ngx-clipboard@^16.0.0:
+  version "16.0.0"
+  resolved "https://registry.npmjs.org/ngx-clipboard/-/ngx-clipboard-16.0.0.tgz"
+  integrity sha512-rZ/Eo1PqiKMiyF8tdjhmUkoUu68f7OzBJ7YH1YFeh2RAaNrerTaW8XfFOzppSckjFQqA1fwGSYuTTJlDhDag5w==
   dependencies:
-    ngx-window-token "^2.0.0"
-    tslib "^1.9.0"
+    ngx-window-token ">=7.0.0"
+    tslib "^2.0.0"
+
+ngx-monaco-editor-v2@^16.0.1:
+  version "16.0.1"
+  resolved "https://registry.npmjs.org/ngx-monaco-editor-v2/-/ngx-monaco-editor-v2-16.0.1.tgz"
+  integrity sha512-fhvqiQUtzEB3o6W1PrMzZkAM7N9owhoXiUF5Go/Bl/nOL90O22el+TUhszTz1o24ZQnPQZeNKhN7O+u/jVAWtg==
+  dependencies:
+    tslib "^2.1.0"
 
 ngx-monaco-editor@^9.0.0:
   version "9.0.0"
@@ -6293,12 +6310,12 @@ ngx-webstorage-service@^4.1.0:
   dependencies:
     tslib "^1.9.0"
 
-ngx-window-token@^2.0.0:
-  version "2.0.1"
-  resolved "https://registry.npmjs.org/ngx-window-token/-/ngx-window-token-2.0.1.tgz"
-  integrity sha512-rvqdqJEfnWXQFU5fyfYt06E10tR/UtFOYdF3QebfcOh5VIJhnTKiprX8e4B9OrX7WEVFm9BT8uV72xXcEgsaKA==
+ngx-window-token@>=7.0.0:
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/ngx-window-token/-/ngx-window-token-7.0.0.tgz"
+  integrity sha512-5+XfRVSY7Dciu8xyCNMkOlH2UfwR9W2P1Pirz7caaZgOZDjFbL8aEO2stjfJJm2FFf1D6dlVHNzhLWGk9HGkqA==
   dependencies:
-    tslib "^1.9.0"
+    tslib "^2.0.0"
 
 nice-napi@^1.0.2:
   version "1.0.2"
@@ -7461,7 +7478,7 @@ run-parallel@^1.1.9:
   dependencies:
     queue-microtask "^1.2.2"
 
-rxjs@^6.0.0, rxjs@^6.5.0, rxjs@^6.5.3, "rxjs@^6.5.3 || ^7.4.0", rxjs@^6.5.5, rxjs@>=6.4.0:
+rxjs@^6.0.0, rxjs@^6.5.0, rxjs@^6.5.3, "rxjs@^6.5.3 || ^7.4.0", rxjs@^6.5.5, "rxjs@^6.6.0 || ^7.4.0", rxjs@>=6.4.0:
   version "6.6.7"
   resolved "https://registry.npmjs.org/rxjs/-/rxjs-6.6.7.tgz"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
