@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "atob": "^2.1.2",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "md-2-json": "^1.0.6"
   }
 }
