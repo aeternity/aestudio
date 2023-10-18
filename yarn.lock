@@ -212,7 +212,7 @@
     symbol-observable "4.0.0"
     yargs "17.7.2"
 
-"@angular/common@^15.0.0 || ^16.0.0", "@angular/common@^16.0.0", "@angular/common@^16.0.4", "@angular/common@^16.2.9", "@angular/common@^9.0.0", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=14.0.0", "@angular/common@>=14.0.2", "@angular/common@>=15.0.2", "@angular/common@>=9.0.0", "@angular/common@16.2.9":
+"@angular/common@^15.0.0 || ^16.0.0", "@angular/common@^16.0.0", "@angular/common@^16.0.4", "@angular/common@^16.2.9", "@angular/common@>=12.0.0", "@angular/common@>=13.0.0", "@angular/common@>=14.0.0", "@angular/common@>=14.0.2", "@angular/common@>=15.0.2", "@angular/common@>=9.0.0", "@angular/common@16.2.9":
   version "16.2.9"
   resolved "https://registry.npmjs.org/@angular/common/-/common-16.2.9.tgz"
   integrity sha512-5Lh5KsxCkaoBDeSAghKNF5lCi0083ug4X2X7wnafsSd6Z3xt/rDjH9hDOP5SF5IDLtCVjJgHfs3cCLSTjRuNwg==
@@ -245,7 +245,7 @@
   resolved "https://registry.npmjs.org/@angular/compiler/-/compiler-9.0.0.tgz"
   integrity sha512-ctjwuntPfZZT2mNj2NDIVu51t9cvbhl/16epc5xEwyzyDt76pX9UgwvY+MbXrf/C/FWwdtmNtfP698BKI+9leQ==
 
-"@angular/core@^15.0.0 || ^16.0.0", "@angular/core@^16.0.4", "@angular/core@^16.2.9", "@angular/core@^9.0.0", "@angular/core@>= 16.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=14.0.0", "@angular/core@>=14.0.2", "@angular/core@>=15.0.2", "@angular/core@>=9.0.0", "@angular/core@16.2.9":
+"@angular/core@^15.0.0 || ^16.0.0", "@angular/core@^16.0.4", "@angular/core@^16.2.9", "@angular/core@>= 16.0.0", "@angular/core@>=12.0.0", "@angular/core@>=13.0.0", "@angular/core@>=14.0.0", "@angular/core@>=14.0.2", "@angular/core@>=15.0.2", "@angular/core@>=9.0.0", "@angular/core@16.2.9":
   version "16.2.9"
   resolved "https://registry.npmjs.org/@angular/core/-/core-16.2.9.tgz"
   integrity sha512-chvPX29ZBcMDuh7rLIgb0Cru6oJ/0FaqRzfOI3wT4W2F9W1HOlCtipovzmPYaUAmXBWfVP4EBO9TOWnpog0S0w==
@@ -264,7 +264,7 @@
   dependencies:
     tslib "^2.3.0"
 
-"@angular/forms@^16.2.9", "@angular/forms@>= 16.0.0", "@angular/forms@>=9.0.0":
+"@angular/forms@^16.2.9", "@angular/forms@>= 16.0.0":
   version "16.2.9"
   resolved "https://registry.npmjs.org/@angular/forms/-/forms-16.2.9.tgz"
   integrity sha512-rxlg2iNJNBH/uc7b5YqybfYc8BkLzzPv1d/nMsQUlY0O2UV2zwNRpcIiWbWd7+ZaKjcyPynVe9FsXC8wgWIABw==
@@ -6275,11 +6275,6 @@ ngx-monaco-editor-v2@^16.0.1:
   dependencies:
     tslib "^2.1.0"
 
-ngx-monaco-editor@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.npmjs.org/ngx-monaco-editor/-/ngx-monaco-editor-9.0.0.tgz"
-  integrity sha512-fPXT3M8W920Vs0KPMX6iA7GJYjBRnl9naug9A7D2inPPzxQGtgPZrSEatIPf37a6ir9Ts+8fwt1bTkFzfTgIpQ==
-
 ngx-ng2-semantic-ui@^16.0.1:
   version "16.0.1"
   resolved "https://registry.npmjs.org/ngx-ng2-semantic-ui/-/ngx-ng2-semantic-ui-16.0.1.tgz"
@@ -6292,13 +6287,6 @@ ngx-ng2-semantic-ui@^16.0.1:
     is-ua-webview "^1.0.0"
     popper.js "^1.14.0"
     tslib "^2.3.0"
-
-ngx-semantic@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/ngx-semantic/-/ngx-semantic-1.0.3.tgz"
-  integrity sha512-DoNtpIy5cxv+GOhbNlYazYp0EPALaMAdBlhFeQNu2Awy97aca+9n5NzrU+bbLPgZsFa9LYbuxASJFPnBcc45ng==
-  dependencies:
-    tslib ">=1.10.0"
 
 ngx-webstorage-service@~5.0.0:
   version "5.0.0"
@@ -8461,10 +8449,8 @@ ts-toolbelt@^9.6.0:
   resolved "https://registry.npmjs.org/ts-toolbelt/-/ts-toolbelt-9.6.0.tgz"
   integrity sha512-nsZd8ZeNUzukXPlJmTBwUAuABDe/9qtVDelJeT/qW0ow3ZS3BsQJtNkan1802aM9Uf68/Y8ljw86Hu0h5IUW3w==
 
-tslib@^1.10.0, tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@>=1.10.0:
-  version "2.6.2"
-  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
-  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
+tslib@^1.10.0:
+  version "1.14.1"
 
 tslib@^1.13.0:
   version "1.14.1"
@@ -8480,6 +8466,11 @@ tslib@^1.9.0:
   version "1.14.1"
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
+tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1:
+  version "2.6.2"
+  resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
+  integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
 
 tslib@2.6.1:
   version "2.6.1"
