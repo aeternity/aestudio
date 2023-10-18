@@ -9,7 +9,7 @@ import { FormGroup }        from '@angular/forms';
 import { Pipe, PipeTransform } from '@angular/core';
 /* import { ReplacePipe } from './contract-menu-sidebar.component' */
 
-import * as SuiModule from 'ng2-semantic-ui';
+import * as SuiModule from "ngx-ng2-semantic-ui";
 
 
 //import { SuiDropdownModule } from 'ng2-semantic-ui-ngx';

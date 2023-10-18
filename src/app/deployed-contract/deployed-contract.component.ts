@@ -3,7 +3,7 @@ import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
 import { EventlogService } from '../services/eventlog/eventlog.service'
-import {IPopup, SuiPopupConfig} from "ng2-semantic-ui";
+import {IPopup, SuiPopupConfig} from "ngx-ng2-semantic-ui";
 
 
 @Component({
