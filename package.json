@@ -12,8 +12,6 @@
     "test": "ng test",
     "postinstall": "npm run init",
     "lint": "ng lint",
-    "SuiInstallAndBuildAndMoveToEditorAndStart": "cd ng2-semantic-ui-ngx && npm install && npm run lib:compile && cd dist && npm pack && mv *.tgz ../../src/libs/ && cd ../../ && npm install && ng serve ",
-    "SuiBuildAndMoveToEditorAndStart": "cd ng2-semantic-ui-ngx && npm run lib:compile && cd dist && npm pack && mv *.tgz ../../src/libs/ && cd ../../ && npm install && ng serve",
     "e2e": "ng e2e",
     "init": "./custom-modules/sophia-workaround.sh",
     "init-win": "node patch.js && .\\custom-modules\\install-modified-logmonitor.sh && .\\custom-modules\\sophia-workaround.sh",
