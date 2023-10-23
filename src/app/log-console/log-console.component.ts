@@ -5,6 +5,7 @@ import { TerminalPrompt } from '../repl-terminal/TerminalPrompt';
 import { StorageService } from 'ngx-webstorage-service';
 import { LocalStorageService } from '../local-storage.service';
 import { Socket } from 'phoenix-channels';
+import { ILog } from '../helpers/interfaces';
 
 @Component({
   selector: 'app-log-console',
@@ -15,7 +16,7 @@ import { Socket } from 'phoenix-channels';
 export class LogConsoleComponent implements OnInit {
 
 
-  logs: any[] = [];
+  logs: ILog[] = [];
   activeTab : string = 'logs'
 
   public login = 'you';
@@ -110,12 +111,17 @@ export class LogConsoleComponent implements OnInit {
     // setup a default first log:
     // example log: ({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
 
-    this.logs.push({type: "info", message: "Event log initialized.", data: { Info: "Here you will find all information on your activities."} });
+    this.logs.push({type: "info", message: "Event log initialized.", data: { Info: "Here you will find all information on your activities."}, expanded: true });
 
     //setup subscription for new logs
-    this.eventlog._newLog.subscribe(log => {
+    this.eventlog._newLog.subscribe((log : ILog) => {
+      //empty default log message when first true log comes in
+      this.logs[this.logs.length - 1].message == "Event log initialized." ? this.logs = [] : ""; 
+      // check if the new log is expanded, if not, explicitly set it to true
+      log.expanded == undefined ? log.expanded = true : "";
+      // set the last log to not expanded
+      this.logs.length >= 1 ? this.logs[this.logs.length - 1].expanded = false : "";
       this.logs.push(log);
-      //debugger
     })
   }
 

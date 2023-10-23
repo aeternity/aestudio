@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { ILog } from '../helpers/interfaces';
 
 @Component({
   selector: 'app-one-log',
@@ -9,7 +10,7 @@ export class OneLogComponent implements OnInit {
   
   // example log: ({type: "success", message: "Contract was called successfully!", contract: "testcontract", data: {}})
 
-  @Input() log: Log;
+  @Input() log: ILog;
   @Input() open: boolean;
   objectKeys = Object.keys;
   isArray : any = {}; // keep track of log data that is arrays
@@ -74,9 +75,3 @@ export class OneLogComponent implements OnInit {
 
 }
 
-export interface Log {
-  depth : number,
-  message : string,
-  type : "success" | "log" | "error" | "warn",
-  data : any 
-}
