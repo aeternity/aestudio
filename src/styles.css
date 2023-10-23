@@ -250,6 +250,11 @@ border-color: #000!important;
     cursor: pointer;
 }
 
+/* fix semantic UI CSS not providing 'content' for the warning triangle icon */
+i.icon.exclamation.triangle:before {
+    content: "\f071";
+  }
+
 /* tweakings of the semantic UI END*/
 
 /* scheiß monaco editor container height */
