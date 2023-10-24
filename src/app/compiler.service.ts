@@ -87,7 +87,7 @@ export class CompilerService {
 
   private cachedWallet : any = {}
 
-  private SDKoptionsToIgnore = ["mempool"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
+  private SDKoptionsToIgnore = ["mempool", "getAccount"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
 
 // ____ helpers start 
 
@@ -323,6 +323,7 @@ public initWalletSearch = async (successCallback) => {
     }
 
       const nodeInstance = new Node(this.defaultOrCustomSDKsetting("nodeUrl"))
+      
       try {
 
         this.Chain = new Ae({
@@ -337,14 +338,13 @@ public initWalletSearch = async (successCallback) => {
       // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
       this.Chain.currentWalletProvider = "web"
 
-      // TODO: wrap in try catch
+      // TODO: show eventual error in UI
       try {
         let height = await this.Chain.getHeight();
+        console.log('Current Block Height: ', height)
       } catch (e) {
         console.log("error fetching block height:", e)
       }
-      let height = await this.Chain.getHeight();
-      console.log('Current Block Height: ', height)
 
       // notify sidebar about new SDK settings
       this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
@@ -393,7 +393,7 @@ public initWalletSearch = async (successCallback) => {
         if(this.Chain[key].length == 0){ 
         //console.log("Calling function:", key)
           if (!this.SDKoptionsToIgnore.includes(key)){
-            
+            debugger
             returnObject[key] = await this.Chain[key]() 
           } else {
             console.log("compiler: ignoring key: ", key  )

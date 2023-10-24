@@ -43,13 +43,15 @@ export class MdwUrlDirective {
    addUrl(){
 
     //setTimeout(() => {
-
-      let currentNetwork = this.compiler.Chain?.selectedNode.networkId
+      let currentNetwork : string;
+      (async () => {
+        let { nodeNetworkId } = await this.compiler.Chain.getNodeInfo()
+        currentNetwork = nodeNetworkId;
+    })()
       // generate links only if it's test- or mainnet
       if (currentNetwork != "ae_uat" && currentNetwork != "ae_mainnet"){
         return
       }
-  
 
       let currentContent: string = this.el.nativeElement.innerText
   
