@@ -1,23 +1,35 @@
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Universal } from '@aeternity/aepp-sdk/'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
-import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
-import BrowserWindowMessageConnection from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
-import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
-import {RpcAepp} from "@aeternity/aepp-sdk";
+
+//import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
+//import {RpcAepp} from "@aeternity/aepp-sdk";
 
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
-import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
+//import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
+
 import publicAccounts from './helpers/prefilled-accounts'
 import { EventlogService } from './services/eventlog/eventlog.service'
-//import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
-var Ae = Universal;
+// sdk 13 migration start
+const {
+  AeSdk,
+  MemoryAccount,
+  Node,
+  CompilerHttp,
+  AE_AMOUNT_FORMATS,
+  generateKeyPair,
+  Contract,
+  BrowserWindowMessageConnection,
+  walletDetector,
+} = require('@aeternity/aepp-sdk')
 
+// sdk 13 migration end
+
+var Ae : typeof AeSdk = AeSdk;
+const Detector = walletDetector;
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +51,7 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  public Chain: any;
+  public Chain: typeof AeSdk;
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
@@ -122,7 +134,7 @@ public scanForWallets = async (successCallback) => {
     connectionInfo: { id: 'spy' },
   });
 
-  const detector = await Detector({ connection: scannerConnection });
+  const detector = new Detector({ connection: scannerConnection });
 
   const handleWallets = async ({ wallets, newWallet }) => {
     detector.stopScan();
@@ -155,11 +167,11 @@ public scanForWallets = async (successCallback) => {
 
 public justScanForWallets = async (successCallback) => {
   
-  const scannerConnection = await BrowserWindowMessageConnection({
+  const scannerConnection = new BrowserWindowMessageConnection({
     connectionInfo: { id: 'spy' },
   });
 
-  const detector = await Detector({ connection: scannerConnection });
+  const detector = new Detector({ connection: scannerConnection });
 
   const handleWallets = async ({ wallets, newWallet }) => {
     detector.stopScan();
@@ -172,7 +184,12 @@ public justScanForWallets = async (successCallback) => {
     const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
     this.aeternity.detectedWallet = wallet.id;
     successCallback();
+
+
+
   };
+
+
 
   detector.scan(handleWallets);
 }
@@ -230,10 +247,10 @@ public initWalletSearch = async (successCallback) => {
     // Open iframe with Wallet if run in top window
     // window !== window.parent || await aeternity.getReverseWindow();
 
-  this.Chain = await RpcAepp({
+  this.Chain = new Ae({
     name: 'AEPP',
     nodes: [
-      {name: 'ae_mainnet', instance: await Node({url: this.MAINNET_URL})},
+      {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
       {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
     ],
     compilerUrl: this.COMPILER_URL,
@@ -268,11 +285,11 @@ public initWalletSearch = async (successCallback) => {
     private eventlog: EventlogService) {
 
     // define the default SDK settings
-    var theAccounts : MemoryAccount[] = [];
+    var theAccounts : typeof MemoryAccount = [];
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach(account => {
-      let oneAccount = MemoryAccount({keypair: account});
+      let oneAccount = new MemoryAccount(account.secretKey);
       oneAccount.property = "public";
       theAccounts.push(oneAccount);
     });
@@ -292,7 +309,7 @@ public initWalletSearch = async (successCallback) => {
    }
 
    // is ran, when the browser addon wallet is not to be used ("testnet")
-  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : typeof MemoryAccount[], command? : string}){
 
       // if a config is provided, apply its values to the sdkConfigOverrides
     if (_config){
@@ -305,20 +322,30 @@ public initWalletSearch = async (successCallback) => {
       });
     }
 
-      const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
-      this.Chain = await Ae({
-        nodes: [{name: 'Testnet', instance: nodeInstance }],
-        compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-        accounts: this.defaultOrCustomSDKsetting("accounts")
-        
-      }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
+      const nodeInstance = new Node(this.defaultOrCustomSDKsetting("nodeUrl"))
+      try {
+
+        this.Chain = new Ae({
+          nodes: [{name: 'Testnet', instance: nodeInstance }],
+          compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
+          accounts: this.defaultOrCustomSDKsetting("accounts")
+          
+        })
+      }
+       catch { e => { 
+        console.log("Shit, SDK setup didn't work:", e)}}
       // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
       this.Chain.currentWalletProvider = "web"
 
       // TODO: wrap in try catch
-      let height = await this.Chain.height();
+      try {
+        let height = await this.Chain.getHeight();
+      } catch (e) {
+        console.log("error fetching block height:", e)
+      }
+      let height = await this.Chain.getHeight();
       console.log('Current Block Height: ', height)
-      
+
       // notify sidebar about new SDK settings
       this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
       console.log("Das SDK: ", this.Chain);

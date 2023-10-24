@@ -9,9 +9,24 @@ import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 // Aeternity
-import { Crypto } from '@aeternity/aepp-sdk/es'
-import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
+//import { Crypto } from '@aeternity/aepp-sdk/es'
+//import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
 
+// sdk 13 migration start
+const {
+  AeSdk,
+  Crypto,
+  MemoryAccount,
+  Node,
+  CompilerHttp,
+  AE_AMOUNT_FORMATS,
+  generateKeyPair,
+  Contract,
+  BrowserWindowMessageConnection,
+  walletDetector,
+} = require('@aeternity/aepp-sdk')
+
+// sdk 13 migration end
 
 // Firebase
 /* import { auth } from 'firebase/app';
@@ -154,7 +169,7 @@ export class AuthService {
 
     // helpers
 
-    private async generateAndFillAccounts() : Promise<MemoryAccount[]> {
+    private async generateAndFillAccounts() : Promise<typeof MemoryAccount[]> {
       return new Promise ((resolve, reject) => {
 
         console.log("Login: fillup triggered")
