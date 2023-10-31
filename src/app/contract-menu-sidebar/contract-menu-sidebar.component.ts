@@ -160,16 +160,12 @@ export class ContractMenuSidebarComponent implements OnInit {
         .subscribe(async settings => {
           console.log("settings: ", settings)
           if(settings.type == "extension") {
-           
             //comming from the browser wallet
-            console.log("gingen die settings durch? ", this.currentSDKsettings ); 
-
             this.currentSDKsettings = settings.settings
+            console.log("gingen die settings durch? ", this.currentSDKsettings ); 
           } else {
-            
              //comming from the web wallet
-             await settings;
-             this.currentSDKsettings = settings["__zone_symbol__value"];
+             this.currentSDKsettings = settings;
              console.log("gingen die settings durch? ", this.currentSDKsettings ); 
           }
 

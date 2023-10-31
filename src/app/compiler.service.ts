@@ -73,6 +73,7 @@ export class CompilerService {
      if(!settings) { 
        settings = this.getCurrentSDKsettings()
       }
+      
       this.currentSdkSettings = settings
      this._notifyCurrentSDKsettings.next(settings);
   }
@@ -88,7 +89,7 @@ export class CompilerService {
   private cachedWallet : any = {}
 
   private SDKoptionsToIgnore = ["mempool", "getAccount"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
-
+  private SDKoptionsToCheck = ["addresses"] // this is used to abstract the SDKs methods to data which the editor is relying on. a function will return `sdkOptions` which need these properties to be filled with corresponding SDK functions of the current version.
 // ____ helpers start 
 
 public nextAci(value: any): void {
@@ -373,42 +374,29 @@ public initWalletSearch = async (successCallback) => {
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
    }
 
-  // emits an event passing data from all SDK functions that take 0 parameters,
+  // emits an event passing data from all SDK functions that correspond to / provide the expected data.
   // a.k.a. it reads all data from the SDK
   
-   async  getCurrentSDKsettings() : Promise<any> {   
+  //  async getCurrentSDKsettings() : Promise<any> {   
+    getCurrentSDKsettings() { 
+        
     if (this.Chain != undefined) {
-      var returnObject = {};
-      var keyCount : number = 0;
-      // count the amount of keys with 0 arguments
-      for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
-          keyCount++ } 
+      var returnObject = {
+        addresses: [],
       }
   
       // execute all functions by their name which have 0 params.
       // count the length of returns - if it equals the keycount, return.
-      for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
-          if (!this.SDKoptionsToIgnore.includes(key)){
-            debugger
-            returnObject[key] = await this.Chain[key]() 
-          } else {
-            console.log("compiler: ignoring key: ", key  )
-          }
-
-          if (Object.keys(returnObject).length == keyCount - this.SDKoptionsToIgnore.length ){
-            return returnObject;
-          }
-          //return returnObject;
-
-        } 
-    }}}
-
-
-
+      this.SDKoptionsToCheck.forEach(setting => {
+        if(setting == "addresses"){
+          let allAccounts = Object.keys(this.Chain.accounts)
+          allAccounts.forEach((account) => {
+            returnObject.addresses.push(account)
+          })
+         } 
+        })
+        return returnObject;
+      }}
    
 
   // converts code to ACI and deploys.
