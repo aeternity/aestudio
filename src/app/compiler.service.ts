@@ -520,7 +520,7 @@ public initWalletSearch = async (successCallback) => {
 // sourceCode: the contract's source code
 // contractUID: the UID of the contract. it is being returned in the event, so one knows which contract this refers to.
  
-  async generateACIonly(params : {sourceCode: string, contractUID: string}) : Promise<any> {
+  async generateACIonly(params : {sourceCode: string, contractUID: number | string}) : Promise<any> {
     
     //console.log("Compiler erhielt als source: ", params.sourceCode);
     // replace " => \"

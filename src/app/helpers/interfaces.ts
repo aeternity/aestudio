@@ -6,3 +6,12 @@ export interface ILog {
     data : any,
     time? : string 
   }
+
+  export interface IActiveContract {
+    contractUID: string | number,
+    latestACI: Object,
+    code: string,
+    sharingHighlighters?: number[],
+    nameInTab: string,
+    errorHighlights?: any[],
+  }

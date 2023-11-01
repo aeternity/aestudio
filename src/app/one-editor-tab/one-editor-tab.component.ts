@@ -11,6 +11,7 @@ import { Subscription, Subject } from 'rxjs';
 import { setInterval, clearInterval } from 'timers';
 import { AuthService } from '../services/auth/auth.service';
 import { StateService } from '../services/state.service';
+import { IActiveContract } from '../helpers/interfaces';
 
 @Component({
   selector: 'app-one-editor-tab',
@@ -27,7 +28,7 @@ export class OneEditorTabComponent implements OnInit {
 
 
   //the contract passed by the parent editor component
-  @Input() activeContract: any = "";
+  @Input() activeContract: IActiveContract;
   @Input() test: number;
   @Output() activeContractChange = new EventEmitter<any>();
 
@@ -35,7 +36,7 @@ export class OneEditorTabComponent implements OnInit {
   isDimmed: boolean = false;
   contractID : string | boolean = false // necessary for the link copying dimming
 
-  editorInstance: any; // the editor, initialized by the component
+  editorInstance: monaco.editor.IStandaloneCodeEditor; // the editor, initialized by the component
   
   // workaround for annoying angular bug firing events dozens of times: collect hashes of errors in this map and set new ones only if hash is unused 
   lastError: string;
@@ -196,8 +197,12 @@ this.compiler._newACI.subscribe(item => {
   
   initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
-    //console.log("The editor:", theEditor);    
+    //console.log("The editor:", theEditor);
+    const handlerTest = (params) => { console.log("params", params)}
+    
     this.editorInstance = theEditor;
+    this.editorInstance.addCommand(monaco.KeyCode.Enter, handlerTest)
+    this.editorInstance.onKeyDown(handlerTest)
 
     this.triggerWindowRefresh(); 
 
