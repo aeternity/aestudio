@@ -1666,6 +1666,9 @@ MIT
 ng-circle-progress
 MIT
 
+ng-click-outside2
+MIT
+
 ng-inline-svg-2
 MIT
 The MIT License (MIT)
