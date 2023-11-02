@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { distinctUntilChanged } from 'rxjs/operators';
 
@@ -18,7 +18,7 @@ import { IActiveContract } from '../helpers/interfaces';
   templateUrl: './one-editor-tab.component.html',
   styleUrls: ['./one-editor-tab.component.css']
 })
-export class OneEditorTabComponent implements OnInit {
+export class OneEditorTabComponent implements OnInit, OnDestroy {
 
   // angular 9 bullshit start
   codeGeneratorVisible: boolean = false
@@ -109,42 +109,45 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     //this.setupACIsubscription();
     this.change();
     this.save();
-    
-    //this.aciSubscription();
-
-this.compiler._newACI.subscribe(item => {
-  
-  console.log(">>> ACI subscription returned: ", item);
  
-  if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
-    
-    //this.filtersLoaded = Promise.resolve(true);
-    // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
-    this.activeContract.latestACI = item['aci'];
-    
-    console.log("[one-editor-tab] New change received for contract: ", item['contractUID']);
-    
-    this.save();
-    
-    this.changeDetectorRef.detectChanges()
-    //console.log("Aci im one editor", this.activeContract.latestACI)
-    //console.log("Clearing error marker..");
-    this.clearAllHighlighters();
-    
-    // reset the error tracker
-    //console.log("Resetting last known error..");
-    this.lastError = "";} else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
+    //this.editorInstance.onKeyDown(handlerTest)
+  
+    this.compiler._newACI.subscribe(item => {
       
-      let theError = item['error'];
-      console.log("Error erhalten für" + this.activeContract.contractUID, theError);
-      
-    } else {
-      //console.log("Empty or other contract's ACI was received, not removing error");
-    }
-})
+      console.log(">>> ACI subscription returned: ", item);
     
+      if (Object.entries(item['aci']).length > 0 && item['contractUID'] == this.activeContract.contractUID) {
+        
+        //this.filtersLoaded = Promise.resolve(true);
+        // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
+        this.activeContract.latestACI = item['aci'];
+        
+        console.log("[one-editor-tab] New change received for contract: ", item['contractUID']);
+        
+        this.save();
+        
+        this.changeDetectorRef.detectChanges()
+        //console.log("Aci im one editor", this.activeContract.latestACI)
+        //console.log("Clearing error marker..");
+        this.clearAllHighlighters();
+        
+        // reset the error tracker
+        //console.log("Resetting last known error..");
+        this.lastError = "";} else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
+          
+          let theError = item['error'];
+          console.log("Error erhalten für" + this.activeContract.contractUID, theError);
+          
+        } else {
+          //console.log("Empty or other contract's ACI was received, not removing error");
+        }
+    })
+        
   }
 
+  ngOnDestroy(): void {
+    this.compiler._newACI.unsubscribe();
+  }
   
   aciSubscription(){
     this.rawACIsubscription = this.compiler._notifyCompiledAndACI
@@ -198,12 +201,7 @@ this.compiler._newACI.subscribe(item => {
   initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor){
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
     //console.log("The editor:", theEditor);
-    const handlerTest = (params) => { console.log("params", params)}
-    
     this.editorInstance = theEditor;
-    this.editorInstance.addCommand(monaco.KeyCode.Enter, handlerTest)
-    this.editorInstance.onKeyDown(handlerTest)
-
     this.triggerWindowRefresh(); 
 
     // highlight background of shared code

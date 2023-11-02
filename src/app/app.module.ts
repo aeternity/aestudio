@@ -26,6 +26,7 @@ import { TxValuesComponent } from './tx-values/tx-values.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { DigitOnlyModule } from '@uiowa/digit-only';
 import { TerminalModule } from './repl-terminal/terminal.module'
+import { NgClickOutsideDirective } from 'ng-click-outside2';
 
 // firebase start 
 
@@ -86,6 +87,7 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
     SuiModule.SuiAccordionModule,
     SuiModule.SuiTransitionModule,
     SuiModule.SuiTabsModule,
+    NgClickOutsideDirective,
     InlineSVGModule.forRoot(),
     ClipboardModule,
     StorageServiceModule,

@@ -46,6 +46,7 @@
     "is-ua-webview": "^1.1.2",
     "monaco-editor": "^0.41.0",
     "ng-circle-progress": "^1.5.1",
+    "ng-click-outside2": "^12.0.0",
     "ng-inline-svg": "^10.0.0",
     "ng-inline-svg-2": "^15.0.1",
     "ngx-clipboard": "^16.0.0",

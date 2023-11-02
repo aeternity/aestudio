@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ChangeDetectorRef, Inject, ViewChild } from '@angular/core';
 import { EventlogService } from '../services/eventlog/eventlog.service'
 import { StateService } from '../services/state.service';
 import { TerminalPrompt } from '../repl-terminal/TerminalPrompt';
@@ -6,6 +6,7 @@ import { StorageService } from 'ngx-webstorage-service';
 import { LocalStorageService } from '../local-storage.service';
 import { Socket } from 'phoenix-channels';
 import { ILog } from '../helpers/interfaces';
+import { TerminalComponent } from '../repl-terminal/terminal.component';
 
 @Component({
   selector: 'app-log-console',
@@ -15,7 +16,7 @@ import { ILog } from '../helpers/interfaces';
 
 export class LogConsoleComponent implements OnInit {
 
-
+  @ViewChild('terminal', {static: false}) terminal: TerminalComponent;
   logs: ILog[] = [];
   activeTab : string = 'logs'
 
@@ -23,11 +24,11 @@ export class LogConsoleComponent implements OnInit {
     public server = 'REPL';
     public serverUrl = 'wss://repl.aeternity.io/';
     public session = '';
-
     private channel;
     private prompt;
 
     private pending_output = "";
+    public isReplFocused: boolean = false;
 
   constructor(private eventlog: EventlogService, public state: StateService, private detector: ChangeDetectorRef,  private localStorage: LocalStorageService) {
     // use this to get all contracts in their latest state:
@@ -133,6 +134,10 @@ export class LogConsoleComponent implements OnInit {
     this.activeTab = tab
   }
 
+  setIsReplFocused(setting : boolean){
+    this.isReplFocused = setting
+    this.terminal.setFocused(setting)
+  }
 
   toggle($event) {
     console.log("Resize: click initiated")
