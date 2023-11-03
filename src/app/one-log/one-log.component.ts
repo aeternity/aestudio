@@ -53,7 +53,11 @@ export class OneLogComponent implements OnInit {
         } else {
           this.isAnObject[key] = true
         }
-      } else {
+        // if it's a function..
+      } else if(typeof this.log.data[key] === 'function') {
+        this.pureData[key] = false
+      } 
+      else {
         this.pureData[key] = true
       }
     })
