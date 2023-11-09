@@ -14,7 +14,7 @@ import publicAccounts from './helpers/prefilled-accounts'
 import { EventlogService } from './services/eventlog/eventlog.service'
 
 // sdk 13 migration start
-const {
+import  {
   AeSdk,
   MemoryAccount,
   Node,
@@ -24,11 +24,11 @@ const {
   Contract,
   BrowserWindowMessageConnection,
   walletDetector,
-} = require('@aeternity/aepp-sdk')
+} from '@aeternity/aepp-sdk'
+import { AeSdkExtended, MemoryAccountExtended } from './helpers/interfaces';
 
 // sdk 13 migration end
 
-var Ae : typeof AeSdk = AeSdk;
 const Detector = walletDetector;
 
 @Injectable({
@@ -51,7 +51,7 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  public Chain: typeof AeSdk;
+  public Chain: AeSdkExtended;
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
@@ -248,25 +248,25 @@ public initWalletSearch = async (successCallback) => {
     // Open iframe with Wallet if run in top window
     // window !== window.parent || await aeternity.getReverseWindow();
 
-  this.Chain = new Ae({
-    name: 'AEPP',
+  this.Chain = new AeSdk({
     nodes: [
       {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
-      {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
+      {name: 'ae_uat', instance: new Node(this.TESTNET_URL)}
     ],
-    compilerUrl: this.COMPILER_URL,
-    
+    onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
+   /*  
     onNetworkChange: (params) => {
       console.log('Compiler: wallet network change');
       // TODO: Handle network change 
       // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
       // this.aeternity.initProvider();
-    },
+    }, 
     onAddressChange: (addresses) => {
       // if (!addresses.current[this.aeternity.address]) {
         console.log('Compiler: wallet addressChange 2');
-      // }
-    }
+        // }
+      }
+      */
   });
 
     await this.scanForWallets(successCallback);
@@ -286,11 +286,11 @@ public initWalletSearch = async (successCallback) => {
     private eventlog: EventlogService) {
 
     // define the default SDK settings
-    var theAccounts : typeof MemoryAccount = [];
+    var theAccounts : MemoryAccountExtended[] = [];
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach(account => {
-      let oneAccount = new MemoryAccount(account.secretKey);
+      let oneAccount : MemoryAccountExtended = new MemoryAccount(account.secretKey);
       oneAccount.property = "public";
       theAccounts.push(oneAccount);
     });
@@ -327,11 +327,10 @@ public initWalletSearch = async (successCallback) => {
       
       try {
 
-        this.Chain = new Ae({
+        this.Chain = new AeSdk ({
           nodes: [{name: 'Testnet', instance: nodeInstance }],
-          compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-          accounts: this.defaultOrCustomSDKsetting("accounts")
-          
+          onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
+          accounts: this.defaultOrCustomSDKsetting("accounts"),
         })
       }
        catch { e => { 
@@ -400,7 +399,7 @@ public initWalletSearch = async (successCallback) => {
    
 
   // converts code to ACI and deploys.
-  async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: string) : Promise<any> {
+  async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: `ct_${string}` | `${string}.chain`) : Promise<any> {
     console.log("deploying...");
 
     let sourceCode = this.code
@@ -413,7 +412,7 @@ public initWalletSearch = async (successCallback) => {
     if (!_existingContractAddress) {
       // Here we deploy the contract
       
-      myContract = await this.Chain.getContractInstance(this.code);
+      myContract = await this.Chain.initializeContract({sourceCode: this.code});
       //console.log(">>>> compilation result (mycontract): ", myContract);
       
       try {
@@ -454,7 +453,7 @@ public initWalletSearch = async (successCallback) => {
          }
     } else {
       //here we want to interact with an existing one.
-      myContract = await this.Chain.getContractInstance(this.code, {contractAddress: _existingContractAddress});
+      myContract = await this.Chain.initializeContract({sourceCode: this.code, address: _existingContractAddress});
 
       this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract.aci.name, data: myContract.deployInfo})
     }

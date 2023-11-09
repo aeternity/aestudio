@@ -60,7 +60,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   initFunctionIsPresent : boolean = true;
 
   // the address of the existing contract the user wants to interact with.
-  addressOfExistingContract : string = "";
+  addressOfExistingContract : `ct_${string}` | `${string}.chain` = null;
 
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
@@ -75,8 +75,6 @@ export class ContractMenuSidebarComponent implements OnInit {
   activeContracts: any[] = [];
   initACI: ContractBase<any>;
 
-  // mess around:
-  temp: any;
 
   // angular 9
   hover: boolean;
@@ -297,7 +295,7 @@ async fetchAllBalances(_dontFillUp? : boolean){
 // get balance of only one address
 // TODO: option parameter einbauen, Format ist 
 // async ƒ balance(address, { height, hash, format = false } = {})
-async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any){
+async getOneBalance(_address, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any){
   // if only the address is defined, don't call with options.
   var balance;
   //console.log("Fetching balan ce for..." + _address);
