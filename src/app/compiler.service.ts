@@ -24,6 +24,7 @@ import  {
   Contract,
   BrowserWindowMessageConnection,
   walletDetector,
+  AeSdkAepp,
 } from '@aeternity/aepp-sdk'
 import { AeSdkExtended, MemoryAccountExtended } from './helpers/interfaces';
 
@@ -168,32 +169,30 @@ public scanForWallets = async (successCallback) => {
 
 public justScanForWallets = async (successCallback) => {
   
-  const scannerConnection = new BrowserWindowMessageConnection({
-    connectionInfo: { id: 'spy' },
-  });
-
-  const detector = new Detector({ connection: scannerConnection });
-
+  
+  //const detector = new Detector({ connection: scannerConnection });
+  
   const handleWallets = async ({ wallets, newWallet }) => {
-    detector.stopScan();
+    newWallet = newWallet || Object.values(wallets)[0];
+    stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
     console.log("superhero: newwallet: ", newWallet);
     console.log("superhero: wallets: ", wallets);
     console.log("superhero: cachedWallet", this.cachedWallet);
     console.log("superhero: one wallet" , Object.values(wallets)[0])
-
+    
     const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
     this.aeternity.detectedWallet = wallet.id;
     successCallback();
-
-
-
   };
-
-
-
-  detector.scan(handleWallets);
+    
+  const scannerConnection = new BrowserWindowMessageConnection();
+  const stopScan = walletDetector(scannerConnection, handleWallets)
+  
+  //detector.scan(handleWallets);
 }
+
+
 
 public awaitInitializedChainProvider = async () => {
   return new Promise<void>((resolve, reject) => {
@@ -248,7 +247,8 @@ public initWalletSearch = async (successCallback) => {
     // Open iframe with Wallet if run in top window
     // window !== window.parent || await aeternity.getReverseWindow();
 
-  this.Chain = new AeSdk({
+  this.Chain = new AeSdkAepp({
+    name: 'APP',
     nodes: [
       {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
       {name: 'ae_uat', instance: new Node(this.TESTNET_URL)}
