@@ -27,9 +27,10 @@ import  {
   AeSdkAepp,
   SUBSCRIPTION_TYPES,
 } from '@aeternity/aepp-sdk'
-import { AeSdkExtended, AeSdkAeppExtended, MemoryAccountExtended } from './helpers/interfaces';
+import { AeSdkExtended, AeSdkAeppExtended, MemoryAccountExtended, ContractWithMethodsExtended } from './helpers/interfaces';
 import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/connection/Browser';
 import AccountMemory from '@aeternity/aepp-sdk/es/account/Memory';
+import ContractWithMethods, { ContractMethodsBase } from '@aeternity/aepp-sdk/es/contract/Contract';
 
 // sdk 13 migration end
 
@@ -43,10 +44,10 @@ export class CompilerService {
   public code: string = ''
 
   // the code from the currently active compiler window
-  aci: ContractBase<any>;
+  aci: ContractBase;
 
   // aci only for the init function
-  initACI: ContractBase<any>;
+  initACI: ContractBase;
 
   // not used yet, just for tabs later: same as ACI, but contains address of deployed contract
   public activeContracts: any[] = [];
@@ -117,7 +118,6 @@ public aeternity : any = {
   initProvider : async (changedClient = false) => {
     try {
       const networkId = this.aeternity.client.pool[0].key;
-      debugger
       const changedNetwork = this.aeternity.networkId !== networkId;
       this.aeternity.networkId = networkId
       if (this.aeternity.contractAddress)
@@ -168,7 +168,7 @@ public scanForWallets = async (successCallback) => {
   const { address: { current } } = await this.Chain.subscribeAddress('subscribe' as SUBSCRIPTION_TYPES, 'connected');
   console.log('Address from wallet', current);
 
-debugger
+
     this.aeternity.client = this.Chain;
   //const connection = new BrowserWindowMessageConnection();
 
@@ -274,7 +274,7 @@ public onWalletSearchSuccess = async () => {
   this.Chain.currentWalletProvider = "extension"
   
  console.log("TODO: what replaces this.chain.accounts.current ?")
- debugger
+
   //console.log("wallet's account?", Object.keys(this.Chain.accounts.current)[0].toString())
 
   // put data where other components expect it to be
@@ -378,7 +378,7 @@ public initWalletSearch = async (successCallback) => {
       console.log("Das SDK: ", this.Chain);
    }
 
-   fromCodeToACI(code) {
+   getAciFromCompiler(code : string) {
     let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -447,7 +447,7 @@ public initWalletSearch = async (successCallback) => {
    
 
   // converts code to ACI and deploys.
-  async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: `ct_${string}` | `${string}.chain`) : Promise<any> {
+  async compileAndDeploy(_deploymentParams, _existingContractAddress?: `ct_${string}` | `${string}.chain`) : Promise<any> {
     console.log("deploying...");
 
     let sourceCode = this.code
@@ -455,12 +455,13 @@ public initWalletSearch = async (successCallback) => {
     //console.log("Hier kommt der code: ", sourceCode);
 
     // create a contract instance
-    var myContract;
+    var myContract : ContractWithMethodsExtended
 
     if (!_existingContractAddress) {
       // Here we deploy the contract
       
       myContract = await this.Chain.initializeContract({sourceCode: this.code});
+      debugger
       //console.log(">>>> compilation result (mycontract): ", myContract);
       
       try {
@@ -476,12 +477,14 @@ public initWalletSearch = async (successCallback) => {
         this.gasAmountInUnits > 0 ? txParams["gas"] = this.gasAmountInUnits : true
         this.gasPriceInAettos > 0 ? txParams["gasPrice"] = this.gasPriceInAettos : true
 
-        let deployResult = await myContract.deploy( _deploymentParams ? _deploymentParams : [], txParams);
+        let deployResult = await myContract.$deploy( _deploymentParams ? _deploymentParams : [], txParams);
         console.log("Deploy result:", deployResult)
+
+        myContract.deployInfo = deployResult;
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
         
-        this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
+        this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract._name, data: myContract.deployInfo})
         //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
 
       } catch(_e){
@@ -510,11 +513,12 @@ public initWalletSearch = async (successCallback) => {
     //console.log("My account: ", this.Chain.addresses());
     //console.log("Das ganze SDK: ", this.Chain);
 
-    this.fromCodeToACI(sourceCode)
+    this.getAciFromCompiler(sourceCode)
     .subscribe(
-      (data: EncodedACI) => {
+      (data) => {
       // save ACI to generate a contract instance for the editor
-      var rawACI = data.encoded_aci
+
+      var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
         
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
@@ -531,9 +535,6 @@ public initWalletSearch = async (successCallback) => {
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
     
-      // 4. put the ammended ACi into the aci of the contract object
-      myContract.aci = aci;
-
       // also, add the deployment params
       myContract.deployInfo.params = _deploymentParams 
       
@@ -600,15 +601,15 @@ public initWalletSearch = async (successCallback) => {
     // this source code will be used when user clicks deployContract()
     this.code = sourceCode;
 
-    this.fromCodeToACI(sourceCode)
+    this.getAciFromCompiler(sourceCode)
     .subscribe(
-      (data: EncodedACI) => {
+      (data) => {
       // save ACI to generate a contract instance for the editor
-      var rawACI = data.encoded_aci
-        
-        // now add an index to each function and sort them, just to be sure
-        // 1. just to make sure the init func is on top, sort functions.
-        
+      
+      var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
+      // now add an index to each function and sort them, just to be sure
+      // 1. just to make sure the init func is on top, sort functions.
+
         rawACI.contract.functions.sort(
           (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
       )
@@ -617,10 +618,10 @@ public initWalletSearch = async (successCallback) => {
       rawACI.contract.functions.forEach((one, i) => {
           rawACI.contract.functions[i].IDEindex = i;
       })
-      
-      // 3.  now that we have it, generate the formgroups for the function args
+
+      //TODO: 3.  now that we have it, generate the formgroups for the function args 
       rawACI = this.modifyAci(rawACI);
-      
+
       //console.log("Hier init ACI object:", this.aci)
       
       //this._newACI.next("good");
@@ -662,7 +663,7 @@ public initWalletSearch = async (successCallback) => {
  
   // reactivate this function for eventual input validation later...
  // generates a typescript-safe contract instance with a FormGroup in functions array
- modifyAci(aci: any): ContractBase<any> {
+ modifyAci(aci: any): ContractBase {
  
   
  // 1. create several formgroups: one FG for each fun, return final contract

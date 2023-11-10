@@ -1,6 +1,6 @@
 import { FormGroup } from '@angular/forms';
 
-export class ContractBase<T> {
+export class ContractBase {
     name: string;
     functions: any;
     state: {};
@@ -43,6 +43,6 @@ export class ContractBase<T> {
     this.name = aci.contract.name;
     this.functions = aci.contract.functions || '';
     this.state = aci.contract.state || {};
-    this.type_defs = aci.contract.type_defs || [];
+    this.type_defs = aci.contract.type_defs || [];
     }
 }

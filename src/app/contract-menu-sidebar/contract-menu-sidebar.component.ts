@@ -75,7 +75,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   currentSDKsettings: any = {address: '', addresses: [], balances: [2], getNodeInfo: {url: ''}} 
 
   activeContracts: any[] = [];
-  initACI: ContractBase<any>;
+  initACI: ContractBase;
 
 
   // angular 9
@@ -107,7 +107,7 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.changeDetectorRef.detectChanges()
     
     // fetch all entered params
-    let params: any[] = [];
+    let params = [];
 
     console.log("Function 0 ist: ", this.initACI.functions[0])
     
