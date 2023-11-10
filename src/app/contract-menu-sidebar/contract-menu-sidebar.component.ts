@@ -156,13 +156,6 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
         .subscribe(async settings => {
 
-
-          // check for nonsensical empty settings event firing bs
-          if (JSON.stringify(settings) === '{}') {
-            debugger
-            return
-          }
-          
           console.log("settings: ", settings)
 
           if(settings.type == "extension") {
@@ -174,27 +167,7 @@ export class ContractMenuSidebarComponent implements OnInit {
              this.currentSDKsettings = settings;
              console.log("gingen die settings durch? ", this.currentSDKsettings ); 
           }
-
-          
-/* 
-        if(settings instanceof ZoneAwarePromise) {
-          // case: Web SDK     
-          // wait for promise to resolve
-          
-        } else {
-          // case: wallet extension, where we put together the SDK settings object on our own
-         
-        }
- */
      
-
-        // the following ternary operators here are to silence errors that come from angular firing events 
-        // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
-        // is even instantiated. stupid crazy racing conditions of angular or whatever.
-
-        //  append SDKsettings object with properties that the compiler does not provide
-        this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
-        
         //  Get balances of all available addresses
         this.currentSDKsettings.addresses != undefined ? await this.fetchAllBalances() : true
 
@@ -295,7 +268,10 @@ async changeSDKsetting(setting: string, params: any){
 async fetchAllBalances(_dontFillUp? : boolean){
   //console.log("available addresses: ", this.currentSDKsettings.addresses)
 
-  this.currentSDKsettings.balances = {};
+  if(!this.currentSDKsettings.balances){
+    this.currentSDKsettings.balances = {};
+  };
+
   this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
     this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress, _dontFillUp != true ? false : true);
   }) 
