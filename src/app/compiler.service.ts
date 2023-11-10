@@ -25,8 +25,11 @@ import  {
   BrowserWindowMessageConnection,
   walletDetector,
   AeSdkAepp,
+  SUBSCRIPTION_TYPES,
 } from '@aeternity/aepp-sdk'
-import { AeSdkExtended, MemoryAccountExtended } from './helpers/interfaces';
+import { AeSdkExtended, AeSdkAeppExtended, MemoryAccountExtended } from './helpers/interfaces';
+import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/connection/Browser';
+import AccountMemory from '@aeternity/aepp-sdk/es/account/Memory';
 
 // sdk 13 migration end
 
@@ -52,7 +55,7 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  public Chain: AeSdkExtended;
+  public Chain: (AeSdkExtended | AeSdkAeppExtended);
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
@@ -76,6 +79,7 @@ export class CompilerService {
       }
       
       this.currentSdkSettings = settings
+
      this._notifyCurrentSDKsettings.next(settings);
   }
 
@@ -90,7 +94,7 @@ export class CompilerService {
   private cachedWallet : any = {}
 
   private SDKoptionsToIgnore = ["mempool", "getAccount"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
-  private SDKoptionsToCheck = ["addresses"] // this is used to abstract the SDKs methods to data which the editor is relying on. a function will return `sdkOptions` which need these properties to be filled with corresponding SDK functions of the current version.
+  private SDKoptionsToCheck = ["addresses", "selectedAddress"] // this is used to abstract the SDKs methods to data which the editor is relying on. a function will return `sdkOptions` which need these properties to be filled with corresponding SDK functions of the current version.
 // ____ helpers start 
 
 public nextAci(value: any): void {
@@ -112,7 +116,8 @@ public aeternity : any = {
   contractAddress: '',
   initProvider : async (changedClient = false) => {
     try {
-      const networkId = (await this.aeternity.client.getNodeInfo()).nodeNetworkId;
+      const networkId = this.aeternity.client.pool[0].key;
+      debugger
       const changedNetwork = this.aeternity.networkId !== networkId;
       this.aeternity.networkId = networkId
       if (this.aeternity.contractAddress)
@@ -130,16 +135,47 @@ public aeternity : any = {
   }
 };
 
+
+
 public scanForWallets = async (successCallback) => {
 
-  const scannerConnection = await BrowserWindowMessageConnection({
-    connectionInfo: { id: 'spy' },
+  this.Chain = new AeSdkAepp({
+    name: 'APP',
+    nodes: [
+      {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
+      {name: 'ae_uat', instance: new Node(this.TESTNET_URL)}
+    ],
+    onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
+   /*  
+    onNetworkChange: (params) => {
+      console.log('Compiler: wallet network change');
+      // TODO: Handle network change 
+      // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
+      // this.aeternity.initProvider();
+    }, 
+    onAddressChange: (addresses) => {
+      // if (!addresses.current[this.aeternity.address]) {
+        console.log('Compiler: wallet addressChange 2');
+        // }
+      }
+      */
   });
 
-  const detector = new Detector({ connection: scannerConnection });
+  const connection = await this.detectWallets();
 
-  const handleWallets = async ({ wallets, newWallet }) => {
-    detector.stopScan();
+  const walletInfo = await this.Chain.connectToWallet(connection as BrowserConnection);
+  console.log('Connected to', walletInfo);
+  const { address: { current } } = await this.Chain.subscribeAddress('subscribe' as SUBSCRIPTION_TYPES, 'connected');
+  console.log('Address from wallet', current);
+
+debugger
+    this.aeternity.client = this.Chain;
+  //const connection = new BrowserWindowMessageConnection();
+
+  // const detector = new Detector({ connection: scannerConnection });
+
+
+  /*   // detector.stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
     console.log("newwallet: ", newWallet);
     console.log("wallets: ", wallets);
@@ -162,11 +198,12 @@ public scanForWallets = async (successCallback) => {
     this.aeternity.static = false;
     await this.aeternity.initProvider(true);
     successCallback();
-  };
+ */
 
-  detector.scan(handleWallets);
 }
 
+
+//sunset eventually, could be superseded bythis.detectWallets()
 public justScanForWallets = async (successCallback) => {
   
   
@@ -189,10 +226,21 @@ public justScanForWallets = async (successCallback) => {
   const scannerConnection = new BrowserWindowMessageConnection();
   const stopScan = walletDetector(scannerConnection, handleWallets)
   
+
   //detector.scan(handleWallets);
 }
 
-
+public detectWallets = async () => {
+  const connection = new BrowserWindowMessageConnection();
+  return new Promise((resolve, reject) => {
+    const stopDetection = walletDetector(connection, async ({ newWallet }) => {
+      if (confirm(`Do you want to connect to wallet ${newWallet.info.name} with id ${newWallet.info.id}`)) {
+        stopDetection();
+        resolve(newWallet.getConnection());
+      }
+    });
+  });
+}
 
 public awaitInitializedChainProvider = async () => {
   return new Promise<void>((resolve, reject) => {
@@ -225,18 +273,20 @@ public onWalletSearchSuccess = async () => {
   console.log("Wallet's SDK: ", this.Chain)
   this.Chain.currentWalletProvider = "extension"
   
-  console.log("wallet's account?", Object.keys(this.Chain.rpcClient.accounts.current)[0].toString())
+ console.log("TODO: what replaces this.chain.accounts.current ?")
+ debugger
+  //console.log("wallet's account?", Object.keys(this.Chain.accounts.current)[0].toString())
 
   // put data where other components expect it to be
   let sdkSettingsToReport : any= {}
   
   //wallets:
-
-  sdkSettingsToReport.addresses = new Array( Object.keys(this.Chain.rpcClient.accounts.current)[0].toString() )
+console.log("TODO: obtain the information for following commented block!")
+  /* sdkSettingsToReport.addresses = new Array( Object.keys(this.Chain.rpcClient.accounts.current)[0].toString() )
   sdkSettingsToReport.address = Object.keys(this.Chain.rpcClient.accounts.current)[0].toString()
   sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
   console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport)
-  this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport});
+  this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport}); */
 }
 
 public setupWalletClient = () => {
@@ -244,30 +294,7 @@ public setupWalletClient = () => {
 }
 
 public initWalletSearch = async (successCallback) => {
-    // Open iframe with Wallet if run in top window
-    // window !== window.parent || await aeternity.getReverseWindow();
 
-  this.Chain = new AeSdkAepp({
-    name: 'APP',
-    nodes: [
-      {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
-      {name: 'ae_uat', instance: new Node(this.TESTNET_URL)}
-    ],
-    onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
-   /*  
-    onNetworkChange: (params) => {
-      console.log('Compiler: wallet network change');
-      // TODO: Handle network change 
-      // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
-      // this.aeternity.initProvider();
-    }, 
-    onAddressChange: (addresses) => {
-      // if (!addresses.current[this.aeternity.address]) {
-        console.log('Compiler: wallet addressChange 2');
-        // }
-      }
-      */
-  });
 
     await this.scanForWallets(successCallback);
 }
@@ -327,7 +354,7 @@ public initWalletSearch = async (successCallback) => {
       
       try {
 
-        this.Chain = new AeSdk ({
+        this.Chain  = new AeSdk ({
           nodes: [{name: 'Testnet', instance: nodeInstance }],
           onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
           accounts: this.defaultOrCustomSDKsetting("accounts"),
@@ -382,17 +409,38 @@ public initWalletSearch = async (successCallback) => {
     if (this.Chain != undefined) {
       var returnObject = {
         addresses: [],
+        address: '',
       }
   
-      // execute all functions by their name which have 0 params.
-      // count the length of returns - if it equals the keycount, return.
+      // get the necessary settings from the sdk
       this.SDKoptionsToCheck.forEach(setting => {
         if(setting == "addresses"){
-          let allAccounts = Object.keys(this.Chain.accounts)
-          allAccounts.forEach((account) => {
+
+          let allAccountAddresses : string[] = [];
+          
+          // when web wallet:
+          if((this.Chain as AeSdkExtended).accounts){
+            allAccountAddresses = Object.keys((this.Chain as AeSdkExtended).accounts)
+            // when browser wallet:
+          } else if((this.Chain as AeSdkAeppExtended)._accounts){ 
+            allAccountAddresses.push(Object.keys((this.Chain as AeSdkAeppExtended)._accounts.current)[0])
+          } else {
+            console.error("Compiler: Error fetching addresses from SDK: ", this.Chain)
+          }
+
+          allAccountAddresses.forEach((account) => {
             returnObject.addresses.push(account)
           })
-         } 
+         } else if(setting == "selectedAddress") {
+          // when web wallet:
+          if((this.Chain as AeSdkExtended).selectedAddress)
+          returnObject.address = (this.Chain as AeSdkExtended).selectedAddress
+         } else {
+
+          //when browser wallet:
+          returnObject.address = Object.keys((this.Chain as AeSdkAeppExtended)._accounts.current)[0]
+         }
+                  
         })
         return returnObject;
       }}
@@ -679,7 +727,7 @@ public initWalletSearch = async (successCallback) => {
    newContract = this._notifyDeployedContract.asObservable();
    
    // (new) SDK settings were found !
-   public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
+   public _notifyCurrentSDKsettings = new Subject<any>();
    newSdkSettings = this._notifyCurrentSDKsettings.asObservable();
 
    // DEPRECATE !

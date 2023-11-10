@@ -8,6 +8,8 @@ import { AuthService } from '../services/auth/auth.service'
 import { HttpClient } from '@angular/common/http';
 
 import {IPopup} from "ngx-ng2-semantic-ui";
+import { AeSdk } from '@aeternity/aepp-sdk';
+import { AeSdkExtended } from '../helpers/interfaces';
 /* 
 import { Console } from 'node:console'; */
 
@@ -146,17 +148,23 @@ export class ContractMenuSidebarComponent implements OnInit {
 
      setInterval(async () => {
      
-     // call with "false" to query faucet for balance if it's too low
+     // call with "false" to query faucet for balance if it's too low, topup not implemented yet though
        this.currentSDKsettings != undefined ? await this.fetchAllBalances(true) : true}, 3000
     ) 
-
-
-    this.fetchAllBalances(true);
 
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
         .subscribe(async settings => {
+
+
+          // check for nonsensical empty settings event firing bs
+          if (JSON.stringify(settings) === '{}') {
+            debugger
+            return
+          }
+          
           console.log("settings: ", settings)
+
           if(settings.type == "extension") {
             //comming from the browser wallet
             this.currentSDKsettings = settings.settings
@@ -188,7 +196,7 @@ export class ContractMenuSidebarComponent implements OnInit {
         this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
         
         //  Get balances of all available addresses
-        this.currentSDKsettings != undefined ? await this.fetchAllBalances() : true
+        this.currentSDKsettings.addresses != undefined ? await this.fetchAllBalances() : true
 
         console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
 
@@ -270,7 +278,7 @@ async changeSDKsetting(setting: string, params: any){
 
   switch (setting) {
     case "selectAccount":
-      this.compiler.Chain.selectAccount(params);
+      (this.compiler.Chain as AeSdkExtended).selectAccount(params);
       console.log("Attempted to change selectAccount: ", setting, params)
       break;
 
@@ -287,6 +295,7 @@ async changeSDKsetting(setting: string, params: any){
 async fetchAllBalances(_dontFillUp? : boolean){
   //console.log("available addresses: ", this.currentSDKsettings.addresses)
 
+  this.currentSDKsettings.balances = {};
   this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
     this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress, _dontFillUp != true ? false : true);
   }) 

@@ -1,5 +1,5 @@
 import  {
-  AeSdk, MemoryAccount
+  AeSdk, AeSdkAepp, MemoryAccount
 } from '@aeternity/aepp-sdk'
 
 export interface ILog {
@@ -20,4 +20,5 @@ interface additionalMemoryAccountProperties {
 }
 
 export type MemoryAccountExtended = MemoryAccount & additionalMemoryAccountProperties
-export type AeSdkExtended = AeSdk & additionalAestudioProperties
+export type AeSdkExtended = AeSdk & additionalAestudioProperties 
+export type AeSdkAeppExtended = AeSdkAepp & additionalAestudioProperties 
