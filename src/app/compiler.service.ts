@@ -461,7 +461,6 @@ public initWalletSearch = async (successCallback) => {
       // Here we deploy the contract
       
       myContract = await this.Chain.initializeContract({sourceCode: this.code});
-      debugger
       //console.log(">>>> compilation result (mycontract): ", myContract);
       
       try {
@@ -552,6 +551,7 @@ public initWalletSearch = async (successCallback) => {
 
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it
+      debugger
       this._notifyDeployedContract.next({newContract: myContract, success: true});
     },
     error => this.fetchErrorsFromDebugCompiler(sourceCode));

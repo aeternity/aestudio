@@ -210,6 +210,7 @@ export class ContractMenuSidebarComponent implements OnInit {
         // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
         console.log("New contract: ", newContract) // .deployInfo.address
+        debugger
         this.activeContracts.push(newContract);
             
         // temp test
