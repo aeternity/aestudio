@@ -3,7 +3,7 @@
 <sui-accordion-panel [isDisabled]="false" >
     <div title>
         <i class="dropdown icon" (click)="panelOpen = !panelOpen"></i>
-        {{contract.aci.name}} <span style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span> 
+        {{contract._name}} <span style="font-weight:100 !important; opacity:0.5">{{this.contract.addressPreview}}</span> 
         
         <i prevent-click-propagation style="float: right" class="copy icon"
             suiPopup popupHeader="" popupTrigger="manual" popupPlacement="top right" popupDelay="600" popupText="Copied current Address!" #popup="suiPopup"
@@ -16,7 +16,7 @@
                 <span class="ui inverted icon header">
                     <i style="color: #1b1c1d" class="info circle icon"></i>
                     <span class="regularInfoText">Do you want to remove</span> <br>
-                    <span style="color: #1b1c1d; margin-left: 30px;" class="black text">{{contract.aci.name}} &nbsp;</span>
+                    <span style="color: #1b1c1d; margin-left: 30px;" class="black text">{{contract._name}} &nbsp;</span>
                     <span style="color: #1b1c1d; margin-right: 30px;" class="black text">({{this.contract.addressPreview}})</span> <br>
                     <span class="regularInfoText">from the active contract list ?</span>
                 </span> <br>
@@ -29,14 +29,14 @@
     </div>
     <div content>
             <div>
-                <ng-container class="ui segment container" *ngFor="let oneFunction of contract.aci.functions">
+                <ng-container class="ui segment container" *ngFor="let oneFunction of contract.$aci.functions">
                     <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
                         <h4>{{oneFunction.name | replace : '_' : ' '}}</h4>
 
                         <!-- TODO: Add form control -->
                         <form class="ui form">
                             <div class="field" *ngFor="let arg of oneFunction.arguments; let i = index">
-                                <input [(ngModel)]="contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
+                                <input [(ngModel)]="contract.$aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData" (ngModelChange)="logTemp(contract.$aci.functions[oneFunction.IDEindex].arguments[arg.IDEindex].currentInputData)" 
                                         name="{{oneFunction.name + '-' + arg.name}}"
                                         type="text"
                                         class="arg-field"
@@ -46,32 +46,32 @@
                             </div>
                         </form>
                         <br>
-                        <app-loader *ngIf="contract.aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
+                        <app-loader *ngIf="contract.$aci.functions[oneFunction.IDEindex].loading == true" ></app-loader>
                       
                         <!-- Contract function call button -->
 
                         <button 
                             [class.ui]="true"
-                            [class.right]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
-                            [class.labeled]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            [class.right]="!contract.$aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            [class.labeled]="!contract.$aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
                             [class.icon]="true"
                             [class.black]="true"
                             [class.button]="true"
-                            [class.collapsedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos == 0" 
-                            [class.expandedForIcon]="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
+                            [class.collapsedForIcon]="!contract.$aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos == 0" 
+                            [class.expandedForIcon]="!contract.$aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" 
                             class="ui right labeled icon black button contractCallButton" 
                             (click)="callFunction(oneFunction.name, oneFunction.IDEindex, contract.IDEindex)" 
                             suiPopup popupHeader="Caution !" popupTrigger="manual" #popup="suiPopup" popupText="Calling a function that is not marked as payable in it's code when your 'Value' property is set to non-zero would result in a transaction error! " popupPlacement="top left" popupDelay="100"
-                            (mouseover)="openPopup(popup, contract.aci.functions[oneFunction.IDEindex].payable)" (mouseout)="closePopup(popup)"
+                            (mouseover)="openPopup(popup, contract.$aci.functions[oneFunction.IDEindex].payable)" (mouseout)="closePopup(popup)"
                             [disabled]=""
 
                             >
                             
                             
-                            <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == false">Call Locally</p>
-                            <p *ngIf="contract.aci.functions[oneFunction.IDEindex].stateful == true">Send Transaction</p>
+                            <p *ngIf="contract.$aci.functions[oneFunction.IDEindex].stateful == false">Call Locally</p>
+                            <p *ngIf="contract.$aci.functions[oneFunction.IDEindex].stateful == true">Send Transaction</p>
 
-                            <i *ngIf="!contract.aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" class="large yellow exclamation triangle icon"></i>
+                            <i *ngIf="!contract.$aci.functions[oneFunction.IDEindex].payable && this.compiler.txAmountInAettos > 0" class="large yellow exclamation triangle icon"></i>
                         </button>
                         
                         <!-- Experimental Code generator start -->
@@ -82,7 +82,7 @@
                                 <div class="menu" suiDropdownMenu>
                                     
                                 
-                                    <div class="item" (click)="callCodeFactory(contract.source, contract.aci.functions[oneFunction.IDEindex].name, contract.aci.functions[oneFunction.IDEindex], contract.deployInfo.params)">
+                                    <div class="item" (click)="callCodeFactory(contract.source, contract.$aci.functions[oneFunction.IDEindex].name, contract.$aci.functions[oneFunction.IDEindex], contract.deployInfo.params)">
                                             
                                             <i class="computer icon"></i>
                                             <span style="color: grey">JS / Node</span></div>
@@ -90,7 +90,7 @@
                             </div>
                         <!-- Experimental code generator end -->
 
-                        <h4 *ngIf="contract.aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{contract.aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
+                        <h4 *ngIf="contract.$aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{contract.$aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
                     </div>
                 </ng-container>
             </div>

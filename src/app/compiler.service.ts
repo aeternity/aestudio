@@ -484,18 +484,18 @@ public initWalletSearch = async (successCallback) => {
         //  
         
         this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract._name, data: myContract.deployInfo})
-        //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+        //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract._name )
 
       } catch(_e){
         console.log("Something went wrong, investigating tx!");
         console.log(_e);
 
-        //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+        //this.logMessage(" Deployment failed: " + e, "error",  myContract._name)
         if (typeof _e === 'object'){
-          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: {message: _e.message}})
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract._name, data: {message: _e.message}})
         } else {
           let error = _e.toString()
-          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name + " Error:" + error})
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract._name + " Error:" + error})
         }
         this._notifyDeployedContract.next({newContract: null, success: false});
         return true
@@ -505,7 +505,7 @@ public initWalletSearch = async (successCallback) => {
       //here we want to interact with an existing one.
       myContract = await this.Chain.initializeContract({sourceCode: this.code, address: _existingContractAddress});
 
-      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract.aci.name, data: myContract.deployInfo})
+      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract._name, data: myContract.deployInfo})
     }
 
     console.log("My contract: ", myContract);
@@ -519,6 +519,16 @@ public initWalletSearch = async (successCallback) => {
 
       var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
         
+         
+   /*    // 0. move all contract functions to a functions property that previously existed in the SDK,
+      // to reduce the amount of changes in the codebase
+      myContract._functions = [];
+      Object.keys(myContract).forEach((funcName) => {
+        if(!funcName.startsWith('_') && !funcName.startsWith('$') ){
+          myContract._functions[funcName] = myContract[funcName];
+        } 
+      }); */
+debugger
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
         
@@ -534,6 +544,11 @@ public initWalletSearch = async (successCallback) => {
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
     
+      // 4. add our processed ACI to the contract object, which contains only the ACI of the main contract
+      // plus our info
+      myContract.$aci = aci;
+
+
       // also, add the deployment params
       myContract.deployInfo.params = _deploymentParams 
       
@@ -545,13 +560,13 @@ public initWalletSearch = async (successCallback) => {
       // add an index to allow self-referencing its position in the (contracts?) array..
       myContract.IDEindex = this.activeContracts.length;
 
-      
-      // for now, (also) store the contract in compiler. not decided yet where it's better.
-      // sidebar currently receives its own contract data via following event subscription:
+   
+
+      myContract
+      debugger
 
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it
-      debugger
       this._notifyDeployedContract.next({newContract: myContract, success: true});
     },
     error => this.fetchErrorsFromDebugCompiler(sourceCode));
@@ -607,6 +622,7 @@ public initWalletSearch = async (successCallback) => {
       // save ACI to generate a contract instance for the editor
       
       var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
+     
       // now add an index to each function and sort them, just to be sure
       // 1. just to make sure the init func is on top, sort functions.
 
@@ -664,7 +680,7 @@ public initWalletSearch = async (successCallback) => {
   // reactivate this function for eventual input validation later...
  // generates a typescript-safe contract instance with a FormGroup in functions array
  modifyAci(aci: any): ContractBase {
- 
+  
   
  // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
