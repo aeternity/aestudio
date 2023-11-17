@@ -164,12 +164,10 @@ public scanForWallets = async (successCallback) => {
   const connection = await this.detectWallets();
 
   const walletInfo = await this.Chain.connectToWallet(connection as BrowserConnection);
-  console.log('Connected to', walletInfo);
-  const { address: { current } } = await this.Chain.subscribeAddress('subscribe' as SUBSCRIPTION_TYPES, 'connected');
-  console.log('Address from wallet', current);
+  console.log('Connected to', walletInfo);  
+  this.aeternity.client = this.Chain;
+  await this.onWalletSearchSuccess(connection);
 
-
-    this.aeternity.client = this.Chain;
   //const connection = new BrowserWindowMessageConnection();
 
   // const detector = new Detector({ connection: scannerConnection });
@@ -234,10 +232,9 @@ public detectWallets = async () => {
   const connection = new BrowserWindowMessageConnection();
   return new Promise((resolve, reject) => {
     const stopDetection = walletDetector(connection, async ({ newWallet }) => {
-      if (confirm(`Do you want to connect to wallet ${newWallet.info.name} with id ${newWallet.info.id}`)) {
-        stopDetection();
-        resolve(newWallet.getConnection());
-      }
+      console.log('Compiler: wallet detected', newWallet);
+      stopDetection();
+      resolve(newWallet.getConnection());
     });
   });
 }
@@ -268,11 +265,17 @@ public toggleProvider = () => {
   
 }
 
-public onWalletSearchSuccess = async () => {
+public onWalletSearchSuccess = async (connection) => {
   console.log("Compiler: Wallet search complete!")
   console.log("Wallet's SDK: ", this.Chain)
+  console.log("Browser connection:", connection)
   this.Chain.currentWalletProvider = "extension"
-  
+
+  const { address: { current } } = await (this.Chain as AeSdkAeppExtended).subscribeAddress('subscribe' as SUBSCRIPTION_TYPES, 'connected');
+  console.log('Address from wallet', current);
+  let currentAddress = Object.keys(current)[0];
+
+
  console.log("TODO: what replaces this.chain.accounts.current ?")
 
   //console.log("wallet's account?", Object.keys(this.Chain.accounts.current)[0].toString())
@@ -282,11 +285,15 @@ public onWalletSearchSuccess = async () => {
   
   //wallets:
 console.log("TODO: obtain the information for following commented block!")
-  /* sdkSettingsToReport.addresses = new Array( Object.keys(this.Chain.rpcClient.accounts.current)[0].toString() )
-  sdkSettingsToReport.address = Object.keys(this.Chain.rpcClient.accounts.current)[0].toString()
-  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
-  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport)
-  this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport}); */
+
+  sdkSettingsToReport.addresses = [currentAddress]
+
+  sdkSettingsToReport.address = currentAddress
+
+ /*  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
+  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport) */
+  
+  this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport});
 }
 
 public setupWalletClient = () => {
@@ -332,8 +339,6 @@ public initWalletSearch = async (successCallback) => {
     this.setupWebClient();
 
     this.justScanForWallets(() => {this.walletExtensionPresent = true})
-    //this.initWalletSearch(this.onWalletSearchSuccess);
-
    }
 
    // is ran, when the browser addon wallet is not to be used ("testnet")
