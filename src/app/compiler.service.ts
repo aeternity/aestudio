@@ -504,8 +504,7 @@ public initWalletSearch = async (successCallback) => {
     } else {
       //here we want to interact with an existing one.
       myContract = await this.Chain.initializeContract({sourceCode: this.code, address: _existingContractAddress});
-
-      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract._name, data: myContract.deployInfo})
+      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract._name, data: {}})
     }
 
     console.log("My contract: ", myContract);
@@ -515,6 +514,9 @@ public initWalletSearch = async (successCallback) => {
     this.getAciFromCompiler(sourceCode)
     .subscribe(
       (data) => {
+
+
+
       // save ACI to generate a contract instance for the editor
 
       var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
@@ -549,9 +551,15 @@ public initWalletSearch = async (successCallback) => {
 
 
       // also, add the deployment params
-      myContract.deployInfo.params = _deploymentParams 
+      myContract.deployInfo ? myContract.deployInfo.params = _deploymentParams : true
       
-      console.log("Fiinal aci object:", aci)
+      // if it was an existing contract, add the address to the deployInfo
+      if(_existingContractAddress) {
+        myContract.deployInfo = {};
+        myContract.deployInfo.address = _existingContractAddress
+      }
+
+      console.log("Final aci object:", aci)
       
       console.log("Final contract object:", myContract);
 

@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import {IPopup} from "ngx-ng2-semantic-ui";
 import { AeSdk } from '@aeternity/aepp-sdk';
 import { AeSdkExtended } from '../helpers/interfaces';
+import { isValidContractAddress } from '../helpers/utils';
 
 
 @Component({
@@ -111,8 +112,9 @@ export class ContractMenuSidebarComponent implements OnInit {
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
     // "If the user is trying to interact with an existing contract and something is in the address field, try bringing up the existing contract, else deploy a new one"
-    _existingContract && this.addressOfExistingContract.length > 50 ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
+    _existingContract && isValidContractAddress(this.addressOfExistingContract) ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
   }
+  
   copyAddress() {
     navigator.clipboard.writeText(this.currentSDKsettings.address)
     .then(() => {
