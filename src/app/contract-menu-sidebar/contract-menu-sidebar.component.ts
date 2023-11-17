@@ -10,23 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import {IPopup} from "ngx-ng2-semantic-ui";
 import { AeSdk } from '@aeternity/aepp-sdk';
 import { AeSdkExtended } from '../helpers/interfaces';
-/* 
-import { Console } from 'node:console'; */
 
-
-
-/* @Pipe({name: 'replace'})
-export class ReplacePipe implements PipeTransform {
-  transform(value: string, strToReplace: string, replacementStr: string): string {
-
-    if(!value || ! strToReplace || ! replacementStr)
-    {
-      return value;
-    }
-
- return value.replace(new RegExp(strToReplace, 'g'), replacementStr);
-  }
-} */
 
 @Component({
   selector: 'contract-menu-sidebar',
@@ -210,7 +194,6 @@ export class ContractMenuSidebarComponent implements OnInit {
         // workaround for event firing on its own when loading the editor, thereby not sending any data: 
       if(newContract != null) {
         console.log("New contract: ", newContract) // .deployInfo.address
-        debugger
         this.activeContracts.push(newContract);
             
         // temp test

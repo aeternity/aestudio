@@ -90,7 +90,7 @@
                             </div>
                         <!-- Experimental code generator end -->
 
-                        <h4 *ngIf="contract.$aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{contract.$aci.functions[oneFunction.IDEindex].lastReturnData | json}}</h4> 
+                        <h4 *ngIf="contract.$aci.functions[oneFunction.IDEindex].lastReturnData" >Return value: {{contract.$aci.functions[oneFunction.IDEindex].lastReturnData | jsonTryCatchReturndata}}</h4> 
                     </div>
                 </ng-container>
             </div>

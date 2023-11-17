@@ -528,7 +528,6 @@ public initWalletSearch = async (successCallback) => {
           myContract._functions[funcName] = myContract[funcName];
         } 
       }); */
-debugger
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
         
@@ -559,11 +558,6 @@ debugger
       this.aci = aci;
       // add an index to allow self-referencing its position in the (contracts?) array..
       myContract.IDEindex = this.activeContracts.length;
-
-   
-
-      myContract
-      debugger
 
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it

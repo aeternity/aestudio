@@ -7,6 +7,7 @@ import {IPopup, SuiPopupConfig} from "ngx-ng2-semantic-ui";
 import { ContractWithMethodsExtended } from '../helpers/interfaces';
 import { Aci } from '@aeternity/aepp-sdk/es/contract/compiler/Base';
 import { ContractBase } from '../question/contract-base';
+import { TestBed } from '@angular/core/testing';
 
 
 @Component({
@@ -54,8 +55,6 @@ export class DeployedContractComponent implements OnInit {
     console.log("theContract is: ", theContract.$aci.functions[0]);
     // activate loader
     theContract.$aci.functions[_theFunctionIndex].loading = true
-  
-    console.log("Loader ist: ", theContract.$aci.functions[_theFunctionIndex].loading )
     
     // fetch all entered params
     const jsonTypes = ["map", "list", "tuple", "record", "bytes"]
@@ -84,12 +83,19 @@ export class DeployedContractComponent implements OnInit {
 
       console.log('Calling with tx params:', txParams)
       /* callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, { interval: 500, blocks: 3, allowUnsynced: true, amount: "0", gasPrice:"2000000000", gas:80 }); */
-      callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, txParams);
+      callresult = await this.compiler.activeContracts[_contractIDEindex][_theFunction](...callParams, txParams);
       console.log("The callresult object: ", callresult);
       console.log("Decoded result ", callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract._name)
       // handle "false" result case not displaying call result data
       callresult.decodedResult == false ? callresult.decodedResult = "false" : true
+
+   /*    Handle various result types ! 
+      false: done
+      true: Test 
+      numbers: todo
+      complex types: todo */
+
       this.contract.$aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
 
       this.eventlog.log({type:"success", message: _theFunction + ": Call successfull", data: callresult})
