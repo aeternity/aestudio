@@ -37,7 +37,18 @@
                                             <i style="color: rgb(53, 184, 41)" *ngIf="compiler.Chain.currentWalletProvider == 'extension' " class="lock icon"></i>
                                            
                                             
-                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE</span>
+                                            
+                                            <!-- Display all balances >= 1000 AE as 1K etc. -->
+                                            <ng-container *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 < 1000">
+                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE
+                                            </ng-container>
+                                            
+                                            <ng-container *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 >= 1000">
+                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) / 1000 | number:'1.0-0'}}K AE
+                                            </ng-container>
+
+                                                </span>
+
                                                 <div class="ui fluid popup top left transition visible animating scale out">
                                                     <div class="ui four column divided center aligned grid">
                                                       <div class="column">1</div>
