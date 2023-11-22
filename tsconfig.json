@@ -16,9 +16,11 @@
     "importHelpers": true,
     "target": "ES2022",
     "strictNullChecks": false,
+    "allowSyntheticDefaultImports": true,
     "typeRoots": [
       "node_modules/@types",
-      "src/app/editor/typings.d.ts"
+      "src/app/editor/typings.d.ts",
+      "node_modules/@aeternity/aepp-sdk/src/typings"
     ],
     "lib": [
       "es2018",

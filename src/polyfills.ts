@@ -54,14 +54,21 @@ import 'zone.js';  // Included with Angular CLI.
 // 1. nächster error, stichwort bei google: "aws-sdk requires global to exist"
 (window as any).global = window;
 
+
+
 // 2. Uncaught ReferenceError: process is not defined at Object../node_modules/pbkdf2/lib/default-encoding.js (default-encoding.js:3)
 (window as any).process = {
-    env: { DEBUG: undefined },
-    version: '12.1337'
-  };
-  
+  env: { DEBUG: undefined },
+  version: '12.1337'
+};
+
 // 3. Uncaught ReferenceError: Buffer is not defined
 //    at Module../node_modules/@aeternity/aepp-sdk/es/utils/hd-wallet.js
+
+//4. json.stringify can't parse bigint
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
 
  global.Buffer = global.Buffer || require('buffer').Buffer;
 

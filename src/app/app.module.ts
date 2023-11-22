@@ -10,7 +10,7 @@ import { EditorComponent } from './editor/editor.component';
 import { ContractMenuSidebarComponent } from './contract-menu-sidebar/contract-menu-sidebar.component';
 import * as SuiModule from "ngx-ng2-semantic-ui";
 
-import { ReplacePipe } from './helpers/replace-pipe';
+import { ReplacePipe, ReturndataPipe } from './helpers/replace-pipe';
 import { LoaderComponent } from './loader/loader.component';
 import { InlineSVGModule } from 'ng-inline-svg-2';
 import { ClipboardModule } from 'ngx-clipboard';
@@ -56,6 +56,7 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
     EditorComponent,
     ContractMenuSidebarComponent,
     ReplacePipe,
+    ReturndataPipe,
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 

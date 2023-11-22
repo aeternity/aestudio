@@ -1,23 +1,40 @@
 import { Injectable,Output, EventEmitter } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Universal } from '@aeternity/aepp-sdk/'
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
-import Node from '@aeternity/aepp-sdk/es/node' // or other flavor
-import BrowserWindowMessageConnection from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/connection/browser-window-message";
-import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
-import {RpcAepp} from "@aeternity/aepp-sdk";
+
+//import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
+//import {RpcAepp} from "@aeternity/aepp-sdk";
 
 import { ContractBase } from './question/contract-base'
 // import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
-import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
+//import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
+
 import publicAccounts from './helpers/prefilled-accounts'
 import { EventlogService } from './services/eventlog/eventlog.service'
-//import { Wallet, MemoryAccount, Node, Crypto } from '@aeternity/aepp-sdk/es'
 
-var Ae = Universal;
+// sdk 13 migration start
+import  {
+  AeSdk,
+  MemoryAccount,
+  Node,
+  CompilerHttp,
+  AE_AMOUNT_FORMATS,
+  generateKeyPair,
+  Contract,
+  BrowserWindowMessageConnection,
+  walletDetector,
+  AeSdkAepp,
+  SUBSCRIPTION_TYPES,
+} from '@aeternity/aepp-sdk'
+import { AeSdkExtended, AeSdkAeppExtended, MemoryAccountExtended, ContractWithMethodsExtended } from './helpers/interfaces';
+import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/connection/Browser';
+import AccountMemory from '@aeternity/aepp-sdk/es/account/Memory';
+import ContractWithMethods, { ContractMethodsBase } from '@aeternity/aepp-sdk/es/contract/Contract';
 
+// sdk 13 migration end
+
+const Detector = walletDetector;
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +44,10 @@ export class CompilerService {
   public code: string = ''
 
   // the code from the currently active compiler window
-  aci: ContractBase<any>;
+  aci: ContractBase;
 
   // aci only for the init function
-  initACI: ContractBase<any>;
+  initACI: ContractBase;
 
   // not used yet, just for tabs later: same as ACI, but contains address of deployed contract
   public activeContracts: any[] = [];
@@ -39,7 +56,7 @@ export class CompilerService {
   rawACI: any;
 
   // the SDK initialization
-  public Chain: any;
+  public Chain: (AeSdkExtended | AeSdkAeppExtended);
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
@@ -61,7 +78,9 @@ export class CompilerService {
      if(!settings) { 
        settings = this.getCurrentSDKsettings()
       }
+      
       this.currentSdkSettings = settings
+
      this._notifyCurrentSDKsettings.next(settings);
   }
 
@@ -75,8 +94,8 @@ export class CompilerService {
 
   private cachedWallet : any = {}
 
-  private SDKoptionsToIgnore = ["mempool"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
-
+  private SDKoptionsToIgnore = ["mempool", "getAccount"] // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
+  private SDKoptionsToCheck = ["addresses", "selectedAddress"] // this is used to abstract the SDKs methods to data which the editor is relying on. a function will return `sdkOptions` which need these properties to be filled with corresponding SDK functions of the current version.
 // ____ helpers start 
 
 public nextAci(value: any): void {
@@ -98,7 +117,7 @@ public aeternity : any = {
   contractAddress: '',
   initProvider : async (changedClient = false) => {
     try {
-      const networkId = (await this.aeternity.client.getNodeInfo()).nodeNetworkId;
+      const networkId = this.aeternity.client.pool[0].key;
       const changedNetwork = this.aeternity.networkId !== networkId;
       this.aeternity.networkId = networkId
       if (this.aeternity.contractAddress)
@@ -116,16 +135,45 @@ public aeternity : any = {
   }
 };
 
+
+
 public scanForWallets = async (successCallback) => {
 
-  const scannerConnection = await BrowserWindowMessageConnection({
-    connectionInfo: { id: 'spy' },
+  this.Chain = new AeSdkAepp({
+    name: 'APP',
+    nodes: [
+      {name: 'ae_mainnet', instance: new Node(this.MAINNET_URL)},
+      {name: 'ae_uat', instance: new Node(this.TESTNET_URL)}
+    ],
+    onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
+   /*  
+    onNetworkChange: (params) => {
+      console.log('Compiler: wallet network change');
+      // TODO: Handle network change 
+      // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
+      // this.aeternity.initProvider();
+    }, 
+    onAddressChange: (addresses) => {
+      // if (!addresses.current[this.aeternity.address]) {
+        console.log('Compiler: wallet addressChange 2');
+        // }
+      }
+      */
   });
 
-  const detector = await Detector({ connection: scannerConnection });
+  const connection = await this.detectWallets();
 
-  const handleWallets = async ({ wallets, newWallet }) => {
-    detector.stopScan();
+  const walletInfo = await this.Chain.connectToWallet(connection as BrowserConnection);
+  console.log('Connected to', walletInfo);  
+  this.aeternity.client = this.Chain;
+  await this.onWalletSearchSuccess(connection);
+
+  //const connection = new BrowserWindowMessageConnection();
+
+  // const detector = new Detector({ connection: scannerConnection });
+
+
+  /*   // detector.stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
     console.log("newwallet: ", newWallet);
     console.log("wallets: ", wallets);
@@ -148,33 +196,47 @@ public scanForWallets = async (successCallback) => {
     this.aeternity.static = false;
     await this.aeternity.initProvider(true);
     successCallback();
-  };
+ */
 
-  detector.scan(handleWallets);
 }
 
+
+//sunset eventually, could be superseded bythis.detectWallets()
 public justScanForWallets = async (successCallback) => {
   
-  const scannerConnection = await BrowserWindowMessageConnection({
-    connectionInfo: { id: 'spy' },
-  });
-
-  const detector = await Detector({ connection: scannerConnection });
-
+  
+  //const detector = new Detector({ connection: scannerConnection });
+  
   const handleWallets = async ({ wallets, newWallet }) => {
-    detector.stopScan();
+    newWallet = newWallet || Object.values(wallets)[0];
+    stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
     console.log("superhero: newwallet: ", newWallet);
     console.log("superhero: wallets: ", wallets);
     console.log("superhero: cachedWallet", this.cachedWallet);
     console.log("superhero: one wallet" , Object.values(wallets)[0])
-
+    
     const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
     this.aeternity.detectedWallet = wallet.id;
     successCallback();
   };
+    
+  const scannerConnection = new BrowserWindowMessageConnection();
+  const stopScan = walletDetector(scannerConnection, handleWallets)
+  
 
-  detector.scan(handleWallets);
+  //detector.scan(handleWallets);
+}
+
+public detectWallets = async () => {
+  const connection = new BrowserWindowMessageConnection();
+  return new Promise((resolve, reject) => {
+    const stopDetection = walletDetector(connection, async ({ newWallet }) => {
+      console.log('Compiler: wallet detected', newWallet);
+      stopDetection();
+      resolve(newWallet.getConnection());
+    });
+  });
 }
 
 public awaitInitializedChainProvider = async () => {
@@ -203,22 +265,34 @@ public toggleProvider = () => {
   
 }
 
-public onWalletSearchSuccess = async () => {
+public onWalletSearchSuccess = async (connection) => {
   console.log("Compiler: Wallet search complete!")
   console.log("Wallet's SDK: ", this.Chain)
+  console.log("Browser connection:", connection)
   this.Chain.currentWalletProvider = "extension"
-  
-  console.log("wallet's account?", Object.keys(this.Chain.rpcClient.accounts.current)[0].toString())
+
+  const { address: { current } } = await (this.Chain as AeSdkAeppExtended).subscribeAddress('subscribe' as SUBSCRIPTION_TYPES, 'connected');
+  console.log('Address from wallet', current);
+  let currentAddress = Object.keys(current)[0];
+
+
+ console.log("TODO: what replaces this.chain.accounts.current ?")
+
+  //console.log("wallet's account?", Object.keys(this.Chain.accounts.current)[0].toString())
 
   // put data where other components expect it to be
   let sdkSettingsToReport : any= {}
   
   //wallets:
+console.log("TODO: obtain the information for following commented block!")
 
-  sdkSettingsToReport.addresses = new Array( Object.keys(this.Chain.rpcClient.accounts.current)[0].toString() )
-  sdkSettingsToReport.address = Object.keys(this.Chain.rpcClient.accounts.current)[0].toString()
-  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
-  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport)
+  sdkSettingsToReport.addresses = [currentAddress]
+
+  sdkSettingsToReport.address = currentAddress
+
+ /*  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
+  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport) */
+  
   this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport});
 }
 
@@ -227,29 +301,7 @@ public setupWalletClient = () => {
 }
 
 public initWalletSearch = async (successCallback) => {
-    // Open iframe with Wallet if run in top window
-    // window !== window.parent || await aeternity.getReverseWindow();
 
-  this.Chain = await RpcAepp({
-    name: 'AEPP',
-    nodes: [
-      {name: 'ae_mainnet', instance: await Node({url: this.MAINNET_URL})},
-      {name: 'ae_uat', instance: await Node({url: this.TESTNET_URL})}
-    ],
-    compilerUrl: this.COMPILER_URL,
-    
-    onNetworkChange: (params) => {
-      console.log('Compiler: wallet network change');
-      // TODO: Handle network change 
-      // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
-      // this.aeternity.initProvider();
-    },
-    onAddressChange: (addresses) => {
-      // if (!addresses.current[this.aeternity.address]) {
-        console.log('Compiler: wallet addressChange 2');
-      // }
-    }
-  });
 
     await this.scanForWallets(successCallback);
 }
@@ -268,11 +320,11 @@ public initWalletSearch = async (successCallback) => {
     private eventlog: EventlogService) {
 
     // define the default SDK settings
-    var theAccounts : MemoryAccount[] = [];
+    var theAccounts : MemoryAccountExtended[] = [];
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach(account => {
-      let oneAccount = MemoryAccount({keypair: account});
+      let oneAccount : MemoryAccountExtended = new MemoryAccount(account.secretKey);
       oneAccount.property = "public";
       theAccounts.push(oneAccount);
     });
@@ -287,12 +339,10 @@ public initWalletSearch = async (successCallback) => {
     this.setupWebClient();
 
     this.justScanForWallets(() => {this.walletExtensionPresent = true})
-    //this.initWalletSearch(this.onWalletSearchSuccess);
-
    }
 
    // is ran, when the browser addon wallet is not to be used ("testnet")
-  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : MemoryAccount[], command? : string}){
+  async setupWebClient(_config? : {nodeUrl? : string, compilerUrl? : string, personalAccounts? : boolean, accounts? : typeof MemoryAccount[], command? : string}){
 
       // if a config is provided, apply its values to the sdkConfigOverrides
     if (_config){
@@ -305,26 +355,35 @@ public initWalletSearch = async (successCallback) => {
       });
     }
 
-      const nodeInstance = await Node({url: this.defaultOrCustomSDKsetting("nodeUrl")})
-      this.Chain = await Ae({
-        nodes: [{name: 'Testnet', instance: nodeInstance }],
-        compilerUrl: `${this.defaultOrCustomSDKsetting("compilerUrl")}`,
-        accounts: this.defaultOrCustomSDKsetting("accounts")
-        
-      }).catch(e => { console.log("Shit, SDK setup didn't work:", e)})
+      const nodeInstance = new Node(this.defaultOrCustomSDKsetting("nodeUrl"))
+      
+      try {
+
+        this.Chain  = new AeSdk ({
+          nodes: [{name: 'Testnet', instance: nodeInstance }],
+          onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting("compilerUrl")),
+          accounts: this.defaultOrCustomSDKsetting("accounts"),
+        })
+      }
+       catch { e => { 
+        console.log("Shit, SDK setup didn't work:", e)}}
       // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
       this.Chain.currentWalletProvider = "web"
 
-      // TODO: wrap in try catch
-      let height = await this.Chain.height();
-      console.log('Current Block Height: ', height)
-      
+      // TODO: show eventual error in UI
+      try {
+        let height = await this.Chain.getHeight();
+        console.log('Current Block Height: ', height)
+      } catch (e) {
+        console.log("error fetching block height:", e)
+      }
+
       // notify sidebar about new SDK settings
       this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
       console.log("Das SDK: ", this.Chain);
    }
 
-   fromCodeToACI(code) {
+   getAciFromCompiler(code : string) {
     let compilerUrl = `${this.defaultOrCustomSDKsetting("compilerUrl")}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
@@ -346,46 +405,54 @@ public initWalletSearch = async (successCallback) => {
     return this.http.post<any>(compilerUrl, {"code":`${code}`, "options":{}}, httpOptions);
    }
 
-  // emits an event passing data from all SDK functions that take 0 parameters,
+  // emits an event passing data from all SDK functions that correspond to / provide the expected data.
   // a.k.a. it reads all data from the SDK
   
-   async  getCurrentSDKsettings() : Promise<any> {   
+  //  async getCurrentSDKsettings() : Promise<any> {   
+    getCurrentSDKsettings() { 
+        
     if (this.Chain != undefined) {
-      var returnObject = {};
-      var keyCount : number = 0;
-      // count the amount of keys with 0 arguments
-      for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
-          keyCount++ } 
+      var returnObject = {
+        addresses: [],
+        address: '',
       }
   
-      // execute all functions by their name which have 0 params.
-      // count the length of returns - if it equals the keycount, return.
-      for(var key in this.Chain) {
-        if(this.Chain[key].length == 0){ 
-        //console.log("Calling function:", key)
-          if (!this.SDKoptionsToIgnore.includes(key)){
-            
-            returnObject[key] = await this.Chain[key]() 
+      // get the necessary settings from the sdk
+      this.SDKoptionsToCheck.forEach(setting => {
+        if(setting == "addresses"){
+
+          let allAccountAddresses : string[] = [];
+          
+          // when web wallet:
+          if((this.Chain as AeSdkExtended).accounts){
+            allAccountAddresses = Object.keys((this.Chain as AeSdkExtended).accounts)
+            // when browser wallet:
+          } else if((this.Chain as AeSdkAeppExtended)._accounts){ 
+            allAccountAddresses.push(Object.keys((this.Chain as AeSdkAeppExtended)._accounts.current)[0])
           } else {
-            console.log("compiler: ignoring key: ", key  )
+            console.error("Compiler: Error fetching addresses from SDK: ", this.Chain)
           }
 
-          if (Object.keys(returnObject).length == keyCount - this.SDKoptionsToIgnore.length ){
-            return returnObject;
-          }
-          //return returnObject;
+          allAccountAddresses.forEach((account) => {
+            returnObject.addresses.push(account)
+          })
+         } else if(setting == "selectedAddress") {
+          // when web wallet:
+          if((this.Chain as AeSdkExtended).selectedAddress)
+          returnObject.address = (this.Chain as AeSdkExtended).selectedAddress
+         } else {
 
-        } 
-    }}}
-
-
-
+          //when browser wallet:
+          returnObject.address = Object.keys((this.Chain as AeSdkAeppExtended)._accounts.current)[0]
+         }
+                  
+        })
+        return returnObject;
+      }}
    
 
   // converts code to ACI and deploys.
-  async compileAndDeploy(_deploymentParams: any[], _existingContractAddress?: string) : Promise<any> {
+  async compileAndDeploy(_deploymentParams, _existingContractAddress?: `ct_${string}` | `${string}.chain`) : Promise<any> {
     console.log("deploying...");
 
     let sourceCode = this.code
@@ -393,12 +460,12 @@ public initWalletSearch = async (successCallback) => {
     //console.log("Hier kommt der code: ", sourceCode);
 
     // create a contract instance
-    var myContract;
+    var myContract : ContractWithMethodsExtended
 
     if (!_existingContractAddress) {
       // Here we deploy the contract
       
-      myContract = await this.Chain.getContractInstance(this.code);
+      myContract = await this.Chain.initializeContract({sourceCode: this.code});
       //console.log(">>>> compilation result (mycontract): ", myContract);
       
       try {
@@ -414,24 +481,26 @@ public initWalletSearch = async (successCallback) => {
         this.gasAmountInUnits > 0 ? txParams["gas"] = this.gasAmountInUnits : true
         this.gasPriceInAettos > 0 ? txParams["gasPrice"] = this.gasPriceInAettos : true
 
-        let deployResult = await myContract.deploy( _deploymentParams ? _deploymentParams : [], txParams);
+        let deployResult = await myContract.$deploy( _deploymentParams ? _deploymentParams : [], txParams);
         console.log("Deploy result:", deployResult)
+
+        myContract.deployInfo = deployResult;
         // argument format: logMessage(log: {type: string, message: string, contract?: string, data: {}})
         //  
         
-        this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract.aci.name, data: myContract.deployInfo})
-        //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract.aci.name )
+        this.logMessage({type: "success", message: "Contract successfully deployed: " + myContract._name, data: myContract.deployInfo})
+        //this.logMessage(" Contract deployed successfully: " + JSON.stringify(myContract.deployInfo, null, 2) , "success", myContract._name )
 
       } catch(_e){
         console.log("Something went wrong, investigating tx!");
         console.log(_e);
 
-        //this.logMessage(" Deployment failed: " + e, "error",  myContract.aci.name)
+        //this.logMessage(" Deployment failed: " + e, "error",  myContract._name)
         if (typeof _e === 'object'){
-          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name, data: {message: _e.message}})
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract._name, data: {message: _e.message}})
         } else {
           let error = _e.toString()
-          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract.aci.name + " Error:" + error})
+          this.logMessage({type: "error", message: "Contract deployment failed: " + myContract._name + " Error:" + error})
         }
         this._notifyDeployedContract.next({newContract: null, success: false});
         return true
@@ -439,21 +508,33 @@ public initWalletSearch = async (successCallback) => {
          }
     } else {
       //here we want to interact with an existing one.
-      myContract = await this.Chain.getContractInstance(this.code, {contractAddress: _existingContractAddress});
-
-      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract.aci.name, data: myContract.deployInfo})
+      myContract = await this.Chain.initializeContract({sourceCode: this.code, address: _existingContractAddress});
+      this.logMessage({type: "success", message: "Successfully casted contract at: " + myContract._name, data: {}})
     }
 
     console.log("My contract: ", myContract);
     //console.log("My account: ", this.Chain.addresses());
     //console.log("Das ganze SDK: ", this.Chain);
 
-    this.fromCodeToACI(sourceCode)
+    this.getAciFromCompiler(sourceCode)
     .subscribe(
-      (data: EncodedACI) => {
+      (data) => {
+
+
+
       // save ACI to generate a contract instance for the editor
-      var rawACI = data.encoded_aci
+
+      var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
         
+         
+   /*    // 0. move all contract functions to a functions property that previously existed in the SDK,
+      // to reduce the amount of changes in the codebase
+      myContract._functions = [];
+      Object.keys(myContract).forEach((funcName) => {
+        if(!funcName.startsWith('_') && !funcName.startsWith('$') ){
+          myContract._functions[funcName] = myContract[funcName];
+        } 
+      }); */
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
         
@@ -469,23 +550,27 @@ public initWalletSearch = async (successCallback) => {
       // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
       let aci = this.modifyAci(rawACI);
     
-      // 4. put the ammended ACi into the aci of the contract object
-      myContract.aci = aci;
+      // 4. add our processed ACI to the contract object, which contains only the ACI of the main contract
+      // plus our info
+      myContract.$aci = aci;
+
 
       // also, add the deployment params
-      myContract.deployInfo.params = _deploymentParams 
+      myContract.deployInfo ? myContract.deployInfo.params = _deploymentParams : true
       
-      console.log("Fiinal aci object:", aci)
+      // if it was an existing contract, add the address to the deployInfo
+      if(_existingContractAddress) {
+        myContract.deployInfo = {};
+        myContract.deployInfo.address = _existingContractAddress
+      }
+
+      console.log("Final aci object:", aci)
       
       console.log("Final contract object:", myContract);
 
       this.aci = aci;
       // add an index to allow self-referencing its position in the (contracts?) array..
       myContract.IDEindex = this.activeContracts.length;
-
-      
-      // for now, (also) store the contract in compiler. not decided yet where it's better.
-      // sidebar currently receives its own contract data via following event subscription:
 
       this.activeContracts.push(myContract);
       // 5. tell sidebar about the new contract so it can store it
@@ -538,15 +623,16 @@ public initWalletSearch = async (successCallback) => {
     // this source code will be used when user clicks deployContract()
     this.code = sourceCode;
 
-    this.fromCodeToACI(sourceCode)
+    this.getAciFromCompiler(sourceCode)
     .subscribe(
-      (data: EncodedACI) => {
+      (data) => {
       // save ACI to generate a contract instance for the editor
-      var rawACI = data.encoded_aci
-        
-        // now add an index to each function and sort them, just to be sure
-        // 1. just to make sure the init func is on top, sort functions.
-        
+      
+      var rawACI = data.find((entry) => entry.contract?.kind == "contract_main")
+     
+      // now add an index to each function and sort them, just to be sure
+      // 1. just to make sure the init func is on top, sort functions.
+
         rawACI.contract.functions.sort(
           (x, y) => { return x.name == 'init' ? -1 : y.name == 'init' ? 1 : 0 }
       )
@@ -555,10 +641,10 @@ public initWalletSearch = async (successCallback) => {
       rawACI.contract.functions.forEach((one, i) => {
           rawACI.contract.functions[i].IDEindex = i;
       })
-      
-      // 3.  now that we have it, generate the formgroups for the function args
+
+      //TODO: 3.  now that we have it, generate the formgroups for the function args 
       rawACI = this.modifyAci(rawACI);
-      
+
       //console.log("Hier init ACI object:", this.aci)
       
       //this._newACI.next("good");
@@ -600,8 +686,8 @@ public initWalletSearch = async (successCallback) => {
  
   // reactivate this function for eventual input validation later...
  // generates a typescript-safe contract instance with a FormGroup in functions array
- modifyAci(aci: any): ContractBase<any> {
- 
+ modifyAci(aci: any): ContractBase {
+  
   
  // 1. create several formgroups: one FG for each fun, return final contract
   //console.log("ACI hier:", aci);
@@ -665,7 +751,7 @@ public initWalletSearch = async (successCallback) => {
    newContract = this._notifyDeployedContract.asObservable();
    
    // (new) SDK settings were found !
-   public _notifyCurrentSDKsettings = new BehaviorSubject<any>({});
+   public _notifyCurrentSDKsettings = new Subject<any>();
    newSdkSettings = this._notifyCurrentSDKsettings.asObservable();
 
    // DEPRECATE !

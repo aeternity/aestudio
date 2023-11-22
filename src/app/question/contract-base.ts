@@ -1,10 +1,10 @@
 import { FormGroup } from '@angular/forms';
 
-export class ContractBase<T> {
+export class ContractBase {
     name: string;
     functions: any;
     state: {};
-    type_defs: string[];
+    type_defs?: string[];
     address: string;
 
     constructor(aci: {
@@ -29,7 +29,7 @@ export class ContractBase<T> {
             state: {
                 record: any[];
             };
-            type_defs: any[];
+            typedefs: any[];
         },
 
     }) {
@@ -41,8 +41,8 @@ export class ContractBase<T> {
     
         
     this.name = aci.contract.name;
-    this.functions = aci.contract.functions || '';
+    this.functions = aci.contract.functions || [];
     this.state = aci.contract.state || {};
-    this.type_defs = aci.contract.type_defs || [];
+    this.type_defs = aci.contract.typedefs || [];
     }
 }

@@ -8,23 +8,10 @@ import { AuthService } from '../services/auth/auth.service'
 import { HttpClient } from '@angular/common/http';
 
 import {IPopup} from "ngx-ng2-semantic-ui";
-/* 
-import { Console } from 'node:console'; */
+import { AeSdk } from '@aeternity/aepp-sdk';
+import { AeSdkExtended } from '../helpers/interfaces';
+import { isValidContractAddress } from '../helpers/utils';
 
-
-
-/* @Pipe({name: 'replace'})
-export class ReplacePipe implements PipeTransform {
-  transform(value: string, strToReplace: string, replacementStr: string): string {
-
-    if(!value || ! strToReplace || ! replacementStr)
-    {
-      return value;
-    }
-
- return value.replace(new RegExp(strToReplace, 'g'), replacementStr);
-  }
-} */
 
 @Component({
   selector: 'contract-menu-sidebar',
@@ -60,7 +47,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   initFunctionIsPresent : boolean = true;
 
   // the address of the existing contract the user wants to interact with.
-  addressOfExistingContract : string = "";
+  addressOfExistingContract : `ct_${string}` | `${string}.chain` = null;
 
 // TODO: wrap in class for automatic type checking bullshit
   /*the current SDK settings. Currently supported: 
@@ -73,10 +60,8 @@ export class ContractMenuSidebarComponent implements OnInit {
   currentSDKsettings: any = {address: '', addresses: [], balances: [2], getNodeInfo: {url: ''}} 
 
   activeContracts: any[] = [];
-  initACI: ContractBase<any>;
+  initACI: ContractBase;
 
-  // mess around:
-  temp: any;
 
   // angular 9
   hover: boolean;
@@ -107,7 +92,7 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.changeDetectorRef.detectChanges()
     
     // fetch all entered params
-    let params: any[] = [];
+    let params = [];
 
     console.log("Function 0 ist: ", this.initACI.functions[0])
     
@@ -127,8 +112,9 @@ export class ContractMenuSidebarComponent implements OnInit {
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
     // "If the user is trying to interact with an existing contract and something is in the address field, try bringing up the existing contract, else deploy a new one"
-    _existingContract && this.addressOfExistingContract.length > 50 ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
+    _existingContract && isValidContractAddress(this.addressOfExistingContract) ? this.compiler.compileAndDeploy(params, this.addressOfExistingContract) : this.compiler.compileAndDeploy(params);   
   }
+  
   copyAddress() {
     navigator.clipboard.writeText(this.currentSDKsettings.address)
     .then(() => {
@@ -148,53 +134,28 @@ export class ContractMenuSidebarComponent implements OnInit {
 
      setInterval(async () => {
      
-     // call with "false" to query faucet for balance if it's too low
+     // call with "false" to query faucet for balance if it's too low, topup not implemented yet though
        this.currentSDKsettings != undefined ? await this.fetchAllBalances(true) : true}, 3000
     ) 
-
-
-    this.fetchAllBalances(true);
 
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings
         .subscribe(async settings => {
-          console.log("settings: ", settings)
-          if(settings.type == "extension") {
-           
-            //comming from the browser wallet
-            console.log("gingen die settings durch? ", this.currentSDKsettings ); 
 
+          console.log("settings: ", settings)
+
+          if(settings.type == "extension") {
+            //comming from the browser wallet
             this.currentSDKsettings = settings.settings
+            console.log("gingen die settings durch? ", this.currentSDKsettings ); 
           } else {
-            
              //comming from the web wallet
-             await settings;
-             this.currentSDKsettings = settings["__zone_symbol__value"];
+             this.currentSDKsettings = settings;
              console.log("gingen die settings durch? ", this.currentSDKsettings ); 
           }
-
-          
-/* 
-        if(settings instanceof ZoneAwarePromise) {
-          // case: Web SDK     
-          // wait for promise to resolve
-          
-        } else {
-          // case: wallet extension, where we put together the SDK settings object on our own
-         
-        }
- */
      
-
-        // the following ternary operators here are to silence errors that come from angular firing events 
-        // on load (a.k.a.) too early, trying to set stuff in here before the "var currentSDKsettings" 
-        // is even instantiated. stupid crazy racing conditions of angular or whatever.
-
-        //  append SDKsettings object with properties that the compiler does not provide
-        this.currentSDKsettings != undefined ? this.currentSDKsettings.balances = [] : true
-        
         //  Get balances of all available addresses
-        this.currentSDKsettings != undefined ? await this.fetchAllBalances() : true
+        this.currentSDKsettings.addresses != undefined ? await this.fetchAllBalances() : true
 
         console.log("This is what currentSDKsettings now look like:", this.currentSDKsettings);
 
@@ -276,7 +237,7 @@ async changeSDKsetting(setting: string, params: any){
 
   switch (setting) {
     case "selectAccount":
-      this.compiler.Chain.selectAccount(params);
+      (this.compiler.Chain as AeSdkExtended).selectAccount(params);
       console.log("Attempted to change selectAccount: ", setting, params)
       break;
 
@@ -293,6 +254,10 @@ async changeSDKsetting(setting: string, params: any){
 async fetchAllBalances(_dontFillUp? : boolean){
   //console.log("available addresses: ", this.currentSDKsettings.addresses)
 
+  if(!this.currentSDKsettings.balances){
+    this.currentSDKsettings.balances = {};
+  };
+
   this.currentSDKsettings.addresses.forEach(async (oneAddress) => {
     this.currentSDKsettings.balances[oneAddress] = await this.getOneBalance(oneAddress, _dontFillUp != true ? false : true);
   }) 
@@ -301,7 +266,7 @@ async fetchAllBalances(_dontFillUp? : boolean){
 // get balance of only one address
 // TODO: option parameter einbauen, Format ist 
 // async ƒ balance(address, { height, hash, format = false } = {})
-async getOneBalance(_address: string, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any){
+async getOneBalance(_address, _dontFillUp: boolean, _height?: number, _format?: boolean, _hash?: any){
   // if only the address is defined, don't call with options.
   var balance;
   //console.log("Fetching balan ce for..." + _address);

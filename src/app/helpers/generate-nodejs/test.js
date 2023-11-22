@@ -155,7 +155,7 @@ contract CryptoHamster =
               } catch(e){
                 console.log("Something went wrong, investigating tx!");
                 console.log(e);
-                console.log(" Deployment failed: " + e, "error",  myContract.aci.name)
+                console.log(" Deployment failed: " + e, "error",  myContract._name)
                   }
               console.log("Contract deployed successfully!")
               console.log("Contract address: ", myContract.deployInfo.address)

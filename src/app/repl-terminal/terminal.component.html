@@ -7,7 +7,7 @@
   
         <!-- prompt -->
         <div *ngIf="!prompt.isEmpty()" fxLayout="row" fxLayoutAlign=" start">
-          <span class="ngx-terminal-prompt">{{prompt.login}}@{{prompt.server}} $</span>
+          <span class="ngx-terminal-prompt">{{prompt.login}}&amp;{{prompt.server}} $</span>
           <textarea fxFlex class="ngx-terminal-input" [(ngModel)]="prompt.text" #terminalInput
                     [disabled]="prompt.locked"></textarea>
         </div>
