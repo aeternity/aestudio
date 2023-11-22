@@ -255,11 +255,14 @@ public awaitInitializedChainProvider = async () => {
 }
 
  public toggleProvider = async () => {
-  this.providerToggleInProcess = true
+  setTimeout(() => {
+    this.providerToggleInProcess = true
+  }, 200); // wait a bit to allow the toggle to change it's state before disabling it
 
-  if(this.Chain){
-    this.Chain.currentWalletProvider == "extension" ? await this.setupWebClient() : await this.setupWalletClient();
-  }
+   if(this.Chain){
+     this.Chain.currentWalletProvider == "extension" ? await this.setupWebClient() : await this.setupWalletClient();
+    }
+  
  //TODO: handle case of rejecting the wallet connection  
 }
 
