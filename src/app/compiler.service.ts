@@ -254,15 +254,13 @@ public awaitInitializedChainProvider = async () => {
   })
 }
 
-public toggleProvider = () => {
+ public toggleProvider = async () => {
   this.providerToggleInProcess = true
 
   if(this.Chain){
-    this.Chain.currentWalletProvider == "extension" ? this.setupWebClient() : this.setupWalletClient();
+    this.Chain.currentWalletProvider == "extension" ? await this.setupWebClient() : await this.setupWalletClient();
   }
-  
-  this.providerToggleInProcess = false
-  
+ //TODO: handle case of rejecting the wallet connection  
 }
 
 public onWalletSearchSuccess = async (connection) => {
@@ -294,6 +292,7 @@ console.log("TODO: obtain the information for following commented block!")
   console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport) */
   
   this._notifyCurrentSDKsettings.next({type: "extension", settings: sdkSettingsToReport});
+  this.providerToggleInProcess = false // for the switch toggle in the right menu bar
 }
 
 public setupWalletClient = () => {
@@ -381,6 +380,7 @@ public initWalletSearch = async (successCallback) => {
       // notify sidebar about new SDK settings
       this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
       console.log("Das SDK: ", this.Chain);
+      this.providerToggleInProcess = false // for the switch toggle in the right menu bar
    }
 
    getAciFromCompiler(code : string) {

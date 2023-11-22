@@ -9,7 +9,7 @@ import {IPopup} from "ngx-ng2-semantic-ui";
   encapsulation: ViewEncapsulation.ShadowDom
 })
 export class WalletSwitchComponent implements OnInit {
-  public test = 2;
+  
   constructor(public compiler: CompilerService) { }
 
   public openPopup(popup:IPopup) {

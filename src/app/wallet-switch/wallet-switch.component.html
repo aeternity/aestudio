@@ -2,9 +2,9 @@
     suiPopup popupHeader="No Wallet detected" [popupTemplateContext]='this' popupTrigger="outsideClick" popupText=" <br> Install the Superhero Wallet and use AE Studio with the Aeternity Mainnet!" popupPlacement="top center" popupDelay="600" popupTrigger="manual" #popup="suiPopup"
     (mouseover)="openPopup(popup)" (mouseout)="closePopup(popup)"
 >
-  <input [attr.disabled]="!compiler.walletExtensionPresent ? '' : null" id="a" type="checkbox">
-  <label for="a">
-    <div (click)="compiler.walletExtensionPresent ? compiler.toggleProvider() : true" class="can-toggle__switch" data-checked="BROWSER WALLET" data-unchecked="Testnet"></div>
+  <input [attr.disabled]="!compiler.walletExtensionPresent || compiler.providerToggleInProcess ? '' : null" id="a" type="checkbox">
+  <label for="a" [ngStyle]="{'opacity': compiler.providerToggleInProcess ? '0.4' : '1'}">
+    <div (click)="compiler.walletExtensionPresent && !compiler.providerToggleInProcess ? compiler.toggleProvider() : true" class="can-toggle__switch" data-checked="BROWSER WALLET" data-unchecked="Testnet"></div>
     <!-- <div class="can-toggle__label-text">.can-toggle</div> -->
   </label>
 </div>
