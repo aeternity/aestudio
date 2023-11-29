@@ -239,6 +239,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
       this.currentPrompt.text = historyEntry.text;
     }
   }
+  
 
   /**
    * History down

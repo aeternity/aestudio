@@ -12,6 +12,26 @@ import { setInterval, clearInterval } from 'timers';
 import { AuthService } from '../services/auth/auth.service';
 import { StateService } from '../services/state.service';
 import { IActiveContract } from '../helpers/interfaces';
+import { BreakpointEnum, BreakpointEvents, CursorPositionChangedEvent, Disposable, EditorMouseEvent, EditorMouseTarget, ModelDecoration, ModelDecorationOptions, ModelDeltaDecoration, Position } from './editorTypes';
+
+import { EventEmitter as dbgEvent } from './eventEmitter';
+import { MouseTargetType } from './dataTypes';
+
+
+export const BREAKPOINT_OPTIONS: ModelDecorationOptions = {
+	glyphMarginClassName: 'monaco-breakpoint',
+};
+ 
+const BREAKPOINT_HOVER_OPTIONS: ModelDecorationOptions = {
+	glyphMarginClassName: 'monaco-hover-breakpoint',
+};
+
+export const HIGHLIGHT_OPTIONS: ModelDecorationOptions = {
+	isWholeLine: true,
+	className: 'monaco-line-highlight',
+}
+
+export type Handler<T = any> = (data: T) => void;
 
 @Component({
   selector: 'app-one-editor-tab',
@@ -25,6 +45,28 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   closeCodeEditor() {}
   generatedCode:any = false
   // angular 9 bullshit end
+
+  //debugger start
+  editor: any = null;
+  private preLineCount = 0;
+	private hoverDecorationId = '';
+	private highlightDecorationId = '';
+
+	private eventEmitter = new dbgEvent();
+	
+	private isUndoing = false;
+	private isLineCountChanged = false;
+	private lineContent: string | null = null;
+
+	private mouseMoveDisposable: Disposable | null = null;
+	private mouseDownDisposable: Disposable | null = null;
+	private contentChangedDisposable: Disposable | null = null;
+	private cursorPositionChangedDisposable: Disposable | null = null;
+
+	private decorationIdAndRangeMap = new Map<string, Range>();
+	private lineNumberAndDecorationIdMap = new Map<number, string>();
+  breakpointLines = new Set<number>();
+  //debugger end
 
 
   //the contract passed by the parent editor component
@@ -69,15 +111,20 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
   }
   
-  editorOptions = {theme: 'vs-dark', 
+
+  editorOptions : monaco.editor.IEditorOptions = {
+  //theme: 'vs-dark', 
+  //@ts-ignore
   language: 'aes', 
   cursorBlinking: 'phase', 
-  cursorSmoothCaretAnimation:'true',
-  renderIndentGuides:'true',
-  contextmenu:'true',
-  scrollBeyondLastLine: 'false',
-  automaticLayout: 'true',
-  smoothScrolling: 'true'};
+  cursorSmoothCaretAnimation: 'on',
+  //renderIndentGuides:'true',
+  contextmenu: true,
+  scrollBeyondLastLine: false,
+  automaticLayout: true,
+  smoothScrolling: true,
+  glyphMargin: true,
+};
 
 generatedCodeEditorOptions = {theme: 'vs-dark', 
   language: 'javascript', 
@@ -202,6 +249,16 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
     //console.log("The editor:", theEditor);
     this.editorInstance = theEditor;
+
+    // debugger start
+    this.editor = theEditor 
+console.log('Editor:', this.editor)
+		this.initMouseEvent();
+		//this.initEditorEvent();
+
+    // debugger end
+
+
     this.triggerWindowRefresh(); 
 
     // highlight background of shared code
@@ -209,7 +266,8 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     if (this.activeContract.sharingHighlighters.length > 3) {let rows = this.activeContract.sharingHighlighters;
       setTimeout(() => {
         this.editorInstance.deltaDecorations([], [
-          { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), options: { inlineClassName: 'problematicCodeLine'}},
+          { range: new monaco.Range(rows[0],rows[1],rows[2],rows[3]), 
+            options: { inlineClassName: 'problematicCodeLine'}},
         ])
       }, 300);
       ;}
@@ -506,4 +564,186 @@ toHex = function (_input) {
   while (ret.length < 8) ret = '0'+ret;
   return ret;
 };
+
+
+
+// debugger start
+private initMouseEvent() {
+  this.mouseMoveDisposable?.dispose();
+  this.mouseMoveDisposable = this.editor!.onMouseMove(
+    (e: EditorMouseEvent) => {
+      const model = this.getModel();
+      const { range, detail, type } = this.getMouseEventTarget(e);
+      
+      // This indicates that the current position of the mouse is over the total number of lines in the editor
+      if (detail?.isAfterLines) {
+        this.removeHoverDecoration();
+        return;
+      }
+      
+      //debugger
+      // @ts-ignore
+      if (model && type === MouseTargetType.GUTTER_GLYPH_MARGIN) {
+        // remove previous hover breakpoint decoration
+        this.removeHoverDecoration();
+        
+        // create new hover breakpoint decoration
+        const newDecoration = this.createBreakpointDecoration(
+          // @ts-ignore
+          range,
+          BreakpointEnum.Hover
+          );
+          // render decoration
+
+          const decorationIds = this.editorInstance.deltaDecorations(
+            [],
+            [newDecoration]
+            );
+
+
+        // record the hover decoraion id
+        this.hoverDecorationId = decorationIds[0];
+      } else {
+        this.removeHoverDecoration();
+      }
+    }
+  );
+
+  this.mouseDownDisposable?.dispose();
+  this.mouseDownDisposable = this.editor!.onMouseDown(
+    (e: EditorMouseEvent) => {
+      const model = this.getModel();
+      const { type, range, detail, position } = this.getMouseEventTarget(e);
+      // @ts-ignore
+      if (model && type === MouseTargetType.GUTTER_GLYPH_MARGIN) {
+        // This indicates that the current position of the mouse is over the total number of lines in the editor
+        if (detail.isAfterLines) {
+          return;
+        }
+
+        const lineNumber = position.lineNumber;
+        const decorationId =
+          this.lineNumberAndDecorationIdMap.get(lineNumber);
+
+        /**
+         * If a breakpoint exists on the current line,
+         * it indicates that the current action is to remove the breakpoint
+         */
+        if (decorationId) {
+          this.removeSpecifyDecoration(decorationId, lineNumber);
+          this.breakpointLines.delete(lineNumber);
+        } else {
+          //@ts-ignore
+          this.createSpecifyDecoration(range);
+          this.breakpointLines.add(lineNumber);
+        }
+      }
+    }
+  );
+}
+
+private getModel() {
+  return this.editor?.getModel();
+}
+
+private getMouseEventTarget(e: EditorMouseEvent) {
+  return { ...(e.target as EditorMouseTarget) };
+}
+
+private removeHoverDecoration() {
+  const model = this.getModel();
+
+  if (model && this.hoverDecorationId) {
+    model.deltaDecorations([this.hoverDecorationId], []);
+  }
+  this.hoverDecorationId = '';
+}
+
+private createBreakpointDecoration(range: Range, breakpointEnum: BreakpointEnum): ModelDeltaDecoration {
+  return {
+    // @ts-ignore
+    range,
+    options:
+      breakpointEnum === BreakpointEnum.Exist
+        ? BREAKPOINT_OPTIONS
+        : BREAKPOINT_HOVER_OPTIONS,
+  };
+}
+
+private removeSpecifyDecoration(decorationId: string, lineNumber: number) {
+  const model = this.getModel();
+  model?.deltaDecorations([decorationId], []);
+  this.decorationIdAndRangeMap.delete(decorationId);
+  this.lineNumberAndDecorationIdMap.delete(lineNumber);
+  this.emitBreakpointChanged();
+}
+
+private createSpecifyDecoration(range: Range) {
+  const model = this.getModel();
+
+  if (model) {
+    /**
+     * If no breakpoint exists on the current line,
+     * it indicates that the current action is to add a breakpoint.
+     * create breakpoint decoration
+     */
+    const newDecoration = this.createBreakpointDecoration(
+      range,
+      BreakpointEnum.Exist
+    );
+    // render decoration
+    const newDecorationId = model.deltaDecorations(
+      [],
+      [newDecoration]
+    )[0];
+
+    // record the new breakpoint decoration id
+    this.lineNumberAndDecorationIdMap.set(
+      // @ts-ignore
+      range.endLineNumber,
+      newDecorationId
+    );
+    this.emitBreakpointChanged();
+
+    // record the new decoration
+    const decoration = this.getLineDecoration(
+      // @ts-ignore
+      range.endLineNumber
+      );
+
+    if (decoration) {
+      this.decorationIdAndRangeMap.set(newDecorationId, decoration.range);
+    }
+  }
+}
+
+private emitBreakpointChanged() {
+  this.emit('breakpointChanged', this.getBreakpoints());
+}
+
+private emit<T extends keyof BreakpointEvents>(event: T, data: BreakpointEvents[T]) {
+  this.eventEmitter.emit(event, data);
+}
+private getLineDecoration(lineNumber: number) {
+  return (
+    this.getModel()
+      ?.getLineDecorations(lineNumber)
+      ?.filter(
+        (decoration) =>
+          decoration.options.glyphMarginClassName ===
+          BREAKPOINT_OPTIONS.glyphMarginClassName
+      )?.[0] ?? null
+  );
+}
+
+getBreakpoints() {
+  const breakpoints: number[] = [];
+
+  for (let [lineNumber, _] of this.lineNumberAndDecorationIdMap) {
+    breakpoints.push(lineNumber);
+  }
+  return breakpoints;
+}
+// debugger end
+
 }

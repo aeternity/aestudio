@@ -738,4 +738,33 @@ body {
 .ngx-terminal-prompt {
     color: #ff2c55 !important
 }
+
+.my-monaco-hover-breakpoint{
+    background: rgb(117, 74, 8) !important;
+    transition: all 1.6s cubic-bezier(0.075, 0.82, 0.165, 1) !important;
+}
+
+.monaco-hover-breakpoint {
+    width: 12px !important;
+    height: 12px !important;
+    border-radius: 100%;
+    background-color: #ce9178;
+    margin: 4px 0 0 8px;
+    cursor: pointer;
+    transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1) !important;
+}
+
+.monaco-breakpoint {
+    width: 10px !important;
+    height: 10px !important;
+    border-radius: 100%;
+    background-color: #ff2d55;
+    margin: 4px 0 0 8px;
+    cursor: pointer;
+}
+
+.monaco-line-highlight {
+    background-color: rgba(245, 240, 187, 0.5);
+}
+
 /* REPL end  */

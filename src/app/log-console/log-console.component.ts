@@ -22,7 +22,8 @@ export class LogConsoleComponent implements OnInit {
 
   public login = 'you';
     public server = 'REPL';
-    public serverUrl = 'wss://repl.aeternity.io/';
+    //public serverUrl = 'wss://repl.aeternity.io/';
+    public serverUrl = 'ws://localhost:4000/';
     public session = '';
     private channel;
     private prompt;
@@ -47,6 +48,7 @@ export class LogConsoleComponent implements OnInit {
       if(msg !== "" && this.prompt) {
         console.log("REPL: Handling response")
         this.prompt.setAnsiResponse(this.pending_output + msg);
+        //debugger;
         this.pending_output = "";
         this.prompt.responseComplete();
       } else {
@@ -99,8 +101,8 @@ export class LogConsoleComponent implements OnInit {
                                    });
 
 
-        this.prompt.response = '...';
-        prompt.responseComplete();
+        //this.prompt.response = '...';
+        //prompt.responseComplete();
     }
   }
 
