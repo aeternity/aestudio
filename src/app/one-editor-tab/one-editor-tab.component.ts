@@ -15,7 +15,7 @@ import { IActiveContract } from '../helpers/interfaces';
 import { BreakpointEnum, BreakpointEvents, CursorPositionChangedEvent, Disposable, EditorMouseEvent, EditorMouseTarget, ModelDecoration, ModelDecorationOptions, ModelDeltaDecoration, Position } from './editorTypes';
 
 import { EventEmitter as dbgEvent } from './eventEmitter';
-import { MouseTargetType } from './dataTypes';
+import { CursorChangeReason, MouseTargetType } from './dataTypes';
 
 
 export const BREAKPOINT_OPTIONS: ModelDecorationOptions = {
@@ -65,7 +65,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
 	private decorationIdAndRangeMap = new Map<string, Range>();
 	private lineNumberAndDecorationIdMap = new Map<number, string>();
-  breakpointLines = new Set<number>();
+  currentBreakpointLines : number[] = []; // set by getBreakpoints() which is rerun by any code change
   //debugger end
 
 
@@ -123,7 +123,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   scrollBeyondLastLine: false,
   automaticLayout: true,
   smoothScrolling: true,
-  glyphMargin: true,
+  glyphMargin: true
 };
 
 generatedCodeEditorOptions = {theme: 'vs-dark', 
@@ -254,7 +254,7 @@ generatedCodeEditorOptions = {theme: 'vs-dark',
     this.editor = theEditor 
 console.log('Editor:', this.editor)
 		this.initMouseEvent();
-		//this.initEditorEvent();
+		this.initEditorEvent();
 
     // debugger end
 
@@ -630,12 +630,10 @@ private initMouseEvent() {
          * it indicates that the current action is to remove the breakpoint
          */
         if (decorationId) {
-          this.removeSpecifyDecoration(decorationId, lineNumber);
-          this.breakpointLines.delete(lineNumber);
+          this.removeSpecificDecoration(decorationId, lineNumber);
         } else {
           //@ts-ignore
-          this.createSpecifyDecoration(range);
-          this.breakpointLines.add(lineNumber);
+          this.createSpecificDecoration(range);
         }
       }
     }
@@ -670,7 +668,7 @@ private createBreakpointDecoration(range: Range, breakpointEnum: BreakpointEnum)
   };
 }
 
-private removeSpecifyDecoration(decorationId: string, lineNumber: number) {
+private removeSpecificDecoration(decorationId: string, lineNumber: number) {
   const model = this.getModel();
   model?.deltaDecorations([decorationId], []);
   this.decorationIdAndRangeMap.delete(decorationId);
@@ -678,7 +676,7 @@ private removeSpecifyDecoration(decorationId: string, lineNumber: number) {
   this.emitBreakpointChanged();
 }
 
-private createSpecifyDecoration(range: Range) {
+private createSpecificDecoration(range: Range) {
   const model = this.getModel();
 
   if (model) {
@@ -718,7 +716,10 @@ private createSpecifyDecoration(range: Range) {
 }
 
 private emitBreakpointChanged() {
-  this.emit('breakpointChanged', this.getBreakpoints());
+  this.getBreakpoints();
+
+  //this.emit('breakpointChanged', this.getBreakpoints());
+  //TODO: put subscription here to inform other components about breakpoint changes
 }
 
 private emit<T extends keyof BreakpointEvents>(event: T, data: BreakpointEvents[T]) {
@@ -742,8 +743,211 @@ getBreakpoints() {
   for (let [lineNumber, _] of this.lineNumberAndDecorationIdMap) {
     breakpoints.push(lineNumber);
   }
+  this.currentBreakpointLines = breakpoints;
   return breakpoints;
 }
-// debugger end
 
+
+private initEditorEvent() {
+  this.preLineCount = this.getLineCount();
+
+  // Execute onDidChangeModelContent callback first
+  this.contentChangedDisposable?.dispose();
+  this.contentChangedDisposable = this.editor!.onDidChangeModelContent((e) => {
+    const curLineCount = this.getLineCount();
+
+    this.isUndoing = e.isUndoing;
+    this.isLineCountChanged = curLineCount !== this.preLineCount;
+    this.preLineCount = curLineCount;
+  });
+
+  // Execute onDidChangeCursorPosition callback second
+  this.cursorPositionChangedDisposable?.dispose();
+  this.cursorPositionChangedDisposable = this.editor!.onDidChangeCursorPosition(e => {
+    const model = this.getModel();
+    const decorations = this.getAllDecorations();
+
+    if (model && this.isLineCountChanged) {
+      for (let decoration of decorations) {
+        const curRange = decoration.range;
+        const preRange = this.decorationIdAndRangeMap.get(decoration.id);
+
+        const isPaste = e.reason === CursorChangeReason.Paste;
+        // vscode breakpoint logic
+        const needRenderDecorationInEndLineNumber =
+          !isPaste &&
+          this.isUndoing &&
+          curRange.startLineNumber !== curRange.endLineNumber
+
+        if (!this.isUndoing || needRenderDecorationInEndLineNumber) {
+          /**
+           * if startLineNumber equals to endLineNumber,
+           * only need to update the record map (decorationIdAndRangeMap & lineNumberAndDecorationIdMap)
+           */
+          if (curRange.startLineNumber === curRange.endLineNumber) {
+            this.replaceSpecifyLineNumberAndIdMap(curRange, decoration);
+          } else if (preRange) {
+            const lineBreakInHead = this.checkIfLineBreakInHead(e, curRange, preRange);
+
+            // remove old decoration before re render the new breakpoint decoration
+            // @ts-ignore
+            this.removeSpecificDecoration(decoration.id, preRange.startLineNumber);
+            /**
+             * if line break in head, render the breakpoint decoration in endLineNumber,
+             * if current line has breakpoint decoration & isUndoing & not paste & cur startLineNumber & cur endLineNumber
+             * else render in startLineNumber
+             */
+            this.createSpecificDecoration({
+              ...curRange,
+              ...(lineBreakInHead || needRenderDecorationInEndLineNumber ? {
+                startLineNumber: curRange.endLineNumber,
+                endColumn: model.getLineLength(curRange.endLineNumber) + 1
+              } : {
+                endLineNumber: curRange.startLineNumber,
+                endColumn: model.getLineLength(curRange.startLineNumber) + 1
+              })
+            });
+          }
+        } else if (curRange.startLineNumber === curRange.endLineNumber) {
+          this.replaceSpecifyLineNumberAndIdMap(curRange, decoration);
+        }
+      }
+    } else {
+      /**
+       * there is no line break and startLineNumber equals to endLineNumber,
+       * only need to update the record map (decorationIdAndRangeMap & lineNumberAndDecorationIdMap)
+       */
+      for (let decoration of decorations) {
+        this.decorationIdAndRangeMap.set(decoration.id, decoration.range);
+      }
+    }
+
+    /**
+     * remove extra decoration which not in
+     */
+    this.removeExtraDecoration();
+
+    /**
+     * reset isUndoing && isLineCountChanged status
+     */
+    this.isUndoing = false;
+    this.isLineCountChanged = false;
+    /**
+     * In order to judge that the change of the code starts from the beginning of the line,
+     * record the text of the line where the current cursor is located
+     */
+    this.lineContent = this.getLineContentAtPosition(e.position);
+  });
+}
+
+private getLineCount() {
+  return this.getModel()?.getLineCount() ?? 0;
+}
+
+private getAllDecorations() {
+  return (
+    this.getModel()
+      ?.getAllMarginDecorations()
+      ?.filter(
+        (decoration) =>
+          decoration.options.glyphMarginClassName ===
+          BREAKPOINT_OPTIONS.glyphMarginClassName
+      ) ?? []
+  );
+}
+
+private replaceSpecifyLineNumberAndIdMap(curRange: Range, decoration: ModelDecoration) {
+  for (let [decorationId, range] of this.decorationIdAndRangeMap) {
+    // remove duplicated range in map
+    if (JSON.stringify(range) === JSON.stringify(decoration.range)) {
+      this.decorationIdAndRangeMap.delete(decorationId);
+      break;
+    }
+  }
+  
+  //@ts-ignore
+  this.decorationIdAndRangeMap.set(decoration.id, decoration.range);
+
+  for (let [lineNumber, decorationId] of this.lineNumberAndDecorationIdMap) {
+    // remove duplicated range in map
+    if (decorationId === decoration.id) {
+      this.lineNumberAndDecorationIdMap.delete(lineNumber);
+      break;
+    }
+  }
+
+  //@ts-ignore
+  this.lineNumberAndDecorationIdMap.set(curRange.startLineNumber, decoration.id);
+  this.emitBreakpointChanged();
+}
+
+	/**
+	 * @description when decoration changed, check if line break in head.
+	 * @returns Boolean
+	 */
+	private checkIfLineBreakInHead(e: CursorPositionChangedEvent, curRange: Range, preRange: Range) {
+		const { reason, position } = e;
+		const isPaste = reason === CursorChangeReason.Paste;
+		const lineContent = this.getLineContentAtPosition(position, false);
+
+		let lineBreakInHead =
+			!isPaste && 
+      //@ts-ignore
+			preRange.endColumn === curRange.endColumn &&
+      //@ts-ignore
+			preRange.startColumn === curRange.startColumn &&
+      //@ts-ignore
+			preRange.endLineNumber !== curRange.endLineNumber &&
+      //@ts-ignore
+			preRange.startLineNumber === curRange.startLineNumber;
+
+		/**
+		 * if pasted and lineContent in current cursor position equals to this.lineContent (preLineContent),
+		 * indicate paste in pre lineContent head.
+		 */
+		if (isPaste && lineContent === this.lineContent) {
+			lineBreakInHead = true;
+		}
+
+		return lineBreakInHead;
+	}
+
+  	/**
+	 * Remove extra decoration after re render new breakpoint decoration,
+	 * The purpose is to synchronize with decorationIdAndRangeMap & lineNumberAndDecorationIdMap
+	 */
+	private removeExtraDecoration() {
+		const model = this.getModel();
+		const decorations = this.getAllDecorations();
+
+		for (let decoration of decorations) {
+			if (!this.decorationIdAndRangeMap.has(decoration.id)) {
+				model?.deltaDecorations([decoration.id], []);
+			}
+		}
+	}
+
+  	/**
+	 * 
+	 * @param position monaco.IPosition
+	 * @param needFullContent if set true, return the full line content from column 1
+	 * @returns 
+	 */
+	private getLineContentAtPosition(position: Position, needFullContent: boolean = true) {
+		const model = this.getModel();
+
+		if (model) {
+			const { lineNumber, column } = position;
+
+			return model.getValueInRange({
+				startLineNumber: lineNumber,
+				endLineNumber: lineNumber,
+				startColumn: needFullContent ? 1 : column,
+				endColumn: model.getLineLength(lineNumber) + 1
+			}).trim();
+		}
+		return '';
+	}
+
+// debugger end
 }

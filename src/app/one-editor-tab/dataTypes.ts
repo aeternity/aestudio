@@ -59,8 +59,36 @@ export const enum MouseTargetType {
 	 */
 	OUTSIDE_EDITOR = 13
 }
-export const CursorChangeReason = monaco.editor.CursorChangeReason;
-
+export enum CursorChangeReason {
+	/**
+	 * Unknown or not set.
+	 */
+	NotSet = 0,
+	/**
+	 * A `model.setValue()` was called.
+	 */
+	ContentFlush = 1,
+	/**
+	 * The `model` has been changed outside of this cursor and the cursor recovers its position from associated markers.
+	 */
+	RecoverFromMarkers = 2,
+	/**
+	 * There was an explicit user gesture.
+	 */
+	Explicit = 3,
+	/**
+	 * There was a Paste.
+	 */
+	Paste = 4,
+	/**
+	 * There was an Undo.
+	 */
+	Undo = 5,
+	/**
+	 * There was a Redo.
+	 */
+	Redo = 6
+}
 export const BREAKPOINT_OPTIONS: ModelDecorationOptions = {
 	glyphMarginClassName: 'monaco-breakpoint',
 };
