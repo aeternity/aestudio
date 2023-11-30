@@ -99,13 +99,12 @@ export class LogConsoleComponent implements OnInit {
                                    });
 
 
-        this.prompt.response = '...';
-        prompt.responseComplete();
+
     }
   }
 
   logActiovated($event){
-    console.log("damn")
+
   }
 
   ngOnInit() {
