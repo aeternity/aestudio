@@ -1,4 +1,5 @@
 $border-radius: 4px;
+$inner-border-size: 1px;
 
 *, *::after, *::before{
     box-sizing: border-box;
@@ -21,7 +22,8 @@ $border-radius: 4px;
       position: relative;
       margin: auto;
       
-      padding: 0.75rem;
+      padding: $inner-border-size;
+      padding-bottom: calc($inner-border-size + 1px);
       padding-left: 0 !important;
       padding-right: 0 !important;
       border-radius: $border-radius;
@@ -97,12 +99,12 @@ $border-radius: 4px;
     display: flex;
     height: 54px;
   
-    width: calc(33.3% - 9px);
+    width: calc(33.3% - $inner-border-size);
     background-color: #7f5a83;
     background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%);
     color: white;
     z-index: 1;
-    border-radius: $border-radius;
+    border-radius: calc($border-radius - 2px);
     transition: 0.25s cubic-bezier(.17,.67,.86,.89)
   }
   
