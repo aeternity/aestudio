@@ -48,6 +48,7 @@ import { MdwUrlDirective } from './mdw-url.directive';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorAutoResizerDirective } from './directives/editor-auto-resizer.directive';
 import { ConsoleOpenerDirective } from './directives/console-opener.directive';
+import { WalletToggleComponent } from './wallet-toggle/wallet-toggle.component';
 
 
 @NgModule({
@@ -60,7 +61,7 @@ import { ConsoleOpenerDirective } from './directives/console-opener.directive';
     LoaderComponent,
     DeployedContractComponent, 
     ContractInLeftMenuComponent, 
-    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective, EditorAutoResizerDirective, ConsoleOpenerDirective
+    OneEditorTabComponent, LogConsoleComponent, OneLogComponent, TxValuesComponent, MainloaderComponent, WalletSwitchComponent, OneLogChildComponent, GlobalOptionsComponent, PreventClickPropagationDirective, MdwUrlDirective, EditorAutoResizerDirective, ConsoleOpenerDirective, WalletToggleComponent
   ],
   imports: [
     BrowserModule,
