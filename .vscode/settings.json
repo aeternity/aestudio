@@ -1,5 +1,25 @@
 {
     "editor.renderWhitespace": "selection",
     "editor.maxTokenizationLineLength": 40000,
-    "gitdoc.enabled": false
+    "gitdoc.enabled": false,
+    "workbench.colorCustomizations": {
+        "activityBar.activeBackground": "#d7bdc4",
+        "activityBar.background": "#d7bdc4",
+        "activityBar.foreground": "#15202b",
+        "activityBar.inactiveForeground": "#15202b99",
+        "activityBarBadge.background": "#638b54",
+        "activityBarBadge.foreground": "#e7e7e7",
+        "commandCenter.border": "#15202b99",
+        "sash.hoverBorder": "#d7bdc4",
+        "statusBar.background": "#c49da7",
+        "statusBar.foreground": "#15202b",
+        "statusBarItem.hoverBackground": "#b17d8a",
+        "statusBarItem.remoteBackground": "#c49da7",
+        "statusBarItem.remoteForeground": "#15202b",
+        "titleBar.activeBackground": "#c49da7",
+        "titleBar.activeForeground": "#15202b",
+        "titleBar.inactiveBackground": "#c49da799",
+        "titleBar.inactiveForeground": "#15202b99"
+    },
+    "peacock.color": "#c49da7"
 }

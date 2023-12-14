@@ -1,20 +1,24 @@
 <!-- pill slider radio button menu, as seen in this tutorial, https://www.youtube.com/watch?v=rl0-T99e13c credits to Online web ustaad -->
-<div class="wrapper">
+<div class="wrapper" (click)="$event.stopImmediatePropagation()">
+<!-- <div class="wrapper" (click)="$event.stopImmediatePropagation()" [ngStyle]="{'pointerEvents' : 'none'}" > -->
   
-    <div class="container">
-      <div class="tabs" [ngClass]=" testnet ? 'tabsTestnet' : wallet ? 'tabsWallet' : 'tabsDebugger'">
-      
-        <input type="radio" id="radio-1" name="tabs" checked>
-        <label class="tab" for="radio-1">Testnet</label>
+    <div class="container" (mouseover)="showShadow(true)" (mouseout)="showShadow(false)" >
+      <div class="tabs" [ngClass]=" provider == 'web' ? 'tabsWeb' : provider == 'extension' ? 'tabsExtension' : 'tabsDebugger'">
+        <input type="radio" id="radio-1" name="tabs" [checked]="provider == 'web'">
+        <label class="tab" for="radio-1" (click)="setProvider('web')">Testnet</label>
         
-        <input type="radio" id="radio-2" name="tabs" >
-        <label class="tab" for="radio-2">Wallet</label>
+        <!-- when no wallet is preset, diallow this option -->
+        <input [attr.disabled]="!compiler.walletExtensionPresent || compiler.providerToggleInProcess ? '' : null" type="radio" id="radio-2" name="tabs" [checked]="provider == 'extension'">
+        <label class="tab" for="radio-2" (click)="!compiler.walletExtensionPresent || compiler.providerToggleInProcess ? '' : setProvider('extension')" 
+        suiPopup popupHeader="No Wallet detected" [popupTemplateContext]='this' popupTrigger="outsideClick" popupText=" Install the Superhero Wallet and use AE Studio with the Aeternity Mainnet!" popupPlacement="top center" popupDelay="600" popupTrigger="manual" #popup="suiPopup"
+        (mouseover)="openPopup(popup)" (mouseout)="closePopup(popup)"
+        >Wallet</label>
             
-        <input type="radio" id="radio-3" name="tabs" >
-        <label class="tab" for="radio-3">Wallet</label>
-        
+        <input type="radio" id="radio-3" name="tabs" [checked]="provider == 'debugger'">
+        <label class="tab" for="radio-3" (click)="setProvider('debugger')">Debugger</label>
      
-        <span class="glider"></span>
+        <!-- mouseover done like this and not CSS because the element is at a lower z-index than the labels -->
+        <span class="glider" [class.showShadow]="showGliderShadow"></span>
         
       </div>
     </div>

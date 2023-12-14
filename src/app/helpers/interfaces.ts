@@ -23,8 +23,10 @@ export interface ILog {
   }
   
 interface additionalAestudioProperties {
-  currentWalletProvider? : 'web' | "extension" 
+  currentWalletProvider? : IProviders
 }
+
+export type IProviders = "web" | "extension" | 'debugger'
 
 interface additionalMemoryAccountProperties {
   property?: string,
