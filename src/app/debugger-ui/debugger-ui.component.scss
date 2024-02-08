@@ -1,0 +1,129 @@
+$border-radius: 4px;
+$inner-border-size: 1px;
+$height: 34px;
+$tab-width: 25%;
+
+*, *::after, *::before{
+    box-sizing: border-box;
+  }
+
+  .container { 
+    position: relative;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .tabs {
+    display: flex;
+    flex-grow: 1;
+    position: relative;
+    margin: auto;
+    
+    padding: $inner-border-size;
+    padding-bottom: calc($inner-border-size + 1px);
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    border-radius: $border-radius;
+    align-items: center;
+    justify-content: center;
+    transition: box-shadow 2.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+
+    &:hover {
+      box-shadow: 0 4px 8px 0 rgba(34, 36, 38, .12), 0 2px 10px 0 rgba(34, 36, 38, .08);
+    }
+  }
+  
+  input[type="radio"] {
+    display: none;
+  }
+  
+  .tabs * {
+    z-index: 2;
+  }
+  
+  .tab{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: $height;
+    width: $tab-width;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: color 0.15s ease-in;
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+    text-transform: uppercase;
+  }
+  
+  input[type="radio"]:checked + label {
+    color: grey;
+  }
+  
+  input[id="radio-1"]:checked ~ .glider {
+    transform: translateX(0%);
+  }
+  
+  input[id="radio-2"]:checked ~ .glider {
+    transform: translateX(100%);
+  }
+  
+  input[id="radio-3"]:checked ~ .glider {
+    transform: translateX(200%);
+  }
+  
+  input[id="radio-4"]:checked ~ .glider {
+    transform: translateX(300%);
+  }
+  
+  // Glider design for each tab
+  input[id="radio-1"]:checked ~ .glider {
+    transform: translateX(-100%);
+    background-color: white;
+    background-image:none;
+  }
+  
+  input[id="radio-2"]:checked ~ .glider {
+    transform: translateX(0%);
+    background-color: white ;
+    background-image:none ;
+  }
+
+  input[id="radio-3"]:checked ~ .glider {
+    transform: translateX(0%);
+    background-color: white ;
+    background-image:none ;
+   }
+  
+  input[id="radio-3"]:checked ~ .glider {
+    transform: translateX(100%);
+  }
+  
+  input[id="radio-4"]:checked ~ .glider {
+    transform: translateX(300%);
+  }
+  
+  .glider {
+    position: absolute;
+    display: flex;
+    height: $height;
+    width: calc(33.3% - $inner-border-size);
+    /* background-color: #7f5a83;
+    background-image: linear-gradient(315deg, #7f5a83 0%, #0d324d 74%); */
+    color: white;
+    z-index: 1;
+    border-radius: calc($border-radius - 2px);
+    transition: 0.25s cubic-bezier(.17,.67,.86,.89)
+  }
+  
+  
+  @media (max-width: 700px) {
+    .tabs {
+      transform: scale(0.6);
+    }
+  }

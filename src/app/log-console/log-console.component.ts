@@ -23,7 +23,7 @@ export class LogConsoleComponent implements OnInit {
   public login = 'you';
     public server = 'REPL';
     //public serverUrl = 'wss://repl.aeternity.io/';
-    public serverUrl = 'ws://localhost:4000/';
+    public serverUrl = 'wss://repl.aepps.com';
     public session = '';
     private channel;
     private prompt;
@@ -36,11 +36,14 @@ export class LogConsoleComponent implements OnInit {
 
     let socket = new Socket(this.serverUrl + "/socket");
     socket.connect();
+
     console.log("REPL: socket= " + socket);
+
     this.channel = socket.channel("repl_session:lobby", {});
     console.log("REPL: channel= " + this.channel);
 
-    this.channel.on("response", payload => {
+
+  /*   this.channel.on("response", payload => {
       var msg = payload.msg;
       console.log("REPL: " + msg);
       this.session = payload.user_session ? payload.user_session : this.session;
@@ -55,15 +58,66 @@ export class LogConsoleComponent implements OnInit {
         console.log("REPL: Pending msg...")
         this.pending_output += msg + "\n\n";
       }
-    });
+    }); */
+
 
     console.log("REPL: trying to join");
     this.channel.join()
-      .receive("ok", resp => { console.log("REPL: Joined aerepl lobby."); })
+      .receive("ok", resp => { 
+        this.handleReplResponse(resp)
+
+        /* console.log("REPL: resp", resp);
+        console.log("REPL: Joined aerepl lobby.");
+        this.session = resp.user_session;
+        console.log("REPL: Session: ", this.session);
+        console.log("REPL: response: ", resp);
+        var t = this.channel.push("banner", {user_session: this.session})
+            .receive("ok", this.handleReplResponse);
+        console.log("REPL: Session established."); */
+      })
+
       .receive("error", resp => {
         console.log("REPL: Could not establish the connection.");
         alert("Could not establish the connection.");
       });
+
+  }
+
+  // uploads and loads all contracts to repl 
+  loadAllContracts() {
+  let contracts_raw = this.localStorage.getAllContracts();
+  let contracts = contracts_raw.map(
+    function(c) {
+
+        let filename = (c as any).nameInTab + ".aes";
+        let content = (c as any).code;
+        return {
+            filename: filename,
+            content: content
+        }
+  }
+  );
+
+  let contractNamesOnly = contracts_raw.map(
+  function(c) {
+      let filename = (c as any).nameInTab + ".aes";
+      return {
+          filename: filename,
+      }
+  }
+  );
+
+  // upload to repl
+  this.channel.push("update_files", 
+                          {files: contracts,
+                            user_session: this.session
+                          }); 
+
+  // make repl load the contracts
+  this.channel.push("load",
+          {files: contractNamesOnly,
+          user_session: this.session
+          });
 
   }
 
@@ -76,33 +130,36 @@ export class LogConsoleComponent implements OnInit {
 
     switch (input.trim()) {
       case ':r':
-        let contracts_raw = this.localStorage.getAllContracts();
-        let contracts = contracts_raw.map(
-            function(c) {
-
-                let filename = (c as any).nameInTab + ".aes";
-                let content = (c as any).code;
-                return {
-                    filename: filename,
-                    content: content
-                }
-          }
-        );
-
-        this.channel.push("load", {files: contracts,
-                                   user_session: this.session
-                                  });
-
+        this.loadAllContracts();
         break;
 
         default:
         this.channel.push("query", {input: input,
                                     user_session: this.session
-                                   });
+                                   })
+                                   .receive("ok", this.handleReplResponse);
 
 
         //this.prompt.response = '...';
         //prompt.responseComplete();
+    }
+  }
+
+  handleReplResponse(payload) {
+    debugger;
+    var msg = payload.msg;
+    console.log("REPL: " + msg);
+    this.session = payload.user_session ? payload.user_session : this.session;
+    msg = payload.msg.replace(/^\n|\n$/g, '');
+    if(msg !== "" && this.prompt) {
+      console.log("REPL: Handling response")
+      this.prompt.setAnsiResponse(this.pending_output + msg);
+      //debugger;
+      this.pending_output = "";
+      this.prompt.responseComplete();
+    } else {
+      console.log("REPL: Pending msg...")
+      this.pending_output += msg + "\n\n";
     }
   }
 

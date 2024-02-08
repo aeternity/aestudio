@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { IProviders } from '../helpers/interfaces';
 import { CompilerService } from '../compiler.service';
 import { IPopup } from 'ngx-ng2-semantic-ui';
@@ -7,6 +7,7 @@ import { IPopup } from 'ngx-ng2-semantic-ui';
   selector: "app-wallet-toggle",
   templateUrl: "./wallet-toggle.component.html",
   styleUrls: ["./wallet-toggle.component.scss"],
+  encapsulation: ViewEncapsulation.ShadowDom
 })
 export class WalletToggleComponent {
   // temporary values to create look and feel:
