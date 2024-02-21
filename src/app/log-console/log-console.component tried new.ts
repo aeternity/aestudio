@@ -23,7 +23,7 @@ export class LogConsoleComponent implements OnInit {
   public login = 'you';
     public server = 'REPL';
     //public serverUrl = 'wss://repl.aeternity.io/';
-    public serverUrl = 'wss://pr-67-repl.stg.aepps.com';
+    public serverUrl = 'wss://pr-64-repl.stg.aepps.com';
     public session = '';
     private channel;
     private prompt;
@@ -36,109 +36,135 @@ export class LogConsoleComponent implements OnInit {
 
     let socket = new Socket(this.serverUrl + "/socket");
     socket.connect();
-    console.log("REPL: socket " + socket);
+
+    console.log("REPL: socket= " + socket);
+
     this.channel = socket.channel("repl_session:lobby", {});
-    console.log("REPL: channel " + this.channel);
+    console.log("REPL: channel= " + this.channel);
+
+
+  /*   this.channel.on("response", payload => {
+      var msg = payload.msg;
+      console.log("REPL: " + msg);
+      this.session = payload.user_session ? payload.user_session : this.session;
+      msg = payload.msg.replace(/^\n|\n$/g, '');
+      if(msg !== "" && this.prompt) {
+        console.log("REPL: Handling response")
+        this.prompt.setAnsiResponse(this.pending_output + msg);
+        //debugger;
+        this.pending_output = "";
+        this.prompt.responseComplete();
+      } else {
+        console.log("REPL: Pending msg...")
+        this.pending_output += msg + "\n\n";
+      }
+    }); */
+
 
     console.log("REPL: trying to join");
-
     this.channel.join()
-      .receive("ok", resp => { console.log("REPL: channel join", resp);
-                                debugger;
-                               this.handleResponse(resp);
-                               })
-                               
+      .receive("ok", resp => { 
+        debugger
+        this.handleReplResponse(resp)
+
+        //  console.log("REPL: resp", resp);
+        // console.log("REPL: Joined aerepl lobby.");
+        // this.session = resp.user_session;
+        // console.log("REPL: Session: ", this.session);
+        // console.log("REPL: response: ", resp);
+        // var t = this.channel.push("banner", {user_session: this.session})
+            // .receive("ok", this.handleReplResponse);
+        // console.log("REPL: Session established."); 
+      })
+
       .receive("error", resp => {
         console.log("REPL: Could not establish the connection.");
         alert("Could not establish the connection.");
       });
+ 
+  }
+
+  // uploads and loads all contracts to repl 
+  loadAllContracts() {
+  let contracts_raw = this.localStorage.getAllContracts();
+  let contracts = contracts_raw.map(
+    function(c) {
+
+        let filename = (c as any).nameInTab + ".aes";
+        let content = (c as any).code;
+        return {
+            filename: filename,
+            content: content
+        }
+  }
+  );
+
+  let contractNamesOnly = contracts_raw.map(
+  function(c) {
+      let filename = (c as any).nameInTab + ".aes";
+      return {
+          filename: filename,
+      }
+  }
+  );
+
+  // upload to repl
+  this.channel.push("update_files", 
+                          {files: contracts,
+                            user_session: this.session
+                          }); 
+
+  // make repl load the contracts
+  this.channel.push("load",
+          {files: contractNamesOnly,
+          user_session: this.session
+          });
 
   }
 
   onCommand(prompt: TerminalPrompt) {
-    debugger
     this.prompt = prompt;
 
     let input = prompt.text;
 
     console.log("REPL: Input:" + input);
+
     switch (input.trim()) {
-
-      // TODO investigate: after every :r, the onCommand method is called one time more than before, the result of the call remains just one though ?!
-      // TODO: when setting a breakpoint before a contract is actually created with chain.create, breaking doesnt happen
       case ':r':
-       this.loadAllContracts();
-
+        this.loadAllContracts();
         break;
 
         default:
+          debugger
+          console.log("REPL: Sending query")
         this.channel.push("query", {input: input,
                                     user_session: this.session
                                    })
-                                   .receive("ok", (response)=> {debugger; this.handleResponse(response)})
-                                   .receive("error", (response)=> {debugger; this.handleResponse(response)});
+                                   /* .receive("ok", this.handleReplResponse); */
 
-debugger
 
         //this.prompt.response = '...';
         //prompt.responseComplete();
     }
   }
 
-  loadAllContracts() {
-    let contracts_raw = this.localStorage.getAllContracts();
-    let contracts = contracts_raw.map(
-      function(c) {
-  
-          let filename = (c as any).nameInTab + ".aes";
-          let content = (c as any).code;
-          return {
-              filename: filename,
-              content: content
-          }
-    }
-    
-    );
-  
-    let contractNamesOnly = contracts_raw.map(
-    function(c) {
-        let filename = (c as any).nameInTab + ".aes";
-        return filename
-    }
-    );
+  handleReplResponse(payload) {
+    var msg = payload.msg;
+    console.log("REPL: " + msg);
+    this.session = payload.user_session ? payload.user_session : this.session;
+    msg = payload.msg.replace(/^\n|\n$/g, '');
+    if(msg !== "" && this.prompt) {
 
-    contractNamesOnly
-    debugger;
-    
-    // upload to repl
-    this.channel.push("update_files", 
-                            {files: contracts,
-                              user_session: this.session
-                            }).receive("ok", (response)=> {
-                              this.handleResponse(response)
-                              debugger;
-                            });
-  
-                            contractNamesOnly
-                            debugger
-    // make repl load the contracts
-    this.channel.push("load",
-            /* {files: contractNamesOnly, */
-            {files: ["C.aes"],
-            user_session: this.session
-            }).receive("ok", (response)=> {
-              this.handleResponse(response)
-            debugger
-            })
-            .receive("error", (response)=> {
-            debugger
-            })
-            /* .receive("ok", (response)=> {this.handleResponse(response)})
-              .receive("error", resp => { console.log("REPL: error loading:", resp);
-            }); */
-            
-  
+      console.log("REPL: Handling response")
+      this.prompt.setAnsiResponse(this.pending_output + msg);
+      //debugger;
+      this.pending_output = "";
+      this.prompt.responseComplete();
+    } else {
+      console.log("REPL: Pending msg...")
+      this.pending_output += msg + "\n\n";
     }
+  }
 
   logActiovated($event){
     console.log("damn")
@@ -185,29 +211,5 @@ debugger
 
     console.log("state console open: ", this.state.consoleOpen)
   }
-
-  handleResponse(payload) {
-    var msg = payload.msg;
-    console.log("REPL: " + msg);
-    this.session = payload.user_session ? payload.user_session : this.session;
-    msg = payload.msg.replace(/^\n|\n$/g, '');
-    if(msg !== "" /* && this.prompt */) {
-      console.log("REPL: Handling response")
-      this.prompt.setAnsiResponse(this.pending_output + msg);
-      //debugger;
-      this.pending_output = "";
-      this.prompt.responseComplete();
-    } else if (msg == "") {
-      console.log("REPL: Handling empty response")
-      this.pending_output = "";
-      this.prompt.responseComplete();
-    } 
-      else {
-      console.log("REPL: Pending msg...")
-      this.pending_output += msg + "\n\n";
-    }
-
-  }
-
 
 }

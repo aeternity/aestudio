@@ -160,7 +160,7 @@ export class EditorComponent implements OnInit {
     
     setInterval(() => {
       this.state.editor.recalculateEditorHeight()
-      console.log("oneEditorHeight", this.state.editor.finalHeight)
+      // console.log("oneEditorHeight", this.state.editor.finalHeight)
       
     }, 5000);
 
