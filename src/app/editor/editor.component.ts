@@ -500,8 +500,9 @@ export class EditorComponent implements OnInit {
       this.contracts.forEach((contract, i) => {
         console.log("event uid:", $event.contractUID)
         if(contract.contractUID == $event.contractUID) { 
-          console.log("Editor: zum splicen gefunden")
+          console.log("Editor: Contract to delete found!")
           this.contracts.splice(i,1)
+          this.localStorage.storeAllContracts(this.contracts);
         }
       })
     }

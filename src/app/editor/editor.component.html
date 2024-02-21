@@ -20,10 +20,10 @@
             *ngFor="let oneContract of contracts; let i = index"
             [contract] = "oneContract"
             (showInTabs)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
-            (mouseover) = "oneCon.onHover()"
-            (mouseleave) = "oneCon.unHover()"
-            (contractDeletion) = "deleteContract($event)"
-            (showInTabsToggle) = "toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
+            (mouseover)="oneCon.onHover()"
+            (mouseleave)="oneCon.unHover()"
+            (contractDeletion)="deleteContract($event)"
+            (showInTabsToggle)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
             >
             </app-contract-in-left-menu>
 
