@@ -1,0 +1,82 @@
+include "List.aes"
+contract Lottery=
+
+    record contestant={
+        user:address,
+        number:int,
+        value:int}
+
+    record state= {
+        winning_number:int,
+        max_winning_number:int,
+        total_num_of_contestants:int,
+        minimum_wager:int,
+        num_of_wagers:int,
+        total_wager:int,
+        contestants_list:list(contestant),
+        deployer_address:address,
+        total_winners_wage:int,
+        winners:int,
+        valueToSend:int}
+
+
+    stateful entrypoint init ()={
+        winning_number=5,
+        minimum_wager=1000000000000000000,
+        total_wager=0,
+        total_num_of_contestants=2,
+        max_winning_number=10,
+        contestants_list=[],
+        num_of_wagers=0,
+        deployer_address=Call.caller,
+        total_winners_wage=0,
+        winners=0,
+        valueToSend=0
+        }
+
+    payable stateful entrypoint bet(number':int)=
+        if(check_if_contestant_exist())
+            abort("You cant contest twice")
+        require(number'>=0 && number'<state.max_winning_number,"Your number must be less than the winning number")
+        require(Call.value>=state.minimum_wager,"Your wager must not be less than the minimum wager")
+        let new_total_wager=Call.value+state.total_wager
+        let present_contestant:contestant={number=number',user=Call.caller,value=Call.value}
+        let new_list_of_contestants= present_contestant::state.contestants_list
+        let new_num_of_wagers=state.num_of_wagers+1
+        put(state{contestants_list=new_list_of_contestants,num_of_wagers=new_num_of_wagers,total_wager=new_total_wager})
+        if(new_num_of_wagers>=state.total_num_of_contestants)
+            announce_winners()
+
+    function check_if_contestant_exist():bool=
+        switch(List.find((a)=>a.user==Call.caller,state.contestants_list))
+            None=>false
+            Some(x)=>true
+
+
+    stateful function announce_winners()=
+        let total_winners_wager=0
+        let winning_number=Chain.block_height mod state.max_winning_number
+        let list_of_winners=List.filter((contestant)=>contestant.number==winning_number,state.contestants_list)
+        let number_of_winners=List.length(list_of_winners)
+        if(number_of_winners==0)
+            transfer_money_to_contract_deployed_address()
+        else           
+            List.foreach(list_of_winners,record_total_winners_wager)
+            List.foreach(list_of_winners,transfer_money_to_winner)
+        put(state{winners=number_of_winners,winning_number=winning_number}) 
+
+    stateful payable function transfer_money_to_contract_deployed_address()=
+        Chain.spend(state.deployer_address,state.total_wager)   
+
+    stateful function record_total_winners_wager(contestant'):unit=
+        let new_total_winers_wager=contestant'.value+state.total_winners_wage
+        put(state{total_winners_wage=new_total_winers_wager})
+
+    stateful payable function transfer_money_to_winner(contestant':contestant)=
+        let valueToSend'=(contestant'.value*state.total_wager)/state.total_winners_wage
+        Chain.spend(contestant'.user,valueToSend')
+        put(state{valueToSend=valueToSend'})
+
+    entrypoint get_winning_number()=
+        state.winning_number
+    
