@@ -131,7 +131,11 @@ export class ContractMenuSidebarComponent implements OnInit {
     
     await this.compiler.awaitInitializedChainProvider()
     this.changeDetectorRef.detectChanges()
-
+ 
+ setInterval(async () => {
+   console.log("this.currentSDKsettings", this.currentSDKsettings)
+ }, 3000)
+ 
      setInterval(async () => {
      
      // call with "false" to query faucet for balance if it's too low, topup not implemented yet though

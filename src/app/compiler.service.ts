@@ -80,7 +80,6 @@ export class CompilerService {
       }
       
       this.currentSdkSettings = settings
-
      this._notifyCurrentSDKsettings.next(settings);
   }
 

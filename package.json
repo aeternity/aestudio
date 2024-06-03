@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "^13.2.2",
+    "@aeternity/aepp-sdk": "^13.3.2",
     "@angular-devkit/schematics": "^16.2.6",
     "@angular/animations": "^16.2.9",
     "@angular/cdk": "^15.0.0",
@@ -71,7 +71,7 @@
     "@types/jasmine": "~3.6.0",
     "@types/jasminewd2": "^2.0.8",
     "@types/node": "^12.11.1",
-    "@types/ws": "^8.5.4",
+    "@types/ws": "^8.5.10",
     "angular-cli-ghpages": "^0.6.2",
     "codelyzer": "^6.0.0",
     "insert-line": "^1.1.0",
