@@ -1,0 +1,11 @@
+:host {
+    display:block;
+    transition: margin-left .5s;
+}
+
+#main {
+    -webkit-transition: margin-left 0.5s; /* Safari */
+    -moz-transition: margin-left 0.5s; /* Firefox */
+    -o-transition: margin-left 0.5s; /* Opera */
+    transition: margin-left 0.5s;
+  }
