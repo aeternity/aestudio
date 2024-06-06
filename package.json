@@ -18,7 +18,7 @@
     "sophia": "./custom-modules/sophia-workaround.sh",
     "sophia-win": ".\\custom-modules\\sophia-workaround.sh",
     "deploy": "npx angular-cli-ghpages",
-    "serveSophia" : "ng serve --project=sophia-site"
+    "serveSophia": "ng serve --project=sophia-site"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +45,7 @@
     "element-closest": "^3.0.2",
     "insert-line": "^1.1.0",
     "is-ua-webview": "^1.1.2",
+    "marked": "^12.0.2",
     "monaco-editor": "^0.41.0",
     "ng-circle-progress": "^1.5.1",
     "ng-click-outside2": "^12.0.0",

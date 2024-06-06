@@ -6,3 +6,13 @@ export const isValidContractAddress = (address : string) => {
     }
   }
   
+  
+import { Directive, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appdynamichost]',
+  standalone: true
+})
+export class DynamicHostDirective {
+  constructor(public viewContainerRef: ViewContainerRef) {}
+}
