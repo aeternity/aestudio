@@ -1,15 +1,20 @@
 
 import { AfterViewInit, ChangeDetectorRef, Component, ComponentFactoryResolver, ContentChildren, Input, OnInit, QueryList, ViewChild, ViewChildren, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CodeBlockComponent } from '../rich-code-block/code-block.component';
+import { CodeBlockComponent } from '../code-block/code-block.component';
 import { marked } from 'marked';
 import { DomSanitizer } from '@angular/platform-browser';
 import { DynamicHostDirective } from 'src/app/helpers/utils';
+import { SuiModule } from 'ngx-ng2-semantic-ui';
+import lodash from 'lodash-es';
+import deepdash from 'deepdash-es';
+import { examples } from '../examples';
+const _ = deepdash(lodash);
 
 @Component({
   selector: 'app-markdown',
   standalone: true,
-  imports: [CommonModule, DynamicHostDirective],
+  imports: [CommonModule, DynamicHostDirective, SuiModule],
   templateUrl: './markdown.component.html',
   styleUrls: ['./markdown.component.scss']
 })
@@ -17,14 +22,22 @@ import { DynamicHostDirective } from 'src/app/helpers/utils';
 export class MarkdownComponent implements OnInit, AfterViewInit {
   /* @Input()  */content: string;
   compiledMarkdown: string;
-  that = this;
   @ViewChild('main', { read: ViewContainerRef }) main: ViewContainerRef;
   dynComponents: Element[]
 
-  constructor(private componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer,  private cdr: ChangeDetectorRef) {
- 
+/*   // Override function
+ walkTokens = (token) => {
 
+  if (token.type === 'code') {
+    // token.depth += 1;
+    token.exampleID = '123';
+    console.log('token', token)
   }
+}; */
+
+  constructor(private componentFactoryResolver: ComponentFactoryResolver, private sanitizer: DomSanitizer,  private cdr: ChangeDetectorRef) {
+
+      }
 
   ngOnInit(): void {
  
@@ -35,85 +48,63 @@ export class MarkdownComponent implements OnInit, AfterViewInit {
       await this.compileMarkdown();
       setTimeout(() => {
 
-        let so = document.getElementsByTagName("code-placeholder")
+        // let so : HTMLCollectionOf<Element> = document.getElementsByTagName("code-placeholder")
         this.dynComponents = Array.from(document.getElementsByTagName("code-placeholder"));
 
         this.dynComponents.forEach((element: Element) => {
           const code = element.getAttribute('data-code');
-          this.loadCodeBlockComponent(this.main, code, element);
+          const exampleID = element.getAttribute('data-exampleID');
+          this.loadCodeBlockComponent(element, code, exampleID);
         });
         
       }, 1)
 
     })();
-/* 
-    fetch("assets/markdown/sophia_features.md")
-    .then(response => {
-      //console.log(response.text())
-      return response.text()
-    }) .then(async text => {
-      that.content = text
-      await this.compileMarkdown();
-
-      this.dynComponents = Array.from(document.getElementsByTagName("code-placeholder"));
-      debugger
-      this.dynComponents.forEach((element: Element) => {
-        const code = element.getAttribute('data-code');
-        this.loadCodeBlockComponent(this.main, code, element);
-      });
-
-    }) */
   }
 
   ngAfterViewInit(): void {
-
-  /*   this.dynComponents = Array.from(document.getElementsByTagName("code-placeholder"));
-   debugger
-   this.dynComponents.forEach((element: Element) => {
-     const code = element.getAttribute('data-code');
-     this.loadCodeBlockComponent(this.main, code, element);
-   }); */
-
-
- /*    this.dynComponents.forEach((host, index) => {
-      console.log(`Element ${index + 1}:`, host);
-    }); */
-
-
-
 
 }
 
   compileMarkdown(): Promise<string> {
     return new Promise(async (resolve, reject) => {
-
       const renderer = new marked.Renderer();
-      
       // Custom renderer for code blocks
-      renderer.code = (code: string, language: string) => {
+      renderer.code = (code: string, infostring) => {
+        let exampleID = '';
+        try {
+          exampleID =  infostring.match(/exampleID:(\d+)/)[1];
+          console.log('exampleID:', exampleID)
+        } catch(e){
+
+        }
         const id = `code-block-${Math.random().toString(36).substring(2, 15)}`;
-        const placeholder = `<code-placeholder data-code="${encodeURIComponent(code)}" id="${id}"></code-placeholder>`;
+        const placeholder = `<code-placeholder data-code="${encodeURIComponent(code)}" id="${id}" data-exampleID="${exampleID}"></code-placeholder>`;
+
         return placeholder;
       };
-      
-      const rawHtml = await (marked(this.content, { renderer }) as string);
+
+      const rawHtml = await (marked(this.content, { renderer, /* walkTokens: this.walkTokens  */}) as string);
       resolve(this.compiledMarkdown = (this.sanitizer.bypassSecurityTrustHtml(rawHtml) as string));
     });
   }
 
-  loadCodeBlockComponent(viewContainerRef: ViewContainerRef, code: string, nodeElement: Element): void {
+  loadCodeBlockComponent( nodeElement: Element, code: string, exampleID): void {
     const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CodeBlockComponent);
     // viewContainerRef.clear();
 
     // const componentRef = viewContainerRef.createComponent(componentFactory);
     const componentRef = this.main.createComponent(componentFactory);
-    
-    componentRef.instance.code = decodeURIComponent(code);
 
+    componentRef.setInput('exampleCode', decodeURIComponent(code))
+    if (examples[exampleID]?.tryItYourselfCode?.[0]) {
+      componentRef.setInput('tryItYourselfCode', examples[exampleID].tryItYourselfCode[0] )
+    }
     nodeElement.parentNode.replaceChild(componentRef.location.nativeElement, nodeElement);
 
+
+    // will I have to use the old way to lazy-display components ? deferrable views don't seem to be a thing for dynamic components. https://www.youtube.com/watch?v=FCcD8CEGty0
     this.cdr.detectChanges();
   }
-
 
 }

@@ -170,7 +170,8 @@
             "inlineStyleLanguage": "scss",
             "assets": [
               "projects/sophia-site/src/favicon.ico",
-              "projects/sophia-site/src/assets"
+              "projects/sophia-site/src/assets",
+              { "glob": "**/*", "input": "node_modules/monaco-editor", "output": "/assets/monaco/" }
             ],
             "styles": [
               "projects/sophia-site/src/styles.scss"

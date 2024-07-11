@@ -1,0 +1,50 @@
+<div class="wrapper">
+    <pre><code>{{ exampleID }}</code></pre>
+
+    <div class="tabsetWrapper"> 
+
+        <!-- Code from Doc start  -->
+        <sui-tabset>
+            <div class="ui pointing secondary menu">
+                <a class="item" suiTabHeader="1">Example</a>
+                <!-- <a class="item" suiTabHeader="2">Nested 2</a> -->
+            </div>
+            <div class="ui inverted segment" suiTabContent="1" [ngStyle]="{'padding-left': '0px'}">    
+                <ngx-monaco-editor #editorElement appEditorAutoResizer
+                [(ngModel)]="exampleCode" 
+                class="editor leftEditor"     
+                [options]="readOnlyEditorOptions"
+                (onInit)="initializeEditorObject($event)">
+                
+            </ngx-monaco-editor>
+        </div>
+        <!-- <div class="ui segment" suiTabContent="2">Second nested tab!</div> -->
+    </sui-tabset>
+    <!-- Code from Doc end -->
+    
+    
+    <!-- Do it Yourself start  -->
+    <sui-tabset *ngIf="tryItYourselfCode">
+        <div class="ui pointing secondary menu">
+            <a class="item" suiTabHeader="1">Try it Yourself</a>
+            <!-- <a class="item" suiTabHeader="2">Nested 2</a> -->
+        </div>
+        <div class="ui inverted segment" suiTabContent="1" [ngStyle]="{'padding-left': '0px'}">    
+            <ngx-monaco-editor #editorElement appEditorAutoResizer
+            [(ngModel)]="tryItYourselfCode" 
+            class="editor leftEditor"     
+            [options]="tryItYourselfEditorOptions"
+            (onInit)="initializeEditorObject($event)">
+            
+        </ngx-monaco-editor>
+    </div>
+    <!-- <div class="ui segment" suiTabContent="2">Second nested tab!</div> -->
+</sui-tabset>
+<!-- Do it Yourself end -->
+
+</div>
+
+
+</div>
+
+<!-- advice on dynamic rendering: https://www.angularspace.com/using-defer-deferviews-in-angular-17/ -->

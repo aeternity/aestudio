@@ -3522,6 +3522,21 @@ decimal.js@^10.2.1:
   resolved "https://registry.npmjs.org/decimal.js/-/decimal.js-10.4.3.tgz"
   integrity sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==
 
+deepdash-es@^5.3.9:
+  version "5.3.9"
+  resolved "https://registry.npmjs.org/deepdash-es/-/deepdash-es-5.3.9.tgz"
+  integrity sha512-p/pFjNW8RgkWiTderYZpFA3yLo/ABjr2bR5ZSkT13nvpXIvrv66PYo31MAzaauJnU/kXwNpkiSR2kTLQbjhwJQ==
+  dependencies:
+    lodash-es "^4.17.21"
+
+deepdash@^5.3.9:
+  version "5.3.9"
+  resolved "https://registry.npmjs.org/deepdash/-/deepdash-5.3.9.tgz"
+  integrity sha512-GRzJ0q9PDj2T+J2fX+b+TlUa2NlZ11l6vJ8LHNKVGeZ8CfxCuJaCychTq07iDRTvlfO8435jlvVS1QXBrW9kMg==
+  dependencies:
+    lodash "^4.17.21"
+    lodash-es "^4.17.21"
+
 default-gateway@^6.0.3:
   version "6.0.3"
   resolved "https://registry.npmjs.org/default-gateway/-/default-gateway-6.0.3.tgz"
@@ -5538,6 +5553,11 @@ locate-path@^7.1.0:
   integrity sha512-gvVijfZvn7R+2qyPX8mAuKcFGDf6Nc61GdvGafQsHL0sBIxfKzA+usWn4GFC/bk+QdwPUD4kWFJLhElipq+0VA==
   dependencies:
     p-locate "^6.0.0"
+
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.17.21.tgz"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash.debounce@^4.0.8:
   version "4.0.8"

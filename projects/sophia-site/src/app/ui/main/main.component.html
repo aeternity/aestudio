@@ -1,10 +1,7 @@
 <app-sidebar (paddingOnSidebarToggle)="this.setSidebarPadding($event)"></app-sidebar>
 
-<div id="main" [ngStyle]="{'margin-left' : menuPaddingLeft + 'px'}">
-  <button class="openbtn">☰ Open Sidebar</button>  
-  <h2>Collapsed Sidebar</h2>
-  <p>Click on the hamburger menu/bar icon to open the sidebar, and push this content to the right.</p>
-  
+<div id="main" [ngStyle]="{'margin-left' : menuPaddingLeft + 'px', 'padding-left' : '30px'}">
   <!-- <app-markdown [content]="markdownContent"></app-markdown> -->
-  <app-markdown></app-markdown>
+ <!-- <app-welcome></app-welcome> -->
+ <router-outlet></router-outlet>
 </div>

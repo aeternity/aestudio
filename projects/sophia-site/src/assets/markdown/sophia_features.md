@@ -23,7 +23,8 @@ To call a function in another contract you need the address to an instance of
 the contract. The type of the address must be a contract type, which consists
 of a number of type definitions and entrypoint declarations. For instance,
 
-```sophia
+```sophia exampleID:1
+
 // A contract type
 contract interface VotingType =
   entrypoint vote : string => unit
@@ -32,7 +33,7 @@ contract interface VotingType =
 Now given contract address of type `VotingType` you can call the `vote`
 entrypoint of that contract:
 
-```sophia
+```sophia exampleID:2
 contract VoteTwice =
   entrypoint voteTwice(v : VotingType, alt : string) =
     v.vote(alt)

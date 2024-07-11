@@ -1,0 +1,49 @@
+.editor { 
+    box-shadow: 0 1px 2px 0 rgba(34, 36, 38, .15);
+    border-radius: .28571429rem;
+    border: 1px solid rgb(30 30 30);
+    border-radius: .28571429rem;
+    height: auto;
+}
+
+/* ::ng-deep .editor-container{ 
+    height: 100% !important;
+} */
+
+.tabsetWrapper{
+    display:flex;
+}
+
+.tabsetWrapper {
+    display: flex;
+    > sui-tabset { // This targets all direct children of .tabsetWrapper
+        flex: 1; // shorthand for flex-grow, flex-shrink, and flex-basis
+        min-width: 0; // Override any minimum width constraints
+        word-wrap: break-word; // Ensures text can wrap
+     
+    }
+}
+
+.wrapper {
+    margin-bottom: 20px;
+}
+
+::ng-deep .editor-container {
+    height: auto !important;
+}
+
+//editor sanft ausklappen klappt wahrscheinlich nicht, weil die height auf auto oder garnicht gesetzt ist. man müsste ausprobieren, sie erst auf 0 zu setzen, und mit der editorInitEtc. function dann anders zu machen.
+// https://codepen.io/felipefialho/pen/AwYmMe
+
+.ui.inverted.segment.tab {
+    background-color: #1b1c1d;
+    border: 10px solid red;
+    border-radius: 0;
+    -webkit-transition: height 3s; 
+    -moz-transition: height 3s; 
+    -ms-transition: height 3s; 
+    -o-transition: height 3s; 
+    transition: height 3s;  
+    overflow: hidden;
+    // transition: height 2.5s ease-in; // Smooth transition for max-height
+}
