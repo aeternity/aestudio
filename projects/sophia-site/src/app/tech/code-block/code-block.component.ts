@@ -7,11 +7,12 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormsModule } from '@angular/forms';
 import { SuiModule } from 'ngx-ng2-semantic-ui';
 import { examples } from '../examples';
+import { CodeBlockWrapperComponent } from "../code-block-wrapper/code-block-wrapper.component";
 
 @Component({
   selector: 'app-code-block',
   standalone: true,
-  imports: [CommonModule, MonacoEditorModule, FormsModule, SuiModule],
+  imports: [CommonModule, MonacoEditorModule, FormsModule, SuiModule, CodeBlockWrapperComponent],
   templateUrl: './code-block.component.html',
   styleUrls: ['./code-block.component.scss']
 })
@@ -55,6 +56,8 @@ export class CodeBlockComponent implements OnInit {
     readOnly: false,
     minimap: {enabled: false}
 }
+
+  active: boolean = true;
 
 
 constructor(private elRef: ElementRef) { 

@@ -9,6 +9,7 @@ import { SuiModule } from 'ngx-ng2-semantic-ui';
 import lodash from 'lodash-es';
 import deepdash from 'deepdash-es';
 import { examples } from '../examples';
+import { CodeBlockWrapperComponent } from '../code-block-wrapper/code-block-wrapper.component';
 const _ = deepdash(lodash);
 
 @Component({
@@ -90,7 +91,7 @@ export class MarkdownComponent implements OnInit, AfterViewInit {
   }
 
   loadCodeBlockComponent( nodeElement: Element, code: string, exampleID): void {
-    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CodeBlockComponent);
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(CodeBlockWrapperComponent);
     // viewContainerRef.clear();
 
     // const componentRef = viewContainerRef.createComponent(componentFactory);
