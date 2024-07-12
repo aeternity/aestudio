@@ -98,8 +98,10 @@ export class MarkdownComponent implements OnInit, AfterViewInit {
     const componentRef = this.main.createComponent(componentFactory);
 
     componentRef.setInput('exampleCode', decodeURIComponent(code))
+    componentRef.setInput('exampleID', exampleID)
+
     if (examples[exampleID]?.tryItYourselfCode?.[0]) {
-      componentRef.setInput('tryItYourselfCode', examples[exampleID].tryItYourselfCode[0] )
+      componentRef.setInput('tryItYourselfCode', examples[exampleID].tryItYourselfCode[0].contract )
     }
     nodeElement.parentNode.replaceChild(componentRef.location.nativeElement, nodeElement);
 

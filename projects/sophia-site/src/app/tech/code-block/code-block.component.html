@@ -39,6 +39,36 @@
         </ngx-monaco-editor>
     </div>
     <!-- <div class="ui segment" suiTabContent="2">Second nested tab!</div> -->
+    <!-- interaction elements start -->
+    <div class="ui segments">
+        <div class="ui segment">
+            <div style="float:left">
+                <ng-icon name="cssChevronRight" size="1.5em" style="margin-top:1.5em"></ng-icon>
+            </div>
+            <div class="ui icon input loading callInputForm">
+                <input type="text" [(ngModel)]="userCommand" placeholder="foo(bar, baz)">
+                <!-- Rotating search icon thing -->
+                <!-- <i class="search icon"></i> -->
+              </div>
+            <button [disabled]="userCommand.length < 1" class="ui big primary button" (click)="collapse = !collapse">
+                <ng-icon name="bootstrapPlayFill" size="1.5em"></ng-icon>
+            </button>
+            <button class="ui big primary button" (click)="resetAll()">
+                <ng-icon name="cssSync" size="1.5em"></ng-icon>
+            </button>
+           
+        </div>
+        <div class="ui segment">
+            <div [suiCollapse]="!collapseResults">
+                <div class="ui segment">
+                    <h4 class="ui header">Collapsible Panel</h4>
+                    <p ngFor="let output of replOutputs">{{output}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- interaction elements end -->
 </sui-tabset>
 <!-- Do it Yourself end -->
 

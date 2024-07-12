@@ -1,5 +1,9 @@
 <!-- pass everything down to the wrapped actual component -->
-<app-code-block *ngIf="active" [exampleCode]="exampleCode" [exampleID]="exampleID" [tryItYourselfCode]="tryItYourselfCode"></app-code-block>
+<app-code-block *ngIf="active" 
+    [exampleCode]="exampleCode" 
+    [exampleID]="exampleID" 
+    [tryItYourselfCode]="tryItYourselfCode"
+    (resetButtonClicked)="resetCodeblock()"></app-code-block>
 
 
 <button class="btn" (click)="resetCodeblock()"></button>

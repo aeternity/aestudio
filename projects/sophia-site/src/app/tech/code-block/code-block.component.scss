@@ -46,3 +46,24 @@
     overflow: hidden;
     // transition: height 2.5s ease-in; // Smooth transition for max-height
 }
+
+/* .callInputForm{
+    border: unset !important;
+    border-bottom: 5px solid #1C6EA4 !important;
+    border-top: none !important;
+}
+ */
+.ui.input input {
+    border: unset !important;
+    border-bottom: 2px solid rgb(255, 45, 85, 0.75) !important;
+    border-radius: 0 !important;
+
+    &:active {
+        border: unset !important;
+        border-bottom: 2px solid rgb(255, 45, 85) !important;
+    }
+    &:focus {
+        border: unset !important;
+        border-bottom: 2px solid rgb(255 45 85) !important;
+    }
+}

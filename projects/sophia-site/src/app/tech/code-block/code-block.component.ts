@@ -1,18 +1,24 @@
 //import typings for monaco editor
 /// <reference path="../../../../../../node_modules/monaco-editor/monaco.d.ts" /> 
 
-import { Component, ContentChild, ElementRef, Input, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, Injector, ElementRef, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { FormsModule } from '@angular/forms';
 import { SuiModule } from 'ngx-ng2-semantic-ui';
-import { examples } from '../examples';
+import { examples, SophiaCodeExample } from '../examples';
 import { CodeBlockWrapperComponent } from "../code-block-wrapper/code-block-wrapper.component";
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { cssChevronRight } from '@ng-icons/css.gg';
+import { bootstrapPlayFill } from '@ng-icons/bootstrap-icons';
+import { cssSync } from '@ng-icons/css.gg';
+import { ReplServiceService } from '../repl-service.service';
 
 @Component({
   selector: 'app-code-block',
   standalone: true,
-  imports: [CommonModule, MonacoEditorModule, FormsModule, SuiModule, CodeBlockWrapperComponent],
+  imports: [CommonModule, MonacoEditorModule, FormsModule, SuiModule, CodeBlockWrapperComponent, NgIconComponent],
+  providers: [provideIcons({ cssChevronRight, cssSync, bootstrapPlayFill })],
   templateUrl: './code-block.component.html',
   styleUrls: ['./code-block.component.scss']
 })
@@ -20,11 +26,20 @@ import { CodeBlockWrapperComponent } from "../code-block-wrapper/code-block-wrap
 export class CodeBlockComponent implements OnInit {
   @Input() exampleCode: string;
   @Input() exampleID: string;
-  
   @Input() tryItYourselfCode: string; // fetch from the examples json file
+  
+  userCommand: string 
+  @Output() resetButtonClicked = new EventEmitter<void>();
+  
   container : Element;
   editor: monaco.editor.IStandaloneCodeEditor
-  examples = examples;
+  examples : SophiaCodeExample = examples;
+
+  collapseResults: boolean = true;
+
+  replOutputs: string[] = []
+  // replInstance: 
+
   // @ViewChildren('.editor-container', { read: ElementRef }) container: QueryList<ElementRef>;
   // container = document.getElementBy('container'); // for dynamic editor height
 
@@ -66,9 +81,10 @@ constructor(private elRef: ElementRef) {
   // debugger
 }
 
+
 ngAfterViewInit() {
-  debugger
     this.container = this.elRef.nativeElement.querySelector('.editor-container');
+  
 }
 
 updateHeight = () => {
@@ -98,8 +114,22 @@ initializeEditorObject = (theEditor: monaco.editor.IStandaloneCodeEditor) => {
 } 
 
   ngOnInit(): void {
-    
+    this.userCommand = this.examples[this.exampleID]?.tryItYourselfCode?.[0].predefCall;
   }
 
+  resetAll() {
+    this.resetButtonClicked.emit();
+  }
+
+  async deployAndRun() {
+    try{
+      /* let output : string  = await 
+      
+      this.replOutputs.push(output) */
+    } catch (error) {
+
+    }
+
+  }
 
 }

@@ -1540,6 +1540,27 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
+"@ng-icons/bootstrap-icons@^28.1.0":
+  version "28.1.0"
+  resolved "https://registry.npmjs.org/@ng-icons/bootstrap-icons/-/bootstrap-icons-28.1.0.tgz"
+  integrity sha512-yjIDNcvP5yxKwLr2a6aBqjNScYkeveU8ovL+/73l4HXSAIJ4k72VtfOiWNWRR2osMfGJR8hqNaYJOuEP+AbibA==
+  dependencies:
+    tslib "^2.2.0"
+
+"@ng-icons/core@^25.6.1":
+  version "25.6.1"
+  resolved "https://registry.npmjs.org/@ng-icons/core/-/core-25.6.1.tgz"
+  integrity sha512-o6vCttlzXvDZRYiOKOULr7fsX8gY/DwwxzBSrBQzwa/at+pC0xRoe6uczJ9Ato+y1EDWP/PlrEMAQfvokBA6tQ==
+  dependencies:
+    tslib "^2.2.0"
+
+"@ng-icons/css.gg@^28.1.0":
+  version "28.1.0"
+  resolved "https://registry.npmjs.org/@ng-icons/css.gg/-/css.gg-28.1.0.tgz"
+  integrity sha512-13wVC3IXUpnWhPXSYEJlyAHru3QqSXX9B8HpyYYAiLwRXiRlzMhcu809Vg5EIkevPRSCQiGBlqdqQ9Yx3lNYDQ==
+  dependencies:
+    tslib "^2.2.0"
+
 "@ngtools/webpack@16.2.6":
   version "16.2.6"
   resolved "https://registry.npmjs.org/@ngtools/webpack/-/webpack-16.2.6.tgz"
@@ -7167,6 +7188,13 @@ rxjs@7.8.1:
   dependencies:
     tslib "^2.1.0"
 
+"rxjs7@npm:rxjs@^7.8.1":
+  version "7.8.1"
+  resolved "https://registry.npmjs.org/rxjs/-/rxjs-7.8.1.tgz"
+  integrity sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==
+  dependencies:
+    tslib "^2.1.0"
+
 safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@^5.1.2, safe-buffer@^5.2.0, safe-buffer@^5.2.1, safe-buffer@>=5.1.0, safe-buffer@~5.2.0, safe-buffer@5.2.1:
   version "5.2.1"
   resolved "https://registry.npmjs.org/safe-buffer/-/safe-buffer-5.2.1.tgz"
@@ -8052,7 +8080,7 @@ tslib@^1.9.0:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.6.2, tslib@>=2.1.0:
+tslib@^2.0.0, tslib@^2.0.3, tslib@^2.1.0, tslib@^2.2.0, tslib@^2.3.0, tslib@^2.3.1, tslib@^2.6.2, tslib@>=2.1.0:
   version "2.6.2"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.6.2.tgz"
   integrity sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==
