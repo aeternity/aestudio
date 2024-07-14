@@ -18,7 +18,7 @@ import { ReplServiceService } from '../repl-service.service';
   selector: 'app-code-block',
   standalone: true,
   imports: [CommonModule, MonacoEditorModule, FormsModule, SuiModule, CodeBlockWrapperComponent, NgIconComponent],
-  providers: [provideIcons({ cssChevronRight, cssSync, bootstrapPlayFill })],
+  providers: [ReplServiceService, provideIcons({ cssChevronRight, cssSync, bootstrapPlayFill })],
   templateUrl: './code-block.component.html',
   styleUrls: ['./code-block.component.scss']
 })
@@ -29,6 +29,7 @@ export class CodeBlockComponent implements OnInit {
   @Input() tryItYourselfCode: string; // fetch from the examples json file
   
   userCommand: string 
+  mainContract: string;
   @Output() resetButtonClicked = new EventEmitter<void>();
   
   container : Element;
@@ -38,6 +39,7 @@ export class CodeBlockComponent implements OnInit {
   collapseResults: boolean = true;
 
   replOutputs: string[] = []
+  replInstance : ReplServiceService | null = null;
   // replInstance: 
 
   // @ViewChildren('.editor-container', { read: ElementRef }) container: QueryList<ElementRef>;
@@ -75,7 +77,8 @@ export class CodeBlockComponent implements OnInit {
   active: boolean = true;
 
 
-constructor(private elRef: ElementRef) { 
+
+constructor(private elRef: ElementRef, private injector: Injector) { 
   // this.tryItYourselfCode = this.examples[this.exampleID]?.tryItYourselfCode[0]
   // this.examples[this.exampleID]?.tryItYourselfCode[0]
   // debugger
@@ -115,21 +118,38 @@ initializeEditorObject = (theEditor: monaco.editor.IStandaloneCodeEditor) => {
 
   ngOnInit(): void {
     this.userCommand = this.examples[this.exampleID]?.tryItYourselfCode?.[0].predefCall;
+    this.mainContract = this.examples[this.exampleID]?.tryItYourselfCode?.[0].mainContract;
   }
 
   resetAll() {
     this.resetButtonClicked.emit();
   }
 
+  test() {
+    console.log('test')
+    debugger
+  }
+
   async deployAndRun() {
-    try{
-      /* let output : string  = await 
-      
-      this.replOutputs.push(output) */
-    } catch (error) {
 
-    }
+    this.replInstance
+        if (this.replInstance === null) {
+          this.replInstance = this.injector.get(ReplServiceService)
+        }
 
+
+        try{
+          let output : string = await this.replInstance.connectDeployAndCall(this.tryItYourselfCode, this.userCommand, this.mainContract);
+          console.log('output:', output )
+          this.addToResults(output)
+        } catch (error) {
+          this.addToResults("There was an error calculating the output, please click the refresh button and try again.")
+        }
+
+  }
+
+  addToResults(oneResult: string) {
+    this.replOutputs.push(oneResult)
   }
 
 }

@@ -65,6 +65,7 @@
     "ngx-ng2-semantic-ui": "^16.0.1",
     "ngx-webstorage-service": "~5.0.0",
     "os-browserify": "^0.3.0",
+    "phoenix": "^1.7.14",
     "phoenix-channels": "^1.0.0",
     "popper.js": "^1.16.1",
     "rxjs": "^6.5.5",

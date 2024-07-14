@@ -50,7 +50,7 @@
                 <!-- Rotating search icon thing -->
                 <!-- <i class="search icon"></i> -->
               </div>
-            <button [disabled]="userCommand.length < 1" class="ui big primary button" (click)="collapse = !collapse">
+            <button [disabled]="userCommand.length < 1" class="ui big primary button" (click)="deployAndRun()">
                 <ng-icon name="bootstrapPlayFill" size="1.5em"></ng-icon>
             </button>
             <button class="ui big primary button" (click)="resetAll()">
@@ -58,11 +58,11 @@
             </button>
            
         </div>
-        <div class="ui segment">
+        <div *ngIf="replOutputs.length > 0" class="ui segment fade-in1s">
             <div [suiCollapse]="!collapseResults">
                 <div class="ui segment">
                     <h4 class="ui header">Collapsible Panel</h4>
-                    <p ngFor="let output of replOutputs">{{output}}</p>
+                    <p *ngFor="let output of replOutputs" class="fade-in2s">{{output}}</p>
                 </div>
             </div>
         </div>

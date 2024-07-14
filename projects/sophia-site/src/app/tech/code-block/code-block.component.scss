@@ -67,3 +67,22 @@
         border-bottom: 2px solid rgb(255 45 85) !important;
     }
 }
+
+.fade-in1s {
+	animation: fadeIn 1s;
+  	opacity: 1;
+}
+
+.fade-in2s {
+	animation: fadeIn 2s;
+  	opacity: 1;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+       opacity: 1;
+    }
+  }

@@ -3,11 +3,19 @@ export const examples: SophiaCodeExample = {
   2: {
     tryItYourselfCode: [
       {
-        contract: `contract VoteTwice =
+        contract: `main contract Counter =
+  type state = int
+  entrypoint init() = 0
+  entrypoint get() = 2
+  stateful entrypoint incr() = put(state + 1)
+
+        `,
+       /*  contract: `contract VoteTwice =
   entrypoint voteTwice(v : VotingType, alt : string) =
     v.vote(alt)
-    v.vote(alt)`,
-        predefCall: `voteInChildContract("yes")`,
+    v.vote(alt)`, */
+        predefCall: `get()`,
+        mainContract: `Counter`,
       },
     ],
   },
@@ -15,6 +23,6 @@ export const examples: SophiaCodeExample = {
 
 export interface SophiaCodeExample {
     [k: number]: {
-        tryItYourselfCode?: Array<{contract: string, predefCall: string}>;
+        tryItYourselfCode?: Array<{contract: string, predefCall: string, mainContract: string}>;
     }
 }
