@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "description": "getting a fully running nodejs implementation of the js sdk",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:unit": "tsx tests/generate.ts && git diff --exit-code tests/generated",
+    "test:integration": "node tests/generated/all.js",
+    "test": "npm run test:unit && npm run test:integration"
   },
   "author": "nikita fuchs",
   "license": "ISC",
   "dependencies": {
-    "@aeternity/aepp-sdk": "^9.0.1",
-    "axios": "^0.21.1"
+    "@aeternity/aepp-sdk": "^14.0.0",
+    "tsx": "^4.19.2"
   }
 }
