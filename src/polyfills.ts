@@ -60,15 +60,10 @@ import 'zone.js'; // Included with Angular CLI.
   version: '12.1337',
 };
 
-// 3. Uncaught ReferenceError: Buffer is not defined
-//    at Module../node_modules/@aeternity/aepp-sdk/es/utils/hd-wallet.js
-
 //4. json.stringify can't parse bigint
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };
-
-global.Buffer = global.Buffer || require('buffer').Buffer;
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
