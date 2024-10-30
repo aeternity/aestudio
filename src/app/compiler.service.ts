@@ -1,27 +1,18 @@
-import { Injectable, Output, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { environment } from '../environments/environment';
 
-//import Detector from "@aeternity/aepp-sdk/es/utils/aepp-wallet-communication/wallet-detector";
-//import {RpcAepp} from "@aeternity/aepp-sdk";
-
 import { ContractBase } from './question/contract-base';
-// import { FormControl, FormGroup, Validators } from '@angular/forms';
-//import { ContractACI } from '@aeternity/aepp-sdk/es/contract/aci'
 
 import publicAccounts from './helpers/prefilled-accounts';
 import { EventlogService } from './services/eventlog/eventlog.service';
 
-// sdk 13 migration start
 import {
   AeSdk,
   MemoryAccount,
   Node,
   CompilerHttp,
-  AE_AMOUNT_FORMATS,
-  generateKeyPair,
-  Contract,
   BrowserWindowMessageConnection,
   walletDetector,
   AeSdkAepp,
@@ -34,12 +25,6 @@ import {
   ContractWithMethodsExtended,
 } from './helpers/interfaces';
 import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/connection/Browser';
-import AccountMemory from '@aeternity/aepp-sdk/es/account/Memory';
-import ContractWithMethods, { ContractMethodsBase } from '@aeternity/aepp-sdk/es/contract/Contract';
-
-// sdk 13 migration end
-
-const Detector = walletDetector;
 
 @Injectable({
   providedIn: 'root',
@@ -97,7 +82,6 @@ export class CompilerService {
 
   private cachedWallet: any = {};
 
-  private SDKoptionsToIgnore = ['mempool', 'getAccount']; // for performance reasons: an array of member functions of the sdk which NOT to call when fetching chain data after sdk init.
   private SDKoptionsToCheck = ['addresses', 'selectedAddress']; // this is used to abstract the SDKs methods to data which the editor is relying on. a function will return `sdkOptions` which need these properties to be filled with corresponding SDK functions of the current version.
   // ____ helpers start
 
@@ -146,13 +130,13 @@ export class CompilerService {
         { name: 'ae_uat', instance: new Node(this.TESTNET_URL) },
       ],
       onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting('compilerUrl')),
-      /*  
+      /*
     onNetworkChange: (params) => {
       console.log('Compiler: wallet network change');
-      // TODO: Handle network change 
+      // TODO: Handle network change
       // this.selectNode(params.networkId); // params.networkId needs to be defined as node in RpcAepp
       // this.aeternity.initProvider();
-    }, 
+    },
     onAddressChange: (addresses) => {
       // if (!addresses.current[this.aeternity.address]) {
         console.log('Compiler: wallet addressChange 2');
@@ -183,12 +167,12 @@ export class CompilerService {
     this.aeternity.detectedWallet = wallet.id;
 
     //let connected = await aeternity.rpcClient.connectToWallet(await wallet.getConnection());
-    
+
 
     //const walletConnection = newWallet ? await newWallet.getConnection() : this.cachedWallet.getConnection()
-   
+
     const connected = await this.Chain.connectToWallet(await wallet.getConnection());
-  
+
     this.Chain.selectNode(connected.networkId); // connected.networkId needs to be defined as node in RpcAepp
     await this.Chain.subscribeAddress('subscribe', 'current');
     this.aeternity.client = this.Chain;
@@ -559,7 +543,7 @@ export class CompilerService {
       Object.keys(myContract).forEach((funcName) => {
         if(!funcName.startsWith('_') && !funcName.startsWith('$') ){
           myContract._functions[funcName] = myContract[funcName];
-        } 
+        }
       }); */
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
@@ -698,7 +682,7 @@ export class CompilerService {
       },
     );
 
-    /* 
+    /*
     eventuell wieder aktivieren !
 
     this.initACI = {} as ContractBase<any>;

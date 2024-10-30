@@ -1,13 +1,10 @@
-import { Component, ViewChild, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CompilerService } from '../compiler.service';
-import { Subscription, asapScheduler } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ContractBase } from '../question/contract-base';
-import { Pipe, PipeTransform } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 
-import { IPopup } from 'ngx-ng2-semantic-ui';
-import { AeSdk } from '@aeternity/aepp-sdk';
 import { AeSdkExtended } from '../helpers/interfaces';
 import { isValidContractAddress } from '../helpers/utils';
 
@@ -45,12 +42,12 @@ export class ContractMenuSidebarComponent implements OnInit {
   addressOfExistingContract: `ct_${string}` | `${string}.chain` = null;
 
   // TODO: wrap in class for automatic type checking bullshit
-  /*the current SDK settings. Currently supported: 
+  /*the current SDK settings. Currently supported:
     .address - public address of the current active account in SDK instance
     .addresses[] - public addresses of all currently added accounts in instance
     .balances[address -> balance] - (provided by this component) map of balances of all AE accounts currently added to SDK
 
-  
+
 */
   currentSDKsettings: any = { address: '', addresses: [], balances: [2], getNodeInfo: { url: '' } };
 
@@ -323,7 +320,7 @@ export class ContractMenuSidebarComponent implements OnInit {
       }
     });
     /* for (var i = this.activeContracts.length - 1; i >= 0; --i) {
-      
+
   } */
   };
 }

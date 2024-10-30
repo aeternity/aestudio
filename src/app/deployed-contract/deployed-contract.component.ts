@@ -1,13 +1,9 @@
-import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
-import { BehaviorSubject, Subscription, generate } from 'rxjs';
 import { EventlogService } from '../services/eventlog/eventlog.service';
-import { IPopup, SuiPopupConfig } from 'ngx-ng2-semantic-ui';
+import { IPopup } from 'ngx-ng2-semantic-ui';
 import { ContractWithMethodsExtended } from '../helpers/interfaces';
-import { Aci } from '@aeternity/aepp-sdk/es/contract/compiler/Base';
-import { ContractBase } from '../question/contract-base';
-import { TestBed } from '@angular/core/testing';
 
 @Component({
   selector: 'app-deployed-contract',
@@ -95,9 +91,9 @@ export class DeployedContractComponent implements OnInit {
       // handle "false" result case not displaying call result data
       callresult.decodedResult == false ? (callresult.decodedResult = 'false') : true;
 
-      /*    Handle various result types ! 
+      /*    Handle various result types !
       false: done
-      true: Test 
+      true: Test
       numbers: todo
       complex types: todo */
 

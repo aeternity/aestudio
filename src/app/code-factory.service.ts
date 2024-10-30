@@ -1,4 +1,4 @@
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Injectable, Input, EventEmitter, Output } from '@angular/core';
 
 // vorlage für nodeJS: https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/import-nodejs.md#nodejs-bundle
@@ -52,15 +52,15 @@ export class CodeFactoryService {
 
     // account that will be used for the transactions
     const acc1 = MemoryAccount({ keypair: { secretKey: '2fcd1b5b3434ca8b465e030aa9db42b30c71b37eab2bcd527039bd89f650db68d844c73b26e3b35cc46aacfddec678298718a9ee1e5872f28febfe92908bd5c9', publicKey: 'ak_2eFHyvq8CWEndzoidC4aEMEhHZjoYvc23fFVM2u7QV9myPuMwc' } });
-  
+
     // a reference to the aeternity blockchain
     var Chain;
-    
+
     // instantiate a connection to the aeternity blockchain
     const main = async () => {
       const node1 = await Node({ url: 'https://testnet.aeternity.io', internalUrl: 'https://testnet.aeternity.io' })
       // const node2 = ...
-    
+
         Chain = await Ae({
          // This two params deprecated and will be remove in next major release
           url: 'https://testnet.aeternity.io',
@@ -72,7 +72,7 @@ export class CodeFactoryService {
           ],
           compilerUrl: 'https://latest.compiler.aepps.com',
           // \`keypair\` param deprecated and will be removed in next major release
-          
+
           accounts: [
             acc1,
             // acc2
@@ -92,7 +92,7 @@ export class CodeFactoryService {
     var myContract;
 
     // the code of your contract - watch out for correct indentations !
-    var code = 
+    var code =
     \`${_theContractCode}\`
 
     // create a contract instance
@@ -118,7 +118,7 @@ export class CodeFactoryService {
 
     // the name of the function you want to call
     var yourFunction = \"${_theFunctionName}\";
-    
+
     // the parameters of your function
     yourParams = [${_theParams}];
 

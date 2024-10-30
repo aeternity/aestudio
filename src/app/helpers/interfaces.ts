@@ -27,13 +27,6 @@ interface additionalAestudioProperties {
 interface additionalMemoryAccountProperties {
   property?: string;
 }
-interface FunctionAci {
-  arguments: any[];
-  name: string;
-  payable: boolean;
-  returns: any;
-  stateful: boolean;
-}
 
 interface additionalContractProperties {
   deployInfo?: { [key: string]: any };
