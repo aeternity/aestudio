@@ -146,8 +146,7 @@
                 class="item"
                 (click)="
                   callCodeFactory(
-                    contract.source,
-                    contract.$aci.functions[oneFunction.IDEindex].name,
+                    contract.$options.sourceCode,
                     contract.$aci.functions[oneFunction.IDEindex],
                     contract.deployInfo.params
                   )
