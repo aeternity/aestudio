@@ -84,11 +84,11 @@ export class ContractMenuSidebarComponent implements OnInit {
     // fetch all entered params
     let params = [];
 
-    console.log('Function 0 ist: ', this.initACI.functions[0]);
+    console.log('Function 0 ist:', this.initACI.functions[0]);
 
     this.initACI.functions[0].arguments.forEach((oneArg) => {
       //debugger
-      console.log('Ein arg: ', oneArg.currentInput);
+      console.log('Ein arg:', oneArg.currentInput);
       params.push(oneArg.currentInput);
     });
 
@@ -97,8 +97,8 @@ export class ContractMenuSidebarComponent implements OnInit {
       params = null;
     }
 
-    console.log('_existingContract ist ', _existingContract);
-    console.log('addressOfExistingContract ist ', this.addressOfExistingContract);
+    console.log('_existingContract ist', _existingContract);
+    console.log('addressOfExistingContract ist', this.addressOfExistingContract);
     // make compiler emit event
     // take the ACI/ContractBase the compiler stores
     // "If the user is trying to interact with an existing contract and something is in the address field, try bringing up the existing contract, else deploy a new one"
@@ -115,7 +115,7 @@ export class ContractMenuSidebarComponent implements OnInit {
       })
       .catch((err) => {
         // This can happen if the user denies clipboard permissions:
-        console.error('Could not copy text: ', err);
+        console.error('Could not copy text:', err);
       });
   }
 
@@ -137,16 +137,16 @@ export class ContractMenuSidebarComponent implements OnInit {
     // fires when new accounts are available
     this.sdkSettingsSubscription = this.compiler._notifyCurrentSDKsettings.subscribe(
       async (settings) => {
-        console.log('settings: ', settings);
+        console.log('settings:', settings);
 
         if (settings.type == 'extension') {
           //comming from the browser wallet
           this.currentSDKsettings = settings.settings;
-          console.log('gingen die settings durch? ', this.currentSDKsettings);
+          console.log('gingen die settings durch?', this.currentSDKsettings);
         } else {
           //comming from the web wallet
           this.currentSDKsettings = settings;
-          console.log('gingen die settings durch? ', this.currentSDKsettings);
+          console.log('gingen die settings durch?', this.currentSDKsettings);
         }
 
         //  Get balances of all available addresses
@@ -172,7 +172,7 @@ export class ContractMenuSidebarComponent implements OnInit {
           ? (this.initFunctionIsPresent = this.checkIfInitFunctionIsPresent())
           : true;
 
-        console.log('Current error is: ', this.currentError);
+        console.log('Current error is:', this.currentError);
         //this.initACI == null ? console.log("Jetzt init ACI leer!") : true;
         this.changeDetectorRef.detectChanges();
       } else {
@@ -190,11 +190,11 @@ export class ContractMenuSidebarComponent implements OnInit {
 
         // workaround for event firing on its own when loading the editor, thereby not sending any data:
         if (newContract != null) {
-          console.log('New contract: ', newContract); // .deployInfo.address
+          console.log('New contract:', newContract); // .deployInfo.address
           this.activeContracts.push(newContract);
 
           // temp test
-          //console.log("Current array of contracts: ", this.activeContracts);
+          //console.log("Current array of contracts:", this.activeContracts);
 
           // trigger this to generate the GUI for the contract
           this.deploymentLoading = false;
@@ -211,7 +211,7 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.newErrorSubscription = this.compiler._notifyCodeError.subscribe(async (error) => {
       await error;
       //let theError = error.__zone_symbol__value;
-      console.log('Nur error in sidebar: ', error);
+      console.log('Nur error in sidebar:', error);
       this.currentError = error;
     });
   }
@@ -219,7 +219,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   //desparate workaround for issue: contract to deploy is not being rendered since adding node choosing interface
 
   async changeActiveAccount(newAccount: any) {
-    console.log('So wird der neue account gesetzt: ', newAccount);
+    console.log('So wird der neue account gesetzt:', newAccount);
   }
 
   async changeSDKsetting(setting: string, params: any) {
@@ -228,12 +228,12 @@ export class ContractMenuSidebarComponent implements OnInit {
     switch (setting) {
       case 'selectAccount':
         (this.compiler.Chain as AeSdkExtended).selectAccount(params);
-        console.log('Attempted to change selectAccount: ', setting, params);
+        console.log('Attempted to change selectAccount:', setting, params);
         break;
 
       default:
         console.log(
-          'Attempted to change a setting that no switch case matched for: ',
+          'Attempted to change a setting that no switch case matched for:',
           setting,
           params,
         );
@@ -246,7 +246,7 @@ export class ContractMenuSidebarComponent implements OnInit {
   // get all balances from all addresses currently added to SDK
   // @param dontFillUp: boolean - if passed, do not top up accounts if one or some are low
   async fetchAllBalances(_dontFillUp?: boolean) {
-    //console.log("available addresses: ", this.currentSDKsettings.addresses)
+    //console.log("available addresses:", this.currentSDKsettings.addresses)
 
     if (!this.currentSDKsettings.balances) {
       this.currentSDKsettings.balances = {};
@@ -298,7 +298,7 @@ export class ContractMenuSidebarComponent implements OnInit {
       oneFunction.name == 'init' ? (found = true) : null;
     });
 
-    console.log('Init found ? ', found);
+    console.log('Init found ?', found);
 
     return found;
   }
@@ -311,9 +311,9 @@ export class ContractMenuSidebarComponent implements OnInit {
     this.activeContracts.forEach((element, index) => {
       if (element.IDEindex == contract.IDEindex) {
         console.log(
-          'Found contract to delete, existing: ',
+          'Found contract to delete, existing:',
           element.IDEindex,
-          'to delete: ',
+          'to delete:',
           contract.IDEindex,
         );
         this.activeContracts.splice(index, 1);

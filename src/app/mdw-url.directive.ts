@@ -60,10 +60,10 @@ export class MdwUrlDirective {
 
     let currentContent: string = this.el.nativeElement.innerText;
 
-    /* console.log("directive network id: ", currentNetwork)
-      console.log("directive network id direct: ", this.compiler.Chain?.selectedNode.networkId)
-      console.log("current content: ", currentContent)
-      console.log("nur el: ", this.el.nativeElement) */
+    /* console.log("directive network id:", currentNetwork)
+      console.log("directive network id direct:", this.compiler.Chain?.selectedNode.networkId)
+      console.log("current content:", currentContent)
+      console.log("nur el:", this.el.nativeElement) */
 
     var baseUrl: string;
     if (currentNetwork == 'ae_uat') {

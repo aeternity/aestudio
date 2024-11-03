@@ -23,22 +23,22 @@ export class CodeFactoryService {
   ) {
     console.log('Generate in sidebar getriggert');
     console.log('Als parameter wurden übergeben:');
-    console.log('_thefunctionName: ', _theFunctionName);
-    console.log('the params: ', _theParams);
-    console.log('the init params: ', _initParams);
+    console.log('_thefunctionName:', _theFunctionName);
+    console.log('the params:', _theParams);
+    console.log('the init params:', _initParams);
 
     // generate the input for init()
     const finalDeploymentParamString = JSON.stringify(_initParams).slice(1, -1);
 
-    //console.log("contract code is: ", this.activeContracts[0].source);
+    //console.log("contract code is:", this.activeContracts[0].source);
     let arrayOfInputData: any = [];
     _theParams.arguments.forEach((oneArg) => {
-      //console.log("One input is: ", oneArg)
+      //console.log("One input is:", oneArg)
 
       arrayOfInputData.push(oneArg.currentInputData);
     });
     _theParams = arrayOfInputData;
-    console.log('final array of input data: ', arrayOfInputData);
+    console.log('final array of input data:', arrayOfInputData);
 
     // fill all code parts separately
     var generatedCodeObject = {
@@ -101,15 +101,15 @@ export class CodeFactoryService {
     // Deploy the contract
     try {
       console.log("Deploying contract....")
-      console.log("Using account for deployment: ", Chain.addresses());
+      console.log("Using account for deployment:", Chain.addresses());
       await myContract.methods.init(${finalDeploymentParamString});
     } catch(e){
       console.log("Something went wrong, did you set up the SDK properly?");
-      console.log("Deployment failed: ", e)
+      console.log("Deployment failed:", e)
     }
       console.log("Contract deployed successfully!")
-      console.log("Contract address: ", myContract.deployInfo.address)
-      console.log("Transaction ID: ", myContract.deployInfo.transaction)
+      console.log("Contract address:", myContract.deployInfo.address)
+      console.log("Transaction ID:", myContract.deployInfo.transaction)
       console.log("\\n \\n")  `;
 
     generatedCodeObject.functionCall = `
@@ -126,11 +126,11 @@ export class CodeFactoryService {
     console.log("Calling your function: " + yourFunction);
     try{
       let callresult = await myContract.methods[yourFunction](...yourParams);
-      console.log("Transaction ID: ", callresult.hash);
+      console.log("Transaction ID:", callresult.hash);
       console.log("Advice: log the full callResult object for more useful information!")
-      console.log("Function call returned: ", callresult.decodedResult);
+      console.log("Function call returned:", callresult.decodedResult);
     } catch (e){
-      console.log("Calling your function errored: ", e)
+      console.log("Calling your function errored:", e)
     }`;
     this._generateCode.next(generatedCodeObject);
   }

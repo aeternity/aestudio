@@ -41,7 +41,7 @@ generateCodeStructure = async () => {
 
   processObject = (obj, topLevelParent, scanForGlobals) => {
     for (var key in obj) {
-      //console.log("Processing ", key)
+      //console.log("Processing", key)
 
       // if the object is empty, return immediately.
       if ('raw' in obj) {
@@ -59,15 +59,15 @@ generateCodeStructure = async () => {
         if (obj['formatted'] != undefined) {
           //console.log("Formatted gefunden!")
           // get all strings that start with '// code'
-          console.log('Formatted is: ', obj['formatted']);
+          console.log('Formatted is:', obj['formatted']);
           let codeStrings = obj['formatted'].filter((oneString) => oneString.startsWith('// code'));
-          console.log('Code strings are: ', codeStrings);
+          console.log('Code strings are:', codeStrings);
           // process all "// code"s and concat results to the found_globals
           codeStrings.forEach((oneCode) => {
             found_globals.concat(oneCode.match(/\*\*([^*]+)\*\*/g));
           });
 
-          console.log('Found globals: ', found_globals, ' in  top level parent: ', topLevelParent);
+          console.log('Found globals:', found_globals, 'in top level parent:', topLevelParent);
 
           // put them in the globals object accordingly
           topLevelParent == undefined
@@ -121,7 +121,7 @@ generateCodeStructure = async () => {
   };
 
   processKey = (obj, topLevelParent, scanForGlobals) => {
-    //console.log("Processing ", key)
+    //console.log("Processing", key)
 
     // if the object is empty, return immediately.
     if ('raw' in obj) {
@@ -139,15 +139,15 @@ generateCodeStructure = async () => {
       if (obj['formatted'] != undefined) {
         //console.log("Formatted gefunden!")
         // get all strings that start with '// code'
-        console.log('Formatted is: ', obj['formatted']);
+        console.log('Formatted is:', obj['formatted']);
         let codeStrings = obj['formatted'].filter((oneString) => oneString.startsWith('// code'));
-        console.log('Code strings are: ', codeStrings);
+        console.log('Code strings are:', codeStrings);
         // process all "// code"s and concat results to the found_globals
         codeStrings.forEach((oneCode) => {
           found_globals.concat(oneCode.match(/\*\*([^*]+)\*\*/g));
         });
 
-        console.log('Found globals: ', found_globals, ' in  top level parent: ', topLevelParent);
+        console.log('Found globals:', found_globals, 'in top level parent:', topLevelParent);
 
         // put them in the globals object accordingly
         topLevelParent == undefined

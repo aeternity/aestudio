@@ -121,7 +121,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
     //this.editorInstance.onKeyDown(handlerTest)
 
     this.compiler._newACI.subscribe((item) => {
-      console.log('>>> ACI subscription returned: ', item);
+      console.log('>>> ACI subscription returned:', item);
 
       if (
         Object.entries(item['aci']).length > 0 &&
@@ -131,7 +131,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
         this.activeContract.latestACI = item['aci'];
 
-        console.log('[one-editor-tab] New change received for contract: ', item['contractUID']);
+        console.log('[one-editor-tab] New change received for contract:', item['contractUID']);
 
         this.save();
 
@@ -160,7 +160,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
     this.rawACIsubscription = this.compiler._notifyCompiledAndACI.subscribe((item) => {
       console.log('Neue ACI für init ist da !', item);
 
-      console.log('>>> ACI subscription returned: ', item);
+      console.log('>>> ACI subscription returned:', item);
 
       if (
         Object.entries(item['aci']).length > 0 &&
@@ -170,7 +170,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
         this.activeContract.latestACI = item['aci'].contract;
 
-        console.log('[one-editor-tab] New change received for contract: ', item['contractUID']);
+        console.log('[one-editor-tab] New change received for contract:', item['contractUID']);
 
         this.activeContract.latestACI;
         this.save();
@@ -198,7 +198,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
     // hier ists doppelt gemoppelt: next line callt nur "generate aci only"
     //this.compiler.makeCompilerAskForCode(this.activeContract.contractUID);
 
-    //console.log("code ist gerade: ",this.activeContract.code);
+    //console.log("code ist gerade:",this.activeContract.code);
 
     /* // report changed code to parent component (so it can save it etc..)
     this.save()    */
@@ -245,7 +245,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         contextMenuOrder: 3, // order of a menu item within a group
         label: '<i class="share alternate icon"></i> Share contract and selection...',
         id: 'showDiff',
-        // precondition: false, 
+        // precondition: false,
         keybindings: [], // Hotkeys
         // function called when clicking
         // press the specified keys
@@ -254,20 +254,20 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
             var constructedUrl;
             var s = this.compiler.activeCodeSelection || "";
-            
+
             // share code with our without highlighter
             if (s.endLineNumber != undefined){
               constructedUrl = `${environment.appUrl}?highlight=${s.endLineNumber}-${s.endColumn}-${s.startLineNumber}-${s.startColumn}&contract=${contractID}`
             } else {
               constructedUrl = `${environment.appUrl}?contract=${contractID}`
             }
-            
-            console.log("DIE URL: ", constructedUrl)
+
+            console.log("DIE URL:", constructedUrl)
 
             if(contractID !== false) {
               this._clipboardService.copyFromContent(constructedUrl);
               this.contractID = String(contractID)
-            } 
+            }
 
             // display success message ;)
             this.isDimmed = true;
@@ -295,7 +295,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         result.selection.startLineNumber != result.selection.endLineNumber
       ) {
         this.compiler.activeCodeSelection = result.selection;
-        //console.log("selected: ", result.selection);
+        //console.log("selected:", result.selection);
       }
     });
 
@@ -336,7 +336,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
         // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
         let errorHash = this.hash(error);
-        //console.log("Error hash: ", errorHash)
+        //console.log("Error hash:", errorHash)
         // if angular isn't trying to report the already known error again...
         if (errorHash != this.lastError) {
           this.lastError = errorHash; // mark error as used
@@ -404,7 +404,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   setupACIsubscription() {
     // fires when contract got compiled or there was an error
     this.rawACIsubscription = this.compiler._notifyCompiledAndACI.subscribe((item) => {
-      console.log('>>> ACI subscription returned: ', item);
+      console.log('>>> ACI subscription returned:', item);
 
       if (
         Object.entries(item['aci']).length > 0 &&
@@ -414,7 +414,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         // save the latest ACI to display the contract's name in tabs and maybe other neat features later, but maybe not store it in cloud later.
         this.activeContract.latestACI = item['aci'].contract;
 
-        console.log('[one-editor-tab] New change received for contract: ', item['contractUID']);
+        console.log('[one-editor-tab] New change received for contract:', item['contractUID']);
 
         this.save();
         this.activeContract.latestACI;
@@ -450,10 +450,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
           this.save(); // like this ?
           this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights);
         } catch (e) {
-          console.log(
-            'tried adding highlights, but failed, for: ',
-            this.activeContract.contractUID,
-          );
+          console.log('tried adding highlights, but failed, for:', this.activeContract.contractUID);
         }
       } else {
         //console.log("Empty or other contract's ACI was received, not removing error");

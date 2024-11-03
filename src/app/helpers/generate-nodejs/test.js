@@ -28,8 +28,8 @@ var code = `
 contract CryptoHamster =
 
     record state = {
-        index : int, 
-        map_hamsters : map(string, hamster), 
+        index : int,
+        map_hamsters : map(string, hamster),
         testvalue: int}
 
     record hamster = {
@@ -37,14 +37,14 @@ contract CryptoHamster =
         name : string,
         dna : int}
 
-    stateful entrypoint init() = 
+    stateful entrypoint init() =
         { index = 1,
             map_hamsters = {},
             testvalue = 42}
-    
+
     public entrypoint read_test_value() : int =
         state.testvalue
-    
+
     public entrypoint return_caller() : address =
         Call.caller
 
@@ -54,13 +54,13 @@ contract CryptoHamster =
     public stateful entrypoint add_test_value(one: int, two: int) : int =
         put(state{testvalue = one + two})
         one + two
-    
+
     public entrypoint locally_add_two(one: int, two: int) : int =
         one + two
-    
+
     public stateful entrypoint statefully_add_two(one: int, two: int) =
         put(state{testvalue = one + two})
-    
+
     stateful entrypoint create_hamster(hamster_name: string) =
         require(!name_exists(hamster_name), "Name is already taken")
         let dna : int = generate_random_dna(hamster_name)
@@ -135,8 +135,8 @@ const main = async () => {
   // call your function
   console.log('Calling your function ' + yourFunction);
   let callresult = await myContract.methods[yourFunction](...yourParams);
-  console.log('Transaction ID: ', callresult.hash);
-  console.log('Function call returned: ', callresult.decodedResult);
+  console.log('Transaction ID:', callresult.hash);
+  console.log('Function call returned:', callresult.decodedResult);
 };
 
 // call main
@@ -157,7 +157,7 @@ deployContract = async () => {
   // Deploy the contract
   try {
     console.log('Deploying contract....');
-    console.log('Using account for deployment: ', Chain.addresses());
+    console.log('Using account for deployment:', Chain.addresses());
     await myContract.methods.init();
   } catch (e) {
     console.log('Something went wrong, investigating tx!');
@@ -165,8 +165,8 @@ deployContract = async () => {
     console.log(' Deployment failed: ' + e, 'error', myContract._name);
   }
   console.log('Contract deployed successfully!');
-  console.log('Contract address: ', myContract.deployInfo.address);
-  console.log('Transaction ID: ', myContract.deployInfo.transaction);
+  console.log('Contract address:', myContract.deployInfo.address);
+  console.log('Transaction ID:', myContract.deployInfo.transaction);
   console.log('\n \n');
 
   return true;

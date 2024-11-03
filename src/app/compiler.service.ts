@@ -158,8 +158,8 @@ export class CompilerService {
 
     /*   // detector.stopScan();
     newWallet ? this.cachedWallet = newWallet : true;
-    console.log("newwallet: ", newWallet);
-    console.log("wallets: ", wallets);
+    console.log("newwallet:", newWallet);
+    console.log("wallets:", wallets);
     console.log("cachedWallet", this.cachedWallet);
     console.log("one wallet" , Object.values(wallets)[0])
 
@@ -190,8 +190,8 @@ export class CompilerService {
       newWallet = newWallet || Object.values(wallets)[0];
       stopScan();
       newWallet ? (this.cachedWallet = newWallet) : true;
-      console.log('superhero: newwallet: ', newWallet);
-      console.log('superhero: wallets: ', wallets);
+      console.log('superhero: newwallet:', newWallet);
+      console.log('superhero: wallets:', wallets);
       console.log('superhero: cachedWallet', this.cachedWallet);
       console.log('superhero: one wallet', Object.values(wallets)[0]);
 
@@ -247,7 +247,7 @@ export class CompilerService {
 
   public onWalletSearchSuccess = async (connection) => {
     console.log('Compiler: Wallet search complete!');
-    console.log("Wallet's SDK: ", this.Chain);
+    console.log("Wallet's SDK:", this.Chain);
     console.log('Browser connection:', connection);
     this.Chain.currentWalletProvider = 'extension';
 
@@ -275,7 +275,7 @@ export class CompilerService {
     sdkSettingsToReport.address = currentAddress;
 
     /*  sdkSettingsToReport.getNodeInfo = { nodeNetworkId : this.Chain.rpcClient.info.networkId }
-  console.log("Compiler: Wallet-SDK settings: ", sdkSettingsToReport) */
+  console.log("Compiler: Wallet-SDK settings:", sdkSettingsToReport) */
 
     this._notifyCurrentSDKsettings.next({ type: 'extension', settings: sdkSettingsToReport });
     this.providerToggleInProcess = false; // for the switch toggle in the right menu bar
@@ -336,7 +336,7 @@ export class CompilerService {
   }) {
     // if a config is provided, apply its values to the sdkConfigOverrides
     if (_config) {
-      console.log('Compiler: Received custom config for SDK: ', _config);
+      console.log('Compiler: Received custom config for SDK:', _config);
       // first, clear old custom config values
       this.sdkConfigOverrides = {};
 
@@ -364,14 +364,14 @@ export class CompilerService {
     // TODO: show eventual error in UI
     try {
       let height = await this.Chain.getHeight();
-      console.log('Current Block Height: ', height);
+      console.log('Current Block Height:', height);
     } catch (e) {
       console.log('error fetching block height:', e);
     }
 
     // notify sidebar about new SDK settings
     this._notifyCurrentSDKsettings.next(this.getCurrentSDKsettings());
-    console.log('Das SDK: ', this.Chain);
+    console.log('Das SDK:', this.Chain);
     this.providerToggleInProcess = false; // for the switch toggle in the right menu bar
   }
 
@@ -422,7 +422,7 @@ export class CompilerService {
               Object.keys((this.Chain as AeSdkAeppExtended)._accounts.current)[0],
             );
           } else {
-            console.error('Compiler: Error fetching addresses from SDK: ', this.Chain);
+            console.error('Compiler: Error fetching addresses from SDK:', this.Chain);
           }
 
           allAccountAddresses.forEach((account) => {
@@ -452,7 +452,7 @@ export class CompilerService {
 
     let sourceCode = this.code;
     // code to aci
-    //console.log("Hier kommt der code: ", sourceCode);
+    //console.log("Hier kommt der code:", sourceCode);
 
     // create a contract instance
     var myContract: ContractWithMethodsExtended;
@@ -461,10 +461,10 @@ export class CompilerService {
       // Here we deploy the contract
 
       myContract = await this.Chain.initializeContract({ sourceCode: this.code });
-      //console.log(">>>> compilation result (mycontract): ", myContract);
+      //console.log(">>>> compilation result (mycontract):", myContract);
 
       try {
-        console.log('Deployment params: ', _deploymentParams);
+        console.log('Deployment params:', _deploymentParams);
         let txParams = {
           interval: 500,
           blocks: 3,
@@ -527,9 +527,9 @@ export class CompilerService {
       });
     }
 
-    console.log('My contract: ', myContract);
-    //console.log("My account: ", this.Chain.addresses());
-    //console.log("Das ganze SDK: ", this.Chain);
+    console.log('My contract:', myContract);
+    //console.log("My account:", this.Chain.addresses());
+    //console.log("Das ganze SDK:", this.Chain);
 
     this.getAciFromCompiler(sourceCode).subscribe(
       (data) => {
@@ -602,7 +602,7 @@ export class CompilerService {
       this.getErrorsFromDebugCompiler(sourceCode).subscribe(
         (data: EncodedACI) => {},
         (error) => {
-          console.log('Found the error: ', error.error[0]);
+          console.log('Found the error:', error.error[0]);
           returnValue = error.error[0];
           resolve(returnValue);
         },
@@ -617,7 +617,7 @@ export class CompilerService {
     sourceCode: string;
     contractUID: number | string;
   }): Promise<any> {
-    //console.log("Compiler erhielt als source: ", params.sourceCode);
+    //console.log("Compiler erhielt als source:", params.sourceCode);
     // replace " => \"
     if (params.sourceCode == undefined) {
       return false;
@@ -630,7 +630,7 @@ export class CompilerService {
     sourceCode = sourceCode.replace(new RegExp('\\/\\*.*[sS]*\\*\\/', 'g'), '');
 
     // code to aci
-    //console.log("Here comes the code: ", sourceCode);
+    //console.log("Here comes the code:", sourceCode);
 
     // this source code will be used when user clicks deployContract()
     this.code = sourceCode;
@@ -666,7 +666,7 @@ export class CompilerService {
         return rawACI;
       },
       async (error) => {
-        //console.log("oooops fehler ", error.error)
+        //console.log("oooops fehler", error.error)
         var theError = await this.fetchErrorsFromDebugCompiler(sourceCode);
 
         // prevent showing errors for contracts in non-visible tabs:
@@ -700,7 +700,7 @@ export class CompilerService {
     let functions = aci.contract.functions;
     // 2. ... for every function of the contract....
     functions.forEach((fun) => {
-      //onsole.log("Taking care of ", fun.name);
+      //console.log("Taking care of", fun.name);
       // add field to later store latest return data
       fun.lastReturnData = '';
       // add field to later store loading state (e.g. transaction being mined or waiting for local call..)

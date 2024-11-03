@@ -70,7 +70,7 @@ export class AuthService {
                     this.loginRetrieved = true
                     this.checkForKeys(user);
                   }
-                  
+
                 return this.afs.doc<User>("users/" + user.uid).valueChanges();
               } else {
                   console.log("Login: Ausgeloggt")
@@ -91,9 +91,9 @@ export class AuthService {
 
   // get the user's testnet keys
   /*  async checkForKeys(user) {
-      
+
       var userRef = this.afs.collection('users').doc(user.uid);
-      
+
         let getUser = await userRef.get().subscribe(async doc => {
           if (!doc.exists) {
             console.log('Login: No such document!');
@@ -109,10 +109,10 @@ export class AuthService {
 
              let keypairs = await this.generateAndFillAccounts();
 
-             console.log("Login: Have these accounts to write: ", keypairs)
+             console.log("Login: Have these accounts to write:", keypairs)
              let writeDB =  await this.afs.collection('users').doc(user.uid).set({accounts: keypairs}, {merge: true});
-           
-             console.log("Login: writing to db was like: ", writeDB)
+
+             console.log("Login: writing to db was like:", writeDB)
 
              let memoryaccounts : MemoryAccount[] = [];
 
@@ -183,11 +183,11 @@ export class AuthService {
             maxFourBusy++;
             var keypair = Crypto.generateKeyPair();
 
-            //console.log("Login: Keypair: ", keypair)
+            //console.log("Login: Keypair:", keypair)
 
             // add custom property to memory account to later know it belongs to a logged-in user
             //oneAccount.property = "personal"
-            //console.log("Login: oneAccount: ", oneAccount)
+            //console.log("Login: oneAccount:", oneAccount)
 
             //debugger
 
@@ -202,7 +202,7 @@ export class AuthService {
                   keypairs.push(keypair);
                   maxFourBusy--;
                   this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
-                  console.log('Login: Finished account ', data);
+                  console.log('Login: Finished account', data);
                 },
                 error: (error) => {
                   /* console.log('Faucet request errored, waiting for next run.', error); */ maxFourBusy--;
@@ -220,31 +220,31 @@ export class AuthService {
 
       try {
         let writeDB =  await this.afs.collection('shared-contracts').add(data)
-        console.log("AUTH write ergab: ", writeDB)
+        console.log("AUTH write ergab:", writeDB)
         let dbID = writeDB["_key"].path.segments[1]
         return dbID
       } catch (error) {
         console.log("Auth: Write to DB failed!")
         return false
-      }  
+      }
     } */
 
   /*  async getSharedContract(shareID : string) {
-      return new Promise((resolve, reject) => 
+      return new Promise((resolve, reject) =>
         {
           try {
             let contract =  this.afs.collection('shared-contracts').doc(shareID).get().subscribe(something => {
-              //console.log("AUTH: Retrieved ", something)
-              console.log("AUTH: Retrieved ", something.data().code)
+              //console.log("AUTH: Retrieved", something)
+              console.log("AUTH: Retrieved", something.data().code)
               resolve(something.data().code)
             })
           } catch (error) {
-            console.log("AUTH: Couldn't query for contract, ", error)
+            console.log("AUTH: Couldn't query for contract,", error)
             resolve(undefined)
           }
         }
       )
-       
+
 
 
     } */

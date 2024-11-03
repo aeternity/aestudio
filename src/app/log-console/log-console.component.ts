@@ -153,6 +153,6 @@ export class LogConsoleComponent implements OnInit {
     this.state.consoleTrigger.emit();
     //}, 1000);
 
-    console.log('state console open: ', this.state.consoleOpen);
+    console.log('state console open:', this.state.consoleOpen);
   }
 }

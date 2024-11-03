@@ -36,7 +36,7 @@ export class DeployedContractComponent implements OnInit {
   public openPopup(popup: IPopup, _payable: any) {
     /* console.log("Message triggered, function index:", functionIndex)
     console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
-    console.log('doOpen is ', _payable);
+    console.log('doOpen is', _payable);
     if (this.compiler.txAmountInAettos > 0 && _payable == false) popup.open();
   }
 
@@ -47,7 +47,7 @@ export class DeployedContractComponent implements OnInit {
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number) {
     let theContract = this.contract;
 
-    console.log('theContract is: ', theContract.$aci.functions[0]);
+    console.log('theContract is:', theContract.$aci.functions[0]);
     // activate loader
     theContract.$aci.functions[_theFunctionIndex].loading = true;
 
@@ -56,7 +56,7 @@ export class DeployedContractComponent implements OnInit {
 
     var callParams: any[] = this.contract.$aci.functions[_theFunctionIndex].arguments.map(
       (oneArg) => {
-        console.log('One arg: ', oneArg.currentInputData);
+        console.log('One arg:', oneArg.currentInputData);
         // try parsing input data as JSON to try handling complex input data cases - work in progess !
         if (typeof oneArg.type === 'object') return JSON.parse(oneArg.currentInputData);
         return oneArg.currentInputData;
@@ -65,9 +65,9 @@ export class DeployedContractComponent implements OnInit {
 
     // check if custom values are applied for tx value, gas and gas price, and if so, set them
     var txParams: any = { interval: 500, blocks: 3, allowUnsynced: true };
-    console.log('Compiler: amount: ', this.compiler.txAmountInAettos);
-    console.log('Compiler: gasAmountInUnits: ', this.compiler.gasAmountInUnits);
-    console.log('Compiler: gasPriceInAettos: ', this.compiler.gasPriceInAettos);
+    console.log('Compiler: amount:', this.compiler.txAmountInAettos);
+    console.log('Compiler: gasAmountInUnits:', this.compiler.gasAmountInUnits);
+    console.log('Compiler: gasPriceInAettos:', this.compiler.gasPriceInAettos);
 
     this.compiler.txAmountInAettos > 0 ? (txParams.amount = this.compiler.txAmountInAettos) : true;
     this.compiler.gasAmountInUnits > 0 ? (txParams.gas = this.compiler.gasAmountInUnits) : true;
@@ -76,7 +76,7 @@ export class DeployedContractComponent implements OnInit {
       : true;
 
     // "Apply" parameters a.k.a call function
-    console.log('Called function: ', _theFunction);
+    console.log('Called function:', _theFunction);
     var callresult;
     try {
       console.log('Calling with tx params:', txParams);
@@ -85,8 +85,8 @@ export class DeployedContractComponent implements OnInit {
         ...callParams,
         txParams,
       );
-      console.log('The callresult object: ', callresult);
-      console.log('Decoded result ', callresult.decodedResult);
+      console.log('The callresult object:', callresult);
+      console.log('Decoded result', callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract._name)
       // handle "false" result case not displaying call result data
       callresult.decodedResult == false ? (callresult.decodedResult = 'false') : true;
@@ -105,7 +105,7 @@ export class DeployedContractComponent implements OnInit {
         data: callresult,
       });
     } catch (e) {
-      console.log('Error was: ', e);
+      console.log('Error was:', e);
 
       if (e.decodedError != undefined) {
         //this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.contract._name)
@@ -130,9 +130,9 @@ export class DeployedContractComponent implements OnInit {
 
     // set decoded result to GUI
 
-    console.log('Loader ist: ', this.contract.$aci.functions[_theFunctionIndex].loading);
+    console.log('Loader ist:', this.contract.$aci.functions[_theFunctionIndex].loading);
     console.log(
-      'Das wurde als callresult geschrieben: ',
+      'Das wurde als callresult geschrieben:',
       this.contract.$aci.functions[_theFunctionIndex].lastReturnData,
     );
   }
@@ -160,7 +160,7 @@ export class DeployedContractComponent implements OnInit {
       })
       .catch((err) => {
         // This can happen if the user denies clipboard permissions:
-        console.error('Could not copy text: ', err);
+        console.error('Could not copy text:', err);
       });
   }
 

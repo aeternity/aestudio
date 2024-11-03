@@ -69,7 +69,7 @@ export class TxValuesComponent implements OnInit {
   }
 
   toggleGasRadioButton() {
-    console.log('Clicked, toggle: ', this.gasRadioButton);
+    console.log('Clicked, toggle:', this.gasRadioButton);
     let newValue = this.manualGasValue;
     let oldValue = this.lastManualGasValue;
 
@@ -95,7 +95,7 @@ export class TxValuesComponent implements OnInit {
   }
 
   toggleGasPriceRadioButton() {
-    console.log('Price Clicked, toggle: ', this.gasPriceRadioButton);
+    console.log('Price Clicked, toggle:', this.gasPriceRadioButton);
     let newValue = this.manualGasPriceValue;
     let oldValue = this.lastManualGasPriceValue;
 
@@ -120,13 +120,13 @@ export class TxValuesComponent implements OnInit {
   setUnit(unit: string) {
     console.log(unit);
     this.currentUnit = unit;
-    console.log('New multiplier: ', Math.pow(10, this.units[this.currentUnit]));
+    console.log('New multiplier:', Math.pow(10, this.units[this.currentUnit]));
     this.calculateFinalValue();
   }
 
   calculateFinalValue() {
     this.currentValue = this.currentInput * Math.pow(10, this.units[this.currentUnit]);
     this.compiler.txAmountInAettos = this.currentValue;
-    console.log('New currentValue: ', this.currentValue);
+    console.log('New currentValue:', this.currentValue);
   }
 }

@@ -154,7 +154,7 @@ export class EditorComponent implements OnInit {
   };
 
   ngOnInit() {
-    /* 
+    /*
     this.state.editor.tabHeight = document.getElementById('tabMenu').offsetHeight;
     this.state.editor.menuHeight = document.getElementById('logoHeader').offsetHeight;
     this.state.editor.viewportHeight = window.innerHeight
@@ -171,18 +171,18 @@ export class EditorComponent implements OnInit {
       // fetching logs from compiler...
       this.logs = this.compiler.logs;
     }, 1000); */
-    /* 
+    /*
         this.logStream$ = this.logs[1];
         this.logStream$ = this.logs[2]; */
 
     const syncRoute: any = this._route.snapshot;
-    console.log('Die gesamt route: ', syncRoute);
-    console.log('>>>>>>Durchlauf:  ', ++this.runTimes);
+    console.log('Die gesamt route:', syncRoute);
+    console.log('>>>>>>Durchlauf: ', ++this.runTimes);
 
     this._route.queryParamMap.subscribe(async (parameter) => {
       // quickfix for stupid racing condition
       this.runTimes++;
-      console.log('Run times: ', this.runTimes);
+      console.log('Run times:', this.runTimes);
       // get the parameters for code highlighting
       var codeToHighlight: string = '';
 
@@ -194,10 +194,10 @@ export class EditorComponent implements OnInit {
       }
       console.log('highlight:', codeToHighlight);
       console.log('Highlighted rows:', this.highlightedRows);
-      console.log('Parameters are: ', parameter);
+      console.log('Parameters are:', parameter);
 
       /* var contractID = parameter.get("contract");
-      console.log("contract ID: ", contractID);
+      console.log("contract ID:", contractID);
  */
 
       // contract sharing feature - deactivated for now
@@ -206,45 +206,45 @@ export class EditorComponent implements OnInit {
       /*      if (parameter.get("contract") !== null || parameter.get("contractCode") !== null ) {
 
 
-    
+
 
         var contractCode : any
         if (parameter.get("contract") !== null) {
           var contractID = parameter.get("contract");
-          contractCode = await this.authService.getSharedContract(contractID) 
-          console.log("fetched contract ID: ", contractID);
+          contractCode = await this.authService.getSharedContract(contractID)
+          console.log("fetched contract ID:", contractID);
         } else {
           var codeURL = parameter.get("contract")
           try {
             let response = await fetch(codeURL);
             contractCode = await response.json()
           } catch(e) {
-            console.log("Error loading external code: ", e)
+            console.log("Error loading external code:", e)
           }
         }
-       
+
         //let something = this.http.get(`https://xfs2awe868.execute-api.eu-central-1.amazonaws.com/dev/candidates/9702aa10-b`)
 
-        //let contractCode = await this.authService.getSharedContract(contractID) 
+        //let contractCode = await this.authService.getSharedContract(contractID)
 
 
           // if the backend responds, load contracts from local storage and ...
           // ...initialize a new contract with the code from the backend and push it to the contracts array.
           // if there is no contract in the response, just load the contracts from storage.
 
-          // TODO: Show a message if a contract was tried to be fetched that doesnt exist (anymore) 
+          // TODO: Show a message if a contract was tried to be fetched that doesnt exist (anymore)
 
-          //console.log("is it there? ", res['contract'])
-          
+          //console.log("is it there?", res['contract'])
+
           if (contractCode != undefined) {
-            
-            //console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+
+            //console.log(">>>>>>>> Debugging storage: All contracts return:", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
-            
+
             // we set the contract fetched from the backend as the new active contract, get its name, create a new contract object, and push it to the contracts.
 
             // GET THE CONTRACT'S NAME...
-            
+
             this.compiler.fromCodeToACI(contractCode).subscribe(
               (data: EncodedACI) => {
                 // set the contract to a fixed external name
@@ -254,7 +254,7 @@ export class EditorComponent implements OnInit {
                 this.activeContract = new Contract({ _code: contractCode, _nameInTab: namestring, _latestAcI : data.encoded_aci.contract })
 
                 console.log("Editor new contract:", this.activeContract)
-    
+
                 // TODO : make being the active tab a property to the contract object and tell tab shit to use it !
 
                 // set contract parameters
@@ -264,8 +264,8 @@ export class EditorComponent implements OnInit {
 
                 // only push this shared contract into the array of active contracts if it's not known yet
                 var contractExists: boolean = false;
-                console.log(" same? ", this.contracts[0].shareId);
-                console.log(" same? ", this.activeContract);
+                console.log(" same?", this.contracts[0].shareId);
+                console.log(" same?", this.activeContract);
                 console.log("same ?", this.contracts[0].shareId == this.activeContract.shareId);
 
                 // check if the contract is already there...
@@ -278,7 +278,7 @@ export class EditorComponent implements OnInit {
                   };
                 })
 
-                console.log("save ContractExists: ", contractExists)
+                console.log("save ContractExists:", contractExists)
                 // if no contract with this shareID was found, push it.
                 contractExists == false ? this.contracts.push(this.activeContract) : true
 
@@ -305,7 +305,7 @@ export class EditorComponent implements OnInit {
 
           } else {
 
-            console.log(">>>>>>>> Debugging storage: All contracts return: ", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
+            console.log(">>>>>>>> Debugging storage: All contracts return:", this.localStorage.showStorage("ALL_CONTRACT_CODES"));
             this.contracts = this.localStorage.getAllContracts();
             // if there is no contract in the storage initialize an empty one
             this.contracts.length == 0 ? this.contracts.push(new Contract({})) : true
@@ -324,7 +324,7 @@ export class EditorComponent implements OnInit {
           this.compiler.code = this.activeContract.code;
 
 
-        
+
 
       } else {
  */
@@ -333,7 +333,7 @@ export class EditorComponent implements OnInit {
       // fix for stupid racing condition
       if (this.runTimes >= 2) {
         console.log(
-          '>>>>>>>> Debugging storage: All contracts return: ',
+          '>>>>>>>> Debugging storage: All contracts return:',
           this.localStorage.showStorage('ALL_CONTRACT_CODES'),
         );
         this.contracts = this.localStorage.getAllContracts();
@@ -358,7 +358,7 @@ export class EditorComponent implements OnInit {
     // If the compiler asks for code, give it to him and deploy the contract
     this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode.subscribe((item) => {
       console.log('Im editor angekommen !');
-      //console.log("Current code ist: ", this.contract.code)
+      //console.log("Current code ist:", this.contract.code)
 
       try {
         // try generating ACI for init-interface
@@ -367,7 +367,7 @@ export class EditorComponent implements OnInit {
           contractUID: this.activeContract.contractUID,
         });
       } catch (e) {
-        console.log('Editor.component Error (no code yet): ', e);
+        console.log('Editor.component Error (no code yet):', e);
       }
     });
 
@@ -395,7 +395,7 @@ export class EditorComponent implements OnInit {
       this.setTabAsActive(this.contracts[0]);
     }, 1500);
 
-    console.log('activeContract Contracts: ', this.contracts);
+    console.log('activeContract Contracts:', this.contracts);
     this.setTabAsActive(this.contracts[0]);
   }
 
@@ -472,7 +472,7 @@ export class EditorComponent implements OnInit {
               constructedUrl = `${environment.appUrl}?contract=${data['candidateId']}`;
             }
 
-            console.log('DIE URL: ', constructedUrl);
+            console.log('DIE URL:', constructedUrl);
             this._clipboardService.copyFromContent(constructedUrl);
             // display success message ;)
             this.isDimmed = true;
@@ -499,7 +499,7 @@ export class EditorComponent implements OnInit {
         result.selection.startLineNumber != result.selection.endLineNumber
       ) {
         this.compiler.activeCodeSelection = result.selection;
-        //console.log("selected: ", result.selection);
+        //console.log("selected:", result.selection);
       }
     });
 
@@ -584,10 +584,10 @@ export class EditorComponent implements OnInit {
   // trigger whether the contract is displayed in the tabs or not
   toggleTabAppearance(_params: any) {
     this.contracts.forEach((oneContract) => {
-      //console.log("Editor: Comparing with contractUID: ", oneContract.contractUID)
+      //console.log("Editor: Comparing with contractUID:", oneContract.contractUID)
       //console.log("save oneContract.shareId :" , oneContract.shareId);
-      //console.log("Editor: Clicked on contract: ", _params.contract)
-      //console.log("Editor: In this case, these are the contracts: ", this.contracts)
+      //console.log("Editor: Clicked on contract:", _params.contract)
+      //console.log("Editor: In this case, these are the contracts:", this.contracts)
       if (oneContract.contractUID == _params.contract.contractUID) {
         switch (_params.triggerMode) {
           case 'off':
@@ -621,13 +621,13 @@ export class EditorComponent implements OnInit {
   }
 
   addNewContract() {
-    console.log('comparing.. right now there are ', this.contracts.length);
+    console.log('comparing.. right now there are', this.contracts.length);
     let newContract = new Contract({});
     console.log('new contract ist:', newContract);
     this.contracts.push(newContract);
     this.localStorage.storeAllContracts(this.contracts);
     this.changeDetectorRef.detectChanges();
-    console.log('comparing.. now there are ', this.contracts.length);
+    console.log('comparing.. now there are', this.contracts.length);
   }
   sortObjectKeys(obj) {
     if (obj == null || obj == undefined) {

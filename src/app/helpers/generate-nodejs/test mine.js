@@ -50,8 +50,8 @@ const main = async () => {
 contract CryptoHter =
 
 record state = {
-    index : int, 
-    map_hamsters : map(string, hamster), 
+    index : int,
+    map_hamsters : map(string, hamster),
     testvalue: int}
 
 record hamster = {
@@ -59,7 +59,7 @@ record hamster = {
     name : string,
     dna : int}
 
-stateful entrypoint init() = 
+stateful entrypoint init() =
     { index = 1,
         map_hamsters = {},
         testvalue = 42}
@@ -71,7 +71,7 @@ public entrypoint return_caller() : address =
     Call.caller
 
 public entrypoint cause_error() : unit =
-    require(2 == 1, "require failed") 
+    require(2 == 1, "require failed")
 
 public stateful entrypoint add_test_value(one: int, two: int) : int =
     put(state{testvalue = one + two})
@@ -124,15 +124,15 @@ entrypoint test(name: string) : hash =
   // Deploy the contract
   try {
     console.log('Deploying contract....');
-    console.log('Using account for deployment: ', Chain.addresses());
+    console.log('Using account for deployment:', Chain.addresses());
     await myContract.methods.init();
   } catch (e) {
     console.log('Something went wrong, did you set up the SDK properly?');
-    console.log('Deployment failed: ', e);
+    console.log('Deployment failed:', e);
   }
   console.log('Contract deployed successfully!');
-  console.log('Contract address: ', myContract.deployInfo.address);
-  console.log('Transaction ID: ', myContract.deployInfo.transaction);
+  console.log('Contract address:', myContract.deployInfo.address);
+  console.log('Transaction ID:', myContract.deployInfo.transaction);
   console.log('\n \n');
 
   // CONTRACT FUNCTION CALL
@@ -147,10 +147,10 @@ entrypoint test(name: string) : hash =
   console.log('Calling your function: ' + yourFunction);
   try {
     let callresult = await myContract.methods[yourFunction](...yourParams);
-    console.log('Transaction ID: ', callresult.hash);
+    console.log('Transaction ID:', callresult.hash);
     console.log('Advice: log the full callResult object for more useful information!');
-    console.log('Function call returned: ', callresult.decodedResult);
+    console.log('Function call returned:', callresult.decodedResult);
   } catch (e) {
-    console.log('Calling your function errored: ', e);
+    console.log('Calling your function errored:', e);
   }
 };
