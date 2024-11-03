@@ -1,20 +1,34 @@
 <div class="contractInLeftMenuWrapper">
-
-   <!-- the style of this component is handled in its component's code, see "styleLabel" etc. -->
-      <div class="contractInLeftMenu" [ngStyle]="styleLabel" (click) = "displayInTabs()" ><a class="item labelFont" >{{contract.latestACI?.name == undefined ? 'Compiling..' : contract.latestACI.name }}</a> </div>
-      <div class="ContractInLeftMenuRightButton" [ngStyle]="rightButtonLabel"> 
-            <div class="iconwrapper"> 
-                  <i (click)="toggleDeleteDialog()" [ngClass]="{'pointer': true, 'trash': !toggled, 'close': toggled, 'icon': true}"  class="pointer trash icon"></i> 
-                  <div class="svgwrapper"> 
-
-                   <!-- <svg height="30" width="30">
+  <!-- the style of this component is handled in its component's code, see "styleLabel" etc. -->
+  <div class="contractInLeftMenu" [ngStyle]="styleLabel" (click)="displayInTabs()">
+    <a class="item labelFont">{{
+      contract.latestACI?.name == undefined ? 'Compiling..' : contract.latestACI.name
+    }}</a>
+  </div>
+  <div class="ContractInLeftMenuRightButton" [ngStyle]="rightButtonLabel">
+    <div class="iconwrapper">
+      <i
+        (click)="toggleDeleteDialog()"
+        [ngClass]="{ pointer: true, trash: !toggled, close: toggled, icon: true }"
+        class="pointer trash icon"
+      ></i>
+      <div class="svgwrapper">
+        <!-- <svg height="30" width="30">
                         <circle cx="15" cy="15" r="15" />
                       </svg>
                        -->
-                  </div>  
-            </div>  
       </div>
-      <div [ngClass]="{'deleteDialogToggled': toggled, 'deleteDialogUnToggled': !toggled}" >
-            <p class="pointer item labelFont" style="color: #1B1C1D !important" >Are you sure ? <i *ngIf="toggled" (click)="deleteContract()" style="padding-left: 7px;"  class="check icon"></i> </p>
-      </div>
+    </div>
+  </div>
+  <div [ngClass]="{ deleteDialogToggled: toggled, deleteDialogUnToggled: !toggled }">
+    <p class="pointer item labelFont" style="color: #1b1c1d !important">
+      Are you sure ?
+      <i
+        *ngIf="toggled"
+        (click)="deleteContract()"
+        style="padding-left: 7px"
+        class="check icon"
+      ></i>
+    </p>
+  </div>
 </div>

@@ -1,143 +1,165 @@
 <!-- Top menu bar start  -->
 <div id="logoHeader" class="ui top attached inverted demo menu">
-    <img id="logo" src="/assets/aestudio.svg">
-    <!-- <p id="logoText1">Æ&nbsp;</p>
+  <img id="logo" src="/assets/aestudio.svg" />
+  <!-- <p id="logoText1">Æ&nbsp;</p>
     <p id="logoText2">Studio</p>
     
     <div class="my-icon" aria-label="icon" [inlineSVG]="'/assets/fire.svg'"></div> -->
-    
 </div>
 <!-- Top menu bar end -->
 
 <!-- left side menu start -->
 
-
 <sui-sidebar-container id="theSideMenu" class="ui bottom attached segment theSideMenu">
+  <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
+    <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
+    <app-contract-in-left-menu
+      #oneCon
+      style="width: 100%; height: auto"
+      *ngFor="let oneContract of contracts; let i = index"
+      [contract]="oneContract"
+      (showInTabs)="toggleTabAppearance({ contract: oneContract, triggerMode: 'on' })"
+      (mouseover)="oneCon.onHover()"
+      (mouseleave)="oneCon.unHover()"
+      (contractDeletion)="deleteContract($event)"
+      (showInTabsToggle)="toggleTabAppearance({ contract: oneContract, triggerMode: 'on' })"
+    >
+    </app-contract-in-left-menu>
 
-    <sui-sidebar transition="slide along" class="inverted vertical" #sidebar>
-        <!-- #oneCon creates a reference to each of the entries this ngFor creates ! -->
-        <app-contract-in-left-menu #oneCon style="width:100%; height: auto"
-            *ngFor="let oneContract of contracts; let i = index"
-            [contract] = "oneContract"
-            (showInTabs)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
-            (mouseover)="oneCon.onHover()"
-            (mouseleave)="oneCon.unHover()"
-            (contractDeletion)="deleteContract($event)"
-            (showInTabsToggle)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'on'})"
+    <!-- reserved for eventual extra stuff<a class="item">2</a> -->
+  </sui-sidebar>
+  <sui-sidebar-sibling [isDimmedWhenVisible]="false">
+    <!-- <div class="ui basic segment"> -->
+
+    <!-- left side menu end -->
+
+    <!-- Tab menu start -->
+    <sui-tabset>
+      <div id="tabMenu" class="ui top attached tabular menu" style="height: 45px; border-radius: 0">
+        <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
+
+        <a class="item blinkOnLoad pepperwhite" style="border-radius: 0" (click)="sidebar.toggle()">
+          <i style="margin-left: 0px; margin-right: 10px" class="sidebar icon"></i> Menu
+        </a>
+
+        <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
+          <a
+            style="float: left; border-radius: 0 !important"
+            *ngIf="oneContract.showInTabs"
+            (click)="triggerWindowRefresh(1); setTabAsActive(oneContract)"
+            class="contracttab item"
+            suiTabHeader="{{ i }}"
+          >
+            {{ oneContract.latestACI?.name }}
+            <a>
+              <p
+                class="tabclosingx"
+                (click)="
+                  toggleTabAppearance({ contract: oneContract, triggerMode: 'off' });
+                  triggerWindowRefresh(200)
+                "
+              >
+                &nbsp; &times;
+              </p></a
             >
-            </app-contract-in-left-menu>
+          </a>
+        </ng-container>
 
-        <!-- reserved for eventual extra stuff<a class="item">2</a> -->
-    </sui-sidebar>
-    <sui-sidebar-sibling [isDimmedWhenVisible]="false">
-        <!-- <div class="ui basic segment"> -->
+        <a class="item pepperwhite" (click)="addNewContract()"> <i class="plus icon"></i> </a>
+      </div>
+      <!-- Tab menu end -->
 
-<!-- left side menu end -->
+      <!-- Editor Start -->
+      <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
+        <div
+          *ngIf="oneContract.showInTabs"
+          class="ui bottom attached segment"
+          suiTabContent="{{ i }}"
+        >
+          <app-one-editor-tab
+            [activeContract]="contracts[i]"
+            (activeContractChange)="saveContractChangesToContractsArray($event)"
+          >
+          </app-one-editor-tab>
+        </div>
+      </ng-container>
+      <!-- Editor End -->
+    </sui-tabset>
+  </sui-sidebar-sibling>
 
-<!-- Tab menu start -->
-            <sui-tabset >
-                <div id="tabMenu" class="ui top attached tabular menu" style="height: 45px; border-radius: 0">   <!-- isActive="contract.contractUID == currentTabUID ? true : false" -->
-                    
-                    <a class="item blinkOnLoad pepperwhite" style="border-radius: 0" (click)="sidebar.toggle()">
-                        <i style="margin-left: 0px; margin-right: 10px" class="sidebar icon"></i> Menu
-                    </a>
-                   
-                    
-                    <ng-container #testing *ngFor="let oneContract of contracts; let i = index">
-                            <a style="float: left; border-radius: 0 !important;"  *ngIf="oneContract.showInTabs" (click)="triggerWindowRefresh(1); setTabAsActive(oneContract);"  class="contracttab item" suiTabHeader="{{i}}"> {{oneContract.latestACI?.name}}  
-                                <a> <p class="tabclosingx" (click)="toggleTabAppearance({'contract': oneContract, 'triggerMode': 'off'}); triggerWindowRefresh(200); " >&nbsp; &times; </p></a>
-                            </a>
-                    </ng-container>
-
-                    <a class="item pepperwhite" (click)="addNewContract()" > <i class="plus icon"></i>  </a> 
-                </div>
-<!-- Tab menu end -->
-
-<!-- Editor Start -->
-                <ng-container #oneCon *ngFor="let oneContract of contracts; let i = index">
-                    <div  *ngIf="oneContract.showInTabs" class="ui bottom attached segment" suiTabContent="{{i}}">
-                        <app-one-editor-tab [activeContract]="contracts[i]" (activeContractChange)="saveContractChangesToContractsArray($event)" >  </app-one-editor-tab>
-                    </div>
-                </ng-container>
-<!-- Editor End -->
-            </sui-tabset>
-
-    </sui-sidebar-sibling>
-
-   <!--  <div class="placeholder">
+  <!--  <div class="placeholder">
         placeholder
     </div> -->
 
-    <!-- The log console -->
-<app-log-console style="padding: 0px" console-opener> </app-log-console>
-<!-- <app-log-console style="padding: 0px; background:green" console-opener [style.max-height]="this.state.consoleOpen ? '25%' : '0px'"> </app-log-console> -->
-
+  <!-- The log console -->
+  <app-log-console style="padding: 0px" console-opener> </app-log-console>
+  <!-- <app-log-console style="padding: 0px; background:green" console-opener [style.max-height]="this.state.consoleOpen ? '25%' : '0px'"> </app-log-console> -->
 </sui-sidebar-container>
-
-
-
-
 
 <!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
-    <h1 class="ui inverted header">Link copied to clipboard!</h1>
-    <br>
-    <p style="font-size: 35px">🎉</p>
+  <h1 class="ui inverted header">Link copied to clipboard!</h1>
+  <br />
+  <p style="font-size: 35px">🎉</p>
 </sui-dimmer>
 
 <!-- Code generator  -->
-<div class = "codeGenerator">
-<sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
-        
-        <div id="header" style="display: table-caption;">
-            <!-- <p style="font-size: 35px; display:contents">🎉</p> -->
-            
-            <a href="#" id="codeEditorClosingIcon" (click)="closeCodeEditor()" > <i class="close icon"></i> </a> <br>
-            <p style="font-size: 35px">🎉</p>
-            <h1 class="ui inverted header">Generated Code</h1> 
-            <h3 class="ui inverted header">Pick components:</h3> 
-            <div id="codeGenDisplayOptions">
-                <div class="codeGenOption">
-                    <input
-                    type="checkbox"
-                    [(ngModel)]="codeGeneratorSettings.sdk"
-                    [ngModelOptions]="{standalone: true}"
-                    (change)="refreshGeneratedCode()"/> 
-                    <span class="codeGenOptionLabel">SDK initialization</span>
-                    <br>
-                </div>   
-                <div class="codeGenOption">
-                    <input
-                    type="checkbox"
-                    [(ngModel)]="codeGeneratorSettings.contract"
-                    [ngModelOptions]="{standalone: true}"
-                    (change)="refreshGeneratedCode()"/> 
-                    <span class="codeGenOptionLabel">Contract Deployment</span>
-                    <br>
-                </div>
-                <div class="codeGenOption">
-                    <input
-                    type="checkbox"
-                    [(ngModel)]="codeGeneratorSettings.function"
-                    [ngModelOptions]="{standalone: true}"
-                    (change)="refreshGeneratedCode()"/>  
-                    <span class="codeGenOptionLabel">Contract Call</span>
-                    <br>
-                </div>
-            </div>
-            <br>
+<div class="codeGenerator">
+  <sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
+    <div id="header" style="display: table-caption">
+      <!-- <p style="font-size: 35px; display:contents">🎉</p> -->
 
+      <a href="#" id="codeEditorClosingIcon" (click)="closeCodeEditor()">
+        <i class="close icon"></i>
+      </a>
+      <br />
+      <p style="font-size: 35px">🎉</p>
+      <h1 class="ui inverted header">Generated Code</h1>
+      <h3 class="ui inverted header">Pick components:</h3>
+      <div id="codeGenDisplayOptions">
+        <div class="codeGenOption">
+          <input
+            type="checkbox"
+            [(ngModel)]="codeGeneratorSettings.sdk"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="refreshGeneratedCode()"
+          />
+          <span class="codeGenOptionLabel">SDK initialization</span>
+          <br />
         </div>
-
-
-
-        
-        <ngx-monaco-editor *ngIf="this.generatedCode" id="generatedCodeEditor" [(ngModel)]="this.generatedCode" id="generatedCodeEditor" [options]="generatedCodeEditorOptions" ></ngx-monaco-editor>
-        <div class="ui form">
-             <div class="field">
-            
+        <div class="codeGenOption">
+          <input
+            type="checkbox"
+            [(ngModel)]="codeGeneratorSettings.contract"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="refreshGeneratedCode()"
+          />
+          <span class="codeGenOptionLabel">Contract Deployment</span>
+          <br />
         </div>
+        <div class="codeGenOption">
+          <input
+            type="checkbox"
+            [(ngModel)]="codeGeneratorSettings.function"
+            [ngModelOptions]="{ standalone: true }"
+            (change)="refreshGeneratedCode()"
+          />
+          <span class="codeGenOptionLabel">Contract Call</span>
+          <br />
         </div>
+      </div>
+      <br />
+    </div>
 
-</sui-dimmer>
+    <ngx-monaco-editor
+      *ngIf="this.generatedCode"
+      id="generatedCodeEditor"
+      [(ngModel)]="this.generatedCode"
+      id="generatedCodeEditor"
+      [options]="generatedCodeEditorOptions"
+    ></ngx-monaco-editor>
+    <div class="ui form">
+      <div class="field"></div>
+    </div>
+  </sui-dimmer>
 </div>

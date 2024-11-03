@@ -7,17 +7,10 @@ import { ContractInLeftMenuComponent } from '../contract-in-left-menu/contract-i
 //import { EditorComponent } from './editor.component';
 
 @NgModule({
-  declarations: [ContractInLeftMenuComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    ContractInLeftMenuComponent
-  ],
+  declarations: [ContractInLeftMenuComponent],
+  imports: [BrowserModule, FormsModule, ReactiveFormsModule, ContractInLeftMenuComponent],
   providers: [],
-  bootstrap: []
+  bootstrap: [],
   //if something is not working, try uncommenting this: bootstrap: [EditorComponent]
 })
-export class EditorModule { }
- 
+export class EditorModule {}

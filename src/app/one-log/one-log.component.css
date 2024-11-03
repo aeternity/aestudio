@@ -1,61 +1,59 @@
 p {
-    color: #d4d4d4 !important;
+  color: #d4d4d4 !important;
 }
 
 .hoverHighlightWhite:hover {
-    color: white !important
+  color: white !important;
 }
 
-.noMarginBottom{
-    margin-bottom: 0
-} 
-
+.noMarginBottom {
+  margin-bottom: 0;
+}
 
 .middlewareLink:hover {
-    text-decoration: underline;
-    color: white !important;
+  text-decoration: underline;
+  color: white !important;
 }
 
 /* error box start */
 .errorbox {
-    width: auto;
-    margin: auto;
-    border: 0px solid grey;
-    display: flex;
-    }
-    .errorbox-icon,
-    .right {
-    display: flex;
-    flex-direction: column;
-    }
-    .errorbox-icon,
-    .right > div {
-    padding: 0em, 1em, 0em, 1em;
-    }
-    .errorbox-icon {
-    background: none;
-    }
-    .div2 {
-    background: none;
-    
-    }
+  width: auto;
+  margin: auto;
+  border: 0px solid grey;
+  display: flex;
+}
+.errorbox-icon,
+.right {
+  display: flex;
+  flex-direction: column;
+}
+.errorbox-icon,
+.right > div {
+  padding: 0em, 1em, 0em, 1em;
+}
+.errorbox-icon {
+  background: none;
+}
+.div2 {
+  background: none;
+}
 
-    .div2 p{
-        color: #d4d4d4;
-    }
+.div2 p {
+  color: #d4d4d4;
+}
 
-    .div3 {
-    background: #F8DDA4;
-    margin-left: 1em;
-    }
-    
-    .sidebar-icon{
-     color: #d4d4d4;
-     font-size: 4.6em;
-     margin-top: 0.5em;
-    margin-bottom: -0.2em;
-    }
-    .code{
-        background: lightgray
-    }
-      /* error box end */
+.div3 {
+  background: #f8dda4;
+  margin-left: 1em;
+}
+
+.sidebar-icon {
+  color: #d4d4d4;
+  font-size: 4.6em;
+  margin-top: 0.5em;
+  margin-bottom: -0.2em;
+}
+.code {
+  background: lightgray;
+}
+/* error box end */

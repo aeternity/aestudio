@@ -1,29 +1,30 @@
 .theEditorColumn {
-    margin-left: 0px !important;
-    padding-left: 0px !important;
-    margin-right: 0px !important;
-    padding-right: 0px !important;
+  margin-left: 0px !important;
+  padding-left: 0px !important;
+  margin-right: 0px !important;
+  padding-right: 0px !important;
 }
 
 .noMarginNoPadding {
-    margin-left: 0px !important;
-    padding-left: 0px !important;
-    margin-right: 0px !important;
-    padding-right: 0px !important;
+  margin-left: 0px !important;
+  padding-left: 0px !important;
+  margin-right: 0px !important;
+  padding-right: 0px !important;
 }
 
 .resizable-horizontally {
-    resize: horizontal !important;
+  resize: horizontal !important;
 }
 
 .noMarginButPadding {
-    margin-left: 0px !important;
-    padding-left: 2em !important;
-    margin-right: 0px !important;
-    padding-right: 2em !important;
+  margin-left: 0px !important;
+  padding-left: 2em !important;
+  margin-right: 0px !important;
+  padding-right: 2em !important;
 }
 
-@media only screen and (min-width: 1200px){
-.ui.grid.container {
+@media only screen and (min-width: 1200px) {
+  .ui.grid.container {
     width: 100% !important;
-}}
+  }
+}

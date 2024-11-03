@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 //import { Router } from '@angular/router';
-import { User } from './user.model'; 
+import { User } from './user.model';
 import { HttpClient } from '@angular/common/http';
 //import { from } from 'rxjs';
 import { from as observableFrom } from 'rxjs';
@@ -24,7 +24,7 @@ const {
   Contract,
   BrowserWindowMessageConnection,
   walletDetector,
-} = require('@aeternity/aepp-sdk')
+} = require('@aeternity/aepp-sdk');
 
 // sdk 13 migration end
 
@@ -34,34 +34,32 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
  */
 // Fire Editor
-import { CompilerService } from '../../compiler.service'
+import { CompilerService } from '../../compiler.service';
 
 @Injectable({
-    providedIn: 'root'
-  })
+  providedIn: 'root',
+})
 export class AuthService {
+  user$: Observable<User | null | undefined>;
 
-    user$: Observable<User | null | undefined>;
+  theUser: any;
 
-    theUser: any;
+  // workaround for stupid swatchMap rxJS thingy triggering twice after response
+  loginRetrieved: boolean = false;
 
-    // workaround for stupid swatchMap rxJS thingy triggering twice after response
-    loginRetrieved: boolean = false;
+  fillingUpAccounts = {
+    active: 'false',
+    percentage: 0,
+  };
 
-    fillingUpAccounts = {
-      active: "false",
-      percentage: 0
-    }
-
-    constructor(
-        /* private afAuth: AngularFireAuth,
+  constructor(
+    /* private afAuth: AngularFireAuth,
         private afs: AngularFirestore,  */ // TODO: rename to afStore
-        private http: HttpClient,
-        private compiler: CompilerService
-        
-    ) { 
-          // Get the auth state, then fetch the Firestore user document or return null
-          /* this.user$ = this.afAuth.authState.pipe(
+    private http: HttpClient,
+    private compiler: CompilerService,
+  ) {
+    // Get the auth state, then fetch the Firestore user document or return null
+    /* this.user$ = this.afAuth.authState.pipe(
             switchMap(user => {
                 // Logged in
 
@@ -83,17 +81,16 @@ export class AuthService {
               }
             })
           ) */
-        }
+  }
 
-
- /*    async googleSignin() {
+  /*    async googleSignin() {
         const provider = new auth.GithubAuthProvider();
         const credential = await this.afAuth.auth.signInWithPopup(provider);
         return this.updateUserData(credential.user);
     } */
 
-    // get the user's testnet keys
-   /*  async checkForKeys(user) {
+  // get the user's testnet keys
+  /*  async checkForKeys(user) {
       
       var userRef = this.afs.collection('users').doc(user.uid);
       
@@ -142,7 +139,7 @@ export class AuthService {
         })
     } */
 
- /*    private updateUserData(user) {
+  /*    private updateUserData(user) {
         // query for user information by user ID and create a reference to this data entry.
         const userRef: AngularFirestoreDocument<User> = this.afs.doc("users/" + user.uid);
 
@@ -157,7 +154,7 @@ export class AuthService {
         return userRef.set(data, {merge: true})
     } */
 
-/*     async signOut() {
+  /*     async signOut() {
         await this.afAuth.auth.signOut();
         this.theUser = null;
         this.fillingUpAccounts.active = "false";
@@ -167,54 +164,58 @@ export class AuthService {
         this.compiler.Chain.currentWalletProvider == "web" ? this.compiler.setupWebClient({command: "reset"}) : true
     } */
 
-    // helpers
+  // helpers
 
-    private async generateAndFillAccounts() : Promise<typeof MemoryAccount[]> {
-      return new Promise ((resolve, reject) => {
+  private async generateAndFillAccounts(): Promise<(typeof MemoryAccount)[]> {
+    return new Promise((resolve, reject) => {
+      console.log('Login: fillup triggered');
+      this.fillingUpAccounts.active = 'true';
 
-        console.log("Login: fillup triggered")
-        this.fillingUpAccounts.active = "true";
-  
-        
-        var maxFourBusy: number = 0
-        var keypairs:any[] = []
-        // enough of RxJS bullshit - just looping over the fillup request as long as is needed to fill up 4 accounts.
-        setInterval(async ()=>{
-          if (keypairs.length >= 4){
-            this.fillingUpAccounts.active = "done";
-            resolve(keypairs)
-          } else {
-            if(maxFourBusy < 4){
-              maxFourBusy++;
-              var keypair = Crypto.generateKeyPair()
-              
-              //console.log("Login: Keypair: ", keypair)
-              
-              // add custom property to memory account to later know it belongs to a logged-in user
-              //oneAccount.property = "personal"
-              //console.log("Login: oneAccount: ", oneAccount)
+      var maxFourBusy: number = 0;
+      var keypairs: any[] = [];
+      // enough of RxJS bullshit - just looping over the fillup request as long as is needed to fill up 4 accounts.
+      setInterval(async () => {
+        if (keypairs.length >= 4) {
+          this.fillingUpAccounts.active = 'done';
+          resolve(keypairs);
+        } else {
+          if (maxFourBusy < 4) {
+            maxFourBusy++;
+            var keypair = Crypto.generateKeyPair();
 
-              //debugger
+            //console.log("Login: Keypair: ", keypair)
 
-              this.http.post(`https://testnet.faucet.aepps.com/account/${keypair.publicKey}`, {}, {headers: {'content-type': 'application/x-www-form-urlencoded'}}).subscribe({
-                next: data => {
+            // add custom property to memory account to later know it belongs to a logged-in user
+            //oneAccount.property = "personal"
+            //console.log("Login: oneAccount: ", oneAccount)
+
+            //debugger
+
+            this.http
+              .post(
+                `https://testnet.faucet.aepps.com/account/${keypair.publicKey}`,
+                {},
+                { headers: { 'content-type': 'application/x-www-form-urlencoded' } },
+              )
+              .subscribe({
+                next: (data) => {
                   keypairs.push(keypair);
-                  maxFourBusy--; 
+                  maxFourBusy--;
                   this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
-                  console.log("Login: Finished account ", data)
+                  console.log('Login: Finished account ', data);
                 },
-                error: error => {/* console.log('Faucet request errored, waiting for next run.', error); */ maxFourBusy--}
-            })
-              
-            }
-
+                error: (error) => {
+                  /* console.log('Faucet request errored, waiting for next run.', error); */ maxFourBusy--;
+                },
+              });
           }
-        }, 1000)
+        }
+      }, 1000);
+    });
+  }
 
-    })}
-
-    // for sharing contracts
-   /*  async storeContractShare(contractCode) : Promise<string | boolean>{
+  // for sharing contracts
+  /*  async storeContractShare(contractCode) : Promise<string | boolean>{
       let data = {code: contractCode}
 
       try {
@@ -228,7 +229,7 @@ export class AuthService {
       }  
     } */
 
-   /*  async getSharedContract(shareID : string) {
+  /*  async getSharedContract(shareID : string) {
       return new Promise((resolve, reject) => 
         {
           try {
@@ -247,7 +248,6 @@ export class AuthService {
 
 
     } */
-
 }
 
 // TODO: auto re-fill accounts when empty

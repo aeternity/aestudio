@@ -5,42 +5,44 @@ body {
 .can-toggle {
   position: relative;
 }
-.can-toggle *, .can-toggle *:before, .can-toggle *:after {
+.can-toggle *,
+.can-toggle *:before,
+.can-toggle *:after {
   box-sizing: border-box;
 }
-.can-toggle input[type="checkbox"] {
+.can-toggle input[type='checkbox'] {
   opacity: 0;
   position: absolute;
   top: 0;
   left: 0;
 }
-.can-toggle input[type="checkbox"][disabled] ~ label {
+.can-toggle input[type='checkbox'][disabled] ~ label {
   pointer-events: none;
 }
-.can-toggle input[type="checkbox"][disabled] ~ label .can-toggle__switch {
+.can-toggle input[type='checkbox'][disabled] ~ label .can-toggle__switch {
   opacity: 0.4;
 }
-.can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch:before {
+.can-toggle input[type='checkbox']:checked ~ label .can-toggle__switch:before {
   content: attr(data-unchecked);
   left: -25%;
 }
-.can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle input[type='checkbox']:checked ~ label .can-toggle__switch:after {
   content: attr(data-checked);
 }
 .can-toggle label {
   -webkit-user-select: none;
-     -moz-user-select: none;
-      -ms-user-select: none;
-          user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
   position: relative;
   display: -webkit-box;
   display: flex;
   -webkit-box-align: center;
-          align-items: center;
+  align-items: center;
 }
 .can-toggle label .can-toggle__label-text {
   -webkit-box-flex: 1;
-          flex: 1;
+  flex: 1;
   padding-left: 32px;
 }
 .can-toggle label .can-toggle__switch {
@@ -61,38 +63,42 @@ body {
   text-align: center;
   background: white;
   -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
 }
-.can-toggle input[type="checkbox"][disabled] ~ label {
+.can-toggle input[type='checkbox'][disabled] ~ label {
   color: rgba(119, 119, 119, 0.5);
 }
-.can-toggle input[type="checkbox"]:focus ~ label .can-toggle__switch, .can-toggle input[type="checkbox"]:hover ~ label .can-toggle__switch {
+.can-toggle input[type='checkbox']:focus ~ label .can-toggle__switch,
+.can-toggle input[type='checkbox']:hover ~ label .can-toggle__switch {
   background-color: #777;
 }
-.can-toggle input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   color: #5e5e5e;
 }
-.can-toggle input[type="checkbox"]:hover ~ label {
+.can-toggle input[type='checkbox']:hover ~ label {
   color: #6a6a6a;
 }
-.can-toggle input[type="checkbox"]:checked ~ label:hover {
+.can-toggle input[type='checkbox']:checked ~ label:hover {
   color: #55bc49;
 }
-.can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch {
-  background-color: #D12754 ;
+.can-toggle input[type='checkbox']:checked ~ label .can-toggle__switch {
+  background-color: #d12754;
 }
-.can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
-  color: #D12754;
+.can-toggle input[type='checkbox']:checked ~ label .can-toggle__switch:after {
+  color: #d12754;
 }
-.can-toggle input[type="checkbox"]:checked:focus ~ label .can-toggle__switch, .can-toggle input[type="checkbox"]:checked:hover ~ label .can-toggle__switch {
-  background-color: #FF2D55;
+.can-toggle input[type='checkbox']:checked:focus ~ label .can-toggle__switch,
+.can-toggle input[type='checkbox']:checked:hover ~ label .can-toggle__switch {
+  background-color: #ff2d55;
 }
-.can-toggle input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
-  color: #D12754;
+.can-toggle input[type='checkbox']:checked:focus ~ label .can-toggle__switch:after,
+.can-toggle input[type='checkbox']:checked:hover ~ label .can-toggle__switch:after {
+  color: #d12754;
 }
 .can-toggle label .can-toggle__label-text {
   -webkit-box-flex: 1;
-          flex: 1;
+  flex: 1;
 }
 .can-toggle label .can-toggle__switch {
   -webkit-transition: background-color 0.3s cubic-bezier(0, 1, 0.5, 1);
@@ -106,17 +112,21 @@ body {
   -webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
   transition: -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
   transition: transform 0.3s cubic-bezier(0, 1, 0.5, 1);
-  transition: transform 0.3s cubic-bezier(0, 1, 0.5, 1), -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
+  transition:
+    transform 0.3s cubic-bezier(0, 1, 0.5, 1),
+    -webkit-transform 0.3s cubic-bezier(0, 1, 0.5, 1);
   color: #777;
 }
-.can-toggle input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
 }
-.can-toggle input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle input[type='checkbox']:checked ~ label .can-toggle__switch:after {
   -webkit-transform: translate3d(65px, 0, 0);
-          transform: translate3d(calc(100% - 4px), 0, 0);
+  transform: translate3d(calc(100% - 4px), 0, 0);
 }
-.can-toggle input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle input[type='checkbox']:checked:focus ~ label .can-toggle__switch:after,
+.can-toggle input[type='checkbox']:checked:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
 }
 .can-toggle label {
@@ -149,14 +159,25 @@ body {
 .can-toggle label .can-toggle__switch:hover:after {
   box-shadow: 0 3px 3px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.can-toggle--size-small input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle.can-toggle--size-small input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-small input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle.can-toggle--size-small input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.can-toggle--size-small input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-small
+  input[type='checkbox']:checked
+  ~ label
+  .can-toggle__switch:after {
   -webkit-transform: translate3d(44px, 0, 0);
-          transform: translate3d(44px, 0, 0);
+  transform: translate3d(44px, 0, 0);
 }
-.can-toggle.can-toggle--size-small input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle.can-toggle--size-small input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-small
+  input[type='checkbox']:checked:focus
+  ~ label
+  .can-toggle__switch:after,
+.can-toggle.can-toggle--size-small
+  input[type='checkbox']:checked:hover
+  ~ label
+  .can-toggle__switch:after {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
 }
 .can-toggle.can-toggle--size-small label {
@@ -165,7 +186,7 @@ body {
 .can-toggle.can-toggle--size-small label .can-toggle__switch {
   height: 28px;
   -webkit-box-flex: 0;
-          flex: 0 0 90px;
+  flex: 0 0 90px;
   border-radius: 2px;
 }
 .can-toggle.can-toggle--size-small label .can-toggle__switch:before {
@@ -186,14 +207,25 @@ body {
 .can-toggle.can-toggle--size-small label .can-toggle__switch:hover:after {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.can-toggle--size-large input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle.can-toggle--size-large input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-large input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle.can-toggle--size-large input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.can-toggle--size-large input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-large
+  input[type='checkbox']:checked
+  ~ label
+  .can-toggle__switch:after {
   -webkit-transform: translate3d(78px, 0, 0);
-          transform: translate3d(78px, 0, 0);
+  transform: translate3d(78px, 0, 0);
 }
-.can-toggle.can-toggle--size-large input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle.can-toggle--size-large input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle.can-toggle--size-large
+  input[type='checkbox']:checked:focus
+  ~ label
+  .can-toggle__switch:after,
+.can-toggle.can-toggle--size-large
+  input[type='checkbox']:checked:hover
+  ~ label
+  .can-toggle__switch:after {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
 .can-toggle.can-toggle--size-large label {
@@ -202,7 +234,7 @@ body {
 .can-toggle.can-toggle--size-large label .can-toggle__switch {
   height: 50px;
   -webkit-box-flex: 0;
-          flex: 0 0 160px;
+  flex: 0 0 160px;
   border-radius: 4px;
 }
 .can-toggle.can-toggle--size-large label .can-toggle__switch:before {
@@ -223,36 +255,40 @@ body {
 .can-toggle.can-toggle--size-large label .can-toggle__switch:hover:after {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"][disabled] ~ label {
+.can-toggle.demo-rebrand-1 input[type='checkbox'][disabled] ~ label {
   color: rgba(181, 62, 116, 0.5);
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:focus ~ label .can-toggle__switch, .can-toggle.demo-rebrand-1 input[type="checkbox"]:hover ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:focus ~ label .can-toggle__switch,
+.can-toggle.demo-rebrand-1 input[type='checkbox']:hover ~ label .can-toggle__switch {
   background-color: #b53e74;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-1 input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-1 input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   color: #8f315c;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:hover ~ label {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:hover ~ label {
   color: #a23768;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:checked ~ label:hover {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked ~ label:hover {
   color: #39916a;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:checked ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked ~ label .can-toggle__switch {
   background-color: #44ae7f;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked ~ label .can-toggle__switch:after {
   color: #368a65;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:checked:focus ~ label .can-toggle__switch, .can-toggle.demo-rebrand-1 input[type="checkbox"]:checked:hover ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked:focus ~ label .can-toggle__switch,
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked:hover ~ label .can-toggle__switch {
   background-color: #3d9c72;
 }
-.can-toggle.demo-rebrand-1 input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-1 input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-1 input[type='checkbox']:checked:hover ~ label .can-toggle__switch:after {
   color: #2f7757;
 }
 .can-toggle.demo-rebrand-1 label .can-toggle__label-text {
   -webkit-box-flex: 1;
-          flex: 1;
+  flex: 1;
 }
 .can-toggle.demo-rebrand-1 label .can-toggle__switch {
   -webkit-transition: background-color 0.3s ease-in-out;
@@ -266,39 +302,45 @@ body {
   -webkit-transition: -webkit-transform 0.3s ease-in-out;
   transition: -webkit-transform 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out;
-  transition: transform 0.3s ease-in-out, -webkit-transform 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    -webkit-transform 0.3s ease-in-out;
   color: #b53e74;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"][disabled] ~ label {
+.can-toggle.demo-rebrand-2 input[type='checkbox'][disabled] ~ label {
   color: rgba(68, 68, 68, 0.5);
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:focus ~ label .can-toggle__switch, .can-toggle.demo-rebrand-2 input[type="checkbox"]:hover ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:focus ~ label .can-toggle__switch,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:hover ~ label .can-toggle__switch {
   background-color: #444;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-2 input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   color: #2b2b2b;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:hover ~ label {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:hover ~ label {
   color: #373737;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked ~ label:hover {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked ~ label:hover {
   color: #62b125;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked ~ label .can-toggle__switch {
   background-color: #75d32d;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked ~ label .can-toggle__switch:after {
   color: #5da924;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:focus ~ label .can-toggle__switch, .can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:hover ~ label .can-toggle__switch {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:focus ~ label .can-toggle__switch,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:hover ~ label .can-toggle__switch {
   background-color: #69be28;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:hover ~ label .can-toggle__switch:after {
   color: #52941f;
 }
 .can-toggle.demo-rebrand-2 label .can-toggle__label-text {
   -webkit-box-flex: 1;
-          flex: 1;
+  flex: 1;
 }
 .can-toggle.demo-rebrand-2 label .can-toggle__switch {
   -webkit-transition: background-color 0.3s cubic-bezier(0.86, 0, 0.07, 1);
@@ -312,17 +354,21 @@ body {
   -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
   transition: -webkit-transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
   transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
-  transition: transform 0.3s cubic-bezier(0.86, 0, 0.07, 1), -webkit-transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
+  transition:
+    transform 0.3s cubic-bezier(0.86, 0, 0.07, 1),
+    -webkit-transform 0.3s cubic-bezier(0.86, 0, 0.07, 1);
   color: #444;
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-2 input[type="checkbox"]:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked ~ label .can-toggle__switch:after {
   -webkit-transform: translate3d(58px, 0, 0);
-          transform: translate3d(58px, 0, 0);
+  transform: translate3d(58px, 0, 0);
 }
-.can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:focus ~ label .can-toggle__switch:after, .can-toggle.demo-rebrand-2 input[type="checkbox"]:checked:hover ~ label .can-toggle__switch:after {
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:focus ~ label .can-toggle__switch:after,
+.can-toggle.demo-rebrand-2 input[type='checkbox']:checked:hover ~ label .can-toggle__switch:after {
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.4);
 }
 .can-toggle.demo-rebrand-2 label {
@@ -331,7 +377,7 @@ body {
 .can-toggle.demo-rebrand-2 label .can-toggle__switch {
   height: 60px;
   -webkit-box-flex: 0;
-          flex: 0 0 120px;
+  flex: 0 0 120px;
   border-radius: 60px;
 }
 .can-toggle.demo-rebrand-2 label .can-toggle__switch:before {

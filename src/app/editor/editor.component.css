@@ -1,114 +1,109 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
-.editor 
-{      
-    /*height: calc(100vh - 100px); */
-    height:100vh;
-    width: 100%;
+.editor {
+  /*height: calc(100vh - 100px); */
+  height: 100vh;
+  width: 100%;
 }
 
-.ui.bottom.attached.segment.theSideMenu.pushable{
-    border-radius: 0px;
+.ui.bottom.attached.segment.theSideMenu.pushable {
+  border-radius: 0px;
 }
 
 #codeEditorClosingIcon {
-    font-size: 3em;
-    color: white;
-    display: flex; 
-    justify-content: flex-end;
-    padding-right: 4vw;
+  font-size: 3em;
+  color: white;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 4vw;
 }
 
-.codeGenOption{
-    padding-bottom: 18px;
+.codeGenOption {
+  padding-bottom: 18px;
 }
 
-.codeGenOptionLabel{
-    padding-left: 13px;
+.codeGenOptionLabel {
+  padding-left: 13px;
 }
 
 /* outdated */
-.contractInLeftMenuWrapper{
-    border-bottom-color: #303030;
-    border-bottom-style: ridge;
-    border-width: 1px; 
+.contractInLeftMenuWrapper {
+  border-bottom-color: #303030;
+  border-bottom-style: ridge;
+  border-width: 1px;
 }
 
 .blinkOnLoad:hover {
-    background: #FF2D55 !important;
+  background: #ff2d55 !important;
 }
 
 .editor-container {
-    background: #1d1d1d !important;
+  background: #1d1d1d !important;
 }
 /* no white border around editor under tabs */
 .ui.segment {
-    padding: 0px !important;
+  padding: 0px !important;
 }
 
 .theSideMenu .ui.menu i {
-    margin-left: 10px;
-    margin-right: 0px;
+  margin-left: 10px;
+  margin-right: 0px;
 }
-
 
 .logMonitorPanel {
-    padding:0 !important
+  padding: 0 !important;
 }
-
-
 
 /* tabs start */
 .oneTab a {
-    color: #1d1d1d;
+  color: #1d1d1d;
 }
 
 .tabclosingx {
-    font-size: 13pt !important; 
-    color: #d1d0d0
+  font-size: 13pt !important;
+  color: #d1d0d0;
 }
 
-.contracttab.item.active .tabclosingx{
-    font-size: 15pt !important; 
-
+.contracttab.item.active .tabclosingx {
+  font-size: 15pt !important;
 }
 
-#logo{
-    height: 30px;
-    margin: 25px 20px 15px 25px;
+#logo {
+  height: 30px;
+  margin: 25px 20px 15px 25px;
 }
 
-#logoText1{
-    margin: 27px 0px 0px 0px;
-    font-family: Roboto, sans-serif;
-    text-align: center;
-    font-size: 45px;
-    color: #D12754;
-    background-color: rgba(84, 84, 84, 0);
-    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
-    font-weight: 900;
+#logoText1 {
+  margin: 27px 0px 0px 0px;
+  font-family: Roboto, sans-serif;
+  text-align: center;
+  font-size: 45px;
+  color: #d12754;
+  background-color: rgba(84, 84, 84, 0);
+  text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+  font-weight: 900;
 }
 
-#logoText2{
-    margin: 27px 0px 0px 0px;
-    font-family: Roboto, sans-serif;
-    text-align: center;
-    font-size: 45px;
-    color: #D12754;
-    background-color: rgba(84, 84, 84, 0);
-    text-shadow: rgb(0, 0, 0) 2px 2px 2px;
-    font-weight: 400;
+#logoText2 {
+  margin: 27px 0px 0px 0px;
+  font-family: Roboto, sans-serif;
+  text-align: center;
+  font-size: 45px;
+  color: #d12754;
+  background-color: rgba(84, 84, 84, 0);
+  text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+  font-weight: 400;
 }
 
-.placeholder{
-    height:auto;
-    background: red;
+.placeholder {
+  height: auto;
+  background: red;
 }
 
-.ui.segment{
-    border-bottom: none
+.ui.segment {
+  border-bottom: none;
 }
 
-.ui.attached.segment{
-    border-bottom: none
+.ui.attached.segment {
+  border-bottom: none;
 }

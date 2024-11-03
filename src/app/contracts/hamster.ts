@@ -1,20 +1,22 @@
 export class Contract {
-  public contractUID: string = "";
+  public contractUID: string = '';
   public code: string;
   public showInTabs: boolean = true;
-  public nameInTab: string = "CryptoHamster";
-  public shareId: string = "";
+  public nameInTab: string = 'CryptoHamster';
+  public shareId: string = '';
   public activeTab: boolean = false;
-  public errorHighlights : any;
-  public sharingHighlighters : any[] = [];
-  public latestACI : any;
+  public errorHighlights: any;
+  public sharingHighlighters: any[] = [];
+  public latestACI: any;
 
-  constructor(params : {[key: string]: any} ){
+  constructor(params: { [key: string]: any }) {
     this.contractUID = String(Date.now());
-    params._latestAcI != undefined ? this.latestACI = params._latestAcI : true;
-    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
-    params._shareId != undefined ? this.shareId = params._shareId : true;
-    params._code != undefined ? this.code = params._code : this.code = `
+    params._latestAcI != undefined ? (this.latestACI = params._latestAcI) : true;
+    params._nameInTab != undefined ? (this.nameInTab = params._nameInTab) : true;
+    params._shareId != undefined ? (this.shareId = params._shareId) : true;
+    params._code != undefined
+      ? (this.code = params._code)
+      : (this.code = `
 @compiler >= 6
 
 include "String.aes"
@@ -89,12 +91,11 @@ contract CryptoHamster =
             Some(bytes) => Bytes.to_int(bytes)
 
     entrypoint test(name: string) : hash =
-        String.sha3(name)`;
+        String.sha3(name)`);
   }
 
   //experimental
-  public showInTabsOrNot() : boolean  {
+  public showInTabsOrNot(): boolean {
     return this.showInTabs;
-  }  
-  
+  }
 }

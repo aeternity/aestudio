@@ -1,7 +1,7 @@
-interface Number{
-    toHex() : any;
+interface Number {
+  toHex(): any;
 }
 
-interface Object{
-    hashCode(o, l) : any
+interface Object {
+  hashCode(o, l): any;
 }

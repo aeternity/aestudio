@@ -8,9 +8,8 @@ describe('DeployedContractComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeployedContractComponent ]
-    })
-    .compileComponents();
+      declarations: [DeployedContractComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

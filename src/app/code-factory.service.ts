@@ -3,50 +3,51 @@ import { Injectable, Input, EventEmitter, Output } from '@angular/core';
 
 // vorlage für nodeJS: https://github.com/aeternity/aepp-sdk-js/blob/develop/docs/guides/import-nodejs.md#nodejs-bundle
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class CodeFactoryService {
-
   constructor() {}
-  
-@Input()
+
+  @Input()
   public _generateCode = new BehaviorSubject<any>({});
   _codeGenerator = this._generateCode.asObservable();
   public activeContracts: any[] = [];
   public test: string;
-  
-@Output() codeGeneratorEvent = new EventEmitter<string>()
-  generateCode(_theContractCode: string, _theFunctionName: string, _theParams: any, _initParams: any){
-    console.log("Generate in sidebar getriggert");
-    console.log("Als parameter wurden übergeben:");
-    console.log("_thefunctionName: " , _theFunctionName);
-    console.log("the params: ", _theParams);
-    console.log("the init params: ", _initParams);
+
+  @Output() codeGeneratorEvent = new EventEmitter<string>();
+  generateCode(
+    _theContractCode: string,
+    _theFunctionName: string,
+    _theParams: any,
+    _initParams: any,
+  ) {
+    console.log('Generate in sidebar getriggert');
+    console.log('Als parameter wurden übergeben:');
+    console.log('_thefunctionName: ', _theFunctionName);
+    console.log('the params: ', _theParams);
+    console.log('the init params: ', _initParams);
 
     // generate the input for init()
-    const finalDeploymentParamString = JSON.stringify(_initParams).slice(1, -1)
-
+    const finalDeploymentParamString = JSON.stringify(_initParams).slice(1, -1);
 
     //console.log("contract code is: ", this.activeContracts[0].source);
-    let arrayOfInputData : any = [];
-    _theParams.arguments.forEach(oneArg=> {
+    let arrayOfInputData: any = [];
+    _theParams.arguments.forEach((oneArg) => {
       //console.log("One input is: ", oneArg)
-      
+
       arrayOfInputData.push(oneArg.currentInputData);
     });
-      _theParams = arrayOfInputData;
-    console.log("final array of input data: ", arrayOfInputData);
+    _theParams = arrayOfInputData;
+    console.log('final array of input data: ', arrayOfInputData);
 
     // fill all code parts separately
     var generatedCodeObject = {
       SDKsetup: '',
       contractDeployment: '',
-      functionCall:''
-    }
+      functionCall: '',
+    };
 
-    generatedCodeObject.SDKsetup = 
-    `// SDK & Node setup
+    generatedCodeObject.SDKsetup = `// SDK & Node setup
     const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
 
     // account that will be used for the transactions
@@ -81,9 +82,9 @@ export class CodeFactoryService {
         })
         const height = await Chain.height()
         console.log('Connected to Testnet Node! Current Block:', height)
-    `
-       //the above missing closing curly brace is added b the editor component based on the condition
-       //what generated code components are to be displayed.
+    `;
+    //the above missing closing curly brace is added b the editor component based on the condition
+    //what generated code components are to be displayed.
     generatedCodeObject.contractDeployment = `
     // CONTRACT DEPLOYMENT
 
@@ -109,7 +110,7 @@ export class CodeFactoryService {
       console.log("Contract deployed successfully!")
       console.log("Contract address: ", myContract.deployInfo.address)
       console.log("Transaction ID: ", myContract.deployInfo.transaction)
-      console.log("\\n \\n")  `
+      console.log("\\n \\n")  `;
 
     generatedCodeObject.functionCall = `
 
@@ -130,28 +131,19 @@ export class CodeFactoryService {
       console.log("Function call returned: ", callresult.decodedResult);
     } catch (e){
       console.log("Calling your function errored: ", e)
-    }`
+    }`;
     this._generateCode.next(generatedCodeObject);
-    }
-
-    generateFinalFormattedCode = (codeObject, codeGeneratorSettings) => {
-
-      let cgs = codeGeneratorSettings;
-
-      let finalCode = 
-      `${cgs.sdk ? codeObject.SDKsetup : ''}
-      ${cgs.contract ? codeObject.contractDeployment : ''}
-      ${!cgs.sdk && !cgs.contract && cgs.function? "// don't forget to change the 'myContract' placeholder to yours " : ''}
-      ${cgs.function ? codeObject.functionCall : ''}
-      ${cgs.sdk ? '} \n main();' : ''}
-      `
-      return finalCode
-    }
-
   }
 
+  generateFinalFormattedCode = (codeObject, codeGeneratorSettings) => {
+    let cgs = codeGeneratorSettings;
 
-
-
-
-
+    let finalCode = `${cgs.sdk ? codeObject.SDKsetup : ''}
+      ${cgs.contract ? codeObject.contractDeployment : ''}
+      ${!cgs.sdk && !cgs.contract && cgs.function ? "// don't forget to change the 'myContract' placeholder to yours " : ''}
+      ${cgs.function ? codeObject.functionCall : ''}
+      ${cgs.sdk ? '} \n main();' : ''}
+      `;
+    return finalCode;
+  };
+}

@@ -8,9 +8,8 @@ describe('GlobalOptionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ GlobalOptionsComponent ]
-    })
-    .compileComponents();
+      declarations: [GlobalOptionsComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

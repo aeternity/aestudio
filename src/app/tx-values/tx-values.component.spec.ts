@@ -8,9 +8,8 @@ describe('TxValuesComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ TxValuesComponent ]
-    })
-    .compileComponents();
+      declarations: [TxValuesComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

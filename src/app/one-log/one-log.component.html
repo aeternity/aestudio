@@ -1,33 +1,62 @@
 <sui-accordion-panel [isOpen]="log.expanded">
-        <div title class="hoverHighlightWhite">
-          <div class="greyHoverWhite"> 
-            <i class="dropdown icon"></i> {{log.message}} 
+  <div title class="hoverHighlightWhite">
+    <div class="greyHoverWhite"><i class="dropdown icon"></i> {{ log.message }}</div>
+  </div>
+  <div content>
+    <div class="errorbox">
+      <div *ngIf="log.type" class="errorbox-icon">
+        <i
+          class="{{
+            log.type == 'success'
+              ? 'check circle'
+              : log.type == 'log'
+                ? 'info circle'
+                : log.type == 'error'
+                  ? 'bug'
+                  : log.type == 'warn'
+                    ? 'exclamation triangle'
+                    : 'info circle'
+          }} icon sidebar-icon"
+        ></i>
+      </div>
+      <div class="right">
+        <div class="div2" title>
+          <div *ngFor="let key of logEntries">
+            <br *ngIf="logEntries.length < 3" />
+            <br *ngIf="logEntries.length < 3" />
+
+            <!-- if it's just a string and not an object, just display it.... -->
+            <div
+              class="hoverHighlightWhite noMarginBottom greyHoverWhite"
+              *ngIf="pureData[key] || isArray[key]"
+            >
+              <b> {{ key }} </b> :
+              <div mdwUrl class="greyHoverWhite" style="display: inline">
+                {{
+                  log.data[key] == undefined || log.data[key] == null
+                    ? ''
+                    : log.data[key] == []
+                      ? '[]'
+                      : log.data[key]
+                }}
+              </div>
+            </div>
+
+            <!-- If it's an object by itself, make a new dropdown. "depth" is passed for indentation-->
+            <p *ngIf="isAnObject[key]">
+              <!-- <b> {{key}} </b> : -->
+              <app-one-log-child
+                class="oneLogChild greyHoverWhite"
+                [log]="{ data: log.data[key], topic: key, depth: log.depth + 1 }"
+                [open]="false"
+              ></app-one-log-child>
+            </p>
           </div>
         </div>
-        <div content>
-                <div class="errorbox"> 
-                        <div *ngIf="log.type" class="errorbox-icon"> <i class="{{log.type == 'success'? 'check circle' : log.type=='log' ? 'info circle' : log.type == 'error' ? 'bug' : log.type == 'warn' ? 'exclamation triangle' : 'info circle'}} icon sidebar-icon"></i></div>
-                        <div class="right">
-                          <div class="div2" title> 
-
-                            <div *ngFor="let key of logEntries">  
-                                <br *ngIf="logEntries.length < 3">
-                                <br *ngIf="logEntries.length < 3">
-                                 
-                                <!-- if it's just a string and not an object, just display it.... -->
-                                <div class="hoverHighlightWhite noMarginBottom greyHoverWhite" *ngIf="pureData[key] ||  isArray[key]"> <b> {{key}} </b> : <div mdwUrl class ="greyHoverWhite" style="display: inline;"> {{log.data[key] == undefined || log.data[key] == null ? '' : log.data[key] == [] ? '[]' : log.data[key]}} </div> </div> 
-
-                                <!-- If it's an object by itself, make a new dropdown. "depth" is passed for indentation-->
-                                <p *ngIf="isAnObject[key]"> <!-- <b> {{key}} </b> : --> <app-one-log-child  class="oneLogChild greyHoverWhite" [log]="{'data' : log.data[key], 'topic': key, 'depth': log.depth + 1}" [open]="false" ></app-one-log-child>  </p> 
-                                
-                            </div>
-                                    
-                                    
-                          </div>
-                          <!-- A second field for content down here -->
-<!--                           <div class="div3" content>     Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i></div>
- -->                        
-                          </div>
-                      </div> 
-        </div>
+        <!-- A second field for content down here -->
+        <!--                           <div class="div3" content>     Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i></div>
+ -->
+      </div>
+    </div>
+  </div>
 </sui-accordion-panel>

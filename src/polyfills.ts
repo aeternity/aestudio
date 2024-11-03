@@ -45,7 +45,7 @@
 /***************************************************************************************************
  * Zone JS is required by default for Angular itself.
  */
-import 'zone.js';  // Included with Angular CLI.
+import 'zone.js'; // Included with Angular CLI.
 
 //SDK zum laufen bringen:
 
@@ -54,12 +54,10 @@ import 'zone.js';  // Included with Angular CLI.
 // 1. nächster error, stichwort bei google: "aws-sdk requires global to exist"
 (window as any).global = window;
 
-
-
 // 2. Uncaught ReferenceError: process is not defined at Object../node_modules/pbkdf2/lib/default-encoding.js (default-encoding.js:3)
 (window as any).process = {
   env: { DEBUG: undefined },
-  version: '12.1337'
+  version: '12.1337',
 };
 
 // 3. Uncaught ReferenceError: Buffer is not defined
@@ -70,42 +68,39 @@ import 'zone.js';  // Included with Angular CLI.
   return this.toString();
 };
 
- global.Buffer = global.Buffer || require('buffer').Buffer;
-
+global.Buffer = global.Buffer || require('buffer').Buffer;
 
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
 
-
- (window as any).process = {
+(window as any).process = {
   env: { DEBUG: undefined },
-  version: '12.1337'
+  version: '12.1337',
 };
 
- 
 (window as any).GlobalDebug = (function () {
   var savedConsole = console;
-  return function(debugOn,suppressAll){
-      var suppress = suppressAll || false;
-      if (debugOn === false) {
-          (console as any) = {};
-          console.log = function () { };
-          if(suppress) {
-              console.info = function () { };
-              console.warn = function () { };
-              console.error = function () { };
-          } else {
-              console.info = savedConsole.info;
-              console.warn = savedConsole.warn;
-              console.error = savedConsole.error;              
-          }
+  return function (debugOn, suppressAll) {
+    var suppress = suppressAll || false;
+    if (debugOn === false) {
+      (console as any) = {};
+      console.log = function () {};
+      if (suppress) {
+        console.info = function () {};
+        console.warn = function () {};
+        console.error = function () {};
       } else {
-          console = savedConsole;
+        console.info = savedConsole.info;
+        console.warn = savedConsole.warn;
+        console.error = savedConsole.error;
       }
-  }
+    } else {
+      console = savedConsole;
+    }
+  };
   //@ts-ignore
 })();
-  //@ts-ignore
+//@ts-ignore
 
-window.GlobalDebug(false,false)
+window.GlobalDebug(false, false);

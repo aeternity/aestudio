@@ -3,27 +3,22 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { Subject } from 'rxjs/internal/Subject';
 import { ILog } from 'src/app/helpers/interfaces';
 
-
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EventlogService {
-
-
   // New best practice for implementing events
-   // Notify on existance of new, formatted/extended api
-   public _newLog = new Subject<ILog>();
-   _newLogEvent = this._newLog.asObservable();
+  // Notify on existance of new, formatted/extended api
+  public _newLog = new Subject<ILog>();
+  _newLogEvent = this._newLog.asObservable();
 
-  constructor() { 
-
-  }
+  constructor() {}
 
   public logs: any[] = [];
   public logSubscription: Subscription;
 
   public log(log: ILog) {
-    console.log ("Log Service: : ", log);
+    console.log('Log Service: : ', log);
     let hours = new Date().getHours().toString();
     let minutes = new Date().getMinutes().toString();
     let time = hours + ':' + minutes;
@@ -34,7 +29,7 @@ export class EventlogService {
     this._newLog.next(log);
   }
 
-  public clear(){
+  public clear() {
     this.logs = [];
   }
 }

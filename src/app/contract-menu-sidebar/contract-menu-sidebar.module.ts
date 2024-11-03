@@ -1,14 +1,13 @@
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
-import * as SuiModule from "ngx-ng2-semantic-ui";
+import * as SuiModule from 'ngx-ng2-semantic-ui';
 
-@NgModule({ 
-  declarations: [
-  ],
+@NgModule({
+  declarations: [],
   imports: [
-    BrowserModule,     SuiModule.SuiAccordionModule,
+    BrowserModule,
+    SuiModule.SuiAccordionModule,
     SuiModule.SuiSelectModule,
     SuiModule.SuiSidebarModule,
     SuiModule.SuiMessageModule,
@@ -28,8 +27,7 @@ import * as SuiModule from "ngx-ng2-semantic-ui";
     SuiModule.SuiTabsModule,
   ],
   providers: [],
-  bootstrap: []
+  bootstrap: [],
   //if something is not working, try uncommenting this: bootstrap: [EditorComponent]
 })
-
 export class ContractMenuSidebarModule {}

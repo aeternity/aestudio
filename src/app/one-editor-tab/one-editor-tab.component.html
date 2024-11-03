@@ -1,13 +1,13 @@
-<ngx-monaco-editor appEditorAutoResizer
-    [(ngModel)]="activeContract.code" 
-    (ngModelChange)="throttledChange()" 
-    (onInit)="initializeEditorObject($event)" 
-    class="editor" 
-    
-    
-    [options]="editorOptions"></ngx-monaco-editor>
- 
-    <!-- old size settings his.state.editor.finalHeight
+<ngx-monaco-editor
+  appEditorAutoResizer
+  [(ngModel)]="activeContract.code"
+  (ngModelChange)="throttledChange()"
+  (onInit)="initializeEditorObject($event)"
+  class="editor"
+  [options]="editorOptions"
+></ngx-monaco-editor>
+
+<!-- old size settings his.state.editor.finalHeight
 
      [style.height.px]="this.state.editor.finalHeight"
     [className]="this.state.consoleOpen ? 'consoleOpen' : 'consoleClosed'" 
@@ -25,16 +25,15 @@
 
 <!-- Code sharing link generator  -->
 <sui-dimmer [(isDimmed)]="isDimmed" [isClickable]="true">
-    <ng-container *ngIf="contractID; then linkSuccess; else notLoggedIn">
-    </ng-container>
+  <ng-container *ngIf="contractID; then linkSuccess; else notLoggedIn"> </ng-container>
 </sui-dimmer>
 
 <ng-template #linkSuccess>
-    <h1 style="padding-top: 30%" class="ui inverted header">Link copied to clipboard! &nbsp; 🎉</h1>
+  <h1 style="padding-top: 30%" class="ui inverted header">Link copied to clipboard! &nbsp; 🎉</h1>
 </ng-template>
 
 <ng-template #notLoggedIn>
-    <h1 style="padding-top: 15px" class="ui inverted header">Please log in to use this feature.</h1>
+  <h1 style="padding-top: 15px" class="ui inverted header">Please log in to use this feature.</h1>
 
-    <p style="font-size: 35px">👉</p>
+  <p style="font-size: 35px">👉</p>
 </ng-template>

@@ -1,240 +1,380 @@
-<i class='fab fa-facebook'></i>
+<i class="fab fa-facebook"></i>
 <!-- settings menu-->
 <div id="theSettings" class="ui orange segment">
-        <a class="ui orange ribbon label">Settings</a>
-        
-        <!-- tabs -->
-        <sui-tabset>
-            <div class="ui orange top attached tabular menu settingsTabsRow">
-                <a class="item" suiTabHeader="1"><i class="bars icon"></i></a>
-                <!-- <a class="item" suiTabHeader="2"><i class="user icon"></i></a> -->
-                <a class="item" suiTabHeader="2"><i class="cogs icon"></i></a>
-                <a class="item" suiTabHeader="3"><i class="info circle icon"></i></a>
+  <a class="ui orange ribbon label">Settings</a>
 
-            </div>
+  <!-- tabs -->
+  <sui-tabset>
+    <div class="ui orange top attached tabular menu settingsTabsRow">
+      <a class="item" suiTabHeader="1"><i class="bars icon"></i></a>
+      <!-- <a class="item" suiTabHeader="2"><i class="user icon"></i></a> -->
+      <a class="item" suiTabHeader="2"><i class="cogs icon"></i></a>
+      <a class="item" suiTabHeader="3"><i class="info circle icon"></i></a>
+    </div>
 
-            <!-- tab content -->            
-            <!-- First tab: Account and Provider ! -->
-            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
-                
-                <!-- Accountselection start -->
-                <div class="optionrow hide-overflow ">
-                    <div class="fluid ui labeled button" tabindex="0">
-                        <div id="options-dropdownbutton" class=" ui basic button dropdown " suiDropdown>
-                            <div class="text" id="accountButtonText">Account:</div>
-                            <i class="dropdown icon"></i>
-                            <div class="menu" suiDropdownMenu>
-                                
-                                <ng-container *ngIf="currentSDKsettings" >
-                                            <div *ngFor="let address of currentSDKsettings.addresses" (click)="changeSDKsetting('selectAccount', address)" class="item" suiPopup popupHeader="{{ compiler.Chain.currentWalletProvider == 'extension' ? 'Private Wallet account' : !auth.theUser ? 'Public Demo Accounts!' : 'Personal     Testnet Account' }}" popupText=" {{compiler.Chain.currentWalletProvider == 'extension' ? 'This account is provided by your browser wallet and is to be considered safe.' : !auth.theUser ? 'Click the user Tab and get your free personal testnet accounts' : 'Do NEVER use this account on the mainnet. It is for developing purposes only.' }} " popupPlacement="top right" popupDelay="{{auth.theUser ? 600 : 0}}" >
-                                        
-                                        <span class="description" > 
-                                            <!-- logged-in user icon: -->
-                                            <i style="color: #f2721d" *ngIf="auth.theUser && compiler.sdkConfigOverrides.personalAccounts" class="user icon" ></i>
-                                            <!-- public testnet accounts icon -->
-                                            <i style="color: #C5283D" *ngIf="!auth.theUser && compiler.Chain.currentWalletProvider != 'extension' " class="unlock icon"></i>
-                                            <!-- wallet extension user icon -->
-                                            <i style="color: rgb(53, 184, 41)" *ngIf="compiler.Chain.currentWalletProvider == 'extension' " class="lock icon"></i>
-                                           
-                                            
-                                            
-                                            <!-- Display all balances >= 1000 AE as 1K etc. -->
-                                            <ng-container *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 < 1000">
-                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) | number:'1.0-2'}} AE
-                                            </ng-container>
-                                            
-                                            <ng-container *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 >= 1000">
-                                                {{(currentSDKsettings.balances[address] / 1000000000000000000) / 1000 | number:'1.0-0'}}K AE
-                                            </ng-container>
+    <!-- tab content -->
+    <!-- First tab: Account and Provider ! -->
+    <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="1">
+      <!-- Accountselection start -->
+      <div class="optionrow hide-overflow">
+        <div class="fluid ui labeled button" tabindex="0">
+          <div id="options-dropdownbutton" class="ui basic button dropdown" suiDropdown>
+            <div class="text" id="accountButtonText">Account:</div>
+            <i class="dropdown icon"></i>
+            <div class="menu" suiDropdownMenu>
+              <ng-container *ngIf="currentSDKsettings">
+                <div
+                  *ngFor="let address of currentSDKsettings.addresses"
+                  (click)="changeSDKsetting('selectAccount', address)"
+                  class="item"
+                  suiPopup
+                  popupHeader="{{
+                    compiler.Chain.currentWalletProvider == 'extension'
+                      ? 'Private Wallet account'
+                      : !auth.theUser
+                        ? 'Public Demo Accounts!'
+                        : 'Personal     Testnet Account'
+                  }}"
+                  popupText=" {{
+                    compiler.Chain.currentWalletProvider == 'extension'
+                      ? 'This account is provided by your browser wallet and is to be considered safe.'
+                      : !auth.theUser
+                        ? 'Click the user Tab and get your free personal testnet accounts'
+                        : 'Do NEVER use this account on the mainnet. It is for developing purposes only.'
+                  }} "
+                  popupPlacement="top right"
+                  popupDelay="{{ auth.theUser ? 600 : 0 }}"
+                >
+                  <span class="description">
+                    <!-- logged-in user icon: -->
+                    <i
+                      style="color: #f2721d"
+                      *ngIf="auth.theUser && compiler.sdkConfigOverrides.personalAccounts"
+                      class="user icon"
+                    ></i>
+                    <!-- public testnet accounts icon -->
+                    <i
+                      style="color: #c5283d"
+                      *ngIf="!auth.theUser && compiler.Chain.currentWalletProvider != 'extension'"
+                      class="unlock icon"
+                    ></i>
+                    <!-- wallet extension user icon -->
+                    <i
+                      style="color: rgb(53, 184, 41)"
+                      *ngIf="compiler.Chain.currentWalletProvider == 'extension'"
+                      class="lock icon"
+                    ></i>
 
-                                                </span>
+                    <!-- Display all balances >= 1000 AE as 1K etc. -->
+                    <ng-container
+                      *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 < 1000"
+                    >
+                      {{
+                        currentSDKsettings.balances[address] / 1000000000000000000 | number: '1.0-2'
+                      }}
+                      AE
+                    </ng-container>
 
-                                                <div class="ui fluid popup top left transition visible animating scale out">
-                                                    <div class="ui four column divided center aligned grid">
-                                                      <div class="column">1</div>
-                                                      <div class="column">2</div>
-                                                      <div class="column">3</div>
-                                                      <div class="column">4</div>
-                                                    </div>
-                                                  </div>
-                                        <p class="truncate" (click)="changeSDKsetting('selectAccount', address)" class="address-item">{{(address | slice:0:28)+'...'}} </p>
-                                    </div>
-                                </ng-container>
-                                
-                            
-                
-                                <div class="divider"></div>
-                                <div class="item" (click)="copyAddress()">
-                                        <span class="description"></span>
-                                        <i class="copy icon"></i>
-                                        Copy to Clipboard</div>
-                                <div class="item">
-                                        <span class="description"><i>(coming soon)</i></span>
-                                        <i class="file icon"></i>
-                                        New</div>
-                                <div class="item">
-                                        <span class="description"><i>(coming soon)</i></span>
-                                        <i class="trash icon"></i>
-                                        Delete
-                                </div>
-                                <div class="item" suiDropdown>
-                                    <i class="folder open icon"></i>
-                                    <i class="dropdown icon"></i>
-                                    Add...
-                                    <span class="description"><i>(coming soon)</i></span>
-                                    <div class="menu" suiDropdownMenu>
-                                        <div class="item">Google Docs</div>
-                                        <div class="item">Google Drive</div>
-                                        <div class="item">Dropbox</div>
-                                        <div class="item">Another Service...</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <ng-container
+                      *ngIf="currentSDKsettings.balances[address] / 1000000000000000000 >= 1000"
+                    >
+                      {{
+                        currentSDKsettings.balances[address] / 1000000000000000000 / 1000
+                          | number: '1.0-0'
+                      }}K AE
+                    </ng-container>
+                  </span>
 
-                        <ng-container *ngIf="currentSDKsettings">
-                            
-                                <a id="options-accountlabel" class=" ui basic label truncated">
-                                    <p style="font-size: 14px" class="truncated">{{(currentSDKsettings.address)}}</p>
-                                <!-- <p class="truncate">{{(currentSDKsettings.address | slice:0:25)+'..'}}</p> -->
-                                </a>
-                            
-                        </ng-container>
-
-                        <ng-container *ngIf="currentSDKsettings">
-                            <a id="options-balancelabel" class=" ui basic label">
-                                    {{(currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000) | number:'1.0-2'}} AE
-                            </a> 
-                        </ng-container>
-                        
-                        <button class="ui basic button" 
-                        style="margin-left: 10px; display: none; border-radius: 6px;" id="copy_btn"
-                        suiPopup popupHeader="" popupTrigger="manual" popupPlacement="top right" popupDelay="600" popupText="Copied current Address!" #popup="suiPopup"
-                        (click)="copyAddress(); popup.open()" 
-                        (mouseout)="popup.close()" 
-                        >
-                            <i class="copy icon" style="color: black"></i>
-                        </button>
-                
+                  <div class="ui fluid popup top left transition visible animating scale out">
+                    <div class="ui four column divided center aligned grid">
+                      <div class="column">1</div>
+                      <div class="column">2</div>
+                      <div class="column">3</div>
+                      <div class="column">4</div>
                     </div>
-                </div>
-                <!-- account selection end -->
-                <br>
-                <!-- Wallet Switch-->
-                <app-wallet-switch>
-                    
-                </app-wallet-switch>
-
-                <div *ngIf="!compiler.walletExtensionPresent" style="width: 100%" class="ui pointing orange basic label">
-                    <p>Install <a href="{{compiler.currentBrowser == 'firefox' ? 'https://addons.mozilla.org/en-US/firefox/addon/superhero-wallet/' : 'https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne?hl=en' }}"> Superhero Wallet</a> and use AE Studio with Aeternity mainnet !</p>
                   </div>
+                  <p
+                    class="truncate"
+                    (click)="changeSDKsetting('selectAccount', address)"
+                    class="address-item"
+                  >
+                    {{ (address | slice: 0 : 28) + '...' }}
+                  </p>
+                </div>
+              </ng-container>
 
-
-                <!-- Setter for value, gas and gasprice --> 
-                <br>
-                <app-tx-values id="txValues"> </app-tx-values> 
+              <div class="divider"></div>
+              <div class="item" (click)="copyAddress()">
+                <span class="description"></span>
+                <i class="copy icon"></i>
+                Copy to Clipboard
+              </div>
+              <div class="item">
+                <span class="description"><i>(coming soon)</i></span>
+                <i class="file icon"></i>
+                New
+              </div>
+              <div class="item">
+                <span class="description"><i>(coming soon)</i></span>
+                <i class="trash icon"></i>
+                Delete
+              </div>
+              <div class="item" suiDropdown>
+                <i class="folder open icon"></i>
+                <i class="dropdown icon"></i>
+                Add...
+                <span class="description"><i>(coming soon)</i></span>
+                <div class="menu" suiDropdownMenu>
+                  <div class="item">Google Docs</div>
+                  <div class="item">Google Drive</div>
+                  <div class="item">Dropbox</div>
+                  <div class="item">Another Service...</div>
+                </div>
+              </div>
             </div>
-            <!-- <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2"><app-user-profile></app-user-profile></div> -->
-            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2"><app-global-options></app-global-options></div>
-            <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="3">Created by Nikita Fuchs and the Aeternity Team <br> Contribute on <a href="https://github.com/aeternity/fire-editor"><i class="github icon"></i>Github</a>
-</div>
-        </sui-tabset>
+          </div>
 
-      
+          <ng-container *ngIf="currentSDKsettings">
+            <a id="options-accountlabel" class="ui basic label truncated">
+              <p style="font-size: 14px" class="truncated">{{ currentSDKsettings.address }}</p>
+              <!-- <p class="truncate">{{(currentSDKsettings.address | slice:0:25)+'..'}}</p> -->
+            </a>
+          </ng-container>
 
+          <ng-container *ngIf="currentSDKsettings">
+            <a id="options-balancelabel" class="ui basic label">
+              {{
+                currentSDKsettings.balances[currentSDKsettings.address] / 1000000000000000000
+                  | number: '1.0-2'
+              }}
+              AE
+            </a>
+          </ng-container>
 
+          <button
+            class="ui basic button"
+            style="margin-left: 10px; display: none; border-radius: 6px"
+            id="copy_btn"
+            suiPopup
+            popupHeader=""
+            popupTrigger="manual"
+            popupPlacement="top right"
+            popupDelay="600"
+            popupText="Copied current Address!"
+            #popup="suiPopup"
+            (click)="copyAddress(); popup.open()"
+            (mouseout)="popup.close()"
+          >
+            <i class="copy icon" style="color: black"></i>
+          </button>
+        </div>
+      </div>
+      <!-- account selection end -->
+      <br />
+      <!-- Wallet Switch-->
+      <app-wallet-switch> </app-wallet-switch>
 
+      <div
+        *ngIf="!compiler.walletExtensionPresent"
+        style="width: 100%"
+        class="ui pointing orange basic label"
+      >
+        <p>
+          Install
+          <a
+            href="{{
+              compiler.currentBrowser == 'firefox'
+                ? 'https://addons.mozilla.org/en-US/firefox/addon/superhero-wallet/'
+                : 'https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne?hl=en'
+            }}"
+          >
+            Superhero Wallet</a
+          >
+          and use AE Studio with Aeternity mainnet !
+        </p>
+      </div>
+
+      <!-- Setter for value, gas and gasprice -->
+      <br />
+      <app-tx-values id="txValues"> </app-tx-values>
+    </div>
+    <!-- <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2"><app-user-profile></app-user-profile></div> -->
+    <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="2">
+      <app-global-options></app-global-options>
+    </div>
+    <div class="ui orange bottom attached segment settingsTabContent" suiTabContent="3">
+      Created by Nikita Fuchs and the Aeternity Team <br />
+      Contribute on
+      <a href="https://github.com/aeternity/fire-editor"><i class="github icon"></i>Github</a>
+    </div>
+  </sui-tabset>
 </div>
 
 <div class="ui section divider"></div>
 
 <!-- errors from compiler -->
-<div *ngIf="(currentError | json) != ({}| json) || this.initFunctionIsPresent == false ">           
-    <div class="ui orange segment container">
-            <a class="ui orange ribbon label">Compilation Issues</a>
+<div *ngIf="(currentError | json) != ({} | json) || this.initFunctionIsPresent == false">
+  <div class="ui orange segment container">
+    <a class="ui orange ribbon label">Compilation Issues</a>
 
-            <div *ngIf="this.initFunctionIsPresent == false"  class="errorbox">
-                    <div class="errorbox-icon"> <i class="plug icon sidebar-icon"></i></div>
-                    <div class="right">
-                      <div class="div2"><b>Optional: Looks like you forgot the init function ? </b></div>
-                      
-                      <div class="div3" style="background: #f8dda4; padding-bottom: 0; margin-top: 1em" *ngIf="true">Hint: The optional init() function runs code during the deployment of a contract and is never callable again. As its return it must define all data in your state with some value of your choice. Like: <div class="code" style="padding: 2px; padding-left: 5px; margin-top: 1em; font-family: Courier New; font-size: 11px"> {{"stateful entrypoint init(num1 : int, num2: int) ="}} <br> &nbsp; &nbsp; {{ "let sum = num1 + num2"}} <br>  &nbsp; &nbsp; {{ "// next comes the last statement "}} <br> &nbsp; &nbsp; {{ "// in which we return/define the state"}} <br> &nbsp; &nbsp; {{ "{ index = sum, "}}  <br> &nbsp; &nbsp; {{  "map_hamsters = {}, "}} <br> &nbsp; &nbsp;  {{"testvalue = 42}" }} </div> <br> <!-- <i class="exclamation triangle icon"></i> --></div>
-                    </div>
-                  </div>
-       
-            <div *ngIf="(currentError | json) != ({}| json)" class="errorbox">
-                <div class="errorbox-icon"> <i class="bug icon sidebar-icon"></i></div>
-                <div class="right">
-                  <div class="div2">{{currentError.type}}: {{currentError.message}} <br> At: Line {{currentError.pos.line}}, column {{currentError.pos.col}}</div>
-                  
-                  <div class="div3" *ngIf="currentError.type == 'parse_error'">Hint: Did you forget a  <span class="code">{{ '{' }}</span> , <span class="code">{{ '}' }}</span>  or <span class="code">{{ '=' }}</span>  nearby, or accidentally type a misplaced character? <i class="exclamation triangle icon"></i> </div>
-                </div>
-              </div>
+    <div *ngIf="this.initFunctionIsPresent == false" class="errorbox">
+      <div class="errorbox-icon"><i class="plug icon sidebar-icon"></i></div>
+      <div class="right">
+        <div class="div2"><b>Optional: Looks like you forgot the init function ? </b></div>
+
+        <div
+          class="div3"
+          style="background: #f8dda4; padding-bottom: 0; margin-top: 1em"
+          *ngIf="true"
+        >
+          Hint: The optional init() function runs code during the deployment of a contract and is
+          never callable again. As its return it must define all data in your state with some value
+          of your choice. Like:
+          <div
+            class="code"
+            style="
+              padding: 2px;
+              padding-left: 5px;
+              margin-top: 1em;
+              font-family: Courier New;
+              font-size: 11px;
+            "
+          >
+            {{ 'stateful entrypoint init(num1 : int, num2: int) =' }} <br />
+            &nbsp; &nbsp; {{ 'let sum = num1 + num2' }} <br />
+            &nbsp; &nbsp; {{ '// next comes the last statement ' }} <br />
+            &nbsp; &nbsp; {{ '// in which we return/define the state' }} <br />
+            &nbsp; &nbsp; {{ '{ index = sum, ' }} <br />
+            &nbsp; &nbsp; {{ 'map_hamsters = {}, ' }} <br />
+            &nbsp; &nbsp; {{ 'testvalue = 42}' }}
+          </div>
+          <br />
+          <!-- <i class="exclamation triangle icon"></i> -->
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="(currentError | json) != ({} | json)" class="errorbox">
+      <div class="errorbox-icon"><i class="bug icon sidebar-icon"></i></div>
+      <div class="right">
+        <div class="div2">
+          {{ currentError.type }}: {{ currentError.message }} <br />
+          At: Line {{ currentError.pos.line }}, column {{ currentError.pos.col }}
+        </div>
+
+        <div class="div3" *ngIf="currentError.type == 'parse_error'">
+          Hint: Did you forget a <span class="code">{{ '{' }}</span> ,
+          <span class="code">{{ '}' }}</span> or <span class="code">{{ '=' }}</span> nearby, or
+          accidentally type a misplaced character? <i class="exclamation triangle icon"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="ui section divider"></div>
 </div>
-<div class="ui section divider"></div>
-</div>
-
-
 
 <!-- compiled contract  -->
-<div *ngIf="initACI?.name">           
-        <div class="ui orange segment container">
-            <a class="ui orange ribbon label">Compiled Contract</a>
-            <h4>{{this.initACI.name}}</h4>
-        <!-- <button *ngIf="this.initFunctionIsPresent" class="ui black button" (click)="deployContract()">Deploy</button>
--->    <!-- Deploy button & "at address" button -->
-            <div *ngIf="true" class="ui buttons">
-                <button (click)="deployContract()" class="ui black button">Deploy</button>
-                <div class="or"></div>
-                <button (click)="deployContract(true)" class="ui orange button atAddressButton" suiPopup popupHeader="Please Note" popupTrigger="hover" popupText="Currently, the SDK checks the validity of the entered address only upon attempting to call contract functions, this issue is being taken care of." >Use at address: </button>
-            </div>
-                <!-- "at address" field -->
-            <div class="ui icon input">
-                <input [(ngModel)]="addressOfExistingContract" type="text" class="atAddressField" placeholder="ct_nv5B9...Mp59bv...">
-                <i class="search icon"></i>
-            </div>
-
-            <!-- TODO: instead of relying the init function always coming first, find a way to directly pick the init function !  -->
-                <div *ngIf="initACI.functions[0] != undefined && initACI.functions[0].name == 'init' && initACI.functions[0].arguments.length > 0">
-                    <form class="ui form">
-                        <!-- todo: Also here, get the init function directly from somewhere -->
-                        <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
-                            
-                            <label class="arg-label" for="{{initACI.name + 'init' + '-' + arg.name}}">{{arg.name | replace : '_' : ' '}} : </label>
-                            
-                            <input [(ngModel)]="this.initACI.functions[0].arguments[arg.IDEindex].currentInput" (ngModelChange)="logTemp(this.initACI.functions[0].arguments[arg.IDEindex].currentInput)" 
-                                    name="{{initACI.name + 'init' + '-' + arg.name}}"
-                                    type="text"
-                                    class="arg-field"
-                                    id="{{initACI.name + 'init' + '-' + arg.name}}"   
-                                    placeholder="{{arg.type}}"
-                            >
-                        </div> 
-                    </form>
-                </div>
-
-                
-               <app-loader class="deploymentLoader" *ngIf="this.deploymentLoading == true" ></app-loader>
+<div *ngIf="initACI?.name">
+  <div class="ui orange segment container">
+    <a class="ui orange ribbon label">Compiled Contract</a>
+    <h4>{{ this.initACI.name }}</h4>
+    <!-- <button *ngIf="this.initFunctionIsPresent" class="ui black button" (click)="deployContract()">Deploy</button>
+-->
+    <!-- Deploy button & "at address" button -->
+    <div *ngIf="true" class="ui buttons">
+      <button (click)="deployContract()" class="ui black button">Deploy</button>
+      <div class="or"></div>
+      <button
+        (click)="deployContract(true)"
+        class="ui orange button atAddressButton"
+        suiPopup
+        popupHeader="Please Note"
+        popupTrigger="hover"
+        popupText="Currently, the SDK checks the validity of the entered address only upon attempting to call contract functions, this issue is being taken care of."
+      >
+        Use at address:
+      </button>
     </div>
-    <div class="ui section divider"></div>
-</div>
-    
+    <!-- "at address" field -->
+    <div class="ui icon input">
+      <input
+        [(ngModel)]="addressOfExistingContract"
+        type="text"
+        class="atAddressField"
+        placeholder="ct_nv5B9...Mp59bv..."
+      />
+      <i class="search icon"></i>
+    </div>
 
+    <!-- TODO: instead of relying the init function always coming first, find a way to directly pick the init function !  -->
+    <div
+      *ngIf="
+        initACI.functions[0] != undefined &&
+        initACI.functions[0].name == 'init' &&
+        initACI.functions[0].arguments.length > 0
+      "
+    >
+      <form class="ui form">
+        <!-- todo: Also here, get the init function directly from somewhere -->
+        <div class="field" *ngFor="let arg of initACI.functions[0].arguments">
+          <label class="arg-label" for="{{ initACI.name + 'init' + '-' + arg.name }}"
+            >{{ arg.name | replace: '_' : ' ' }} :
+          </label>
+
+          <input
+            [(ngModel)]="this.initACI.functions[0].arguments[arg.IDEindex].currentInput"
+            (ngModelChange)="
+              logTemp(this.initACI.functions[0].arguments[arg.IDEindex].currentInput)
+            "
+            name="{{ initACI.name + 'init' + '-' + arg.name }}"
+            type="text"
+            class="arg-field"
+            id="{{ initACI.name + 'init' + '-' + arg.name }}"
+            placeholder="{{ arg.type }}"
+          />
+        </div>
+      </form>
+    </div>
+
+    <app-loader class="deploymentLoader" *ngIf="this.deploymentLoading == true"></app-loader>
+  </div>
+  <div class="ui section divider"></div>
+</div>
 
 <!-- Deployed contracts start -->
-<div id = deployedContracts (mouseover)="hover=true" (mouseleave)="hover=false">
-    <span [ngStyle]="{'box-shadow': hover==true  ? '0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)' : '0 1px 2px 0 rgba(34,36,38,.15)' }" > 
-        <div *ngIf="activeContracts.length > 0" id="deployedContractsLabel" class="ui orange segment container">
-            <a class="ui orange ribbon label">Deployed Contracts</a>
-        </div>
-        <sui-accordion [transitionDuration]="500" [closeOthers] = "true" id="deployedContractsDropdown" class="styled fluid">
-            <app-deployed-contract *ngFor="let contract of activeContracts" (deleteContract)="deleteFromActiveContracts(contract)" [contract]="contract"></app-deployed-contract>
-        </sui-accordion>
-    </span>
+<div id="deployedContracts" (mouseover)="hover = true" (mouseleave)="hover = false">
+  <span
+    [ngStyle]="{
+      'box-shadow':
+        hover == true
+          ? '0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)'
+          : '0 1px 2px 0 rgba(34,36,38,.15)',
+    }"
+  >
+    <div
+      *ngIf="activeContracts.length > 0"
+      id="deployedContractsLabel"
+      class="ui orange segment container"
+    >
+      <a class="ui orange ribbon label">Deployed Contracts</a>
+    </div>
+    <sui-accordion
+      [transitionDuration]="500"
+      [closeOthers]="true"
+      id="deployedContractsDropdown"
+      class="styled fluid"
+    >
+      <app-deployed-contract
+        *ngFor="let contract of activeContracts"
+        (deleteContract)="deleteFromActiveContracts(contract)"
+        [contract]="contract"
+      ></app-deployed-contract>
+    </sui-accordion>
+  </span>
 </div>
-<br>
+<br />
 <!-- Deployed contracts end -->
 
 <div class="ui segment container">
-    <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
+  <p id="quote">"Complicated is easy, but <b>simple</b> is <b>hard.</b>" - <i>Robert Virding</i></p>
 </div>

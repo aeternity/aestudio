@@ -4,10 +4,10 @@ module.exports = {
       entryPoints: {
         '.': {
           override: {
-            main: undefined
-          }
-        }
-      }
-    }
-  }
+            main: undefined,
+          },
+        },
+      },
+    },
+  },
 };

@@ -2,95 +2,100 @@ import { Component, OnInit, Input, Output, ChangeDetectorRef, EventEmitter } fro
 import { CompilerService } from '../compiler.service';
 import { CodeFactoryService } from '../code-factory.service';
 import { BehaviorSubject, Subscription, generate } from 'rxjs';
-import { EventlogService } from '../services/eventlog/eventlog.service'
-import {IPopup, SuiPopupConfig} from "ngx-ng2-semantic-ui";
+import { EventlogService } from '../services/eventlog/eventlog.service';
+import { IPopup, SuiPopupConfig } from 'ngx-ng2-semantic-ui';
 import { ContractWithMethodsExtended } from '../helpers/interfaces';
 import { Aci } from '@aeternity/aepp-sdk/es/contract/compiler/Base';
 import { ContractBase } from '../question/contract-base';
 import { TestBed } from '@angular/core/testing';
 
-
 @Component({
   selector: 'app-deployed-contract',
   templateUrl: './deployed-contract.component.html',
-  styleUrls: ['./deployed-contract.component.css']
-  
+  styleUrls: ['./deployed-contract.component.css'],
 })
 export class DeployedContractComponent implements OnInit {
-
   @Input() contract: ContractWithMethodsExtended;
   @Output() deleteContract: EventEmitter<any> = new EventEmitter();
 
   panelOpen: boolean;
   deleteDialogOpen: boolean = false;
 
-  constructor(private compiler: CompilerService, 
-              private codeFactory: CodeFactoryService,
-              private eventlog: EventlogService){
-   
-     }
-  
+  constructor(
+    private compiler: CompilerService,
+    private codeFactory: CodeFactoryService,
+    private eventlog: EventlogService,
+  ) {}
+
   ngOnInit() {
     //console.log("Passed contract: ");
     //console.log(this.contract);
     //this.contract.aci = this.contract.aci.contract;
-    this.contract.addressPreview = this.contract.deployInfo.address.substring(0,6) + ' . . . ' +  this.contract.deployInfo.address.slice(-3)
+    this.contract.addressPreview =
+      this.contract.deployInfo.address.substring(0, 6) +
+      ' . . . ' +
+      this.contract.deployInfo.address.slice(-3);
   }
 
-  public openPopup(popup:IPopup, _payable: any) {
+  public openPopup(popup: IPopup, _payable: any) {
     /* console.log("Message triggered, function index:", functionIndex)
     console.log("In aci gefunden:", this.contract.aci.functions[functionIndex].payable ) */
-    console.log("doOpen is ", _payable)
-    if(this.compiler.txAmountInAettos > 0 && _payable == false)
-        popup.open();
+    console.log('doOpen is ', _payable);
+    if (this.compiler.txAmountInAettos > 0 && _payable == false) popup.open();
   }
 
-  public closePopup(popup:IPopup) {
-        popup.close();
+  public closePopup(popup: IPopup) {
+    popup.close();
   }
 
-  async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number){
+  async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number) {
     let theContract = this.contract;
-  
-    console.log("theContract is: ", theContract.$aci.functions[0]);
+
+    console.log('theContract is: ', theContract.$aci.functions[0]);
     // activate loader
-    theContract.$aci.functions[_theFunctionIndex].loading = true
-    
+    theContract.$aci.functions[_theFunctionIndex].loading = true;
+
     // fetch all entered params
-    const jsonTypes = ["map", "list", "tuple", "record", "bytes"]
-  
-    var callParams: any[] = this.contract.$aci.functions[_theFunctionIndex].arguments.map(oneArg => {
-      console.log("One arg: ", oneArg.currentInputData)
-      // try parsing input data as JSON to try handling complex input data cases - work in progess !
-      if (typeof oneArg.type === "object") return JSON.parse(oneArg.currentInputData)
-      return oneArg.currentInputData
-    });
+    const jsonTypes = ['map', 'list', 'tuple', 'record', 'bytes'];
+
+    var callParams: any[] = this.contract.$aci.functions[_theFunctionIndex].arguments.map(
+      (oneArg) => {
+        console.log('One arg: ', oneArg.currentInputData);
+        // try parsing input data as JSON to try handling complex input data cases - work in progess !
+        if (typeof oneArg.type === 'object') return JSON.parse(oneArg.currentInputData);
+        return oneArg.currentInputData;
+      },
+    );
 
     // check if custom values are applied for tx value, gas and gas price, and if so, set them
-    var txParams:any = { interval: 500, blocks: 3, allowUnsynced: true }
-    console.log("Compiler: amount: ", this.compiler.txAmountInAettos )
-    console.log("Compiler: gasAmountInUnits: ", this.compiler.gasAmountInUnits )
-    console.log("Compiler: gasPriceInAettos: ", this.compiler.gasPriceInAettos )
+    var txParams: any = { interval: 500, blocks: 3, allowUnsynced: true };
+    console.log('Compiler: amount: ', this.compiler.txAmountInAettos);
+    console.log('Compiler: gasAmountInUnits: ', this.compiler.gasAmountInUnits);
+    console.log('Compiler: gasPriceInAettos: ', this.compiler.gasPriceInAettos);
 
-    this.compiler.txAmountInAettos > 0 ? txParams.amount = this.compiler.txAmountInAettos : true
-    this.compiler.gasAmountInUnits > 0 ? txParams.gas = this.compiler.gasAmountInUnits : true
-    this.compiler.gasPriceInAettos > 0 ? txParams.gasPrice = this.compiler.gasPriceInAettos : true
-  
+    this.compiler.txAmountInAettos > 0 ? (txParams.amount = this.compiler.txAmountInAettos) : true;
+    this.compiler.gasAmountInUnits > 0 ? (txParams.gas = this.compiler.gasAmountInUnits) : true;
+    this.compiler.gasPriceInAettos > 0
+      ? (txParams.gasPrice = this.compiler.gasPriceInAettos)
+      : true;
+
     // "Apply" parameters a.k.a call function
-    console.log("Called function: ", _theFunction);
+    console.log('Called function: ', _theFunction);
     var callresult;
     try {
-
-      console.log('Calling with tx params:', txParams)
+      console.log('Calling with tx params:', txParams);
       /* callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, { interval: 500, blocks: 3, allowUnsynced: true, amount: "0", gasPrice:"2000000000", gas:80 }); */
-      callresult = await this.compiler.activeContracts[_contractIDEindex][_theFunction](...callParams, txParams);
-      console.log("The callresult object: ", callresult);
-      console.log("Decoded result ", callresult.decodedResult);
+      callresult = await this.compiler.activeContracts[_contractIDEindex][_theFunction](
+        ...callParams,
+        txParams,
+      );
+      console.log('The callresult object: ', callresult);
+      console.log('Decoded result ', callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract._name)
       // handle "false" result case not displaying call result data
-      callresult.decodedResult == false ? callresult.decodedResult = "false" : true
+      callresult.decodedResult == false ? (callresult.decodedResult = 'false') : true;
 
-   /*    Handle various result types ! 
+      /*    Handle various result types ! 
       false: done
       true: Test 
       numbers: todo
@@ -98,55 +103,72 @@ export class DeployedContractComponent implements OnInit {
 
       this.contract.$aci.functions[_theFunctionIndex].lastReturnData = callresult.decodedResult;
 
-      this.eventlog.log({type:"success", message: _theFunction + ": Call successfull", data: callresult})
+      this.eventlog.log({
+        type: 'success',
+        message: _theFunction + ': Call successfull',
+        data: callresult,
+      });
+    } catch (e) {
+      console.log('Error was: ', e);
 
-    } catch(e) {
-      console.log("Error was: ", e);
-      
       if (e.decodedError != undefined) {
         //this.logMessage(_theFunction + " - call errored: " + e.returnType + " - Decoded error message: " + e.decodedError, "error",  this.contract._name)
-        this.contract.$aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
-        this.eventlog.log({type:"error", message:"Call failure", data: e})
-
+        this.contract.$aci.functions[_theFunctionIndex].lastReturnData =
+          'Call errored/aborted, see console';
+        this.eventlog.log({ type: 'error', message: 'Call failure', data: e });
       } else {
-        this.contract.$aci.functions[_theFunctionIndex].lastReturnData = "Call errored/aborted, see console"
-        this.eventlog.log({type:"error", message: _theFunction + " - call errored: " + e /* + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again. "  */, data: e})
+        this.contract.$aci.functions[_theFunctionIndex].lastReturnData =
+          'Call errored/aborted, see console';
+        this.eventlog.log({
+          type: 'error',
+          message:
+            _theFunction +
+            ' - call errored: ' +
+            e /* + " Most likely there is a syncing issue in the load balanced testnet nodes, please re-deploy the contract and try again. "  */,
+          data: e,
+        });
       }
     }
     //deactivate loader
-    this.contract.$aci.functions[_theFunctionIndex].loading = false
-    
+    this.contract.$aci.functions[_theFunctionIndex].loading = false;
+
     // set decoded result to GUI
-    
-    console.log("Loader ist: ", this.contract.$aci.functions[_theFunctionIndex].loading );
-    console.log("Das wurde als callresult geschrieben: ", this.contract.$aci.functions[_theFunctionIndex].lastReturnData);
+
+    console.log('Loader ist: ', this.contract.$aci.functions[_theFunctionIndex].loading);
+    console.log(
+      'Das wurde als callresult geschrieben: ',
+      this.contract.$aci.functions[_theFunctionIndex].lastReturnData,
+    );
   }
-  
-  callCodeFactory(_theContractCode: string, _theFunctionName: string, _theParams: any, _initParams) {
-    console.log("Contract:", this.contract)
+
+  callCodeFactory(
+    _theContractCode: string,
+    _theFunctionName: string,
+    _theParams: any,
+    _initParams,
+  ) {
+    console.log('Contract:', this.contract);
     this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams, _initParams);
   }
-  
+
   deleteTheContract() {
     this.deleteContract.emit(this.contract);
-    console.log("Deployed-Contract.component: Emitting delete event")
+    console.log('Deployed-Contract.component: Emitting delete event');
   }
 
   copyAddress() {
-    navigator.clipboard.writeText(this.contract.deployInfo.address)
-    .then(() => {
-      console.log('Text copied to clipboard');
-    })
-    .catch(err => {
-      // This can happen if the user denies clipboard permissions:
-      console.error('Could not copy text: ', err);
-    });
+    navigator.clipboard
+      .writeText(this.contract.deployInfo.address)
+      .then(() => {
+        console.log('Text copied to clipboard');
+      })
+      .catch((err) => {
+        // This can happen if the user denies clipboard permissions:
+        console.error('Could not copy text: ', err);
+      });
   }
 
-  logTemp(something: any){
-    true
+  logTemp(something: any) {
+    true;
   }
-
 }
-
-

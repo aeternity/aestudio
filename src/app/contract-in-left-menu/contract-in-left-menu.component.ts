@@ -5,94 +5,84 @@ import { Contract } from '../contracts/hamster';
 @Component({
   selector: 'app-contract-in-left-menu',
   templateUrl: './contract-in-left-menu.component.html',
-  styleUrls: ['./contract-in-left-menu.component.css']
+  styleUrls: ['./contract-in-left-menu.component.css'],
 })
 export class ContractInLeftMenuComponent implements OnInit {
-
   @Input() public contract: Contract;
-  @Output() public contractDeletion : any = new EventEmitter();
+  @Output() public contractDeletion: any = new EventEmitter();
   @Output() public showInTabs = new EventEmitter();
-  
+
   hover: boolean;
-  toggled : boolean = false;
+  toggled: boolean = false;
 
   // the label
   styleLabel: any = {
-    width: "100%",
-    display: "inline-block",
-    background: "#1a1b1e"
-  }
+    width: '100%',
+    display: 'inline-block',
+    background: '#1a1b1e',
+  };
 
   /* Right button (delete icon) */
   rightButtonLabel: any = {
-    width: "0px",
-    height: "100%",
-    display: "inline-block"
-  }
-
+    width: '0px',
+    height: '100%',
+    display: 'inline-block',
+  };
 
   constructor() {
     this.hover = false;
-   }
-
-  ngOnInit() {
   }
 
-  public onHover(){
+  ngOnInit() {}
+
+  public onHover() {
     //console.log("Hover triggered!");
 
     /* The main Contract menu label */
     this.styleLabel = {
-      
-      width: "calc(100% - 40px)",
-      display: "inline-block",
-      background: "#1a1b1e"
-
-    }
+      width: 'calc(100% - 40px)',
+      display: 'inline-block',
+      background: '#1a1b1e',
+    };
 
     /* The right button */
-    this.rightButtonLabel = { 
-      width: "40px",
-      color: "#D12754",
-     
-      height: "100%",
-      display: "inline-block"
-    }
+    this.rightButtonLabel = {
+      width: '40px',
+      color: '#D12754',
 
-
+      height: '100%',
+      display: 'inline-block',
+    };
   }
 
   public unHover() {
-
     /* The main Contract menu label */
 
     this.styleLabel = {
-      width: "100%",
-      display: "inline-block",
-      background: "#1a1b1e"
-    }
-
+      width: '100%',
+      display: 'inline-block',
+      background: '#1a1b1e',
+    };
 
     /* The right button */
-    this.rightButtonLabel = { 
-      width: "0px",
-      color: "#D1275",
-      display: "inline-block",
-      height: "100%"
-    }
+    this.rightButtonLabel = {
+      width: '0px',
+      color: '#D1275',
+      display: 'inline-block',
+      height: '100%',
+    };
   }
 
-  public toggleDeleteDialog(){
+  public toggleDeleteDialog() {
     this.toggled = !this.toggled;
   }
-  
-  public deleteContract(){
-    this.contractDeletion.emit(this.contract)
+
+  public deleteContract() {
+    this.contractDeletion.emit(this.contract);
   }
 
-  public displayInTabs(){
-    console.log("showintabs called")
-    this.showInTabs.emit(this.contract)
+  public displayInTabs() {
+    console.log('showintabs called');
+    this.showInTabs.emit(this.contract);
   }
-
 }

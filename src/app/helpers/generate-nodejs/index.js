@@ -1,48 +1,54 @@
 // SDK & Node setup
-    const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk')
+const { Universal: Ae, MemoryAccount, Node } = require('@aeternity/aepp-sdk');
 
-    // account that will be used for the transactions
-    const acc1 = MemoryAccount({ keypair: { secretKey: '2fcd1b5b3434ca8b465e030aa9db42b30c71b37eab2bcd527039bd89f650db68d844c73b26e3b35cc46aacfddec678298718a9ee1e5872f28febfe92908bd5c9', publicKey: 'ak_2eFHyvq8CWEndzoidC4aEMEhHZjoYvc23fFVM2u7QV9myPuMwc' } });
-  
-    // a reference to the aeternity blockchain
-    var Chain;
-    
-    // instantiate a connection to the aeternity blockchain
-    const main = async () => {
-      const node1 = await Node({ url: 'https://testnet.aeternity.io', internalUrl: 'https://testnet.aeternity.io' })
-      // const node2 = ...
-    
-        Chain = await Ae({
-         // This two params deprecated and will be remove in next major release
-          url: 'https://testnet.aeternity.io',
-          internalUrl: 'https://testnet.aeternity.io',
-          // instead use
-          nodes: [
-            { name: 'someNode', instance: node1 },
-            // mode2
-          ],
-          compilerUrl: 'https://latest.compiler.aepps.com',
-          // `keypair` param deprecated and will be removed in next major release
-          
-          accounts: [
-            acc1,
-            // acc2
-          ],
-          address: acc1.publicKey
+// account that will be used for the transactions
+const acc1 = MemoryAccount({
+  keypair: {
+    secretKey:
+      '2fcd1b5b3434ca8b465e030aa9db42b30c71b37eab2bcd527039bd89f650db68d844c73b26e3b35cc46aacfddec678298718a9ee1e5872f28febfe92908bd5c9',
+    publicKey: 'ak_2eFHyvq8CWEndzoidC4aEMEhHZjoYvc23fFVM2u7QV9myPuMwc',
+  },
+});
 
-        })
-        const height = await Chain.height()
-        console.log('Connected to Testnet Node! Current Block:', height)
-    
-      
-    // CONTRACT DEPLOYMENT
+// a reference to the aeternity blockchain
+var Chain;
 
-    // a reference to your contract
-    var myContract;
+// instantiate a connection to the aeternity blockchain
+const main = async () => {
+  const node1 = await Node({
+    url: 'https://testnet.aeternity.io',
+    internalUrl: 'https://testnet.aeternity.io',
+  });
+  // const node2 = ...
 
-    // the code of your contract - watch out for correct indentations !
-    var code = 
-    `
+  Chain = await Ae({
+    // This two params deprecated and will be remove in next major release
+    url: 'https://testnet.aeternity.io',
+    internalUrl: 'https://testnet.aeternity.io',
+    // instead use
+    nodes: [
+      { name: 'someNode', instance: node1 },
+      // mode2
+    ],
+    compilerUrl: 'https://latest.compiler.aepps.com',
+    // `keypair` param deprecated and will be removed in next major release
+
+    accounts: [
+      acc1,
+      // acc2
+    ],
+    address: acc1.publicKey,
+  });
+  const height = await Chain.height();
+  console.log('Connected to Testnet Node! Current Block:', height);
+
+  // CONTRACT DEPLOYMENT
+
+  // a reference to your contract
+  var myContract;
+
+  // the code of your contract - watch out for correct indentations !
+  var code = `
 
 
 
@@ -149,45 +155,42 @@ contract BasicNFT =
     
     
     public entrypoint allTokensOwnedOrNotNow () : option(list(map(string, bool))) = 
-        Map.lookup(Call.caller, state.token_own_names)`
+        Map.lookup(Call.caller, state.token_own_names)`;
 
-    // create a contract instance
-    myContract = await Chain.getContractInstance(code);
+  // create a contract instance
+  myContract = await Chain.getContractInstance(code);
 
-    // Deploy the contract
-    try {
-      console.log("Deploying contract....")
-      console.log("Using account for deployment: ", Chain.addresses());
-      await myContract.methods.init("1337");
-    } catch(e){
-      console.log("Something went wrong, did you set up the SDK properly?");
-      console.log("Deployment failed: ", e)
-    }
-      console.log("Contract deployed successfully!")
-      console.log("Contract address: ", myContract.deployInfo.address)
-      console.log("Transaction ID: ", myContract.deployInfo.transaction)
-      console.log("\n \n")  
-      
-      
+  // Deploy the contract
+  try {
+    console.log('Deploying contract....');
+    console.log('Using account for deployment: ', Chain.addresses());
+    await myContract.methods.init('1337');
+  } catch (e) {
+    console.log('Something went wrong, did you set up the SDK properly?');
+    console.log('Deployment failed: ', e);
+  }
+  console.log('Contract deployed successfully!');
+  console.log('Contract address: ', myContract.deployInfo.address);
+  console.log('Transaction ID: ', myContract.deployInfo.transaction);
+  console.log('\n \n');
 
-    // CONTRACT FUNCTION CALL
+  // CONTRACT FUNCTION CALL
 
-    // the name of the function you want to call
-    var yourFunction = "getName";
-    
-    // the parameters of your function
-    yourParams = [];
+  // the name of the function you want to call
+  var yourFunction = 'getName';
 
-    // call your function
-    console.log("Calling your function: " + yourFunction);
-    try{
-      let callresult = await myContract.methods[yourFunction](...yourParams);
-      console.log("Transaction ID: ", callresult.hash);
-      console.log("Advice: log the full callResult object for more useful information!")
-      console.log("Function call returned: ", callresult.decodedResult);
-    } catch (e){
-      console.log("Calling your function errored: ", e)
-    }
-      } 
- main();
-      
+  // the parameters of your function
+  yourParams = [];
+
+  // call your function
+  console.log('Calling your function: ' + yourFunction);
+  try {
+    let callresult = await myContract.methods[yourFunction](...yourParams);
+    console.log('Transaction ID: ', callresult.hash);
+    console.log('Advice: log the full callResult object for more useful information!');
+    console.log('Function call returned: ', callresult.decodedResult);
+  } catch (e) {
+    console.log('Calling your function errored: ', e);
+  }
+};
+main();

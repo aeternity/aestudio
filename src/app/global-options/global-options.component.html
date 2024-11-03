@@ -1,4 +1,20 @@
 <div style="padding-top: 10px">
-    <sui-checkbox class="slider" style="float: left;" [(ngModel)]="debugMode" (click)="triggerDebugMode()">  </sui-checkbox>
-    <p>Debug Mode  <i style="float: right;" class="info circle icon" suiPopup  popupTrigger="hover" popupPlacement="bottom right" popupText="Enables displaying of information about the inner workings of aestudio in the browser console." ></i></p>
+  <sui-checkbox
+    class="slider"
+    style="float: left"
+    [(ngModel)]="debugMode"
+    (click)="triggerDebugMode()"
+  >
+  </sui-checkbox>
+  <p>
+    Debug Mode
+    <i
+      style="float: right"
+      class="info circle icon"
+      suiPopup
+      popupTrigger="hover"
+      popupPlacement="bottom right"
+      popupText="Enables displaying of information about the inner workings of aestudio in the browser console."
+    ></i>
+  </p>
 </div>

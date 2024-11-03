@@ -1,3 +1,3 @@
-interface Number{
-    toHex() : any;
+interface Number {
+  toHex(): any;
 }

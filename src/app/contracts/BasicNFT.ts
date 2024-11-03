@@ -1,9 +1,9 @@
 export class BasicNFT<T> {
-  public contractUID: string = "";
+  public contractUID: string = '';
   public code: string;
   public showInTabs: boolean = true;
-  public nameInTab: string = "template";
-  public shareId: string = "";
+  public nameInTab: string = 'template';
+  public shareId: string = '';
   public activeTab: boolean = false;
   public errorHighlights: any;
   public sharingHighlighters: any[] = [];
@@ -11,9 +11,11 @@ export class BasicNFT<T> {
 
   constructor(params: { [key: string]: any }) {
     this.contractUID = String(Date.now() + 5);
-    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
-    params._shareId != undefined ? this.shareId = params._shareId : true;
-    params._code != undefined ? this.code = params._code : this.code = `
+    params._nameInTab != undefined ? (this.nameInTab = params._nameInTab) : true;
+    params._shareId != undefined ? (this.shareId = params._shareId) : true;
+    params._code != undefined
+      ? (this.code = params._code)
+      : (this.code = `
         // Safe transfer is not implemented in this contract -
 // - Which means token sent to someone who don't know how to handle Erc721 may result in token lost
 // However the method of receiver verification (base of safe transfer) is not hard to implement...
@@ -122,12 +124,11 @@ contract BasicNFT =
     
     // get list of tokens owner (true) or not have access to now (false)
     public entrypoint allTokensOwnedOrNotNow () : option(list(map(string, bool))) = 
-        Map.lookup(Call.caller, state.token_own_names)`;
+        Map.lookup(Call.caller, state.token_own_names)`);
   }
 
   //experimental
-  public showInTabsOrNot (): boolean {
+  public showInTabsOrNot(): boolean {
     return this.showInTabs;
   }
-
 }

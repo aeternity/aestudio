@@ -8,9 +8,8 @@ describe('LogConsoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ LogConsoleComponent ]
-    })
-    .compileComponents();
+      declarations: [LogConsoleComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
