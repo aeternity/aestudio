@@ -3,7 +3,7 @@
   <img id="logo" src="/assets/aestudio.svg" />
   <!-- <p id="logoText1">Æ&nbsp;</p>
     <p id="logoText2">Studio</p>
-    
+
     <div class="my-icon" aria-label="icon" [inlineSVG]="'/assets/fire.svg'"></div> -->
 </div>
 <!-- Top menu bar end -->
@@ -105,7 +105,7 @@
 
 <!-- Code generator  -->
 <div class="codeGenerator">
-  <sui-dimmer [(isDimmed)]="codeGeneratorVisible" [isClickable]="false">
+  <sui-dimmer [isDimmed]="generator.code$ | async" [isClickable]="false">
     <div id="header" style="display: table-caption">
       <!-- <p style="font-size: 35px; display:contents">🎉</p> -->
 
@@ -120,9 +120,8 @@
         <div class="codeGenOption">
           <input
             type="checkbox"
-            [(ngModel)]="codeGeneratorSettings.sdk"
-            [ngModelOptions]="{ standalone: true }"
-            (change)="refreshGeneratedCode()"
+            [ngModel]="generator.addSdkSetup$ | async"
+            (ngModelChange)="generator.addSdkSetup$.next($event)"
           />
           <span class="codeGenOptionLabel">SDK initialization</span>
           <br />
@@ -130,9 +129,8 @@
         <div class="codeGenOption">
           <input
             type="checkbox"
-            [(ngModel)]="codeGeneratorSettings.contract"
-            [ngModelOptions]="{ standalone: true }"
-            (change)="refreshGeneratedCode()"
+            [ngModel]="generator.addDeploy$ | async"
+            (ngModelChange)="generator.addDeploy$.next($event)"
           />
           <span class="codeGenOptionLabel">Contract Deployment</span>
           <br />
@@ -140,9 +138,8 @@
         <div class="codeGenOption">
           <input
             type="checkbox"
-            [(ngModel)]="codeGeneratorSettings.function"
-            [ngModelOptions]="{ standalone: true }"
-            (change)="refreshGeneratedCode()"
+            [ngModel]="generator.addCall$ | async"
+            (ngModelChange)="generator.addCall$.next($event)"
           />
           <span class="codeGenOptionLabel">Contract Call</span>
           <br />
@@ -152,10 +149,9 @@
     </div>
 
     <ngx-monaco-editor
-      *ngIf="this.generatedCode"
+      *ngIf="generator.code$ | async"
       id="generatedCodeEditor"
-      [(ngModel)]="this.generatedCode"
-      id="generatedCodeEditor"
+      [ngModel]="generator.code$ | async"
       [options]="generatedCodeEditorOptions"
     ></ngx-monaco-editor>
     <div class="ui form">

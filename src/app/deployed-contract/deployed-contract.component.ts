@@ -139,12 +139,19 @@ export class DeployedContractComponent implements OnInit {
 
   callCodeFactory(
     _theContractCode: string,
-    _theFunctionName: string,
-    _theParams: any,
-    _initParams,
+    _theFunction: {
+      name: string;
+      arguments: Array<{ currentInputData: string }>;
+    },
+    _initParams: unknown[] = [],
   ) {
     console.log('Contract:', this.contract);
-    this.codeFactory.generateCode(_theContractCode, _theFunctionName, _theParams, _initParams);
+    this.codeFactory.contract$.next({
+      sourceCode: _theContractCode,
+      deployParams: _initParams,
+      entrypointName: _theFunction.name,
+      entrypointParams: _theFunction.arguments.map(({ currentInputData }) => currentInputData),
+    });
   }
 
   deleteTheContract() {

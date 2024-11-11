@@ -20,7 +20,7 @@
       "src/app/editor/typings.d.ts",
       "node_modules/@aeternity/aepp-sdk/src/typings"
     ],
-    "lib": ["es2018", "dom"],
+    "lib": ["es2021", "dom"],
     "paths": {
       "crypto": ["./node_modules/crypto-browserify"],
       "stream": ["./node_modules/stream-browserify"],

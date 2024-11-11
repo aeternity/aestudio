@@ -87,16 +87,6 @@ export class EditorComponent implements OnInit {
   previousErrorHash: any = '';
   // import default contract, after that set this with editor's content
 
-  // var for the dimmer, whether the codegenerator is to be displayed or not
-  codeGeneratorVisible = false;
-  codeGeneratorRawReturn: any = {}; // store the raw codegenerator return for later restructuring
-  generatedCode: any = '';
-  codeGeneratorSettings = {
-    sdk: true,
-    contract: true,
-    function: true,
-  };
-
   //the currently available contracts - initialized either as default code, or code fetched from DB, later on set by editor content
 
   contracts: any[] = [];
@@ -116,7 +106,7 @@ export class EditorComponent implements OnInit {
     private http: HttpClient,
     private _clipboardService: ClipboardService,
     private changeDetectorRef: ChangeDetectorRef,
-    private generator: CodeFactoryService,
+    public generator: CodeFactoryService,
     private localStorage: LocalStorageService,
     private authService: AuthService,
     public state: StateService,
@@ -372,20 +362,7 @@ export class EditorComponent implements OnInit {
     });
 
     // receives the raw result from code generator
-    this.codeGenerator = this.generator._generateCode.subscribe((codeObject) => {
-      if (Object.entries(codeObject).length > 0)
-        // <-- marie, aufpassen !
-        this.codeGeneratorVisible = true;
-
-      console.log('>>>>>>>>>>>> Generated code is:', codeObject);
-      this.codeGeneratorRawReturn = codeObject;
-
-      let finalCode = this.generator.generateFinalFormattedCode(
-        codeObject,
-        this.codeGeneratorSettings,
-      );
-
-      this.generatedCode = `${finalCode}`;
+    this.codeGenerator = this.generator.code$.subscribe(() => {
       // workaround for code window not showing:
       this.triggerWindowRefresh();
     });
@@ -398,16 +375,6 @@ export class EditorComponent implements OnInit {
     console.log('activeContract Contracts:', this.contracts);
     this.setTabAsActive(this.contracts[0]);
   }
-
-  refreshGeneratedCode = () => {
-    let finalCode = this.generator.generateFinalFormattedCode(
-      this.codeGeneratorRawReturn,
-      this.codeGeneratorSettings,
-    );
-    this.generatedCode = `${finalCode}`;
-    // workaround for code window not showing:
-    this.triggerWindowRefresh();
-  };
 
   // initializes editor object to interact with - called by the editor component
   initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor) {
@@ -703,7 +670,7 @@ export class EditorComponent implements OnInit {
   };
 
   closeCodeEditor = () => {
-    this.codeGeneratorVisible = false;
+    this.generator.contract$.next(undefined);
   };
 
   // if stupid-ass chrome won't render the editor but show it as a small square instead..
