@@ -1,3 +1,4 @@
 custom-modules
 src/vendor
 src/app/helpers/generate-nodejs/tests/generated
+src/environments/environment.ae.ts

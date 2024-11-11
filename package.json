@@ -7,7 +7,6 @@
     "start-win": "npm run sophia-win && ng serve",
     "build": "npm run sophia && ng build && node inject-metadata.js",
     "build-win": "npm run sophia-win && ng build && node inject-metadata.js",
-    "buildprod-nf": "npm run sophia && ng build --configuration=production && node inject-metadata.js",
     "buildprod-ae": "rm -r ./dist/ && npm run sophia && ng build --configuration=ae && node inject-metadata.js && cp ./custom-modules/CNAME ./dist/",
     "test": "ng test",
     "postinstall": "npm run init",
