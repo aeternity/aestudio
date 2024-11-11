@@ -420,6 +420,9 @@ THE SOFTWARE.
 
 
 
+aeternity-nodejs-test
+ISC
+
 ansi_up
 MIT
 (The MIT License)
