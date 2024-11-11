@@ -8,9 +8,8 @@ describe('OneLogComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ OneLogComponent ]
-    })
-    .compileComponents();
+      declarations: [OneLogComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

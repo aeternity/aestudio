@@ -1,169 +1,165 @@
 :host {
-    overflow: hidden;
-    overflow-y: auto;
+  overflow: hidden;
+  overflow-y: auto;
 }
 
-
-.triggerbar{
-    border-top: 1px solid #D2D2D3;
+.triggerbar {
+  border-top: 1px solid #d2d2d3;
 }
-
 
 .stylefix {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
-.active, .collapsible:hover {
-    background-color: #555;
-  }
-
-  .content {
-    
-    max-height: fit-content;
-    overflow: hidden;
-    transition: max-height 0.2s ease-out;
-    overflow-y: auto;
-    min-height:270px;
-    max-height:270px;
-    transition: all 0.5s linear, width 0.5s linear;
-  }
-
-  .content-wrapper {
-    padding: 0;
-    max-height: unset;
-    overflow: hidden;
-  }
-
-.consoleMaxSize{
-    /* max-height: 50vh; */
-    overflow: hidden;
-    background: #1e1e1e;
-    box-shadow: inset 5px 5px 20px 1px rgb(255 45 85 / 30%);
+.active,
+.collapsible:hover {
+  background-color: #555;
 }
 
+.content {
+  max-height: fit-content;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  overflow-y: auto;
+  min-height: 270px;
+  max-height: 270px;
+  transition:
+    all 0.5s linear,
+    width 0.5s linear;
+}
 
+.content-wrapper {
+  padding: 0;
+  max-height: unset;
+  overflow: hidden;
+}
+
+.consoleMaxSize {
+  /* max-height: 50vh; */
+  overflow: hidden;
+  background: #1e1e1e;
+  box-shadow: inset 5px 5px 20px 1px rgb(255 45 85 / 30%);
+}
 
 .logMonitorPanel .title.active {
-    background: #1d1d1d !important;
+  background: #1d1d1d !important;
 }
 
 .logMonitorPanel p {
-    color: #d22748;
-    display: inline;
-
+  color: #d22748;
+  display: inline;
 }
 
 .logMonitorPanel i {
-    color: #d22748;
-    display: inline;
+  color: #d22748;
+  display: inline;
 }
 
-.eventlog{
-    margin: 0px;
-    background-color: #131414;
-    border-radius: 0px;
-    
+.eventlog {
+  margin: 0px;
+  background-color: #131414;
+  border-radius: 0px;
 }
 
-.innereventlog{
-    background-color: #131414;
-    padding:0px;
+.innereventlog {
+  background-color: #131414;
+  padding: 0px;
 }
 
-.expanded .ui.segment{
-    background-color: #131414;
-    -webkit-box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
-    -moz-box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
-    box-shadow: inset 5px 5px 20px 1px rgba(255,45,85,0.3);
+.expanded .ui.segment {
+  background-color: #131414;
+  -webkit-box-shadow: inset 5px 5px 20px 1px rgba(255, 45, 85, 0.3);
+  -moz-box-shadow: inset 5px 5px 20px 1px rgba(255, 45, 85, 0.3);
+  box-shadow: inset 5px 5px 20px 1px rgba(255, 45, 85, 0.3);
 }
 
-.expanded .ui.segment{
-    border-radius: 0px !important;
+.expanded .ui.segment {
+  border-radius: 0px !important;
 }
 
-.innereventlog p, .innereventlog i, .ui.accordion p {
-    color: #d4d4d4;
+.innereventlog p,
+.innereventlog i,
+.ui.accordion p {
+  color: #d4d4d4;
 }
 
-.title.active{
-    color: #d4d4d4 !important;
+.title.active {
+  color: #d4d4d4 !important;
 }
 
 .ui.accordion {
-    margin-left: 12px;
-    margin-top: 0px;
+  margin-left: 12px;
+  margin-top: 0px;
 }
 
 .theLogs {
-    padding: 0px;
+  padding: 0px;
 }
 
-.secondary.menu{
-    margin-bottom: 0px;
+.secondary.menu {
+  margin-bottom: 0px;
 }
 
 .ui.segment.tab {
-    margin-top: 0px;
+  margin-top: 0px;
 }
 .scrollbar-dark {
-    scrollbar-width: auto;
-    scrollbar-color: #424242 #1e1e1e;
+  scrollbar-width: auto;
+  scrollbar-color: #424242 #1e1e1e;
 }
 
 /* Chrome, Edge, and Safari */
 .scrollbar-dark::-webkit-scrollbar {
-    width: 13px;
+  width: 13px;
 }
 
 .scrollbar-dark::-webkit-scrollbar-track {
-    background: #1e1e1e;
+  background: #1e1e1e;
 }
 
 .scrollbar-dark::-webkit-scrollbar-thumb {
-    background-color: #424242;
-    border-radius: 0px;
-    border: 0px solid #4a4a4a;
+  background-color: #424242;
+  border-radius: 0px;
+  border: 0px solid #4a4a4a;
 }
 
+.consoleTab.item {
+  background: #121213 !important;
+  border-top: 1px solid #121212 !important;
+  border-right: 1px solid #121212 !important;
+  border-left: 1px solid #121212 !important;
+  color: #999999 !important;
 
-.consoleTab.item{
-    background: #121213 !important;
-    border-top: 1px solid #121212 !important;
-    border-right: 1px solid #121212 !important;
-    border-left: 1px solid #121212 !important;
-    color: #999999 !important;
-    
-    &:hover {
-        border-width: 1px !important;
-    }
+  &:hover {
+    border-width: 1px !important;
+  }
 
-    &.active {
-        background: #1e1e1e !important;
-        border-top-color: none !important;
-        border-left-color: none !important;
-        border-right-color: none !important;
-        border-top-width: 2px !important;
-        border-radius: 0px !important;
-        color: #d1d0d0 !important;
-        border-width: 2px !important;
-    }
+  &.active {
+    background: #1e1e1e !important;
+    border-top-color: none !important;
+    border-left-color: none !important;
+    border-right-color: none !important;
+    border-top-width: 2px !important;
+    border-radius: 0px !important;
+    color: #d1d0d0 !important;
+    border-width: 2px !important;
+  }
 }
 
-div.ui.segment{
-    border: none
+div.ui.segment {
+  border: none;
 }
 
 .box {
-    display: flex;
-    flex-flow: column;
-    height: 100%;
-  }
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
 
-  .box .row.content {
-    flex: 1 1 auto;
-    background-color: #000000;
-  }
+.box .row.content {
+  flex: 1 1 auto;
+  background-color: #000000;
+}
 
-
-  .box-container {
-    display: contents;
-  }
+.box-container {
+  display: contents;
+}

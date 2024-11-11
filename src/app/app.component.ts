@@ -7,11 +7,8 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'fire-editor';
-  
+
   questions: any[];
 
-  constructor(){
-    
-
-  }
+  constructor() {}
 }

@@ -1,17 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    
     "outDir": "./out-tsc/app",
     "types": ["node"]
   },
   "angularCompilerOptions": {
     "enableIvy": true
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts"
-  ],
+  "files": ["src/main.ts", "src/polyfills.ts"],
   "include": [
     "src/**/*.d.ts",
     "node_modules/ng2-semantic-ui-ngx/index.ts",

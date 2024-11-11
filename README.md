@@ -2,18 +2,17 @@
 
 ## Install for Linux / Mac
 
-```npm run init```
-
+`npm run init`
 
 ## Install for Win
 
-```npm run init-win```
+`npm run init-win`
 
 ## Run with
 
-```ng serve```
+`ng serve`
 
-```-> visit localhost:4200 ```
+`-> visit localhost:4200 `
 
 Note: Some env vars are hardcoded in angular's environment files and might need to be changed for a local use.
 

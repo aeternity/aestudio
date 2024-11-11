@@ -8,9 +8,8 @@ describe('ContractInLeftMenuComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContractInLeftMenuComponent ]
-    })
-    .compileComponents();
+      declarations: [ContractInLeftMenuComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

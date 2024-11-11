@@ -8,9 +8,8 @@ describe('OneEditorTabComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ OneEditorTabComponent ]
-    })
-    .compileComponents();
+      declarations: [OneEditorTabComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

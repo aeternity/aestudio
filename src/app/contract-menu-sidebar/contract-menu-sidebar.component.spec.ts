@@ -8,9 +8,8 @@ describe('ContractMenuSidebarComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContractMenuSidebarComponent ]
-    })
-    .compileComponents();
+      declarations: [ContractMenuSidebarComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

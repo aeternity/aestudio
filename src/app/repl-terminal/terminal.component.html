@@ -1,25 +1,28 @@
 <div class="ngx-terminal" #terminalContainer>
-    <div class="ngx-terminal-output" spellcheck="false">
-  
-      <pre [innerHTML]="intro"></pre>
-  
-      <div *ngFor="let prompt of stack">
-  
-        <!-- prompt -->
-        <div *ngIf="!prompt.isEmpty()" fxLayout="row" fxLayoutAlign=" start">
-          <span class="ngx-terminal-prompt">{{prompt.login}}&amp;{{prompt.server}} $</span>
-          <textarea fxFlex class="ngx-terminal-input" [(ngModel)]="prompt.text" (keyup.arrowup)="historyUp()" (keyup.arrowdown)="historyDown()" #terminalInput
-                    [disabled]="prompt.locked"></textarea>
-        </div>
-        <!-- end prompt -->
-  
-        <!-- response -->
-        <div *ngIf="prompt.response">
-          <pre [innerHTML]="prompt.response"></pre>
-        </div>
-        <!-- end response -->
+  <div class="ngx-terminal-output" spellcheck="false">
+    <pre [innerHTML]="intro"></pre>
+
+    <div *ngFor="let prompt of stack">
+      <!-- prompt -->
+      <div *ngIf="!prompt.isEmpty()" fxLayout="row" fxLayoutAlign=" start">
+        <span class="ngx-terminal-prompt">{{ prompt.login }}&amp;{{ prompt.server }} $</span>
+        <textarea
+          fxFlex
+          class="ngx-terminal-input"
+          [(ngModel)]="prompt.text"
+          (keyup.arrowup)="historyUp()"
+          (keyup.arrowdown)="historyDown()"
+          #terminalInput
+          [disabled]="prompt.locked"
+        ></textarea>
       </div>
-  
+      <!-- end prompt -->
+
+      <!-- response -->
+      <div *ngIf="prompt.response">
+        <pre [innerHTML]="prompt.response"></pre>
+      </div>
+      <!-- end response -->
     </div>
   </div>
-  
+</div>

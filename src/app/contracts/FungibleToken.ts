@@ -1,9 +1,9 @@
 export class FungibleToken<T> {
-  public contractUID: string = "";
+  public contractUID: string = '';
   public code: string;
   public showInTabs: boolean = true;
-  public nameInTab: string = "template";
-  public shareId: string = "";
+  public nameInTab: string = 'template';
+  public shareId: string = '';
   public activeTab: boolean = false;
   public errorHighlights: any;
   public sharingHighlighters: any[] = [];
@@ -11,9 +11,11 @@ export class FungibleToken<T> {
 
   constructor(params: { [key: string]: any }) {
     this.contractUID = String(Date.now() + 3);
-    params._nameInTab != undefined ? this.nameInTab = params._nameInTab : true;
-    params._shareId != undefined ? this.shareId = params._shareId : true;
-    params._code != undefined ? this.code = params._code : this.code = `
+    params._nameInTab != undefined ? (this.nameInTab = params._nameInTab) : true;
+    params._shareId != undefined ? (this.shareId = params._shareId) : true;
+    params._code != undefined
+      ? (this.code = params._code)
+      : (this.code = `
     
 // ISC License
 //
@@ -134,12 +136,11 @@ contract FungibleToken =
     require_balance(from_account, value)
     put(state{ balances[from_account] @ b = b - value })
     put(state{ balances[to_account = 0] @ b = b + value })
-    Chain.event(Transfer(from_account, to_account, value))`;
+    Chain.event(Transfer(from_account, to_account, value))`);
   }
 
   //experimental
-  public showInTabsOrNot (): boolean {
+  public showInTabsOrNot(): boolean {
     return this.showInTabs;
   }
-
 }

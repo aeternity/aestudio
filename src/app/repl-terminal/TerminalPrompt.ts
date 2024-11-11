@@ -1,15 +1,14 @@
 import * as AU from 'ansi_up';
-import {EventEmitter} from '@angular/core';
+import { EventEmitter } from '@angular/core';
 
 // tslint:disable-next-line:variable-name new-parens
-const AnsiUp = new AU.default;
+const AnsiUp = new AU.default();
 AnsiUp.use_classes = true;
 
 /**
  * Terminal prompt
  */
 export class TerminalPrompt {
-
   private REGEX_ARGS = /[^\s"]+|"([^"]*)"/gi;
 
   private _id: string;
@@ -39,7 +38,6 @@ export class TerminalPrompt {
   private _responseChanged = new EventEmitter<void>();
 
   private _cancel = new EventEmitter<void>();
-
 
   private _response = '';
 
@@ -133,8 +131,7 @@ export class TerminalPrompt {
   /**
    * Get command and args
    */
-  public getCommandAndArgs(): { command: string, args: string[] } {
-
+  public getCommandAndArgs(): { command: string; args: string[] } {
     let match = this.REGEX_ARGS.exec(this._text);
     let command: string;
     const args = [];
@@ -149,7 +146,7 @@ export class TerminalPrompt {
       match = this.REGEX_ARGS.exec(this._text);
     }
 
-    return {command, args};
+    return { command, args };
   }
 
   /**

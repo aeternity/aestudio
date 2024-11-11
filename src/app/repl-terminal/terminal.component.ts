@@ -12,15 +12,15 @@ import {
   ViewChild,
   ViewChildren,
   ViewEncapsulation,
-  Renderer2
+  Renderer2,
 } from '@angular/core';
-import {TerminalPrompt} from './TerminalPrompt';
-import {Subscription} from 'rxjs';
- 
+import { TerminalPrompt } from './TerminalPrompt';
+import { Subscription } from 'rxjs';
+
 @Component({
-  selector: "ngx-terminal",
-  templateUrl: "./terminal.component.html",
-  styleUrls: ["./terminal.component.scss"],
+  selector: 'ngx-terminal',
+  templateUrl: './terminal.component.html',
+  styleUrls: ['./terminal.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class TerminalComponent implements OnInit, OnDestroy {
@@ -53,8 +53,8 @@ export class TerminalComponent implements OnInit, OnDestroy {
   /**
    * Login & server & intro
    */
-  @Input() public login = "root";
-  @Input() public server = "localhost";
+  @Input() public login = 'root';
+  @Input() public server = 'localhost';
   @Input() public intro: string;
 
   /**
@@ -62,8 +62,8 @@ export class TerminalComponent implements OnInit, OnDestroy {
    */
   @Output() public command = new EventEmitter<TerminalPrompt>();
 
-  @ViewChildren("terminalInput") private terminalInputs: QueryList<ElementRef>;
-  @ViewChild("terminalContainer", { read: ElementRef })
+  @ViewChildren('terminalInput') private terminalInputs: QueryList<ElementRef>;
+  @ViewChild('terminalContainer', { read: ElementRef })
   private terminalContainer: ElementRef;
 
   public stack: TerminalPrompt[] = [];
@@ -87,10 +87,9 @@ export class TerminalComponent implements OnInit, OnDestroy {
 
     if (this._isFocused) {
       this.focusCurrentPrompt();
-      this.cancelInputListening = this.renderer.listen("document", "keydown", (event) => {
-          this.onKeydownHandler(event);
-        }
-      );
+      this.cancelInputListening = this.renderer.listen('document', 'keydown', (event) => {
+        this.onKeydownHandler(event);
+      });
     } else {
       if (this.cancelInputListening) {
         this.cancelInputListening();
@@ -109,18 +108,18 @@ export class TerminalComponent implements OnInit, OnDestroy {
     }
 
     switch (event.code) {
-      case "Enter":
+      case 'Enter':
         event.preventDefault();
         this.currentPrompt.lock();
         this.command.next(this.currentPrompt);
         break;
 
-      case "Up":
+      case 'Up':
         event.preventDefault();
         this.historyUp();
         break;
 
-      case "Down":
+      case 'Down':
         event.preventDefault();
         this.historyDown();
         break;
@@ -128,7 +127,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
       default:
         // resize textarea with content
         const target = event.target as HTMLTextAreaElement;
-        target.style.height = target.scrollHeight + "px";
+        target.style.height = target.scrollHeight + 'px';
         break;
     }
   }
@@ -170,22 +169,19 @@ export class TerminalComponent implements OnInit, OnDestroy {
   public initNewPrompt() {
     // add new prompt
     this.currentPrompt = new TerminalPrompt({
-      text: "",
+      text: '',
       login: this.login,
       server: this.server,
-      response: "",
+      response: '',
     });
     this.stack.push(this.currentPrompt);
-    if (
-      this.stack[this.stack.length - 2] &&
-      this.stack[this.stack.length - 2].text === ""
-    ) {
+    if (this.stack[this.stack.length - 2] && this.stack[this.stack.length - 2].text === '') {
       this.stack.splice(this.stack.length - 2, 1);
     }
 
     // reset history index
     this.historyIndex = this.stack.length - 1;
-    this.historyCurrentValue = "";
+    this.historyCurrentValue = '';
 
     // on response changed
     if (this.subscriptions.onCurrentPromptResponseChanged) {
@@ -247,7 +243,7 @@ export class TerminalComponent implements OnInit, OnDestroy {
     if (this.historyIndex < this.stack.length - 2) {
       this.historyIndex++;
       const historyEntry = this.stack[this.historyIndex];
-      
+
       if (historyEntry) {
         this.currentPrompt.text = historyEntry.text;
       }

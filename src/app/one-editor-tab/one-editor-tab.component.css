@@ -1,8 +1,7 @@
-.monaco-editor .overflow-guard{
-    height: 80vh !important;
+.monaco-editor .overflow-guard {
+  height: 80vh !important;
 }
 
 .monaco-editor {
-    height: auto;
+  height: auto;
 }
-
