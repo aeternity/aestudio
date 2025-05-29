@@ -1,21 +1,21 @@
-export class AeUnlockOnTime<T> {
-  public contractUID: string = '';
+export class AeUnlockOnTime {
+  public contractUID = '';
   public code: string;
-  public showInTabs: boolean = true;
-  public nameInTab: string = 'template';
-  public shareId: string = '';
-  public activeTab: boolean = false;
+  public showInTabs = true;
+  public nameInTab = 'template';
+  public shareId = '';
+  public activeTab = false;
   public errorHighlights: any;
   public sharingHighlighters: any[] = [];
   public latestACI: any;
 
-  constructor(params: { [key: string]: any }) {
+  constructor(params: Record<string, any>) {
     this.contractUID = String(Date.now() + 2);
-    params._nameInTab != undefined ? (this.nameInTab = params._nameInTab) : true;
-    params._shareId != undefined ? (this.shareId = params._shareId) : true;
-    params._code != undefined
-      ? (this.code = params._code)
-      : (this.code = `
+    if (params._nameInTab != undefined) this.nameInTab = params._nameInTab;
+    if (params._shareId != undefined) this.shareId = params._shareId;
+    this.code =
+      params._code ??
+      `
         // This demostrates sending and getting Ae Tokens from contracts and Only when they available to withdraw.
 // User sends money to this contract to further send it to the receivers he wants to add up with the time from when make withdraw available
 // Then it add the receivers with the amount they can withdraw but require enough amount in the contract itself to move further and also 2 mins from now lock on funds
@@ -27,7 +27,7 @@ contract AeUnlockOnTime =
         receiver: map(address, user_balance),
         deployer: address,
         total_balance: int // sum of balance of every register user
-      }  
+      }
 
     record user_balance = {
         balance: int,
@@ -36,10 +36,10 @@ contract AeUnlockOnTime =
     stateful entrypoint init() = {
         receiver = {},
         deployer = Call.caller,
-        total_balance = 0 
+        total_balance = 0
       }
 
-    
+
     function unlockFromNowIn(): int =
         Chain.timestamp + (1000*120) // Current time + 120 seconds
 
@@ -50,20 +50,20 @@ contract AeUnlockOnTime =
     // Set receiver with the maximum amount it can withdraw
     stateful entrypoint set_receiver(raddress: address, can_withdraw: int) =
 
-       require(Call.caller == state.deployer, "Only owner can set receiver") 
+       require(Call.caller == state.deployer, "Only owner can set receiver")
        // Check if contract balance exsists before adding it for user.
        if(Contract.balance >= can_withdraw)
          put(state{total_balance = state.total_balance + can_withdraw})
 
        if(Contract.balance >= state.total_balance)
          put(state{receiver[raddress] = {balance = can_withdraw, available_from = unlockFromNowIn()}})
-        
+
        // If total balance of all users is bigger than balance available in this contract
        // then we can't add user and need to decreased total (which increased above)
        else
          put(state{total_balance = state.total_balance - can_withdraw})
-    
-    
+
+
     // Let user withdraw the amount they want to and subtract that from the amount they can withdraw
     stateful entrypoint withdraw(amount_to_withdraw: int) =
         if(state.receiver[Call.caller].balance >= amount_to_withdraw && state.receiver[Call.caller].available_from < Chain.timestamp)
@@ -74,11 +74,11 @@ contract AeUnlockOnTime =
     // Check User(Caller) Balance
     stateful entrypoint checkUserBalance(): int =
       state.receiver[Call.caller].balance
-    
+
     // Check User(Caller) Balance available from
     stateful entrypoint checkUserBalanceAvailableFrom(): int =
       state.receiver[Call.caller].available_from
-    
+
     // Check the total balance available in contract
     stateful entrypoint checkContractBalance(): int =
       Contract.balance
@@ -92,7 +92,7 @@ contract AeUnlockOnTime =
     // Withdraw leftovers
     stateful entrypoint withdrawAll() =
       if(Call.caller == state.deployer)
-        Chain.spend(Call.caller, Contract.balance-state.total_balance)`);
+        Chain.spend(Call.caller, Contract.balance-state.total_balance)`;
   }
 
   //experimental

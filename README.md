@@ -1,12 +1,10 @@
 # Æ Studio - Formerly known as 🔥 Fire Editor ! Aeternity's easy to use editor for writing smart contracts for the Æternity Blockchain !
 
-## Install for Linux / Mac
+## Install for Linux / Mac, Windows
 
-`npm run init`
-
-## Install for Win
-
-`npm run init-win`
+```
+npm install
+```
 
 ## Run with
 

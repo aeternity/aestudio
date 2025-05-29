@@ -16,8 +16,6 @@ export class OneLogChildComponent implements OnInit {
   isAnObject: any = {}; // keep track of log data that is an object (int, string, etc..)
   logEntries: any = [];
 
-  constructor() {}
-
   ngOnInit() {
     //if (this.isObject(this.log.data)){
     this.logEntries = Object.keys(this.log.data);

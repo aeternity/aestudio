@@ -29,14 +29,14 @@
                   class="item"
                   suiPopup
                   popupHeader="{{
-                    compiler.Chain.currentWalletProvider == 'extension'
+                    compiler.Chain.currentWalletProvider === 'extension'
                       ? 'Private Wallet account'
                       : !auth.theUser
                         ? 'Public Demo Accounts!'
                         : 'Personal     Testnet Account'
                   }}"
                   popupText=" {{
-                    compiler.Chain.currentWalletProvider == 'extension'
+                    compiler.Chain.currentWalletProvider === 'extension'
                       ? 'This account is provided by your browser wallet and is to be considered safe.'
                       : !auth.theUser
                         ? 'Click the user Tab and get your free personal testnet accounts'
@@ -55,13 +55,13 @@
                     <!-- public testnet accounts icon -->
                     <i
                       style="color: #c5283d"
-                      *ngIf="!auth.theUser && compiler.Chain.currentWalletProvider != 'extension'"
+                      *ngIf="!auth.theUser && compiler.Chain.currentWalletProvider !== 'extension'"
                       class="unlock icon"
                     ></i>
                     <!-- wallet extension user icon -->
                     <i
                       style="color: rgb(53, 184, 41)"
-                      *ngIf="compiler.Chain.currentWalletProvider == 'extension'"
+                      *ngIf="compiler.Chain.currentWalletProvider === 'extension'"
                       class="lock icon"
                     ></i>
 
@@ -183,7 +183,7 @@
           Install
           <a
             href="{{
-              compiler.currentBrowser == 'firefox'
+              compiler.currentBrowser === 'firefox'
                 ? 'https://addons.mozilla.org/en-US/firefox/addon/superhero-wallet/'
                 : 'https://chrome.google.com/webstore/detail/superhero/mnhmmkepfddpifjkamaligfeemcbhdne?hl=en'
             }}"
@@ -213,11 +213,11 @@
 <div class="ui section divider"></div>
 
 <!-- errors from compiler -->
-<div *ngIf="(currentError | json) != ({} | json) || this.initFunctionIsPresent == false">
+<div *ngIf="(currentError | json) !== ({} | json) || !this.initFunctionIsPresent">
   <div class="ui orange segment container">
     <a class="ui orange ribbon label">Compilation Issues</a>
 
-    <div *ngIf="this.initFunctionIsPresent == false" class="errorbox">
+    <div *ngIf="!this.initFunctionIsPresent" class="errorbox">
       <div class="errorbox-icon"><i class="plug icon sidebar-icon"></i></div>
       <div class="right">
         <div class="div2"><b>Optional: Looks like you forgot the init function ? </b></div>
@@ -254,7 +254,7 @@
       </div>
     </div>
 
-    <div *ngIf="(currentError | json) != ({} | json)" class="errorbox">
+    <div *ngIf="(currentError | json) !== ({} | json)" class="errorbox">
       <div class="errorbox-icon"><i class="bug icon sidebar-icon"></i></div>
       <div class="right">
         <div class="div2">
@@ -262,7 +262,7 @@
           At: Line {{ currentError.pos.line }}, column {{ currentError.pos.col }}
         </div>
 
-        <div class="div3" *ngIf="currentError.type == 'parse_error'">
+        <div class="div3" *ngIf="currentError.type === 'parse_error'">
           Hint: Did you forget a <span class="code">{{ '{' }}</span> ,
           <span class="code">{{ '}' }}</span> or <span class="code">{{ '=' }}</span> nearby, or
           accidentally type a misplaced character? <i class="exclamation triangle icon"></i>
@@ -309,8 +309,8 @@
     <!-- TODO: instead of relying the init function always coming first, find a way to directly pick the init function !  -->
     <div
       *ngIf="
-        initACI.functions[0] != undefined &&
-        initACI.functions[0].name == 'init' &&
+        initACI.functions[0] !== undefined &&
+        initACI.functions[0].name === 'init' &&
         initACI.functions[0].arguments.length > 0
       "
     >
@@ -336,7 +336,7 @@
       </form>
     </div>
 
-    <app-loader class="deploymentLoader" *ngIf="this.deploymentLoading == true"></app-loader>
+    <app-loader class="deploymentLoader" *ngIf="this.deploymentLoading"></app-loader>
   </div>
   <div class="ui section divider"></div>
 </div>
@@ -345,10 +345,9 @@
 <div id="deployedContracts" (mouseover)="hover = true" (mouseleave)="hover = false">
   <span
     [ngStyle]="{
-      'box-shadow':
-        hover == true
-          ? '0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)'
-          : '0 1px 2px 0 rgba(34,36,38,.15)',
+      'box-shadow': hover
+        ? '0 4px 8px 0 rgba(34,36,38,.12), 0 2px 10px 0 rgba(34,36,38,.08)'
+        : '0 1px 2px 0 rgba(34,36,38,.15)',
     }"
   >
     <div

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { AuthService } from '../services/auth/auth.service';
 import { IPopup } from 'ngx-ng2-semantic-ui';
@@ -8,7 +8,7 @@ import { IPopup } from 'ngx-ng2-semantic-ui';
   templateUrl: './tx-values.component.html',
   styleUrls: ['./tx-values.component.css'],
 })
-export class TxValuesComponent implements OnInit {
+export class TxValuesComponent {
   units = {
     aetto: 0,
     femtoae: 3,
@@ -21,34 +21,32 @@ export class TxValuesComponent implements OnInit {
 
   objectKeys = Object.keys;
 
-  beOpen: boolean = false;
-  isDisabled: boolean = false;
+  beOpen = false;
+  isDisabled = false;
   currentInput: number;
   currentValue: number; // this is the essential value !
-  currentUnit: string = 'aetto';
+  currentUnit = 'aetto';
 
-  gasRadioButton: boolean = false;
+  gasRadioButton = false;
   manualGasValue: number;
-  lastManualGasValue: number = 1337;
+  lastManualGasValue = 1337;
 
-  gasPriceRadioButton: boolean = false;
+  gasPriceRadioButton = false;
   manualGasPriceValue: number;
-  lastManualGasPriceValue: number = 1000000000;
+  lastManualGasPriceValue = 1000000000;
 
   constructor(
     public compiler: CompilerService,
     public auth: AuthService,
   ) {}
 
-  ngOnInit() {}
-
-  valueChange(e) {
+  valueChange() {
     //this.currentValue < 1 ? this.currentValue = 0 : true
     //console.log(this.getCurrentInput())
     this.calculateFinalValue();
   }
 
-  private showLoginNotification: boolean = true;
+  private showLoginNotification = true;
 
   public openPopup(popup: IPopup) {
     if (!this.auth.theUser && this.compiler.Chain.currentWalletProvider == 'web') {
@@ -60,7 +58,7 @@ export class TxValuesComponent implements OnInit {
     popup.close();
   }
 
-  manualGasChange(e) {
+  manualGasChange() {
     //this.currentValue < 1 ? this.currentValue = 0 : true
     this.compiler.gasAmountInUnits = this.manualGasValue;
     console.log(this.manualGasValue);
@@ -70,8 +68,8 @@ export class TxValuesComponent implements OnInit {
 
   toggleGasRadioButton() {
     console.log('Clicked, toggle:', this.gasRadioButton);
-    let newValue = this.manualGasValue;
-    let oldValue = this.lastManualGasValue;
+    const newValue = this.manualGasValue;
+    const oldValue = this.lastManualGasValue;
 
     if (this.gasRadioButton) {
       this.lastManualGasValue = newValue;
@@ -86,7 +84,7 @@ export class TxValuesComponent implements OnInit {
     }
   }
 
-  manualGasPriceChange(e) {
+  manualGasPriceChange() {
     //this.currentValue < 1 ? this.currentValue = 0 : true
     this.compiler.gasPriceInAettos = this.manualGasPriceValue;
     console.log(this.manualGasPriceValue);
@@ -96,8 +94,8 @@ export class TxValuesComponent implements OnInit {
 
   toggleGasPriceRadioButton() {
     console.log('Price Clicked, toggle:', this.gasPriceRadioButton);
-    let newValue = this.manualGasPriceValue;
-    let oldValue = this.lastManualGasPriceValue;
+    const newValue = this.manualGasPriceValue;
+    const oldValue = this.lastManualGasPriceValue;
 
     if (this.gasPriceRadioButton) {
       this.lastManualGasPriceValue = newValue;

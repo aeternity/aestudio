@@ -124,11 +124,12 @@ export class TerminalComponent implements OnInit, OnDestroy {
         this.historyDown();
         break;
 
-      default:
+      default: {
         // resize textarea with content
         const target = event.target as HTMLTextAreaElement;
         target.style.height = target.scrollHeight + 'px';
         break;
+      }
     }
   }
 

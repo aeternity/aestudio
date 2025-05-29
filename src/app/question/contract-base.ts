@@ -1,9 +1,7 @@
-import { FormGroup } from '@angular/forms';
-
 export class ContractBase {
   name: string;
   functions: any;
-  state: {};
+  state: object;
   type_defs?: string[];
   address: string;
 
@@ -34,10 +32,6 @@ export class ContractBase {
       typedefs: any[];
     };
   }) {
-    function setAddress(_address: string) {
-      this.address = _address;
-    }
-
     this.name = aci.contract.name;
     this.functions = aci.contract.functions || [];
     this.state = aci.contract.state || {};

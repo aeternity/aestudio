@@ -30,7 +30,7 @@ import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/
   providedIn: 'root',
 })
 export class CompilerService {
-  public code: string = '';
+  public code = '';
 
   // the code from the currently active compiler window
   aci: ContractBase;
@@ -49,9 +49,9 @@ export class CompilerService {
 
   public defaultSdkConfig = {};
   public sdkConfigOverrides = {};
-  public providerToggleInProcess: boolean = false;
-  public walletExtensionPresent: boolean = false;
-  public currentBrowser: string = '';
+  public providerToggleInProcess = false;
+  public walletExtensionPresent = false;
+  public currentBrowser = '';
 
   // let compiler know which tab is currently active
   public activeContract;
@@ -74,9 +74,9 @@ export class CompilerService {
 
   // 'amount' for transactions, recieved from tx-values component - set by tx-values-component,
   // read by one-contract-component when sending TXs
-  txAmountInAettos: number = 0;
-  gasAmountInUnits: number = 0;
-  gasPriceInAettos: number = 0;
+  txAmountInAettos = 0;
+  gasAmountInUnits = 0;
+  gasPriceInAettos = 0;
 
   private aciObs: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
@@ -122,7 +122,7 @@ export class CompilerService {
     },
   };
 
-  public scanForWallets = async (successCallback) => {
+  public scanForWallets = async () => {
     this.Chain = new AeSdkAepp({
       name: 'APP',
       nodes: [
@@ -184,31 +184,21 @@ export class CompilerService {
 
   //sunset eventually, could be superseded bythis.detectWallets()
   public justScanForWallets = async (successCallback) => {
-    //const detector = new Detector({ connection: scannerConnection });
-
-    const handleWallets = async ({ wallets, newWallet }) => {
-      newWallet = newWallet || Object.values(wallets)[0];
+    const handleWallets: Parameters<typeof walletDetector>[1] = async ({ newWallet }) => {
       stopScan();
-      newWallet ? (this.cachedWallet = newWallet) : true;
+      this.cachedWallet = newWallet;
       console.log('superhero: newwallet:', newWallet);
-      console.log('superhero: wallets:', wallets);
-      console.log('superhero: cachedWallet', this.cachedWallet);
-      console.log('superhero: one wallet', Object.values(wallets)[0]);
-
-      const wallet = newWallet ? newWallet : wallets[this.aeternity.detectedWallet];
-      this.aeternity.detectedWallet = wallet.id;
+      this.aeternity.detectedWallet = newWallet.info.id;
       successCallback();
     };
 
     const scannerConnection = new BrowserWindowMessageConnection();
     const stopScan = walletDetector(scannerConnection, handleWallets);
-
-    //detector.scan(handleWallets);
   };
 
   public detectWallets = async () => {
     const connection = new BrowserWindowMessageConnection();
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const stopDetection = walletDetector(connection, async ({ newWallet }) => {
         console.log('Compiler: wallet detected', newWallet);
         stopDetection();
@@ -218,14 +208,11 @@ export class CompilerService {
   };
 
   public awaitInitializedChainProvider = async () => {
-    return new Promise<void>((resolve, reject) => {
-      var scanCount = 0;
-      var check = setInterval(() => {
-        if (this.Chain && this.Chain.currentWalletProvider) {
+    return new Promise<void>((resolve) => {
+      const check = setInterval(() => {
+        if (this.Chain?.currentWalletProvider) {
           clearInterval(check);
           resolve();
-        } else {
-          scanCount++;
         }
       }, 300);
     });
@@ -237,9 +224,8 @@ export class CompilerService {
     }, 200); // wait a bit to allow the toggle to change it's state before disabling it
 
     if (this.Chain) {
-      this.Chain.currentWalletProvider == 'extension'
-        ? await this.setupWebClient()
-        : await this.setupWalletClient();
+      if (this.Chain.currentWalletProvider == 'extension') await this.setupWebClient();
+      else await this.setupWalletClient();
     }
 
     //TODO: handle case of rejecting the wallet connection
@@ -258,14 +244,14 @@ export class CompilerService {
       'connected',
     );
     console.log('Address from wallet', current);
-    let currentAddress = Object.keys(current)[0];
+    const currentAddress = Object.keys(current)[0];
 
     console.log('TODO: what replaces this.chain.accounts.current ?');
 
     //console.log("wallet's account?", Object.keys(this.Chain.accounts.current)[0].toString())
 
     // put data where other components expect it to be
-    let sdkSettingsToReport: any = {};
+    const sdkSettingsToReport: any = {};
 
     //wallets:
     console.log('TODO: obtain the information for following commented block!');
@@ -282,11 +268,11 @@ export class CompilerService {
   };
 
   public setupWalletClient = () => {
-    this.initWalletSearch(this.onWalletSearchSuccess);
+    this.initWalletSearch();
   };
 
-  public initWalletSearch = async (successCallback) => {
-    await this.scanForWallets(successCallback);
+  public initWalletSearch = async () => {
+    await this.scanForWallets();
   };
 
   // ____ helpers end
@@ -303,11 +289,11 @@ export class CompilerService {
     private eventlog: EventlogService,
   ) {
     // define the default SDK settings
-    var theAccounts: MemoryAccountExtended[] = [];
+    const theAccounts: MemoryAccountExtended[] = [];
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach((account) => {
-      let oneAccount: MemoryAccountExtended = new MemoryAccount(account.secretKey);
+      const oneAccount: MemoryAccountExtended = new MemoryAccount(account.secretKey);
       oneAccount.property = 'public';
       theAccounts.push(oneAccount);
     });
@@ -353,17 +339,15 @@ export class CompilerService {
         onCompiler: new CompilerHttp(this.defaultOrCustomSDKsetting('compilerUrl')),
         accounts: this.defaultOrCustomSDKsetting('accounts'),
       });
-    } catch {
-      (e) => {
-        console.log("Shit, SDK setup didn't work:", e);
-      };
+    } catch (e) {
+      console.log("Shit, SDK setup didn't work:", e);
     }
     // place indicator for whether it's the wallet addon active or just web/testnet accounts etc.
     this.Chain.currentWalletProvider = 'web';
 
     // TODO: show eventual error in UI
     try {
-      let height = await this.Chain.getHeight();
+      const height = await this.Chain.getHeight();
       console.log('Current Block Height:', height);
     } catch (e) {
       console.log('error fetching block height:', e);
@@ -376,7 +360,7 @@ export class CompilerService {
   }
 
   getAciFromCompiler(code: string) {
-    let compilerUrl = `${this.defaultOrCustomSDKsetting('compilerUrl')}/aci`;
+    const compilerUrl = `${this.defaultOrCustomSDKsetting('compilerUrl')}/aci`;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -386,7 +370,7 @@ export class CompilerService {
   }
 
   getErrorsFromDebugCompiler(code) {
-    let compilerUrl = `${environment.debugCompilerURL}/aci`;
+    const compilerUrl = `${environment.debugCompilerURL}/aci`;
     //let compilerUrl = "http://145.239.150.239:3080/aci";
     const httpOptions = {
       headers: new HttpHeaders({
@@ -403,7 +387,7 @@ export class CompilerService {
   //  async getCurrentSDKsettings() : Promise<any> {
   getCurrentSDKsettings() {
     if (this.Chain != undefined) {
-      var returnObject = {
+      const returnObject = {
         addresses: [],
         address: '',
       };
@@ -450,12 +434,12 @@ export class CompilerService {
   ): Promise<any> {
     console.log('deploying...');
 
-    let sourceCode = this.code;
+    const sourceCode = this.code;
     // code to aci
     //console.log("Hier kommt der code:", sourceCode);
 
     // create a contract instance
-    var myContract: ContractWithMethodsExtended;
+    let myContract: ContractWithMethodsExtended;
 
     if (!_existingContractAddress) {
       // Here we deploy the contract
@@ -465,18 +449,18 @@ export class CompilerService {
 
       try {
         console.log('Deployment params:', _deploymentParams);
-        let txParams = {
+        const txParams = {
           interval: 500,
           blocks: 3,
           allowUnsynced: true,
         };
 
         // add manualtx params if defined
-        this.txAmountInAettos > 0 ? (txParams['amount'] = this.txAmountInAettos) : true;
-        this.gasAmountInUnits > 0 ? (txParams['gas'] = this.gasAmountInUnits) : true;
-        this.gasPriceInAettos > 0 ? (txParams['gasPrice'] = this.gasPriceInAettos) : true;
+        if (this.txAmountInAettos > 0) txParams['amount'] = this.txAmountInAettos;
+        if (this.gasAmountInUnits > 0) txParams['gas'] = this.gasAmountInUnits;
+        if (this.gasPriceInAettos > 0) txParams['gasPrice'] = this.gasPriceInAettos;
 
-        let deployResult = await myContract.$deploy(
+        const deployResult = await myContract.$deploy(
           _deploymentParams ? _deploymentParams : [],
           txParams,
         );
@@ -504,7 +488,7 @@ export class CompilerService {
             data: { message: _e.message },
           });
         } else {
-          let error = _e.toString();
+          const error = _e.toString();
           this.logMessage({
             type: 'error',
             message: 'Contract deployment failed: ' + myContract._name + ' Error:' + error,
@@ -535,7 +519,7 @@ export class CompilerService {
       (data) => {
         // save ACI to generate a contract instance for the editor
 
-        var rawACI = data.find((entry) => entry.contract?.kind == 'contract_main');
+        const rawACI = data.find((entry) => entry.contract?.kind == 'contract_main');
 
         /*    // 0. move all contract functions to a functions property that previously existed in the SDK,
       // to reduce the amount of changes in the codebase
@@ -558,14 +542,14 @@ export class CompilerService {
         });
 
         // 3.  now that we have it, add additional fields to the ACI (formgroups disabled currently)
-        let aci = this.modifyAci(rawACI);
+        const aci = this.modifyAci(rawACI);
 
         // 4. add our processed ACI to the contract object, which contains only the ACI of the main contract
         // plus our info
         myContract.$aci = aci;
 
         // also, add the deployment params
-        myContract.deployInfo ? (myContract.deployInfo.params = _deploymentParams) : true;
+        if (myContract.deployInfo) myContract.deployInfo.params = _deploymentParams;
 
         // if it was an existing contract, add the address to the deployInfo
         if (_existingContractAddress) {
@@ -585,7 +569,7 @@ export class CompilerService {
         // 5. tell sidebar about the new contract so it can store it
         this._notifyDeployedContract.next({ newContract: myContract, success: true });
       },
-      (error) => this.fetchErrorsFromDebugCompiler(sourceCode),
+      () => this.fetchErrorsFromDebugCompiler(sourceCode),
     );
     console.log('fetching error from debug compiler..');
 
@@ -596,11 +580,12 @@ export class CompilerService {
     return true;
   }
   async fetchErrorsFromDebugCompiler(sourceCode: string): Promise<string> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       console.log('fetching errors...');
-      var returnValue;
+      let returnValue;
       this.getErrorsFromDebugCompiler(sourceCode).subscribe(
-        (data: EncodedACI) => {},
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        () => {},
         (error) => {
           console.log('Found the error:', error.error[0]);
           returnValue = error.error[0];
@@ -623,7 +608,7 @@ export class CompilerService {
       return false;
     }
 
-    var sourceCode = params.sourceCode.replace(new RegExp('"', 'g'), '"');
+    let sourceCode = params.sourceCode.replace(new RegExp('"', 'g'), '"');
 
     // remove comments
     sourceCode = sourceCode.replace(new RegExp('\\/\\/.*', 'g'), '');
@@ -639,7 +624,7 @@ export class CompilerService {
       (data) => {
         // save ACI to generate a contract instance for the editor
 
-        var rawACI = data.find((entry) => entry.contract?.kind == 'contract_main');
+        let rawACI = data.find((entry) => entry.contract?.kind == 'contract_main');
 
         // now add an index to each function and sort them, just to be sure
         // 1. just to make sure the init func is on top, sort functions.
@@ -665,9 +650,9 @@ export class CompilerService {
 
         return rawACI;
       },
-      async (error) => {
+      async () => {
         //console.log("oooops fehler", error.error)
-        var theError = await this.fetchErrorsFromDebugCompiler(sourceCode);
+        const theError = await this.fetchErrorsFromDebugCompiler(sourceCode);
 
         // prevent showing errors for contracts in non-visible tabs:
         if (this.activeContract.contractUID == params.contractUID) {
@@ -697,7 +682,7 @@ export class CompilerService {
   modifyAci(aci: any): ContractBase {
     // 1. create several formgroups: one FG for each fun, return final contract
     //console.log("ACI hier:", aci);
-    let functions = aci.contract.functions;
+    const functions = aci.contract.functions;
     // 2. ... for every function of the contract....
     functions.forEach((fun) => {
       //console.log("Taking care of", fun.name);
@@ -706,9 +691,7 @@ export class CompilerService {
       // add field to later store loading state (e.g. transaction being mined or waiting for local call..)
       fun.loading = false;
       // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required
-      fun.arguments.forEach((arg, i, allArgs) => {
-        let controlls: any = [];
-
+      fun.arguments.forEach((arg, i) => {
         // add field to sotre current input value
         arg.currentInput = '';
         arg.IDEindex = i;
@@ -789,9 +772,9 @@ export class CompilerService {
     switch (true) {
       case agent.indexOf('edge') > -1:
         return 'edge';
-      case agent.indexOf('opr') > -1 && !!(<any>window).opr:
+      case agent.indexOf('opr') > -1 && !!(window as any).opr:
         return 'opera';
-      case agent.indexOf('chrome') > -1 && !!(<any>window).chrome:
+      case agent.indexOf('chrome') > -1 && !!(window as any).chrome:
         return 'chrome';
       case agent.indexOf('trident') > -1:
         return 'ie';
@@ -806,8 +789,7 @@ export class CompilerService {
 
   public setGlobalEditorSetting(key, value) {
     if (key == 'debugMode') {
-      //@ts-ignore
-      window.GlobalDebug(value, false);
+      (window as any).GlobalDebug(value, false);
     }
   }
 }

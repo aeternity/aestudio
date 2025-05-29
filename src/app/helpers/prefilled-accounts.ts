@@ -1,6 +1,6 @@
 export default function fetchRandomAccounts() {
-  let shuffledAccounts = shuffle(hundredPublicAccounts);
-  let fiveAccounts = shuffledAccounts.slice(0, 4);
+  const shuffledAccounts = shuffle(hundredPublicAccounts);
+  const fiveAccounts = shuffledAccounts.slice(0, 4);
   return fiveAccounts;
 }
 
@@ -508,7 +508,7 @@ export const hundredPublicAccounts = [
 ];
 
 function shuffle(array) {
-  var currentIndex = array.length,
+  let currentIndex = array.length,
     temporaryValue,
     randomIndex;
 

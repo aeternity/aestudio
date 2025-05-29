@@ -3,30 +3,12 @@ import { Injectable } from '@angular/core';
 import { User } from './user.model';
 import { HttpClient } from '@angular/common/http';
 //import { from } from 'rxjs';
-import { from as observableFrom } from 'rxjs';
-import { concatMap, take, retryWhen, delay } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { generateKeyPair, MemoryAccount } from '@aeternity/aepp-sdk';
 
 // Aeternity
 //import { Crypto } from '@aeternity/aepp-sdk/es'
 //import MemoryAccount from '@aeternity/aepp-sdk/es/account/memory'
-
-// sdk 13 migration start
-const {
-  AeSdk,
-  Crypto,
-  MemoryAccount,
-  Node,
-  CompilerHttp,
-  AE_AMOUNT_FORMATS,
-  generateKeyPair,
-  Contract,
-  BrowserWindowMessageConnection,
-  walletDetector,
-} = require('@aeternity/aepp-sdk');
-
-// sdk 13 migration end
 
 // Firebase
 /* import { auth } from 'firebase/app';
@@ -45,7 +27,7 @@ export class AuthService {
   theUser: any;
 
   // workaround for stupid swatchMap rxJS thingy triggering twice after response
-  loginRetrieved: boolean = false;
+  loginRetrieved = false;
 
   fillingUpAccounts = {
     active: 'false',
@@ -167,12 +149,12 @@ export class AuthService {
   // helpers
 
   private async generateAndFillAccounts(): Promise<(typeof MemoryAccount)[]> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       console.log('Login: fillup triggered');
       this.fillingUpAccounts.active = 'true';
 
-      var maxFourBusy: number = 0;
-      var keypairs: any[] = [];
+      let maxFourBusy = 0;
+      const keypairs: any[] = [];
       // enough of RxJS bullshit - just looping over the fillup request as long as is needed to fill up 4 accounts.
       setInterval(async () => {
         if (keypairs.length >= 4) {
@@ -181,7 +163,7 @@ export class AuthService {
         } else {
           if (maxFourBusy < 4) {
             maxFourBusy++;
-            var keypair = Crypto.generateKeyPair();
+            const keypair = generateKeyPair();
 
             //console.log("Login: Keypair:", keypair)
 
@@ -204,7 +186,7 @@ export class AuthService {
                   this.fillingUpAccounts.percentage = this.fillingUpAccounts.percentage + 25;
                   console.log('Login: Finished account', data);
                 },
-                error: (error) => {
+                error: () => {
                   /* console.log('Faucet request errored, waiting for next run.', error); */ maxFourBusy--;
                 },
               });

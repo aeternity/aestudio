@@ -54,7 +54,7 @@
         class="ui segment container"
         *ngFor="let oneFunction of contract.$aci.functions"
       >
-        <div class="ui segment container" *ngIf="oneFunction.name != 'init'">
+        <div class="ui segment container" *ngIf="oneFunction.name !== 'init'">
           <h4>{{ oneFunction.name | replace: '_' : ' ' }}</h4>
 
           <!-- TODO: Add form control -->
@@ -80,9 +80,7 @@
             </div>
           </form>
           <br />
-          <app-loader
-            *ngIf="contract.$aci.functions[oneFunction.IDEindex].loading == true"
-          ></app-loader>
+          <app-loader *ngIf="contract.$aci.functions[oneFunction.IDEindex].loading"></app-loader>
 
           <!-- Contract function call button -->
 
@@ -101,7 +99,7 @@
             [class.button]="true"
             [class.collapsedForIcon]="
               !contract.$aci.functions[oneFunction.IDEindex].payable &&
-              this.compiler.txAmountInAettos == 0
+              this.compiler.txAmountInAettos === 0
             "
             [class.expandedForIcon]="
               !contract.$aci.functions[oneFunction.IDEindex].payable &&
@@ -120,12 +118,8 @@
             (mouseout)="closePopup(popup)"
             [disabled]=""
           >
-            <p *ngIf="contract.$aci.functions[oneFunction.IDEindex].stateful == false">
-              Call Locally
-            </p>
-            <p *ngIf="contract.$aci.functions[oneFunction.IDEindex].stateful == true">
-              Send Transaction
-            </p>
+            <p *ngIf="!contract.$aci.functions[oneFunction.IDEindex].stateful">Call Locally</p>
+            <p *ngIf="contract.$aci.functions[oneFunction.IDEindex].stateful">Send Transaction</p>
 
             <i
               *ngIf="

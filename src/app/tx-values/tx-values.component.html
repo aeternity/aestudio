@@ -15,7 +15,7 @@
       [class.disabled]="
         (auth.user$ | async)
           ? false
-          : compiler.Chain.currentWalletProvider == 'extension'
+          : compiler.Chain.currentWalletProvider === 'extension'
             ? false
             : true
       "
@@ -48,7 +48,7 @@
         [isDisabled]="
           (auth.user$ | async)
             ? false
-            : compiler.Chain.currentWalletProvider == 'extension'
+            : compiler.Chain.currentWalletProvider === 'extension'
               ? false
               : true
         "

@@ -21,7 +21,6 @@ import { ContractInLeftMenuComponent } from './contract-in-left-menu/contract-in
 import { OneEditorTabComponent } from './one-editor-tab/one-editor-tab.component';
 import { LogConsoleComponent } from './log-console/log-console.component';
 import { OneLogComponent } from './one-log/one-log.component';
-import { environment } from '../environments/environment';
 import { TxValuesComponent } from './tx-values/tx-values.component';
 import { NgCircleProgressModule } from 'ng-circle-progress';
 import { DigitOnlyModule } from '@uiowa/digit-only';

@@ -1,0 +1,20 @@
+on:
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  build_test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: npm
+      - run: npm ci --legacy-peer-deps # TODO: remove after dropping @angular/flex-layout
+      - run: npm run lint
+      - run: npm run build
+      - run: npm ci
+        working-directory: 'src/app/helpers/generate-nodejs'
+      - run: npm test
+        working-directory: 'src/app/helpers/generate-nodejs'

@@ -13,7 +13,7 @@ export interface ILog {
 
 export interface IActiveContract {
   contractUID: string | number;
-  latestACI: Object;
+  latestACI: object;
   code: string;
   sharingHighlighters?: number[];
   nameInTab: string;
@@ -29,7 +29,7 @@ interface additionalMemoryAccountProperties {
 }
 
 interface additionalContractProperties {
-  deployInfo?: { [key: string]: any };
+  deployInfo?: Record<string, any>;
   IDEindex?: number;
   addressPreview?: string;
   $aci?: ContractBase;

@@ -75,16 +75,18 @@ import 'zone.js'; // Included with Angular CLI.
 };
 
 (window as any).GlobalDebug = (function () {
-  var savedConsole = console;
+  const savedConsole = console;
   return function (debugOn, suppressAll) {
-    var suppress = suppressAll || false;
+    const suppress = suppressAll || false;
     if (debugOn === false) {
       (console as any) = {};
+      /* eslint-disable @typescript-eslint/no-empty-function */
       console.log = function () {};
       if (suppress) {
         console.info = function () {};
         console.warn = function () {};
         console.error = function () {};
+        /* eslint-enable @typescript-eslint/no-empty-function */
       } else {
         console.info = savedConsole.info;
         console.warn = savedConsole.warn;
@@ -94,8 +96,7 @@ import 'zone.js'; // Included with Angular CLI.
       console = savedConsole;
     }
   };
-  //@ts-ignore
 })();
-//@ts-ignore
+// @ts-expect-error polyfills setup
 
 window.GlobalDebug(false, false);

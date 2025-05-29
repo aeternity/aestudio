@@ -9,17 +9,18 @@ import {
 } from '@angular/core';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { distinctUntilChanged } from 'rxjs/operators';
+import type Monaco from 'monaco-editor';
 
 import { environment } from 'src/environments/environment';
 import { CompilerService } from '../compiler.service';
-import { Contract } from '../contracts/hamster';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ClipboardService } from 'ngx-clipboard';
 import { Subscription, Subject } from 'rxjs';
-import { setInterval, clearInterval } from 'timers';
 import { AuthService } from '../services/auth/auth.service';
 import { StateService } from '../services/state.service';
 import { IActiveContract } from '../helpers/interfaces';
+
+declare const monaco: typeof Monaco;
 
 @Component({
   selector: 'app-one-editor-tab',
@@ -28,8 +29,7 @@ import { IActiveContract } from '../helpers/interfaces';
 })
 export class OneEditorTabComponent implements OnInit, OnDestroy {
   // angular 9 bullshit start
-  codeGeneratorVisible: boolean = false;
-  closeCodeEditor() {}
+  codeGeneratorVisible = false;
   generatedCode: any = false;
   // angular 9 bullshit end
 
@@ -39,10 +39,10 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   @Output() activeContractChange = new EventEmitter<any>();
 
   // dimming for sharing link displaying
-  isDimmed: boolean = false;
+  isDimmed = false;
   contractID: string | boolean = false; // necessary for the link copying dimming
 
-  editorInstance: monaco.editor.IStandaloneCodeEditor; // the editor, initialized by the component
+  editorInstance: Monaco.editor.IStandaloneCodeEditor; // the editor, initialized by the component
 
   // workaround for annoying angular bug firing events dozens of times: collect hashes of errors in this map and set new ones only if hash is unused
   lastError: string;
@@ -144,7 +144,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         //console.log("Resetting last known error..");
         this.lastError = '';
       } else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
-        let theError = item['error'];
+        const theError = item['error'];
         console.log('Error erhalten für' + this.activeContract.contractUID, theError);
       } else {
         //console.log("Empty or other contract's ACI was received, not removing error");
@@ -172,7 +172,6 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
         console.log('[one-editor-tab] New change received for contract:', item['contractUID']);
 
-        this.activeContract.latestACI;
         this.save();
 
         //this.changeDetectorRef.detectChanges()
@@ -184,7 +183,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         //console.log("Resetting last known error..");
         this.lastError = '';
       } else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
-        let theError = item['error'];
+        const theError = item['error'];
         console.log('Error erhalten für' + this.activeContract.contractUID, theError);
       } else {
         //console.log("Empty or other contract's ACI was received, not removing error");
@@ -210,7 +209,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
     });
   }
 
-  initializeEditorObject(theEditor: monaco.editor.IStandaloneCodeEditor) {
+  initializeEditorObject(theEditor: Monaco.editor.IStandaloneCodeEditor) {
     //console.log("The editor:", theEditor._actions["editor.foldAll"]._run());
     //console.log("The editor:", theEditor);
     this.editorInstance = theEditor;
@@ -219,7 +218,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
     // highlight background of shared code
     // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
     if (this.activeContract.sharingHighlighters.length > 3) {
-      let rows = this.activeContract.sharingHighlighters;
+      const rows = this.activeContract.sharingHighlighters;
       setTimeout(() => {
         this.editorInstance.deltaDecorations(
           [],
@@ -314,7 +313,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
       .pipe(
         debounceTime(environment.compilerRequestDelay), // wait 1 sec after the last event before emitting last event
       ) // only emit if value is different from previous value
-      .subscribe((something) => {
+      .subscribe(() => {
         console.log(">>> Compiler call throttler let code 'change' pass");
         // Call your function which calls API or do anything you would like do after a lag of 1 sec
         this.change();
@@ -335,7 +334,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         console.log(`Nur error, in ${this.activeContract.nameInTab} : , ${error}`);
 
         // workaround for stupid angular bug calling events dozens of times: hash error in check if it was there already or not
-        let errorHash = this.hash(error);
+        const errorHash = this.hash(error);
         //console.log("Error hash:", errorHash)
         // if angular isn't trying to report the already known error again...
         if (errorHash != this.lastError) {
@@ -346,7 +345,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
           // add new highlighter
           try {
-            let errorHighlights = [
+            const errorHighlights = [
               // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
               {
                 range: new monaco.Range(
@@ -362,7 +361,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
             this.activeContract.errorHighlights = errorHighlights;
             this.save(); // like this ?
             this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights);
-          } catch (e) {
+          } catch {
             console.log('tried adding highlights...');
           }
 
@@ -381,14 +380,15 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
       this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, []);
       this.activeContract.errorHighlights = [];
       this.activeContractChange.emit(this.activeContract);
-    } catch (e) {}
+      // eslint-disable-next-line no-empty
+    } catch {}
   }
 
   setupCodeSharingHighlighters() {
     // add the highlighter
     console.log('one-editor-tab activeContract', this.activeContract);
     if (this.activeContract.sharingHighlighters.length > 3) {
-      let rows = this.activeContract.sharingHighlighters;
+      const rows = this.activeContract.sharingHighlighters;
       this.editorInstance.deltaDecorations(
         [],
         [
@@ -417,7 +417,6 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         console.log('[one-editor-tab] New change received for contract:', item['contractUID']);
 
         this.save();
-        this.activeContract.latestACI;
 
         //this.changeDetectorRef.detectChanges()
         console.log('Aci im one editor', this.activeContract.latestACI);
@@ -428,12 +427,12 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
         //console.log("Resetting last known error..");
         this.lastError = '';
       } else if (item['error'] != null && item['contractUID'] == this.activeContract.contractUID) {
-        let theError = item['error'];
+        const theError = item['error'];
         console.log('Error erhalten für' + this.activeContract.contractUID, theError);
 
         // add new highlighter
         try {
-          let errorHighlights = [
+          const errorHighlights = [
             // Range (54,38,5,3) means: endline, endcolumn, startline, startcolumn
             {
               range: new monaco.Range(
@@ -449,7 +448,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
           this.activeContract.errorHighlights = errorHighlights;
           this.save(); // like this ?
           this.currentDecorations = this.editorInstance.deltaDecorations([], errorHighlights);
-        } catch (e) {
+        } catch {
           console.log('tried adding highlights, but failed, for:', this.activeContract.contractUID);
         }
       } else {
@@ -465,8 +464,8 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
 
   triggerWindowRefresh(millisecondsDelay?: number) {
     setTimeout(() => {
-      var el = document; // This can be your element on which to trigger the event
-      var event = document.createEvent('HTMLEvents');
+      const el = document; // This can be your element on which to trigger the event
+      const event = document.createEvent('HTMLEvents');
       event.initEvent('resize', true, false);
       el.dispatchEvent(event);
     }, millisecondsDelay || 55);
@@ -475,12 +474,11 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   hash = function hashCode(o, l?) {
     o = this.sortObjectKeys(o);
     l = l || 2;
-    var i,
-      c,
-      r = [];
+    let i, c;
+    const r = [];
     for (i = 0; i < l; i++) r.push(i * 268803292);
     function stringify(o) {
-      var i, r;
+      let i, r;
       if (o === null) return 'n';
       if (o === true) return 't';
       if (o === false) return 'f';
@@ -537,7 +535,7 @@ export class OneEditorTabComponent implements OnInit, OnDestroy {
   }
 
   toHex = function (_input) {
-    var ret =
+    let ret =
       ((_input < 0 ? 0x8 : 0) + ((_input >> 28) & 0x7)).toString(16) +
       (_input & 0xfffffff).toString(16);
     while (ret.length < 8) ret = '0' + ret;

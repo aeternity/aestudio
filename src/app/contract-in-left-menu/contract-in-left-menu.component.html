@@ -1,9 +1,7 @@
 <div class="contractInLeftMenuWrapper">
   <!-- the style of this component is handled in its component's code, see "styleLabel" etc. -->
   <div class="contractInLeftMenu" [ngStyle]="styleLabel" (click)="displayInTabs()">
-    <a class="item labelFont">{{
-      contract.latestACI?.name == undefined ? 'Compiling..' : contract.latestACI.name
-    }}</a>
+    <a class="item labelFont">{{ contract.latestACI?.name ?? 'Compiling..' }}</a>
   </div>
   <div class="ContractInLeftMenuRightButton" [ngStyle]="rightButtonLabel">
     <div class="iconwrapper">

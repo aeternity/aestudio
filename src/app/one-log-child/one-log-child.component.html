@@ -9,13 +9,13 @@
       <div *ngIf="log.type" class="errorbox-icon">
         <i
           class="{{
-            log.type == 'success'
+            log.type === 'success'
               ? 'check circle'
-              : log.type == 'log'
+              : log.type === 'log'
                 ? 'info circle'
-                : log.type == 'error'
+                : log.type === 'error'
                   ? 'bug'
-                  : log.type == 'warn'
+                  : log.type === 'warn'
                     ? 'exclamation triangle'
                     : 'info circle'
           }} icon sidebar-icon"
@@ -35,13 +35,7 @@
             >
               <b> {{ key }} </b> :
               <div mdwUrl class="greyHoverWhite" style="display: inline">
-                {{
-                  log.data[key] == undefined || log.data[key] == null
-                    ? ''
-                    : log.data[key] == []
-                      ? '[]'
-                      : log.data[key]
-                }}
+                {{ log.data[key] === undefined || log.data[key] === null ? '' : log.data[key] }}
               </div>
             </div>
 

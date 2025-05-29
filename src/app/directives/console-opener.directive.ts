@@ -6,7 +6,7 @@ import { StateService } from '../services/state.service';
 @Directive({
   selector: '[appConsoleOpener]',
 })
-export class ConsoleOpenerDirective {
+export class ConsoleOpenerDirective implements AfterViewInit {
   @Input() minHeight: number;
   @Input('fluidHeight') topOffset: number;
   private domElement: HTMLElement;
@@ -28,24 +28,24 @@ export class ConsoleOpenerDirective {
     this.state.consoleTrigger.subscribe((enable) => {
       if (enable) {
         this.height = 25;
-        this.setHeight(this.height);
+        this.setHeight();
       } else {
         this.height = 0;
-        this.setHeight(this.height);
+        this.setHeight();
       }
     });
 
     // register on window resize event
     fromEvent(window, 'resize')
       .pipe(throttleTime(500), debounceTime(500))
-      .subscribe(() => this.setHeight(this.height));
+      .subscribe(() => this.setHeight());
   }
 
   ngAfterViewInit() {
-    this.setHeight(this.height);
+    this.setHeight();
   }
 
-  private setHeight(heightPercent: number) {
+  private setHeight() {
     this.renderer.setStyle(this.domElement, 'height', `${this.height}%`);
   }
 
@@ -55,7 +55,7 @@ export class ConsoleOpenerDirective {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
       return rect.top + scrollTop;
-    } catch (e) {
+    } catch {
       return 0;
     }
   }

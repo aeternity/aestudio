@@ -1,16 +1,6 @@
-/// <reference path="../../../node_modules/monaco-editor/monaco.d.ts" />
-
-import {
-  Component,
-  OnInit,
-  Input,
-  Compiler,
-  HostBinding,
-  OnChanges,
-  SimpleChanges,
-  ChangeDetectorRef,
-} from '@angular/core';
-import { CompilerService, EncodedACI } from '../compiler.service';
+import { Component, OnInit, Input, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import type monaco from 'monaco-editor';
+import { CompilerService } from '../compiler.service';
 import { Contract } from '../contracts/hamster';
 import { AeForUsers } from '../contracts/AeForUsers';
 import { AeUnlockOnTime } from '../contracts/AeUnlockOnTime';
@@ -18,11 +8,9 @@ import { FungibleToken } from '../contracts/FungibleToken';
 import { BasicNFT } from '../contracts/BasicNFT';
 import { Subscription, Subject } from 'rxjs';
 import { Router, ActivatedRoute } from '@angular/router';
-import { distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ClipboardService } from 'ngx-clipboard';
-//import { LogMessage as NgxLogMessage } from 'ngx-log-monitor';
 import { CodeFactoryService } from '../code-factory.service';
 import { LocalStorageService } from '../local-storage.service';
 import { AuthService } from '../services/auth/auth.service';
@@ -33,7 +21,7 @@ import { StateService } from '../services/state.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.css'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnDestroy {
   @Input()
   // logger start //
   /* logs: NgxLogMessage[] = [
@@ -41,7 +29,7 @@ export class EditorComponent implements OnInit {
   logStream$: any;
 
   // logger end //
-  isDimmed: boolean = false;
+  isDimmed = false;
 
   editorInstance: any; // the editor, initialized by the component
 
@@ -54,7 +42,7 @@ export class EditorComponent implements OnInit {
   currentDecorations: any;
 
   // debug - multiple instances running, or same code two times?
-  runTimes: number = 0;
+  runTimes = 0;
 
   // set the editor's style:
   //@HostBinding('attr.class') css = 'ui segment container';
@@ -75,13 +63,13 @@ export class EditorComponent implements OnInit {
 
   // Listen to compilation success (e.g. to remove highlights)
   codeGenerator: Subscription;
-  templateCode: string = '';
+  templateCode = '';
 
   // store all contractUIDs that are to be shown in the tabs
   activeTabUIDs: string[] = [];
 
   // the currently opened tab's UID
-  currentTabUID: string = '1574358512052';
+  currentTabUID = '1574358512052';
 
   // handles the case of event emitter emitting three error events instead of 1
   previousErrorHash: any = '';
@@ -174,13 +162,14 @@ export class EditorComponent implements OnInit {
       this.runTimes++;
       console.log('Run times:', this.runTimes);
       // get the parameters for code highlighting
-      var codeToHighlight: string = '';
+      let codeToHighlight = '';
 
       if (parameter.get('highlight') != undefined) {
         codeToHighlight = parameter.get('highlight') || '';
         try {
           this.highlightedRows = codeToHighlight.split('-', 4);
-        } catch (e) {}
+          // eslint-disable-next-line no-empty
+        } catch {}
       }
       console.log('highlight:', codeToHighlight);
       console.log('Highlighted rows:', this.highlightedRows);
@@ -346,7 +335,7 @@ export class EditorComponent implements OnInit {
     });
 
     // If the compiler asks for code, give it to him and deploy the contract
-    this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode.subscribe((item) => {
+    this.fetchActiveCodeSubscription = this.compiler._fetchActiveCode.subscribe(() => {
       console.log('Im editor angekommen !');
       //console.log("Current code ist:", this.contract.code)
 
@@ -396,7 +385,7 @@ export class EditorComponent implements OnInit {
 
     /// WIP: Enable only if user is logged in. example: https://microsoft.github.io/monaco-editor/playground.html#interacting-with-the-editor-adding-a-command-to-an-editor-instance
     // Step 1:
-    var myCondition = this.editorInstance.createContextKey('myCondition', false);
+    // const myCondition = this.editorInstance.createContextKey('myCondition', false);
 
     // custom context menu options
     this.editorInstance.addAction({
@@ -413,7 +402,7 @@ export class EditorComponent implements OnInit {
       // press the specified keys
       run: () => {
         console.log(this.compiler.activeCodeSelection);
-        let postData = {
+        const postData = {
           contract: this.activeContract.code,
           contractName: 'some',
           editorVersion: 1,
@@ -429,8 +418,8 @@ export class EditorComponent implements OnInit {
           .subscribe((data) => {
             console.log('Post hat ergeben?', data);
 
-            var constructedUrl;
-            var s = this.compiler.activeCodeSelection || '';
+            let constructedUrl;
+            const s = this.compiler.activeCodeSelection || '';
 
             // share code with our without highlighter
             if (s.endLineNumber != undefined) {
@@ -515,9 +504,7 @@ export class EditorComponent implements OnInit {
   // saves all contracts
   saveActiveContractChangesToContractsArray() {
     this.contracts.forEach((oneContract, index, array) => {
-      oneContract.contractUID == this.activeContract.UID
-        ? (array[index] = this.activeContract)
-        : true;
+      if (oneContract.contractUID == this.activeContract.UID) array[index] = this.activeContract;
       //and save:
       this.localStorage.storeAllContracts(this.contracts);
     });
@@ -545,7 +532,8 @@ export class EditorComponent implements OnInit {
       this.currentDecorations = this.editorInstance.deltaDecorations(this.currentDecorations, []);
       this.activeContract.errorHighlights = [];
       this.saveActiveContractChangesToContractsArray();
-    } catch (e) {}
+      // eslint-disable-next-line no-empty
+    } catch {}
   }
 
   // trigger whether the contract is displayed in the tabs or not
@@ -557,22 +545,21 @@ export class EditorComponent implements OnInit {
       //console.log("Editor: In this case, these are the contracts:", this.contracts)
       if (oneContract.contractUID == _params.contract.contractUID) {
         switch (_params.triggerMode) {
-          case 'off':
+          case 'off': {
             // check if at least another tab is open
             let tabsOpenCount = 0;
             this.contracts.forEach((contract) => {
-              contract.showInTabs ? tabsOpenCount++ : true;
+              if (contract.showInTabs) tabsOpenCount++;
             });
             // if at least 2 are open, close current tab
-            tabsOpenCount >= 2 ? (oneContract.showInTabs = false) : true;
+            if (tabsOpenCount >= 2) oneContract.showInTabs = false;
             break;
+          }
           case 'on':
             oneContract.showInTabs = true;
             break;
           case 'trigger':
-            oneContract.showInTabs == true
-              ? (oneContract.showInTabs = false)
-              : (oneContract.showInTabs = true);
+            oneContract.showInTabs = !oneContract.showInTabs;
             break;
           default:
             break;
@@ -589,7 +576,7 @@ export class EditorComponent implements OnInit {
 
   addNewContract() {
     console.log('comparing.. right now there are', this.contracts.length);
-    let newContract = new Contract({});
+    const newContract = new Contract({});
     console.log('new contract ist:', newContract);
     this.contracts.push(newContract);
     this.localStorage.storeAllContracts(this.contracts);
@@ -619,7 +606,7 @@ export class EditorComponent implements OnInit {
   }
 
   toHex = function (_input) {
-    var ret =
+    let ret =
       ((_input < 0 ? 0x8 : 0) + ((_input >> 28) & 0x7)).toString(16) +
       (_input & 0xfffffff).toString(16);
     while (ret.length < 8) ret = '0' + ret;
@@ -629,13 +616,12 @@ export class EditorComponent implements OnInit {
   hash = function hashCode(o, l?) {
     o = this.sortObjectKeys(o);
     l = l || 2;
-    var i,
-      c,
-      r: any = [];
+    let i, c;
+    const r = [];
     for (i = 0; i < l; i++) r.push(i * 268803292);
     function stringify(o) {
-      var i: any;
-      var r: any = [];
+      let i: any;
+      let r: any = [];
       if (o === null) return 'n';
       if (o === true) return 't';
       if (o === false) return 'f';
@@ -676,18 +662,11 @@ export class EditorComponent implements OnInit {
   // if stupid-ass chrome won't render the editor but show it as a small square instead..
   triggerWindowRefresh(millisecondsDelay?: number) {
     setTimeout(() => {
-      var el = document; // This can be your element on which to trigger the event
-      var event = document.createEvent('HTMLEvents');
+      const el = document; // This can be your element on which to trigger the event
+      const event = document.createEvent('HTMLEvents');
       event.initEvent('resize', true, false);
       el.dispatchEvent(event);
     }, millisecondsDelay || 55);
-  }
-
-  ngAfterViewInit() {
-    /*   this.currentTabUID = this.activeContract.contractUID;
-      console.log("After view init fired")
-      this.changeDetectorRef.detectChanges()
-   */
   }
 
   ngOnDestroy() {

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CompilerService } from '../compiler.service';
 import { IPopup } from 'ngx-ng2-semantic-ui';
 
@@ -8,15 +8,14 @@ import { IPopup } from 'ngx-ng2-semantic-ui';
   styleUrls: ['./wallet-switch.component.css'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class WalletSwitchComponent implements OnInit {
+export class WalletSwitchComponent {
   constructor(public compiler: CompilerService) {}
 
   public openPopup(popup: IPopup) {
-    !this.compiler.walletExtensionPresent ? popup.open() : true;
+    if (!this.compiler.walletExtensionPresent) popup.open();
   }
 
   public closePopup(popup: IPopup) {
     popup.close();
   }
-  ngOnInit(): void {}
 }

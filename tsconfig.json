@@ -15,11 +15,7 @@
     "target": "ES2022",
     "strictNullChecks": false,
     "allowSyntheticDefaultImports": true,
-    "typeRoots": [
-      "node_modules/@types",
-      "src/app/editor/typings.d.ts",
-      "node_modules/@aeternity/aepp-sdk/src/typings"
-    ],
+    "typeRoots": ["node_modules/@types", "node_modules/@aeternity/aepp-sdk/src/typings"],
     "lib": ["es2021", "dom"],
     "paths": {
       "crypto": ["./node_modules/crypto-browserify"],

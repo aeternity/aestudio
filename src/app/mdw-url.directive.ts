@@ -1,19 +1,10 @@
-import {
-  Directive,
-  ElementRef,
-  Renderer2,
-  HostListener,
-  AfterViewInit,
-  OnInit,
-  AfterContentInit,
-  AfterViewChecked,
-} from '@angular/core';
+import { Directive, ElementRef, Renderer2, HostListener, AfterViewInit } from '@angular/core';
 import { CompilerService } from './compiler.service';
 
 @Directive({
   selector: '[mdwUrl]',
 })
-export class MdwUrlDirective {
+export class MdwUrlDirective implements AfterViewInit {
   @HostListener('mouseenter') onMouseEnter() {
     /*  console.log("directive: in!") */
   }
@@ -34,23 +25,11 @@ export class MdwUrlDirective {
     this.addUrl();
   }
 
-  ngOnInit() {
-    //this.addUrl()
-  }
-
-  ngAfterContentInit() {
-    //this.addUrl()
-  }
-
-  ngAfterViewChecked() {
-    //this.addUrl()
-  }
-
   addUrl() {
     //setTimeout(() => {
     let currentNetwork: string;
     (async () => {
-      let { nodeNetworkId } = await this.compiler.Chain.getNodeInfo();
+      const { nodeNetworkId } = await this.compiler.Chain.getNodeInfo();
       currentNetwork = nodeNetworkId;
     })();
     // generate links only if it's test- or mainnet
@@ -58,26 +37,25 @@ export class MdwUrlDirective {
       return;
     }
 
-    let currentContent: string = this.el.nativeElement.innerText;
+    const currentContent: string = this.el.nativeElement.innerText;
 
     /* console.log("directive network id:", currentNetwork)
       console.log("directive network id direct:", this.compiler.Chain?.selectedNode.networkId)
       console.log("current content:", currentContent)
       console.log("nur el:", this.el.nativeElement) */
 
-    var baseUrl: string;
+    let baseUrl: string;
     if (currentNetwork == 'ae_uat') {
       baseUrl = 'https://explorer.testnet.aeternity.io';
     } else {
       baseUrl = 'https://explorer.aeternity.io';
     }
 
-    var middlewareLink: string;
-    var generationsRegex = new RegExp(`^\d+$`, 'gm');
-    var transactionHashRegex = new RegExp(`^th_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
-    var oracleQueryRegex = new RegExp(`^ok_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
-    var contractTransactionRegex = new RegExp(`^ct_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
-    var accountTransactionRegex = new RegExp(`^ak_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
+    let middlewareLink: string;
+    const transactionHashRegex = new RegExp(`^th_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
+    const oracleQueryRegex = new RegExp(`^ok_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
+    const contractTransactionRegex = new RegExp(`^ct_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
+    const accountTransactionRegex = new RegExp(`^ak_[1-9A-HJ-NP-Za-km-z]{48,50}$`, 'gm');
 
     if (!currentContent || typeof currentContent != 'string') {
       return;

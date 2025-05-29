@@ -17,15 +17,13 @@ export class OneLogComponent implements OnInit {
   isAnObject: any = {}; // keep track of log data that is an object (int, string, etc..)
   logEntries: any = [];
 
-  constructor() {}
-
   ngOnInit() {
     this.log.depth = 1; // to be passed for padding of later nested collapsible log content ("one-log-child")
     this.logEntries = Object.keys(this.log.data);
 
     this.logEntries.forEach((key) => {
       // dirty patch for "createdAt" not properly displaying:
-      key == 'createdAt' ? (this.log.data[key] = this.getTimeDate()) : false;
+      if (key == 'createdAt') this.log.data[key] = this.getTimeDate();
 
       /* if a child entry in the log data is an array or object or just pure data, set a flag for that entry in the respective object.
       this is to prevent having to run type-checking functions in ngIf and ngFor in the template, which is resource-costly!
@@ -67,9 +65,9 @@ export class OneLogComponent implements OnInit {
   };
 
   getTimeDate = () => {
-    var today = new Date();
-    var date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
-    var time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+    const today = new Date();
+    const date = today.getDate() + '-' + (today.getMonth() + 1) + '-' + today.getFullYear();
+    const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
     return time + ' ' + date;
   };
 }

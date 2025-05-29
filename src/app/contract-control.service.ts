@@ -6,7 +6,7 @@ import { ContractBase } from 'src/app/question/contract-base';
   providedIn: 'root',
 })
 export class ContractControlService {
-  contractForm: ContractBase<any>;
+  contractForm: ContractBase;
 
   rawACI: any = {
     contract: {
@@ -105,7 +105,6 @@ export class ContractControlService {
       ],
     },
   };
-  constructor() {}
 
   parseACItoForm() {
     // flatten the damn ACI
@@ -128,17 +127,17 @@ export class ContractControlService {
   }
 
   // generates a typescript-safe contract instance with a FormGroup in functions array
-  toContract(aci: any): ContractBase<any> {
+  toContract(aci: any): ContractBase {
     // 1. create several formgroups: one FG for each fun, return final contract
-    let functions = aci.contract.functions;
+    const functions = aci.contract.functions;
 
     // 2. ... for every function of the contract....
     functions.forEach((fun) => {
       //console.log("Taking care of", fun.name);
 
       // 2.5 ...generate a formgroup checking all the params, make the "options" types non-required
-      fun.arguments.forEach((arg, i, allArgs) => {
-        let controlls: any = [];
+      fun.arguments.forEach((arg, i) => {
+        const controlls: any = [];
 
         /* // temp testing:
                 arg.type.option != null ? console.log("OPTION FOUND!",arg) : true;

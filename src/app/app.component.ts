@@ -9,6 +9,4 @@ export class AppComponent {
   title = 'fire-editor';
 
   questions: any[];
-
-  constructor() {}
 }

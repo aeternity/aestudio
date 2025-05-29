@@ -12,10 +12,10 @@ import { ContractWithMethodsExtended } from '../helpers/interfaces';
 })
 export class DeployedContractComponent implements OnInit {
   @Input() contract: ContractWithMethodsExtended;
-  @Output() deleteContract: EventEmitter<any> = new EventEmitter();
+  @Output() deleteContract = new EventEmitter<any>();
 
   panelOpen: boolean;
-  deleteDialogOpen: boolean = false;
+  deleteDialogOpen = false;
 
   constructor(
     private compiler: CompilerService,
@@ -45,16 +45,15 @@ export class DeployedContractComponent implements OnInit {
   }
 
   async callFunction(_theFunction: string, _theFunctionIndex: number, _contractIDEindex: number) {
-    let theContract = this.contract;
+    const theContract = this.contract;
 
     console.log('theContract is:', theContract.$aci.functions[0]);
     // activate loader
     theContract.$aci.functions[_theFunctionIndex].loading = true;
 
     // fetch all entered params
-    const jsonTypes = ['map', 'list', 'tuple', 'record', 'bytes'];
 
-    var callParams: any[] = this.contract.$aci.functions[_theFunctionIndex].arguments.map(
+    const callParams: any[] = this.contract.$aci.functions[_theFunctionIndex].arguments.map(
       (oneArg) => {
         console.log('One arg:', oneArg.currentInputData);
         // try parsing input data as JSON to try handling complex input data cases - work in progess !
@@ -64,20 +63,18 @@ export class DeployedContractComponent implements OnInit {
     );
 
     // check if custom values are applied for tx value, gas and gas price, and if so, set them
-    var txParams: any = { interval: 500, blocks: 3, allowUnsynced: true };
+    const txParams: any = { interval: 500, blocks: 3, allowUnsynced: true };
     console.log('Compiler: amount:', this.compiler.txAmountInAettos);
     console.log('Compiler: gasAmountInUnits:', this.compiler.gasAmountInUnits);
     console.log('Compiler: gasPriceInAettos:', this.compiler.gasPriceInAettos);
 
-    this.compiler.txAmountInAettos > 0 ? (txParams.amount = this.compiler.txAmountInAettos) : true;
-    this.compiler.gasAmountInUnits > 0 ? (txParams.gas = this.compiler.gasAmountInUnits) : true;
-    this.compiler.gasPriceInAettos > 0
-      ? (txParams.gasPrice = this.compiler.gasPriceInAettos)
-      : true;
+    if (this.compiler.txAmountInAettos > 0) txParams.amount = this.compiler.txAmountInAettos;
+    if (this.compiler.gasAmountInUnits > 0) txParams.gas = this.compiler.gasAmountInUnits;
+    if (this.compiler.gasPriceInAettos > 0) txParams.gasPrice = this.compiler.gasPriceInAettos;
 
     // "Apply" parameters a.k.a call function
     console.log('Called function:', _theFunction);
-    var callresult;
+    let callresult;
     try {
       console.log('Calling with tx params:', txParams);
       /* callresult = await this.compiler.activeContracts[_contractIDEindex].methods[_theFunction](...callParams, { interval: 500, blocks: 3, allowUnsynced: true, amount: "0", gasPrice:"2000000000", gas:80 }); */
@@ -89,7 +86,7 @@ export class DeployedContractComponent implements OnInit {
       console.log('Decoded result', callresult.decodedResult);
       //this.logMessage(_theFunction + " called successfully :" + JSON.stringify(callresult, null, 2), "success",  this.contract._name)
       // handle "false" result case not displaying call result data
-      callresult.decodedResult == false ? (callresult.decodedResult = 'false') : true;
+      if (callresult.decodedResult == false) callresult.decodedResult = 'false';
 
       /*    Handle various result types !
       false: done
@@ -141,7 +138,7 @@ export class DeployedContractComponent implements OnInit {
     _theContractCode: string,
     _theFunction: {
       name: string;
-      arguments: Array<{ currentInputData: string }>;
+      arguments: { currentInputData: string }[];
     },
     _initParams: unknown[] = [],
   ) {
@@ -169,9 +166,5 @@ export class DeployedContractComponent implements OnInit {
         // This can happen if the user denies clipboard permissions:
         console.error('Could not copy text:', err);
       });
-  }
-
-  logTemp(something: any) {
-    true;
   }
 }

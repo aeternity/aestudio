@@ -3,5 +3,5 @@ export interface User {
   email: string;
   displayName?: string;
   myCustomData?: string;
-  testnetKeys?: [{}];
+  testnetKeys?: object[];
 }

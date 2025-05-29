@@ -5,7 +5,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 })
 export class StateService {
   // used to change the sizes of editor and console log, open / close.
-  consoleOpen: boolean = true;
+  consoleOpen = true;
   public console: {
     isOpen: boolean;
     logsActive: boolean;

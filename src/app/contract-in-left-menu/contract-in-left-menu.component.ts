@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Contract } from '../contracts/hamster';
 //import { EventEmitter } from 'protractor';
 
@@ -7,13 +7,13 @@ import { Contract } from '../contracts/hamster';
   templateUrl: './contract-in-left-menu.component.html',
   styleUrls: ['./contract-in-left-menu.component.css'],
 })
-export class ContractInLeftMenuComponent implements OnInit {
+export class ContractInLeftMenuComponent {
   @Input() public contract: Contract;
   @Output() public contractDeletion: any = new EventEmitter();
   @Output() public showInTabs = new EventEmitter();
 
   hover: boolean;
-  toggled: boolean = false;
+  toggled = false;
 
   // the label
   styleLabel: any = {
@@ -32,8 +32,6 @@ export class ContractInLeftMenuComponent implements OnInit {
   constructor() {
     this.hover = false;
   }
-
-  ngOnInit() {}
 
   public onHover() {
     //console.log("Hover triggered!");

@@ -1,7 +1,6 @@
 import * as AU from 'ansi_up';
 import { EventEmitter } from '@angular/core';
 
-// tslint:disable-next-line:variable-name new-parens
 const AnsiUp = new AU.default();
 AnsiUp.use_classes = true;
 
