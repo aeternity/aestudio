@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "@aeternity/aepp-sdk": "^13.3.2",
+    "@aeternity/aepp-sdk": "^15.0.0",
     "@angular-devkit/schematics": "^16.2.6",
     "@angular/animations": "^16.2.9",
     "@angular/cdk": "^15.0.0",

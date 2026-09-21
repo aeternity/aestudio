@@ -15,12 +15,10 @@ import { switchMap } from 'rxjs/operators';
 // sdk 13 migration start
 const {
   AeSdk,
-  Crypto,
   MemoryAccount,
   Node,
   CompilerHttp,
   AE_AMOUNT_FORMATS,
-  generateKeyPair,
   Contract,
   BrowserWindowMessageConnection,
   walletDetector,
@@ -181,7 +179,8 @@ export class AuthService {
         } else {
           if (maxFourBusy < 4) {
             maxFourBusy++;
-            var keypair = Crypto.generateKeyPair();
+            var account = MemoryAccount.generate();
+            var keypair = { publicKey: account.address, secretKey: account.secretKey };
 
             //console.log("Login: Keypair:", keypair)
 

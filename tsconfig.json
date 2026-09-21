@@ -15,6 +15,7 @@
     "target": "ES2022",
     "strictNullChecks": false,
     "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
     "typeRoots": [
       "node_modules/@types",
       "src/app/editor/typings.d.ts",
