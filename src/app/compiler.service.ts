@@ -17,6 +17,9 @@ import {
   walletDetector,
   AeSdkAepp,
   SUBSCRIPTION_TYPES,
+  Contract,
+  encode,
+  Encoding,
 } from '@aeternity/aepp-sdk';
 import {
   AeSdkExtended,
@@ -25,6 +28,15 @@ import {
   ContractWithMethodsExtended,
 } from './helpers/interfaces';
 import BrowserConnection from '@aeternity/aepp-sdk/es/aepp-wallet-communication/connection/Browser';
+
+// MemoryAccount now requires sk_-prefixed keys; the prefilled dev accounts store legacy raw-hex ones.
+function hexToSecretKey(hex: string): `sk_${string}` {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i += 1) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  }
+  return encode(bytes.subarray(0, 32), Encoding.AccountSecretKey);
+}
 
 @Injectable({
   providedIn: 'root',
@@ -307,7 +319,7 @@ export class CompilerService {
     this.currentBrowser = this.getBrowserName();
 
     publicAccounts().forEach((account) => {
-      let oneAccount: MemoryAccountExtended = new MemoryAccount(account.secretKey);
+      let oneAccount: MemoryAccountExtended = new MemoryAccount(hexToSecretKey(account.secretKey));
       oneAccount.property = 'public';
       theAccounts.push(oneAccount);
     });
@@ -460,7 +472,7 @@ export class CompilerService {
     if (!_existingContractAddress) {
       // Here we deploy the contract
 
-      myContract = await this.Chain.initializeContract({ sourceCode: this.code });
+      myContract = await Contract.initialize({ ...this.Chain.getContext(), sourceCode: this.code });
       //console.log(">>>> compilation result (mycontract):", myContract);
 
       try {
@@ -516,7 +528,8 @@ export class CompilerService {
       }
     } else {
       //here we want to interact with an existing one.
-      myContract = await this.Chain.initializeContract({
+      myContract = await Contract.initialize({
+        ...this.Chain.getContext(),
         sourceCode: this.code,
         address: _existingContractAddress,
       });
